@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.particleframework.discovery;
+package org.particleframework.runtime.server;
+
+import org.particleframework.discovery.ServiceInstance;
 
 /**
- * Base class for common discovery configuration options
+ * Extended version of the {@link ServiceInstance} interface for the {@link EmbeddedServer}
  *
  * @author graemerocher
  * @since 1.0
  */
-public class DiscoveryConfiguration {
+public interface EmbeddedServerInstance extends ServiceInstance {
+    /**
+     * @return A reference to the server
+     */
+    EmbeddedServer getEmbeddedServer();
 }
