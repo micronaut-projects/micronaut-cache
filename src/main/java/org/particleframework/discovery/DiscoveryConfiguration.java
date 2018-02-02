@@ -15,13 +15,29 @@
  */
 package org.particleframework.discovery;
 
+import org.particleframework.core.util.Toggleable;
+
 /**
  * Base class for common discovery configuration options
  *
  * @author graemerocher
  * @since 1.0
  */
-public class DiscoveryConfiguration {
+public abstract class DiscoveryConfiguration implements Toggleable {
 
     public static final String PREFIX = "discovery";
+
+    private boolean enabled = true;
+
+    /**
+     * @return Is discovery enabled? Defaults to true
+     */
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }
