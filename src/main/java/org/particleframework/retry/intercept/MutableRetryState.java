@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.particleframework.retry.exception;
+package org.particleframework.retry.intercept;
+
+import org.particleframework.core.annotation.Internal;
+import org.particleframework.retry.RetryState;
 
 /**
- * An exception thrown if there is something at miss with the Retry system
- *
  * @author graemerocher
  * @since 1.0
  */
-public class RetryException extends RuntimeException {
-
-    public RetryException(String message) {
-        super(message);
-    }
-
-    public RetryException(String message, Throwable cause) {
-        super(message, cause);
-    }
+@Internal
+interface MutableRetryState extends RetryState {
+    /**
+     * @return Return the milli second value for the next delay
+     */
+    long nextDelay();
 }
