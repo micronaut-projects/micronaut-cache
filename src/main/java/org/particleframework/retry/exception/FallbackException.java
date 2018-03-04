@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.particleframework.retry;
-
-import org.particleframework.core.annotation.Internal;
+package org.particleframework.retry.exception;
 
 /**
+ * An exception thrown when an error occurs in the {@link org.particleframework.retry.annotation.Fallback} system
+ *
  * @author graemerocher
  * @since 1.0
  */
-@Internal
-interface MutableRetryState extends RetryState {
-    /**
-     * @return Return the milli second value for the next delay
-     */
-    long nextDelay();
+public class FallbackException extends RetryException {
+
+    public FallbackException(String message) {
+        super(message);
+    }
+
+    public FallbackException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
