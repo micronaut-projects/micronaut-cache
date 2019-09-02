@@ -7,5 +7,6 @@ build
 .idea/
 *.iml
 .DS_Store
+.settings/
 
 .gradletasknamecache
