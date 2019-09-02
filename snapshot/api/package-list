@@ -1,0 +1,8 @@
+io.micronaut.cache
+io.micronaut.cache.annotation
+io.micronaut.cache.ehcache
+io.micronaut.cache.ehcache.serialization
+io.micronaut.cache.exceptions
+io.micronaut.cache.interceptor
+io.micronaut.cache.jcache
+io.micronaut.cache.serialize
