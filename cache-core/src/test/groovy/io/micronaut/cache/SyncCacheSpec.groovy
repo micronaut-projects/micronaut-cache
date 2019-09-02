@@ -15,17 +15,12 @@
  */
 package io.micronaut.cache
 
+import io.micronaut.cache.annotation.*
+import io.micronaut.context.ApplicationContext
 import io.micronaut.core.async.annotation.SingleResult
+import io.micronaut.inject.qualifiers.Qualifiers
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.micronaut.cache.annotation.CacheConfig
-import io.micronaut.cache.annotation.CacheInvalidate
-import io.micronaut.cache.annotation.CachePut
-import io.micronaut.cache.annotation.Cacheable
-import io.micronaut.cache.annotation.InvalidateOperations
-import io.micronaut.cache.annotation.PutOperations
-import io.micronaut.context.ApplicationContext
-import io.micronaut.inject.qualifiers.Qualifiers
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions

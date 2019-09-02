@@ -15,14 +15,8 @@
  */
 package io.micronaut.cache.jcache
 
-import io.micronaut.cache.annotation.CacheConfig
-import io.micronaut.cache.annotation.CacheInvalidate
-import io.micronaut.cache.annotation.CachePut
-import io.micronaut.cache.annotation.Cacheable
-import io.micronaut.cache.annotation.InvalidateOperations
-import io.micronaut.cache.annotation.PutOperations
+import io.micronaut.cache.annotation.*
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.async.annotation.SingleResult
