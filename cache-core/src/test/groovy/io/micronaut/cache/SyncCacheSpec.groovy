@@ -228,6 +228,30 @@ class SyncCacheSpec extends Specification {
             syncCache.get("four", Integer).isPresent()
         }
 
+    void "test publisher cache methods are not called for hits"() {
+        given:
+        ApplicationContext applicationContext = ApplicationContext.run(
+                'micronaut.caches.counter.initialCapacity':10,
+                'micronaut.caches.counter.testMode':true,
+                'micronaut.caches.counter.maximumSize':20,
+        )
+
+        PublisherService publisherService = applicationContext.getBean(PublisherService)
+
+        expect:
+        publisherService.callCount.get() == 0
+
+        when:
+        publisherService.flowableValue("abc").blockingFirst()
+
+        then:
+        publisherService.callCount.get() == 1
+
+        when:
+        publisherService.flowableValue("abc").blockingFirst()
+
+        then:
+        publisherService.callCount.get() == 1
 
         when:
         syncCache.invalidateAll()
@@ -243,6 +267,27 @@ class SyncCacheSpec extends Specification {
 
         cleanup:
         applicationContext.stop()
+    }
+
+    @Singleton
+    @CacheConfig('counter')
+    static class PublisherService {
+
+        AtomicInteger callCount = new AtomicInteger()
+
+        @Cacheable
+        @SingleResult
+        Flowable<Integer> flowableValue(String name) {
+            callCount.incrementAndGet()
+            return Flowable.just(0)
+        }
+
+        @Cacheable
+        Single<Integer> singleValue(String name) {
+            callCount.incrementAndGet()
+            return Single.just(0)
+        }
+
     }
 
     @Singleton
