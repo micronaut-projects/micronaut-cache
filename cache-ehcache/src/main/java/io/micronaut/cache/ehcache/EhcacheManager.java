@@ -51,6 +51,12 @@ public class EhcacheManager implements io.micronaut.cache.CacheManager<Cache>, C
     private Map<String, EhcacheConfiguration> cacheConfigurations;
     private Map<String, EhcacheSyncCache> cacheMap;
 
+    /**
+     * @param cacheManager the cache manager
+     * @param executorService the executor service
+     * @param conversionService the conversion service
+     * @param cacheConfigurations the cache configuration
+     */
     public EhcacheManager(@Nonnull CacheManager cacheManager,
                           @Nonnull @Named(TaskExecutors.IO) ExecutorService executorService,
                           @Nonnull ConversionService<?> conversionService,

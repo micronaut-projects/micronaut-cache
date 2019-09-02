@@ -32,6 +32,9 @@ public class CharSequenceSerializer implements Serializer<CharSequence> {
 
     private final StringSerializer stringSerializer;
 
+    /**
+     * Default constructor.
+     */
     public CharSequenceSerializer() {
         this.stringSerializer = new StringSerializer();
     }

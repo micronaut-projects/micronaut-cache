@@ -38,6 +38,11 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     private final EhcacheConfiguration configuration;
     private final Cache nativeCache;
 
+    /**
+     * @param conversionService the conversion service
+     * @param configuration the configuration
+     * @param nativeCache the native cache
+     */
     public EhcacheSyncCache(ConversionService<?> conversionService, EhcacheConfiguration configuration, Cache nativeCache) {
         this.conversionService = conversionService;
         this.configuration = configuration;

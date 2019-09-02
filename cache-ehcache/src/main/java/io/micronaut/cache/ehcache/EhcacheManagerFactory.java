@@ -30,6 +30,9 @@ public class EhcacheManagerFactory {
 
     private EhcacheManagerConfiguration configuration;
 
+    /**
+     * @param configuration the configuration
+     */
     public EhcacheManagerFactory(EhcacheManagerConfiguration configuration) {
         this.configuration = configuration;
     }

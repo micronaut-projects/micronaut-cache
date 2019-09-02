@@ -51,6 +51,9 @@ public class EhcacheConfiguration implements Named {
     private Class<?> keyType = DEFAULT_KEY_TYPE;
     private Class<?> valueType = DEFAULT_VALUE_TYPE;
 
+    /**
+     * @param name the cache name
+     */
     public EhcacheConfiguration(@Parameter String name) {
         this.name = name;
         initBuilder();
