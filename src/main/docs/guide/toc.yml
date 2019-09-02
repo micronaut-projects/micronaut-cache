@@ -1,5 +1,0 @@
-introduction: Introduction
-cache-abstraction: Cache Abstraction
-jcache: JCache API support
-redis: Redis Support
-ehcache: Ehcache Support
