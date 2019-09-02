@@ -1,0 +1,19 @@
+To use https://www.ehcache.org/[Ehcache] as the caching implementation, add it as a dependency to your application:
+
+dependency:org.ehcache:ehcache:{ehcacheVersion}[]
+
+To have Micronaut create a cache, the minimum configuration is:
+
+[source,yaml]
+----
+ehcache:
+  caches:
+    my-cache:
+      enabled: true
+----
+
+Then, you can use any of the caching annotations with `my-cache` as cache name.
+
+The full list of configuration options is:
+
+include::{includedir}configurationProperties/io.micronaut.cache.ehcache.EhcacheConfiguration.adoc[]
