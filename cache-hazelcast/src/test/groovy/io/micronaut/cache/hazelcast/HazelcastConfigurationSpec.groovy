@@ -5,19 +5,22 @@ import spock.lang.Specification
 
 class HazelcastConfigurationSpec extends Specification{
 
-    void "it creates cache configurations"() {
+    void "test creates multiple cache configurations"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
-                "hazelcast.caches.foo.maximumSize": 25
+                "hazelcast.caches.foo.maximumSize": 25,
+                "hazelcast.caches.bar.maximumSize": 99
         ])
 
         when:
         Collection<HazelcastConfiguration> hazelcastConfigurations = ctx.getBeansOfType(HazelcastConfiguration)
 
         then:
-        hazelcastConfigurations.size() == 1
-        hazelcastConfigurations.first().getName() == 'foo'
-        hazelcastConfigurations.first().getMaximumSize() == 25
+        hazelcastConfigurations.size() == 2
+        hazelcastConfigurations.first().getName() == 'bar'
+        hazelcastConfigurations.first().getMaximumSize() == 99
+        hazelcastConfigurations.getAt(1).getName() == 'foo'
+        hazelcastConfigurations.getAt(1).getMaximumSize() == 25
     }
 
 }
