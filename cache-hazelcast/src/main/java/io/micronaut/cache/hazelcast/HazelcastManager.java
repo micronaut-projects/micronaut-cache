@@ -98,6 +98,10 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, 
             mapConfig.setBackupCount(configuration.getBackupCount());
         }
 
+        if (configuration.getTimeToLiveSeconds() != null) {
+            mapConfig.setTimeToLiveSeconds(configuration.getTimeToLiveSeconds());
+        }
+
         nativeHazelcastConfig.addMapConfig(mapConfig);
         return nativeHazelcastConfig;
     }

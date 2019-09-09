@@ -29,7 +29,7 @@ class HazelcastManagerSpec extends Specification {
         and:
         SyncCache cache = hazelcastManager.getCache('foo')
         cache.name == 'foo'
-        cache.configuration.maximumSize == 25
+        cache.configuration.getMaximumSize() == 25
     }
 
     void "test multiple caches are created"() {
@@ -53,7 +53,8 @@ class HazelcastManagerSpec extends Specification {
     void "test property configurations are set"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
-                "hazelcast.caches.foo.backupCount": 3
+                "hazelcast.caches.foo.backupCount": 3,
+                "hazelcast.caches.foo.timeToLiveSeconds": 299
         ])
 
         when:

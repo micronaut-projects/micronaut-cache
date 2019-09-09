@@ -39,6 +39,8 @@ public class HazelcastConfiguration {
     private Integer maximumSize = DEFAULT_MAX_SIZE;
     private Integer backupCount;
 
+    private Integer timeToLiveSeconds;
+
     /**
      * @param name the cache name
      */
@@ -72,4 +74,9 @@ public class HazelcastConfiguration {
     public void setBackupCount(Integer backupCount) {
         this.backupCount = backupCount;
     }
+
+    public Integer getTimeToLiveSeconds() { return timeToLiveSeconds; }
+
+    public void setTimeToLiveSeconds(Integer timeToLiveSeconds) { this.timeToLiveSeconds = timeToLiveSeconds; }
+
 }
