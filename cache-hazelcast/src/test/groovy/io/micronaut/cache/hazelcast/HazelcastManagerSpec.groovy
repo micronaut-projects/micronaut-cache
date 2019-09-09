@@ -26,6 +26,26 @@ class HazelcastManagerSpec extends Specification {
 
         and:
         SyncCache cache = ehcacheManager.getCache('foo')
+        cache.name == 'foo'
+        cache.configuration.maximumSize == 25
+    }
+
+    void "test multiple caches are created"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+                "hazelcast.caches.foo.maximumSize": 25,
+                "hazelcast.caches.bar.maximumSize": 99
+        ])
+
+        when:
+        HazelcastManager ehcacheManager = ctx.getBean(HazelcastManager)
+
+        then:
+        ehcacheManager.cacheNames.size() == 2
+
+        and:
+        ehcacheManager.getCache('foo')
+        ehcacheManager.getCache('bar')
     }
 
 }

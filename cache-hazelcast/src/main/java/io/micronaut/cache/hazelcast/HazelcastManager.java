@@ -15,13 +15,17 @@
  */
 package io.micronaut.cache.hazelcast;
 
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.micronaut.cache.DefaultCacheManager;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.core.convert.ConversionService;
 
 import javax.annotation.Nonnull;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -37,15 +41,18 @@ import java.util.stream.Collectors;
  */
 @Replaces(DefaultCacheManager.class)
 @Primary
-public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap> {
+public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, Closeable {
 
     private Map<String, HazelcastConfiguration> cacheConfigurations;
-    private Map<String, EhcacheSyncCache> cacheMap;
+    private Map<String, HazelcastSyncCache> cacheMap;
+    private final ConversionService<?> conversionService;
 
     /**
      * @param cacheConfigurations the cache configuration
      */
-    public HazelcastManager(@Nonnull List<HazelcastConfiguration> cacheConfigurations) {
+    public HazelcastManager( @Nonnull ConversionService<?> conversionService,
+                             @Nonnull List<HazelcastConfiguration> cacheConfigurations) {
+        this.conversionService = conversionService;
         this.cacheConfigurations = cacheConfigurations
                 .stream()
                 .collect(Collectors.toMap(HazelcastConfiguration::getName, hazelcastConfiguration -> hazelcastConfiguration));
@@ -61,12 +68,13 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap> {
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
-    public SyncCache<Cache> getCache(String name) {
-        EhcacheSyncCache syncCache = this.cacheMap.get(name);
+    public SyncCache<IMap> getCache(String name) {
+        HazelcastSyncCache syncCache = this.cacheMap.get(name);
         if (syncCache == null) {
-            EhcacheConfiguration configuration = cacheConfigurations.get(name);
-            Cache nativeCache = this.cacheManager.createCache(name, configuration.builder.build());
-            syncCache = new EhcacheSyncCache(conversionService, configuration, nativeCache);
+            HazelcastConfiguration configuration = cacheConfigurations.get(name);
+            HazelcastInstance instance = Hazelcast.newHazelcastInstance();
+            IMap nativeCache = instance.getMap(configuration.getName());
+            syncCache = new HazelcastSyncCache(conversionService, configuration, nativeCache);
             this.cacheMap.put(name, syncCache);
         }
         return syncCache;
@@ -74,7 +82,7 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap> {
 
     @Override
     public void close() throws IOException {
-        this.cacheManager.close();
+        Hazelcast.shutdownAll();
     }
 
 }

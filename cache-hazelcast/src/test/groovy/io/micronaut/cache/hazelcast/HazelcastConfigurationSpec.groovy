@@ -17,10 +17,8 @@ class HazelcastConfigurationSpec extends Specification{
 
         then:
         hazelcastConfigurations.size() == 2
-        hazelcastConfigurations.first().getName() == 'bar'
-        hazelcastConfigurations.first().getMaximumSize() == 99
-        hazelcastConfigurations.getAt(1).getName() == 'foo'
-        hazelcastConfigurations.getAt(1).getMaximumSize() == 25
+        hazelcastConfigurations.find { it.getName() == "bar"}.maximumSize == 99
+        hazelcastConfigurations.find { it.getName() == "foo"}.maximumSize == 25
     }
 
 }
