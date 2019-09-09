@@ -16,7 +16,6 @@
 package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.config.EvictionPolicy;
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -75,8 +74,15 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, 
         HazelcastSyncCache syncCache = this.cacheMap.get(name);
         if (syncCache == null) {
             HazelcastConfiguration configuration = cacheConfigurations.get(name);
-            Config nativeHazelcastConfig = createNativeHazelCastConfig(configuration);
-            HazelcastInstance instance = Hazelcast.newHazelcastInstance(nativeHazelcastConfig);
+
+            HazelcastInstance instance;
+            if (configuration.getUseDefaultHazelcastXml()) {
+                instance = Hazelcast.newHazelcastInstance();
+            } else {
+                Config nativeHazelcastConfig = createNativeHazelCastConfig(configuration);
+                instance = Hazelcast.newHazelcastInstance(nativeHazelcastConfig);
+            }
+
             IMap nativeCache = instance.getMap(configuration.getName());
             syncCache = new HazelcastSyncCache(conversionService, configuration, nativeCache);
             this.cacheMap.put(name, syncCache);

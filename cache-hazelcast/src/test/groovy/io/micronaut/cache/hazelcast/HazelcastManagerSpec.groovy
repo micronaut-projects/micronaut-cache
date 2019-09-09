@@ -66,4 +66,19 @@ class HazelcastManagerSpec extends Specification {
         ((MapProxyImpl) nativeCache).getTotalBackupCount() == 3
     }
 
+    void "test default hazelcast props set to true"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+                "hazelcast.caches.foo.useDefaultHazelcastXml": true
+        ])
+
+        when:
+        HazelcastManager hazelcastManager = ctx.getBean(HazelcastManager)
+        SyncCache<IMap> cache = hazelcastManager.getCache('foo')
+        IMap nativeCache = cache.nativeCache
+
+        then:
+        ((MapProxyImpl) nativeCache).getTotalBackupCount() == 1
+    }
+
 }

@@ -38,6 +38,7 @@ public class HazelcastConfiguration {
 
     private Integer maximumSize = DEFAULT_MAX_SIZE;
     private Integer backupCount;
+    private Boolean useDefaultHazelcastXml = Boolean.FALSE;
 
     private Integer timeToLiveSeconds;
 
@@ -79,4 +80,7 @@ public class HazelcastConfiguration {
 
     public void setTimeToLiveSeconds(Integer timeToLiveSeconds) { this.timeToLiveSeconds = timeToLiveSeconds; }
 
+    public Boolean getUseDefaultHazelcastXml() { return useDefaultHazelcastXml; }
+
+    public void setUseDefaultHazelcastXml(Boolean useDefaultHazelcastXml) { this.useDefaultHazelcastXml = useDefaultHazelcastXml; }
 }
