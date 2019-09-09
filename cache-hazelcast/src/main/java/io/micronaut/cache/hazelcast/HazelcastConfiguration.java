@@ -37,6 +37,8 @@ public class HazelcastConfiguration {
     private final String name;
 
     private Integer maximumSize = DEFAULT_MAX_SIZE;
+    private Integer backupCount;
+
     /**
      * @param name the cache name
      */
@@ -61,5 +63,13 @@ public class HazelcastConfiguration {
      */
     public void setMaximumSize(Integer maximumSize) {
         this.maximumSize = maximumSize;
+    }
+
+    public Integer getBackupCount() {
+        return backupCount;
+    }
+
+    public void setBackupCount(Integer backupCount) {
+        this.backupCount = backupCount;
     }
 }

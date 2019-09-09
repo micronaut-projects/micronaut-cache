@@ -1,5 +1,7 @@
 package io.micronaut.cache.hazelcast
 
+import com.hazelcast.core.IMap
+import com.hazelcast.map.impl.proxy.MapProxyImpl
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import spock.lang.Specification
@@ -19,13 +21,13 @@ class HazelcastManagerSpec extends Specification {
         ])
 
         when:
-        HazelcastManager ehcacheManager = ctx.getBean(HazelcastManager)
+        HazelcastManager hazelcastManager = ctx.getBean(HazelcastManager)
 
         then:
-        ehcacheManager.cacheNames == ['foo'].toSet()
+        hazelcastManager.cacheNames == ['foo'].toSet()
 
         and:
-        SyncCache cache = ehcacheManager.getCache('foo')
+        SyncCache cache = hazelcastManager.getCache('foo')
         cache.name == 'foo'
         cache.configuration.maximumSize == 25
     }
@@ -38,14 +40,29 @@ class HazelcastManagerSpec extends Specification {
         ])
 
         when:
-        HazelcastManager ehcacheManager = ctx.getBean(HazelcastManager)
+        HazelcastManager hazelcastManager = ctx.getBean(HazelcastManager)
 
         then:
-        ehcacheManager.cacheNames.size() == 2
+        hazelcastManager.cacheNames.size() == 2
 
         and:
-        ehcacheManager.getCache('foo')
-        ehcacheManager.getCache('bar')
+        hazelcastManager.getCache('foo')
+        hazelcastManager.getCache('bar')
+    }
+
+    void "test property configurations are set"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+                "hazelcast.caches.foo.backupCount": 3
+        ])
+
+        when:
+        HazelcastManager hazelcastManager = ctx.getBean(HazelcastManager)
+        SyncCache<IMap> cache = hazelcastManager.getCache('foo')
+        IMap nativeCache = cache.nativeCache
+
+        then:
+        ((MapProxyImpl) nativeCache).getTotalBackupCount() == 3
     }
 
 }
