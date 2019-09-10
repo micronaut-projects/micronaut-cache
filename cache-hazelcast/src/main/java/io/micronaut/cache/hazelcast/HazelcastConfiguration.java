@@ -32,11 +32,11 @@ import static io.micronaut.cache.hazelcast.HazelcastConfiguration.PREFIX;
 public class HazelcastConfiguration {
 
     public static final String PREFIX = "hazelcast.caches";
-    public static final Integer DEFAULT_MAX_SIZE = 10;
 
     private final String name;
 
-    private Integer maximumSize = DEFAULT_MAX_SIZE;
+    private Integer maximumSize;
+    private String maximumSizePolicy;
     private Integer backupCount;
     private Boolean useDefaultHazelcastXml = Boolean.FALSE;
 
@@ -83,4 +83,8 @@ public class HazelcastConfiguration {
     public Boolean getUseDefaultHazelcastXml() { return useDefaultHazelcastXml; }
 
     public void setUseDefaultHazelcastXml(Boolean useDefaultHazelcastXml) { this.useDefaultHazelcastXml = useDefaultHazelcastXml; }
+
+    public String getMaximumSizePolicy() { return maximumSizePolicy; }
+
+    public void setMaximumSizePolicy(String maximumSizePolicy) { this.maximumSizePolicy = maximumSizePolicy; }
 }

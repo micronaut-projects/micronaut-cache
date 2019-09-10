@@ -8,8 +8,8 @@ class HazelcastConfigurationSpec extends Specification{
     void "test creates multiple cache configurations"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
-                "hazelcast.caches.foo.maximumSize": 25,
-                "hazelcast.caches.bar.maximumSize": 99
+                "hazelcast.caches.foo.timeToLiveSeconds": 25,
+                "hazelcast.caches.bar.timeToLiveSeconds": 99
         ])
 
         when:
@@ -17,8 +17,8 @@ class HazelcastConfigurationSpec extends Specification{
 
         then:
         hazelcastConfigurations.size() == 2
-        hazelcastConfigurations.find { it.getName() == "bar"}.maximumSize == 99
-        hazelcastConfigurations.find { it.getName() == "foo"}.maximumSize == 25
+        hazelcastConfigurations.find { it.getName() == "bar"}.timeToLiveSeconds == 99
+        hazelcastConfigurations.find { it.getName() == "foo"}.timeToLiveSeconds == 25
     }
 
 }

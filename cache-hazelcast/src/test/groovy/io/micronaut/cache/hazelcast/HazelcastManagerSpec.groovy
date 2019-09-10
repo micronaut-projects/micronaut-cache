@@ -3,6 +3,7 @@ package io.micronaut.cache.hazelcast
 import com.hazelcast.core.IMap
 import com.hazelcast.map.impl.proxy.MapProxyImpl
 import io.micronaut.cache.SyncCache
+import io.micronaut.cache.exceptions.CacheSystemException
 import io.micronaut.context.ApplicationContext
 import spock.lang.Specification
 
@@ -17,7 +18,7 @@ class HazelcastManagerSpec extends Specification {
     void "test configuration is loaded to create cache"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
-                "hazelcast.caches.foo.maximumSize": 25
+                "hazelcast.caches.foo.timeToLiveSeconds": 25
         ])
 
         when:
@@ -29,14 +30,14 @@ class HazelcastManagerSpec extends Specification {
         and:
         SyncCache cache = hazelcastManager.getCache('foo')
         cache.name == 'foo'
-        cache.configuration.getMaximumSize() == 25
+        cache.configuration.getTimeToLiveSeconds() == 25
     }
 
     void "test multiple caches are created"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
-                "hazelcast.caches.foo.maximumSize": 25,
-                "hazelcast.caches.bar.maximumSize": 99
+                "hazelcast.caches.foo.timeToLiveSeconds": 25,
+                "hazelcast.caches.bar.timeToLiveSeconds": 99
         ])
 
         when:
@@ -81,4 +82,32 @@ class HazelcastManagerSpec extends Specification {
         ((MapProxyImpl) nativeCache).getTotalBackupCount() == 1
     }
 
+    void "test maximumSize must be with maximumSizePolicy"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+                "hazelcast.caches.foo.maximumSize": 10
+        ])
+
+        when:
+        HazelcastManager hazelcastManager = ctx.getBean(HazelcastManager)
+        SyncCache<IMap> cache = hazelcastManager.getCache('foo')
+
+        then:
+        thrown CacheSystemException
+    }
+
+    void "test maximumSize and maximumSizePolicy defined"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+                "hazelcast.caches.foo.maximumSize": 15,
+                "hazelcast.caches.foo.maximumSizePolicy": "PER_NODE"
+        ])
+
+        when:
+        HazelcastManager hazelcastManager = ctx.getBean(HazelcastManager)
+        SyncCache<IMap> cache = hazelcastManager.getCache('foo')
+
+        then:
+        notThrown CacheSystemException
+    }
 }

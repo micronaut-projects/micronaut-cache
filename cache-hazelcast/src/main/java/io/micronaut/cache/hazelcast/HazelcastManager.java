@@ -17,11 +17,13 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.MaxSizeConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.micronaut.cache.DefaultCacheManager;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.cache.exceptions.CacheSystemException;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.convert.ConversionService;
@@ -34,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.hazelcast.config.MaxSizeConfig.*;
 
 /**
  * A {@link io.micronaut.cache.CacheManager} implementation for Hazelcast.
@@ -106,6 +110,16 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, 
 
         if (configuration.getTimeToLiveSeconds() != null) {
             mapConfig.setTimeToLiveSeconds(configuration.getTimeToLiveSeconds());
+        }
+
+        if (configuration.getMaximumSize() != null) {
+            if (configuration.getMaximumSizePolicy() != null) {
+                MaxSizePolicy maxSizePolicy = MaxSizePolicy.valueOf(configuration.getMaximumSizePolicy());
+                MaxSizeConfig maxSizeConfig = new MaxSizeConfig(configuration.getMaximumSize(), maxSizePolicy);
+                mapConfig.setMaxSizeConfig(maxSizeConfig);
+            } else {
+                throw new CacheSystemException("'maximumSize' must be declared along with 'maximumSizePolicy' in hazelcast.caches.*");
+            }
         }
 
         nativeHazelcastConfig.addMapConfig(mapConfig);
