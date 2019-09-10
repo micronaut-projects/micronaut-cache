@@ -15,7 +15,7 @@
  */
 package io.micronaut.cache.hazelcast
 
-import com.hazelcast.core.IMap
+import com.hazelcast.core.Hazelcast
 import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.context.ApplicationContext
@@ -70,13 +70,8 @@ class HazelcastSyncCacheSpec extends Specification {
         then:
         publisherService.callCount.get() == 2
 
-        when:
-        IMap nativeCache = applicationContext.getBean(HazelcastManager).getCache("counter").nativeCache
-
-        then:
-        nativeCache.size() == 2
-        nativeCache.containsKey("abc")
-        nativeCache.containsKey("abcd")
+        cleanup:
+        Hazelcast.shutdownAll()
     }
 
     @Singleton
