@@ -1,5 +1,6 @@
 package io.micronaut.cache.hazelcast
 
+import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.IMap
 import com.hazelcast.map.impl.proxy.MapProxyImpl
 import io.micronaut.cache.SyncCache
@@ -31,6 +32,9 @@ class HazelcastManagerSpec extends Specification {
         SyncCache cache = hazelcastManager.getCache('foo')
         cache.name == 'foo'
         cache.configuration.getTimeToLiveSeconds() == 25
+
+        cleanup:
+        Hazelcast.shutdownAll()
     }
 
     void "test multiple caches are created"() {
@@ -49,6 +53,9 @@ class HazelcastManagerSpec extends Specification {
         and:
         hazelcastManager.getCache('foo')
         hazelcastManager.getCache('bar')
+
+        cleanup:
+        Hazelcast.shutdownAll()
     }
 
     void "test property configurations are set"() {
@@ -65,6 +72,9 @@ class HazelcastManagerSpec extends Specification {
 
         then:
         ((MapProxyImpl) nativeCache).getTotalBackupCount() == 3
+
+        cleanup:
+        Hazelcast.shutdownAll()
     }
 
     void "test default hazelcast props set to true"() {
@@ -80,6 +90,9 @@ class HazelcastManagerSpec extends Specification {
 
         then:
         ((MapProxyImpl) nativeCache).getTotalBackupCount() == 1
+
+        cleanup:
+        Hazelcast.shutdownAll()
     }
 
     void "test maximumSize must be with maximumSizePolicy"() {
@@ -94,6 +107,9 @@ class HazelcastManagerSpec extends Specification {
 
         then:
         thrown CacheSystemException
+
+        cleanup:
+        Hazelcast.shutdownAll()
     }
 
     void "test maximumSize and maximumSizePolicy defined"() {
@@ -109,5 +125,8 @@ class HazelcastManagerSpec extends Specification {
 
         then:
         notThrown CacheSystemException
+
+        cleanup:
+        Hazelcast.shutdownAll()
     }
 }
