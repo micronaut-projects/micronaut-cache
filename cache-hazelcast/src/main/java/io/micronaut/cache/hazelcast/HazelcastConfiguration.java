@@ -1,90 +1,18 @@
-/*
- * Copyright 2017-2019 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.micronaut.cache.hazelcast;
 
-import io.micronaut.context.annotation.EachProperty;
-import io.micronaut.context.annotation.Parameter;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.config.Config;
+import io.micronaut.context.annotation.ConfigurationProperties;
 
-import javax.annotation.Nonnull;
+import java.util.List;
 
-import static io.micronaut.cache.hazelcast.HazelcastConfiguration.PREFIX;
+@ConfigurationProperties("hazelcast")
+// we could inject the configurations here and call add mapConfig here.
+public class HazelcastConfiguration extends ClientConfig {
 
-/**
- * Configuration class for an Hazelcast-based cache.
- *
- * @author Nirav Assar
- * @since 1.0.0
- */
-@EachProperty(PREFIX)
-public class HazelcastConfiguration {
-
-    public static final String PREFIX = "hazelcast.caches";
-
-    private final String name;
-
-    private Integer maximumSize;
-    private String maximumSizePolicy;
-    private Integer backupCount;
-    private Boolean useDefaultHazelcastXml = Boolean.FALSE;
-
-    private Integer timeToLiveSeconds;
-
-    /**
-     * @param name the cache name
-     */
-    public HazelcastConfiguration(@Parameter String name) {
-        this.name = name;
+    HazelcastConfiguration(List<HazelcastCacheConfiguration> cacheConfigurations) {
+        for (HazelcastCacheConfiguration hazelcastCacheConfiguration : cacheConfigurations) {
+            this.addMapConfig(hazelcastCacheConfiguration);
+        }
     }
-
-    @Nonnull
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return The maximum number of entries
-     */
-    public Integer getMaximumSize() {
-        return maximumSize;
-    }
-
-    /**
-     * @param maximumSize The maximum number of entries
-     */
-    public void setMaximumSize(Integer maximumSize) {
-        this.maximumSize = maximumSize;
-    }
-
-    public Integer getBackupCount() {
-        return backupCount;
-    }
-
-    public void setBackupCount(Integer backupCount) {
-        this.backupCount = backupCount;
-    }
-
-    public Integer getTimeToLiveSeconds() { return timeToLiveSeconds; }
-
-    public void setTimeToLiveSeconds(Integer timeToLiveSeconds) { this.timeToLiveSeconds = timeToLiveSeconds; }
-
-    public Boolean getUseDefaultHazelcastXml() { return useDefaultHazelcastXml; }
-
-    public void setUseDefaultHazelcastXml(Boolean useDefaultHazelcastXml) { this.useDefaultHazelcastXml = useDefaultHazelcastXml; }
-
-    public String getMaximumSizePolicy() { return maximumSizePolicy; }
-
-    public void setMaximumSizePolicy(String maximumSizePolicy) { this.maximumSizePolicy = maximumSizePolicy; }
 }

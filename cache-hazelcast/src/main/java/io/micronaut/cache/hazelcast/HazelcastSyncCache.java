@@ -35,7 +35,6 @@ import java.util.function.Supplier;
 public class HazelcastSyncCache implements SyncCache<IMap> {
 
     private final ConversionService<?> conversionService;
-    private final HazelcastConfiguration configuration;
     private final IMap nativeCache;
 
     /**
@@ -43,9 +42,8 @@ public class HazelcastSyncCache implements SyncCache<IMap> {
      * @param configuration the configuration
      * @param nativeCache the native cache
      */
-    public HazelcastSyncCache(ConversionService<?> conversionService, HazelcastConfiguration configuration, IMap nativeCache) {
+    public HazelcastSyncCache(ConversionService<?> conversionService, IMap nativeCache) {
         this.conversionService = conversionService;
-        this.configuration = configuration;
         this.nativeCache = nativeCache;
     }
 
@@ -99,7 +97,7 @@ public class HazelcastSyncCache implements SyncCache<IMap> {
 
     @Override
     public String getName() {
-        return configuration.getName();
+        return nativeCache.getName();
     }
 
     @Override

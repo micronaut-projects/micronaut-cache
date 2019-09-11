@@ -49,20 +49,23 @@ import static com.hazelcast.config.MaxSizeConfig.*;
 @Primary
 public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, Closeable {
 
-    private Map<String, HazelcastConfiguration> cacheConfigurations;
+    private Map<String, HazelcastCacheConfiguration> cacheConfigurations;
     private Map<String, HazelcastSyncCache> cacheMap;
     private final ConversionService<?> conversionService;
+    private final HazelcastInstance hazelcastInstance;
 
     /**
      * @param cacheConfigurations the cache configuration
      */
-    public HazelcastManager( @Nonnull ConversionService<?> conversionService,
-                             @Nonnull List<HazelcastConfiguration> cacheConfigurations) {
+    public HazelcastManager( ConversionService<?> conversionService,
+                             List<HazelcastCacheConfiguration> cacheConfigurations,
+                             HazelcastInstance hazelcastInstance) {
         this.conversionService = conversionService;
         this.cacheConfigurations = cacheConfigurations
                 .stream()
-                .collect(Collectors.toMap(HazelcastConfiguration::getName, hazelcastConfiguration -> hazelcastConfiguration));
+                .collect(Collectors.toMap(HazelcastCacheConfiguration::getName, hazelcastConfiguration -> hazelcastConfiguration));
         this.cacheMap = new HashMap<>(cacheConfigurations.size());
+        this.hazelcastInstance = hazelcastInstance;
     }
 
     @Nonnull
@@ -77,18 +80,8 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, 
     public SyncCache<IMap> getCache(String name) {
         HazelcastSyncCache syncCache = this.cacheMap.get(name);
         if (syncCache == null) {
-            HazelcastConfiguration configuration = cacheConfigurations.get(name);
-
-            HazelcastInstance instance;
-            if (configuration.getUseDefaultHazelcastXml()) {
-                instance = Hazelcast.newHazelcastInstance();
-            } else {
-                Config nativeHazelcastConfig = createNativeHazelCastConfig(configuration);
-                instance = Hazelcast.newHazelcastInstance(nativeHazelcastConfig);
-            }
-
-            IMap nativeCache = instance.getMap(configuration.getName());
-            syncCache = new HazelcastSyncCache(conversionService, configuration, nativeCache);
+            IMap nativeCache = hazelcastInstance.getMap(name);
+            syncCache = new HazelcastSyncCache(conversionService, nativeCache);
             this.cacheMap.put(name, syncCache);
         }
         return syncCache;
@@ -97,32 +90,5 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, 
     @Override
     public void close() throws IOException {
         Hazelcast.shutdownAll();
-    }
-
-    private Config createNativeHazelCastConfig(HazelcastConfiguration configuration) {
-        Config nativeHazelcastConfig = new Config();
-        MapConfig mapConfig = new MapConfig();
-        mapConfig.setName(configuration.getName());
-
-        if (configuration.getBackupCount() != null) {
-            mapConfig.setBackupCount(configuration.getBackupCount());
-        }
-
-        if (configuration.getTimeToLiveSeconds() != null) {
-            mapConfig.setTimeToLiveSeconds(configuration.getTimeToLiveSeconds());
-        }
-
-        if (configuration.getMaximumSize() != null) {
-            if (configuration.getMaximumSizePolicy() != null) {
-                MaxSizePolicy maxSizePolicy = MaxSizePolicy.valueOf(configuration.getMaximumSizePolicy());
-                MaxSizeConfig maxSizeConfig = new MaxSizeConfig(configuration.getMaximumSize(), maxSizePolicy);
-                mapConfig.setMaxSizeConfig(maxSizeConfig);
-            } else {
-                throw new CacheSystemException("'maximumSize' must be declared along with 'maximumSizePolicy' in hazelcast.caches.*");
-            }
-        }
-
-        nativeHazelcastConfig.addMapConfig(mapConfig);
-        return nativeHazelcastConfig;
     }
 }

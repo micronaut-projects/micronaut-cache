@@ -13,7 +13,7 @@ class HazelcastConfigurationSpec extends Specification{
         ])
 
         when:
-        Collection<HazelcastConfiguration> hazelcastConfigurations = ctx.getBeansOfType(HazelcastConfiguration)
+        Collection<HazelcastCacheConfiguration> hazelcastConfigurations = ctx.getBeansOfType(HazelcastCacheConfiguration)
 
         then:
         hazelcastConfigurations.size() == 2
