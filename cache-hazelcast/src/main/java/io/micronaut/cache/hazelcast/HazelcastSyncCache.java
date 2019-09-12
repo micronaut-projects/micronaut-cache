@@ -39,7 +39,6 @@ public class HazelcastSyncCache implements SyncCache<IMap> {
 
     /**
      * @param conversionService the conversion service
-     * @param configuration the configuration
      * @param nativeCache the native cache
      */
     public HazelcastSyncCache(ConversionService<?> conversionService, IMap nativeCache) {

@@ -2,7 +2,6 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
-import com.hazelcast.client.config.ClientSecurityConfig;
 import com.hazelcast.config.GroupConfig;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;

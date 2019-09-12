@@ -16,6 +16,7 @@
 package io.micronaut.cache.hazelcast
 
 import com.hazelcast.core.Hazelcast
+import com.hazelcast.core.HazelcastInstance
 import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.context.ApplicationContext
@@ -23,6 +24,7 @@ import io.micronaut.core.async.annotation.SingleResult
 import io.reactivex.Flowable
 import io.reactivex.Single
 import spock.lang.Retry
+import spock.lang.Shared
 import spock.lang.Specification
 
 import javax.inject.Singleton
@@ -35,10 +37,22 @@ import java.util.concurrent.atomic.AtomicInteger
 @Retry
 class HazelcastSyncCacheSpec extends Specification {
 
+    @Shared
+    HazelcastInstance hazelcastServerInstance
+
+    def setupSpec() {
+        hazelcastServerInstance = Hazelcast.newHazelcastInstance()
+    }
+
+    def cleanupSpec() {
+        hazelcastServerInstance.shutdown()
+    }
+
     void "test publisher cache methods are not called for hits"() {
         given:
         ApplicationContext applicationContext = ApplicationContext.run(
-                'hazelcast.caches.counter.useDefaultHazelcastXml':true
+                "hazelcast.instanceName": "sampleCache",
+                "hazelcast.network-config.addresses": ['127.0.0.1:5701']
         )
 
         PublisherService publisherService = applicationContext.getBean(PublisherService)
@@ -69,9 +83,6 @@ class HazelcastSyncCacheSpec extends Specification {
 
         then:
         publisherService.callCount.get() == 2
-
-        cleanup:
-        Hazelcast.shutdownAll()
     }
 
     @Singleton
