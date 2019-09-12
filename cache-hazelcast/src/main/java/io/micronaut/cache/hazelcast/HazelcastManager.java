@@ -45,7 +45,7 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, 
     private final ConversionService<?> conversionService;
     private final HazelcastInstance hazelcastClientInstance;
 
-    public HazelcastManager( ConversionService<?> conversionService,
+    public HazelcastManager(ConversionService<?> conversionService,
                              HazelcastInstance hazelcastClientInstance) {
         this.conversionService = conversionService;
         this.cacheMap = new HashMap<>();
