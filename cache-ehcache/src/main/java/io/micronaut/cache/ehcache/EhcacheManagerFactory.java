@@ -22,7 +22,7 @@ import org.ehcache.CacheManager;
 /**
  * Factory class that creates a {@link CacheManager}.
  *
- * @author Álvaro Sánchez-Mariscal
+ * @author Alvaro Sanchez-Mariscal
  * @since 1.0.0
  */
 @Factory

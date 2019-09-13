@@ -1,0 +1,23 @@
+https://hazelcast.org/[Hazelcast] caching is supported. Micronaut will create a Hazelcast client instance to connect to
+an existing Hazelcast server cluster.
+
+Add the Micronaut Hazelcast module as a dependency:
+
+dependency:io.micronaut.cache:micronaut-cache-hazelcast:{version}[]
+
+The minimal configuration to use Hazelcast is to simply declare `hazelcast:` with a network configuration for addresses of the
+Hazelcast cluster (example below).
+
+[source,yaml]
+----
+hazelcast:
+  network-config: ['121.0.0.1:5701']
+----
+
+When using the link:{api}/io/micronaut/cache/annotation/Cacheable.html[@Cacheable] and other Cache Annotations, Micronaut will create
+the Hazelcast client and use the underlying https://docs.hazelcast.org/docs/latest/javadoc/com/hazelcast/core/IMap.html[IMap] Cache Datastore
+on the server.
+
+The full list of configuration options is below:
+
+include::{includedir}configurationProperties/io.micronaut.cache.hazelcast.HazelcastClientConfiguration.adoc[]

@@ -30,7 +30,7 @@ import static io.micronaut.cache.ehcache.EhcacheConfiguration.PREFIX;
 /**
  * Configuration class for an Ehacahe-based cache.
  *
- * @author Álvaro Sánchez-Mariscal
+ * @author Alvaro Sanchez-Mariscal
  * @since 1.0.0
  * @see org.ehcache.config.builders.CacheConfigurationBuilder
  */

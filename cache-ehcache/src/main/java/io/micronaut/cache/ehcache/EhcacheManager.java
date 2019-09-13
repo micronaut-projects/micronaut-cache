@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * A {@link io.micronaut.cache.CacheManager} implementation for Ehcache.
  *
- * @author Álvaro Sánchez-Mariscal
+ * @author Alvaro Sanchez-Mariscal
  * @since 1.0.0
  */
 @Replaces(DefaultCacheManager.class)

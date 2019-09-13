@@ -24,7 +24,7 @@ import static io.micronaut.cache.ehcache.EhcacheManagerConfiguration.PREFIX;
 /**
  * Configuration class for the {@link org.ehcache.CacheManager}.
  *
- * @author Álvaro Sánchez-Mariscal
+ * @author Alvaro Sanchez-Mariscal
  * @since 1.0.0
  * @see org.ehcache.config.builders.CacheManagerBuilder
  */
