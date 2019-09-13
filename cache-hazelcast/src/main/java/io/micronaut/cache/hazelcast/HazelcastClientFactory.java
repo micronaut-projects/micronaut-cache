@@ -21,9 +21,21 @@ import io.micronaut.context.annotation.Factory;
 
 import javax.inject.Singleton;
 
+/**
+ * Factory class that creates a {@link HazelcastInstance}.
+ *
+ * @author Nirav Assar
+ * @since 1.0.0
+ */
 @Factory
 public class HazelcastClientFactory {
 
+    /**
+     * Create a singleton {@link HazelcastInstance} client, based on configuration.
+     *
+     * @param hazelcastClientConfiguration the configuration read it as a bean
+     * @return {@link HazelcastInstance}
+     */
     @Singleton
     public HazelcastInstance hazelcastClientInstance(HazelcastClientConfiguration hazelcastClientConfiguration) {
         return HazelcastClient.newHazelcastClient(hazelcastClientConfiguration);

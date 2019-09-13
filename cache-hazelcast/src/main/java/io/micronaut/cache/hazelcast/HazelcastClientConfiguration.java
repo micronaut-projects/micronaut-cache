@@ -21,6 +21,12 @@ import com.hazelcast.config.GroupConfig;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 
+/**
+ * Configuration class for an Hazelcast as a client.
+ *
+ * @author Nirav Assar
+ * @since 1.0.0
+ */
 @ConfigurationProperties("hazelcast")
 public class HazelcastClientConfiguration extends ClientConfig {
 
@@ -30,6 +36,9 @@ public class HazelcastClientConfiguration extends ClientConfig {
     @ConfigurationBuilder("group-config")
     GroupConfig groupConfig = new GroupConfig();
 
+    /**
+     * Default constructor.
+     */
     HazelcastClientConfiguration() {
         super.setNetworkConfig(this.networkConfig);
         super.setGroupConfig(this.groupConfig);

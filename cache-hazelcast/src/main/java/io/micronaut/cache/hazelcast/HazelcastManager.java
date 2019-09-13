@@ -45,6 +45,12 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, 
     private final ConversionService<?> conversionService;
     private final HazelcastInstance hazelcastClientInstance;
 
+    /**
+     * Constructor.
+     *
+     * @param conversionService convert values that are returned
+     * @param hazelcastClientInstance the client instance of hazelcast client
+     */
     public HazelcastManager(ConversionService<?> conversionService,
                              HazelcastInstance hazelcastClientInstance) {
         this.conversionService = conversionService;
