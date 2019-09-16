@@ -47,27 +47,30 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
 
     @Override
     public <T> CompletableFuture<T> get(@Nonnull Object key, @Nonnull Argument<T> requiredType, @Nonnull Supplier<T> supplier) {
-        ArgumentUtils.requireNonNull("key", key);
-        return get(key, requiredType).orElseGet(supplier);
+//        ArgumentUtils.requireNonNull("key", key);
+//        return get(key, requiredType).orElseGet(supplier);
+        return null;
     }
 
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
     public <T> CompletableFuture<Optional<T>> putIfAbsent(@Nonnull Object key, @Nonnull T value) {
-        ArgumentUtils.requireNonNull("key", key);
-        ArgumentUtils.requireNonNull("value", value);
-        final T v = (T) nativeCache.putIfAbsent(key, value);
-        final Class<T> aClass = (Class<T>) value.getClass();
-        return conversionService.convert(v, aClass);
+//        ArgumentUtils.requireNonNull("key", key);
+//        ArgumentUtils.requireNonNull("value", value);
+//        final T v = (T) nativeCache.putIfAbsent(key, value);
+//        final Class<T> aClass = (Class<T>) value.getClass();
+//        return conversionService.convert(v, aClass);
+        return null;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void put(@Nonnull Object key, @Nonnull Object value) {
-        ArgumentUtils.requireNonNull("key", key);
-        ArgumentUtils.requireNonNull("value", value);
-        nativeCache.put(key, value);
+    public CompletableFuture<Boolean> put(@Nonnull Object key, @Nonnull Object value) {
+//        ArgumentUtils.requireNonNull("key", key);
+//        ArgumentUtils.requireNonNull("value", value);
+//        nativeCache.put(key, value);
+        return CompletableFuture.completedFuture(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -75,11 +78,13 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
     public CompletableFuture<Boolean> invalidate(@Nonnull Object key) {
         ArgumentUtils.requireNonNull("key", key);
         nativeCache.remove(key);
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override
     public CompletableFuture<Boolean> invalidateAll() {
-        nativeCache.clear();
+        //nativeCache.clear();
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override

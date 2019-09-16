@@ -29,8 +29,8 @@ class HazelcastClientFactorySpec extends Specification {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
                 "hazelcast.instanceName": "myInstance",
-                "hazelcast.network-config.addresses": ['127.0.0.1:5701'],
-                "hazelcast.network-config.connectionTimeout": 99
+                "hazelcast.network.addresses": ['127.0.0.1:5701'],
+                "hazelcast.network.connectionTimeout": 99
         ])
 
         when:

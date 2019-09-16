@@ -52,7 +52,7 @@ class HazelcastSyncCacheSpec extends Specification {
         given:
         ApplicationContext applicationContext = ApplicationContext.run(
                 "hazelcast.instanceName": "sampleCache",
-                "hazelcast.network-config.addresses": ['127.0.0.1:5701']
+                "hazelcast.network.addresses": ['127.0.0.1:5701']
         )
 
         PublisherService publisherService = applicationContext.getBean(PublisherService)

@@ -9,9 +9,9 @@ class HazelcastClientConfigurationSpec extends Specification {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
                 "hazelcast.instanceName": 'myInstance',
-                "hazelcast.network-config.connectionTimeout": 99,
-                "hazelcast.network-config.addresses": ['127.0.0.1:5701', 'http://hazelcast:5702'],
-                "hazelcast.network-config.redoOperation": true
+                "hazelcast.network.connectionTimeout": 99,
+                "hazelcast.network.addresses": ['127.0.0.1:5701', 'http://hazelcast:5702'],
+                "hazelcast.network.redoOperation": true
         ])
 
         when:
