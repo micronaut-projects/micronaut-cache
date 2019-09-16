@@ -39,7 +39,7 @@ import java.util.Set;
  */
 @Replaces(DefaultCacheManager.class)
 @Primary
-public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, Closeable {
+public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap<Object, Object>>, Closeable {
 
     private Map<String, HazelcastSyncCache> cacheMap;
     private final ConversionService<?> conversionService;
@@ -69,10 +69,10 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap>, 
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
-    public SyncCache<IMap> getCache(String name) {
+    public SyncCache<IMap<Object, Object>> getCache(String name) {
         HazelcastSyncCache syncCache = this.cacheMap.get(name);
         if (syncCache == null) {
-            IMap nativeCache = hazelcastClientInstance.getMap(name);
+            IMap<Object, Object> nativeCache = hazelcastClientInstance.getMap(name);
             syncCache = new HazelcastSyncCache(conversionService, nativeCache);
             this.cacheMap.put(name, syncCache);
         }

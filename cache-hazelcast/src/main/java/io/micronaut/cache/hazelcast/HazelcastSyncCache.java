@@ -16,6 +16,7 @@
 package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.core.IMap;
+import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -32,16 +33,16 @@ import java.util.function.Supplier;
  * @author Nirav Assar
  * @since 1.0.0
  */
-public class HazelcastSyncCache implements SyncCache<IMap> {
+public class HazelcastSyncCache implements SyncCache<IMap<Object, Object>> {
 
     private final ConversionService<?> conversionService;
-    private final IMap nativeCache;
+    private final IMap<Object, Object> nativeCache;
 
     /**
      * @param conversionService the conversion service
      * @param nativeCache the native cache
      */
-    public HazelcastSyncCache(ConversionService<?> conversionService, IMap nativeCache) {
+    public HazelcastSyncCache(ConversionService<?> conversionService, IMap<Object, Object> nativeCache) {
         this.conversionService = conversionService;
         this.nativeCache = nativeCache;
     }
@@ -104,4 +105,8 @@ public class HazelcastSyncCache implements SyncCache<IMap> {
         return nativeCache;
     }
 
+    @Override
+    public AsyncCache<IMap<Object, Object>> async() {
+        return new HazelcastAsyncCache(conversionService, nativeCache);
+    }
 }
