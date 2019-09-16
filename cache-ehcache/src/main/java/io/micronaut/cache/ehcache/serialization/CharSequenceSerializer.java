@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
  * A {@link org.ehcache.spi.serialization.Serializer} implementation for {@link java.lang.CharSequence} that delegates
  * to {@link org.ehcache.impl.serialization.StringSerializer}.
  *
- * @author Alvaro Sanchez-Mariscal
+ * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
  */
 public class CharSequenceSerializer implements Serializer<CharSequence> {

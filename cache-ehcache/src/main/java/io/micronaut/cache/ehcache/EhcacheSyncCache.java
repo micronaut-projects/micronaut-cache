@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 /**
  * A {@link SyncCache} implementation based on Ehcache.
  *
- * @author Alvaro Sanchez-Mariscal
+ * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
  */
 public class EhcacheSyncCache implements SyncCache<Cache> {
