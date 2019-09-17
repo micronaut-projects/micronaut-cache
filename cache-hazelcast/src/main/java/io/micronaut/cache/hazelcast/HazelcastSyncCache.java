@@ -25,6 +25,7 @@ import io.micronaut.core.util.ArgumentUtils;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 /**
@@ -37,14 +38,18 @@ public class HazelcastSyncCache implements SyncCache<IMap<Object, Object>> {
 
     private final ConversionService<?> conversionService;
     private final IMap<Object, Object> nativeCache;
+    private final ExecutorService executorService;
 
     /**
      * @param conversionService the conversion service
      * @param nativeCache the native cache
      */
-    public HazelcastSyncCache(ConversionService<?> conversionService, IMap<Object, Object> nativeCache) {
+    public HazelcastSyncCache(ConversionService<?> conversionService,
+                              IMap<Object, Object> nativeCache,
+                              ExecutorService executorService) {
         this.conversionService = conversionService;
         this.nativeCache = nativeCache;
+        this.executorService = executorService;
     }
 
     @Nonnull
@@ -107,6 +112,6 @@ public class HazelcastSyncCache implements SyncCache<IMap<Object, Object>> {
 
     @Override
     public AsyncCache<IMap<Object, Object>> async() {
-        return new HazelcastAsyncCache(conversionService, nativeCache);
+        return new HazelcastAsyncCache(conversionService, nativeCache, executorService);
     }
 }

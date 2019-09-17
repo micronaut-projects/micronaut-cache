@@ -2,6 +2,7 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.core.ExecutionCallback;
 import com.hazelcast.core.IMap;
+import com.hazelcast.map.AbstractEntryProcessor;
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -9,18 +10,24 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
 
     private final ConversionService<?> conversionService;
     private final IMap<Object, Object> nativeCache;
+    private final ExecutorService executorService;
 
-    public HazelcastAsyncCache(ConversionService<?> conversionService, IMap<Object, Object> nativeCache) {
+    public HazelcastAsyncCache(ConversionService<?> conversionService,
+                               IMap<Object, Object> nativeCache,
+                               ExecutorService executorService) {
         this.conversionService = conversionService;
         this.nativeCache = nativeCache;
+        this.executorService = executorService;
     }
 
     @Nonnull
@@ -33,6 +40,8 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
             public void onResponse(Object response) {
                 if (response != null) {
                     future.complete(conversionService.convert(response, ConversionContext.of(requiredType)));
+                } else {
+                    future.complete(Optional.empty());
                 }
             }
 
@@ -40,7 +49,7 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
             public void onFailure(Throwable t) {
                 future.completeExceptionally(t);
             }
-        });
+        }, executorService);
         return future;
     }
 
@@ -52,15 +61,18 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
             @Override
             public void onResponse(Object response) {
                 if (response != null) {
-                    future.complete(conversionService.convert(response, ConversionContext.of(requiredType)).get());
+                    future.complete(conversionService.convert(response, ConversionContext.of(requiredType))
+                            .orElse(supplier.get()));
+                } else {
+                    future.complete(supplier.get());
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
-                future.complete(supplier.get());
+                future.completeExceptionally(t);
             }
-        });
+        }, executorService);
         return future;
     }
 
@@ -71,9 +83,20 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
         CompletableFuture<Optional<T>> future = new CompletableFuture<>();
-        final T v = (T) nativeCache.putIfAbsent(key, value);
-        final Class<T> aClass = (Class<T>) value.getClass();
-        future.complete(conversionService.convert(v, aClass));
+        nativeCache.submitToKey(key, new AbstractEntryProcessor()  {
+            @Override
+            public Object process(Map.Entry entry) {
+                Object remoteValue = entry.getValue();
+                if (remoteValue == null) {
+                    entry.setValue(value);
+                    future.complete(Optional.empty());
+                } else {
+                    final Class<T> aClass = (Class<T>) value.getClass();
+                    future.complete(conversionService.convert(remoteValue, aClass));
+                }
+                return value;
+            }
+        });
         return future;
     }
 
@@ -86,16 +109,14 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
         nativeCache.putAsync(key, value).andThen(new ExecutionCallback<Object>() {
             @Override
             public void onResponse(Object response) {
-                if (response != null) {
-                    future.complete(true);
-                }
+                future.complete(true);
             }
 
             @Override
             public void onFailure(Throwable t) {
                 future.completeExceptionally(t);
             }
-        });
+        }, executorService);
         return future;
     }
 
@@ -107,23 +128,23 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
         nativeCache.removeAsync(key).andThen(new ExecutionCallback<Object>() {
             @Override
             public void onResponse(Object response) {
-                if (response != null) {
-                    future.complete(true);
-                }
+                future.complete(true);
             }
 
             @Override
             public void onFailure(Throwable t) {
                 future.completeExceptionally(t);
             }
-        });
+        }, executorService);
         return future;
     }
 
     @Override
     public CompletableFuture<Boolean> invalidateAll() {
-        nativeCache.clear();
-        return CompletableFuture.completedFuture(true);
+        return CompletableFuture.supplyAsync(() -> {
+            nativeCache.clear();
+            return true;
+        }, executorService);
     }
 
     @Override

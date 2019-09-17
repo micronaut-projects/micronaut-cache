@@ -19,17 +19,20 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.micronaut.cache.DefaultCacheManager;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.context.annotation.Executable;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.convert.ConversionService;
 
 import javax.annotation.Nonnull;
+import javax.inject.Named;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 /**
  * A {@link io.micronaut.cache.CacheManager} implementation for Hazelcast.
@@ -43,6 +46,7 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap<Ob
 
     private Map<String, HazelcastSyncCache> cacheMap;
     private final ConversionService<?> conversionService;
+    private final ExecutorService executorService;
     private final HazelcastInstance hazelcastClientInstance;
 
     /**
@@ -52,8 +56,10 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap<Ob
      * @param hazelcastClientInstance the client instance of hazelcast client
      */
     public HazelcastManager(ConversionService<?> conversionService,
-                             HazelcastInstance hazelcastClientInstance) {
+                            HazelcastInstance hazelcastClientInstance,
+                            @Named("io") ExecutorService executorService) {
         this.conversionService = conversionService;
+        this.executorService = executorService;
         this.cacheMap = new HashMap<>();
         this.hazelcastClientInstance = hazelcastClientInstance;
     }
@@ -73,7 +79,7 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap<Ob
         HazelcastSyncCache syncCache = this.cacheMap.get(name);
         if (syncCache == null) {
             IMap<Object, Object> nativeCache = hazelcastClientInstance.getMap(name);
-            syncCache = new HazelcastSyncCache(conversionService, nativeCache);
+            syncCache = new HazelcastSyncCache(conversionService, nativeCache, executorService);
             this.cacheMap.put(name, syncCache);
         }
         return syncCache;
