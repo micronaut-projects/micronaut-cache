@@ -43,6 +43,7 @@ public class HazelcastSyncCache implements SyncCache<IMap<Object, Object>> {
     /**
      * @param conversionService the conversion service
      * @param nativeCache the native cache
+     * @param executorService managers the pool of executors
      */
     public HazelcastSyncCache(ConversionService<?> conversionService,
                               IMap<Object, Object> nativeCache,

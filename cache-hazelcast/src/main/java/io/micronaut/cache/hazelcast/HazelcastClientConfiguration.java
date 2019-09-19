@@ -17,13 +17,8 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
-import com.hazelcast.client.config.ClientSecurityConfig;
-import com.hazelcast.config.CredentialsFactoryConfig;
-import com.hazelcast.security.Credentials;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
-
-import javax.annotation.Nullable;
 
 /**
  * Configuration class for an Hazelcast as a client.

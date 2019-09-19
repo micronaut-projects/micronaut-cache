@@ -19,7 +19,6 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.micronaut.cache.DefaultCacheManager;
 import io.micronaut.cache.SyncCache;
-import io.micronaut.context.annotation.Executable;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.convert.ConversionService;
@@ -54,6 +53,7 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap<Ob
      *
      * @param conversionService convert values that are returned
      * @param hazelcastClientInstance the client instance of hazelcast client
+     * @param executorService managers the pool of executors
      */
     public HazelcastManager(ConversionService<?> conversionService,
                             HazelcastInstance hazelcastClientInstance,
