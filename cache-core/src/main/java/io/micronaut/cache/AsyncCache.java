@@ -68,7 +68,7 @@ public interface AsyncCache<C> extends Cache<C> {
      *
      * @param key   The key with which the specified value is to be associated
      * @param value The value to be associated with the specified key
-     * @return A future with a boolean indicating whether the operation was succesful or not
+     * @return A future that emits true if the operation was successful, or an error otherwise
      */
     CompletableFuture<Boolean> put(Object key, Object value);
 
@@ -76,14 +76,14 @@ public interface AsyncCache<C> extends Cache<C> {
      * Invalidate the value for the given key.
      *
      * @param key The key to invalid
-     * @return A future with a boolean indicating whether the operation was succesful or not
+     * @return A future that emits true if the operation was successful, or an error otherwise
      */
     CompletableFuture<Boolean> invalidate(Object key);
 
     /**
      * Invalidate all cached values within this cache.
      *
-     * @return A future with a boolean indicating whether the operation was succesful or not
+     * @return A future that emits true if the operation was successful, or an error otherwise
      */
     CompletableFuture<Boolean> invalidateAll();
 
