@@ -54,6 +54,8 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#ehcache"><strong>5</strong><span>Ehcache Support</span></a></div>
                                 
+                                <div class="toc-item" style="margin-left:0"><a href="#hazelcast"><strong>6</strong><span>Hazelcast Support</span></a></div>
+                                
                             </div>
                         </div>
                     </li>
@@ -92,6 +94,8 @@
         <div class="toc-item" style="margin-left:0px" id="toc-item-redis"><a href="#redis"><strong>4</strong><span>Redis Support</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-ehcache"><a href="#ehcache"><strong>5</strong><span>Ehcache Support</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-hazelcast"><a href="#hazelcast"><strong>6</strong><span>Hazelcast Support</span></a></div>
         
         </div>
     </div>
@@ -504,6 +508,355 @@ JCache needs to be disabled:</p>
 </tr>
 </tbody>
 </table>
+
+
+<h1 id="hazelcast">6 Hazelcast Support</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/hazelcast.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p><a href="https://hazelcast.org/">Hazelcast</a> caching is supported. Micronaut will create a Hazelcast client instance to connect to
+an existing Hazelcast server cluster.</p>
+</div>
+<div class="paragraph">
+<p>Add the Micronaut Hazelcast module as a dependency:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="gradle">compile <span class="hljs-string">'io.micronaut.cache:micronaut-cache-hazelcast:1.0.0.BUILD-SNAPSHOT'</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-cache-hazelcast&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0.BUILD-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>The minimal configuration to use Hazelcast is to simply declare <code>hazelcast:</code> with a network configuration for addresses of the
+Hazelcast cluster (example below).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">hazelcast:
+  network:
+    addresses: ['121.0.0.1:5701']</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using the <a href="../api/io/micronaut/cache/annotation/Cacheable.html">@Cacheable</a> and other Cache Annotations, Micronaut will create
+the Hazelcast client and use the underlying <a href="https://docs.hazelcast.org/docs/latest/javadoc/com/hazelcast/core/IMap.html">IMap</a> Cache Datastore
+on the server.</p>
+</div>
+<div class="paragraph">
+<p>The full list of configuration options is below. Amongst the list, properties that have default built-in <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/convert/TypeConverter.html">TypeConverter</a> can be set
+in YAML.  For example, <code>hazelcast.network.connectionTimeout</code> and <code>hazelcast.network.smart-routing</code> are primitive types and can be set in YAML files.</p>
+</div>
+<div class="paragraph">
+<p>For other types, Micronaut users must create a <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/convert/TypeConverter.html">TypeConverter</a> to set the property
+in YAML.</p>
+</div>
+<a id="io.micronaut.cache.hazelcast.HazelcastClientConfiguration" href="#io.micronaut.cache.hazelcast.HazelcastClientConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html">HazelcastClientConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.discovery-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.DiscoveryConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.smart-routing</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.socket-interceptor-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.SocketInterceptorConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.connection-attempt-period</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.connection-attempt-limit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.connection-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.addresses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.redo-operation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.socket-options</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.SocketOptions</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.sslconfig</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.SSLConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.aws-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.ClientAwsConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.gcp-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.GcpConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.azure-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.AzureConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.kubernetes-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.KubernetesConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.eureka-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.EurekaConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.cloud-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.ClientCloudConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.outbound-port-definitions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Collection</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.outbound-ports</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Collection</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network.client-icmp-ping-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.ClientIcmpPingConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.config-pattern-matcher</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.ConfigPatternMatcher</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Properties</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.security-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.ClientSecurityConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.network-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.ClientNetworkConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.near-cache-config-map</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.flake-id-generator-config-map</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.reliable-topic-config-map</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.smart-routing</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.socket-interceptor-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.SocketInterceptorConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.connection-attempt-period</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.connection-attempt-limit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.connection-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.credentials</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.security.Credentials</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.addresses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.group-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.GroupConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.listener-configs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.load-balancer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.LoadBalancer</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.redo-operation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.socket-options</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.SocketOptions</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.class-loader</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.ClassLoader</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.managed-context</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.core.ManagedContext</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.executor-pool-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.proxy-factory-configs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.serialization-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.SerializationConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.native-memory-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.config.NativeMemoryConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.license-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.query-cache-configs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.instance-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.connection-strategy-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.ClientConnectionStrategyConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.user-code-deployment-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.hazelcast.client.config.ClientUserCodeDeploymentConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.labels</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.user-context</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ConcurrentMap</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>An alternative but more direct option is to create a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a> for
+<a href="../api/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html">HazelcastClientConfiguration</a>. This will be invoked by the
+Micronaut Framework on bean creation of <code>HazelcastClientConfiguration</code>, and from the event you can programmatically add to the instance. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;HazelcastClientConfiguration&gt; {
+
+    @Override
+    public HazelcastClientConfiguration onCreated(BeanCreatedEvent&lt;HazelcastClientConfiguration&gt; event) {
+        HazelcastClientConfiguration configuration = event.getBean();
+        configuration.getGrouConfig().setName("myName");
+    }
+}</code></pre>
+</div>
+</div>
 
     </div>
 </div>

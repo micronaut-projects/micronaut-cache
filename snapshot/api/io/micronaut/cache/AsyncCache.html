@@ -105,6 +105,10 @@ var activeTableTab = "activeTableTab";
 <dt>All Superinterfaces:</dt>
 <dd><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;C&gt;</dd>
 </dl>
+<dl>
+<dt>All Known Implementing Classes:</dt>
+<dd><a href="../../../io/micronaut/cache/hazelcast/HazelcastAsyncCache.html" title="class in io.micronaut.cache.hazelcast">HazelcastAsyncCache</a></dd>
+</dl>
 <hr>
 <br>
 <pre>public interface <span class="typeNameLabel">AsyncCache&lt;C&gt;</span>
@@ -291,7 +295,7 @@ extends <a href="../../../io/micronaut/cache/Cache.html" title="interface in io.
 <dd><code>key</code> - The key with which the specified value is to be associated</dd>
 <dd><code>value</code> - The value to be associated with the specified key</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A future with a boolean indicating whether the operation was succesful or not</dd>
+<dd>A future that emits true if the operation was successful, or an error otherwise</dd>
 </dl>
 </li>
 </ul>
@@ -307,7 +311,7 @@ extends <a href="../../../io/micronaut/cache/Cache.html" title="interface in io.
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - The key to invalid</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A future with a boolean indicating whether the operation was succesful or not</dd>
+<dd>A future that emits true if the operation was successful, or an error otherwise</dd>
 </dl>
 </li>
 </ul>
@@ -321,7 +325,7 @@ extends <a href="../../../io/micronaut/cache/Cache.html" title="interface in io.
 <div class="block">Invalidate all cached values within this cache.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A future with a boolean indicating whether the operation was succesful or not</dd>
+<dd>A future that emits true if the operation was successful, or an error otherwise</dd>
 </dl>
 </li>
 </ul>
