@@ -8,6 +8,7 @@ dependencies {
     compileOnly "io.micronaut:micronaut-runtime:$micronautVersion"
     compileOnly "com.oracle.substratevm:svm:$graalVersion"
     compileOnly "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+    shadowCompile "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
 
     compile "javax.cache:cache-api:$jcacheVersion"
 
