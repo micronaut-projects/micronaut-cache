@@ -9,12 +9,8 @@ buildscript {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
         classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:$micronautDocsVersion"
-        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:$micronautDocsVersion", {
-            exclude module:'shadow'
-            exclude module:'plugin-shadow'
-        }
+        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:$micronautDocsVersion"
         classpath 'com.adarshr:gradle-test-logger-plugin:1.7.0'
     }
 }
@@ -93,7 +89,6 @@ subprojects { Project subproject ->
     }
 
     configurations {
-        shadowCompile
         documentation
         all {
             resolutionStrategy.eachDependency { DependencyResolveDetails details ->
@@ -104,20 +99,6 @@ subprojects { Project subproject ->
             }
         }
     }
-
-    apply plugin: 'com.github.johnrengelman.shadow'
-
-    shadowJar {
-        configurations = [project.configurations.shadowCompile]
-        relocate "com.github.benmanes.caffeine", "io.micronaut.caffeine"
-        dependencies {
-            exclude(dependency {
-                it.moduleGroup == 'com.github.ben-manes.caffeine'
-            })
-        }
-    }
-
-    shadowJar.enabled = false
 
     dependencies {
         documentation "org.codehaus.groovy:groovy-templates:$groovyVersion"
