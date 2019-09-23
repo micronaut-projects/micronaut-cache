@@ -110,6 +110,11 @@ subprojects { Project subproject ->
     shadowJar {
         configurations = [project.configurations.shadowCompile]
         relocate "com.github.benmanes.caffeine", "io.micronaut.caffeine"
+        dependencies {
+            exclude(dependency {
+                it.moduleGroup == 'com.github.ben-manes.caffeine'
+            })
+        }
     }
 
     shadowJar.enabled = false
