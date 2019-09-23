@@ -15,11 +15,11 @@
  */
 package io.micronaut.cache;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.Policy;
-import com.github.benmanes.caffeine.cache.Weigher;
-import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import io.micronaut.caffeine.cache.Cache;
+import io.micronaut.caffeine.cache.Caffeine;
+import io.micronaut.caffeine.cache.Policy;
+import io.micronaut.caffeine.cache.Weigher;
+import io.micronaut.caffeine.cache.stats.CacheStats;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.core.convert.ConversionContext;
@@ -47,10 +47,10 @@ import java.util.function.Supplier;
  * @since 1.0
  */
 @EachBean(CacheConfiguration.class)
-public class DefaultSyncCache implements SyncCache<com.github.benmanes.caffeine.cache.Cache> {
+public class DefaultSyncCache implements SyncCache<io.micronaut.caffeine.cache.Cache> {
 
     private final CacheConfiguration cacheConfiguration;
-    private final com.github.benmanes.caffeine.cache.Cache cache;
+    private final io.micronaut.caffeine.cache.Cache cache;
     private final ApplicationContext applicationContext;
     private final ConversionService<?> conversionService;
 
@@ -112,7 +112,7 @@ public class DefaultSyncCache implements SyncCache<com.github.benmanes.caffeine.
     }
 
     @Override
-    public com.github.benmanes.caffeine.cache.Cache getNativeCache() {
+    public io.micronaut.caffeine.cache.Cache getNativeCache() {
         return cache;
     }
 
@@ -170,7 +170,7 @@ public class DefaultSyncCache implements SyncCache<com.github.benmanes.caffeine.
      * @param cacheConfiguration The cache configurations
      * @return cache
      */
-    protected com.github.benmanes.caffeine.cache.Cache buildCache(CacheConfiguration cacheConfiguration) {
+    protected io.micronaut.caffeine.cache.Cache buildCache(CacheConfiguration cacheConfiguration) {
         Caffeine<Object, Object> builder = Caffeine.newBuilder();
         cacheConfiguration.getExpireAfterAccess().ifPresent(duration -> builder.expireAfterAccess(duration.toMillis(), TimeUnit.MILLISECONDS));
         cacheConfiguration.getExpireAfterWrite().ifPresent(duration -> builder.expireAfterWrite(duration.toMillis(), TimeUnit.MILLISECONDS));
