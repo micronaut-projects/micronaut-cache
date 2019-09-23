@@ -107,14 +107,14 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;, <a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</dd>
+<dd><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;, <a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</dd>
 </dl>
 <hr>
 <br>
 <pre>@EachBean(value=<a href="../../../io/micronaut/cache/CacheConfiguration.html" title="class in io.micronaut.cache">CacheConfiguration.class</a>)
 public class <span class="typeNameLabel">DefaultSyncCache</span>
 extends java.lang.Object
-implements <a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</pre>
+implements <a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</pre>
 <div class="block"><p>A default <a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache"><code>SyncCache</code></a> implementation based on Caffeine</p>
  <p>
  <p>Since Caffeine is a non-blocking in-memory cache the <a href="../../../io/micronaut/cache/SyncCache.html#async--"><code>SyncCache.async()</code></a> method will return an implementation that
@@ -172,7 +172,7 @@ implements <a href="../../../io/micronaut/cache/SyncCache.html" title="interface
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected com.github.benmanes.caffeine.cache.Cache</code></td>
+<td class="colFirst"><code>protected io.micronaut.caffeine.cache.Cache</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../io/micronaut/cache/DefaultSyncCache.html#buildCache-io.micronaut.cache.CacheConfiguration-">buildCache</a></span>(<a href="../../../io/micronaut/cache/CacheConfiguration.html" title="class in io.micronaut.cache">CacheConfiguration</a>&nbsp;cacheConfiguration)</code>
 <div class="block">Build a cache from the given configurations.</div>
 </td>
@@ -201,7 +201,7 @@ implements <a href="../../../io/micronaut/cache/SyncCache.html" title="interface
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../io/micronaut/cache/DefaultSyncCache.html#getName--">getName</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>com.github.benmanes.caffeine.cache.Cache</code></td>
+<td class="colFirst"><code>io.micronaut.caffeine.cache.Cache</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../io/micronaut/cache/DefaultSyncCache.html#getNativeCache--">getNativeCache</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
@@ -313,7 +313,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <pre>public&nbsp;org.reactivestreams.Publisher&lt;<a href="../../../io/micronaut/cache/CacheInfo.html" title="interface in io.micronaut.cache">CacheInfo</a>&gt;&nbsp;getCacheInfo()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/Cache.html#getCacheInfo--">getCacheInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/Cache.html#getCacheInfo--">getCacheInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The cache information.</dd>
 </dl>
@@ -328,7 +328,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <pre>public&nbsp;java.lang.String&nbsp;getName()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/Cache.html#getName--">getName</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/Cache.html#getName--">getName</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The name of the cache</dd>
 </dl>
@@ -340,10 +340,10 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <ul class="blockList">
 <li class="blockList">
 <h4>getNativeCache</h4>
-<pre>public&nbsp;com.github.benmanes.caffeine.cache.Cache&nbsp;getNativeCache()</pre>
+<pre>public&nbsp;io.micronaut.caffeine.cache.Cache&nbsp;getNativeCache()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/Cache.html#getNativeCache--">getNativeCache</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/Cache.html#getNativeCache--">getNativeCache</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/Cache.html" title="interface in io.micronaut.cache">Cache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The native cache implementation</dd>
 </dl>
@@ -361,7 +361,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <div class="block">Resolve the given value for the given key.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#get-java.lang.Object-io.micronaut.core.type.Argument-">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#get-java.lang.Object-io.micronaut.core.type.Argument-">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>T</code> - The concrete type</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -386,7 +386,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
  be invoked and the return value cached.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#get-java.lang.Object-io.micronaut.core.type.Argument-java.util.function.Supplier-">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#get-java.lang.Object-io.micronaut.core.type.Argument-java.util.function.Supplier-">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>T</code> - The concrete type</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -409,7 +409,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <div class="block">Invalidate the value for the given key.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#invalidate-java.lang.Object-">invalidate</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#invalidate-java.lang.Object-">invalidate</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - The key to invalid</dd>
 </dl>
@@ -426,7 +426,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <div class="block">Invalidate all cached values within this cache.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#invalidateAll--">invalidateAll</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#invalidateAll--">invalidateAll</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -442,7 +442,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <div class="block"><p>Cache the specified value using the specified key.</p></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#put-java.lang.Object-java.lang.Object-">put</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#put-java.lang.Object-java.lang.Object-">put</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - the key with which the specified value is to be associated</dd>
 <dd><code>value</code> - the value to be associated with the specified key</dd>
@@ -463,7 +463,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <div class="block"><p>Cache the specified value using the specified key if it is not already present.</p></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#putIfAbsent-java.lang.Object-T-">putIfAbsent</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;com.github.benmanes.caffeine.cache.Cache&gt;</code></dd>
+<dd><code><a href="../../../io/micronaut/cache/SyncCache.html#putIfAbsent-java.lang.Object-T-">putIfAbsent</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;io.micronaut.caffeine.cache.Cache&gt;</code></dd>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>T</code> - The concrete type</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -480,7 +480,7 @@ public&nbsp;DefaultSyncCache(<a href="../../../io/micronaut/cache/CacheConfigura
 <ul class="blockListLast">
 <li class="blockList">
 <h4>buildCache</h4>
-<pre>protected&nbsp;com.github.benmanes.caffeine.cache.Cache&nbsp;buildCache(<a href="../../../io/micronaut/cache/CacheConfiguration.html" title="class in io.micronaut.cache">CacheConfiguration</a>&nbsp;cacheConfiguration)</pre>
+<pre>protected&nbsp;io.micronaut.caffeine.cache.Cache&nbsp;buildCache(<a href="../../../io/micronaut/cache/CacheConfiguration.html" title="class in io.micronaut.cache">CacheConfiguration</a>&nbsp;cacheConfiguration)</pre>
 <div class="block">Build a cache from the given configurations.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
