@@ -1,5 +1,4 @@
 rootProject.name = 'micronaut-cache'
 
-include 'cache-core'
 include 'cache-ehcache'
 include 'cache-hazelcast'
