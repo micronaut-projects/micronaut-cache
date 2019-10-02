@@ -20,10 +20,13 @@ import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
+import io.micronaut.scheduling.TaskExecutors;
 import org.ehcache.Cache;
 
 import javax.annotation.Nonnull;
+import javax.inject.Named;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 /**
@@ -37,16 +40,26 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     private final ConversionService<?> conversionService;
     private final EhcacheConfiguration configuration;
     private final Cache nativeCache;
+    private final ExecutorService executorService;
 
     /**
      * @param conversionService the conversion service
      * @param configuration the configuration
      * @param nativeCache the native cache
      */
-    public EhcacheSyncCache(ConversionService<?> conversionService, EhcacheConfiguration configuration, Cache nativeCache) {
+    public EhcacheSyncCache(ConversionService<?> conversionService,
+                            EhcacheConfiguration configuration,
+                            Cache nativeCache,
+                            @Named(TaskExecutors.IO) ExecutorService executorService) {
         this.conversionService = conversionService;
         this.configuration = configuration;
         this.nativeCache = nativeCache;
+        this.executorService = executorService;
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
     @SuppressWarnings("unchecked")
