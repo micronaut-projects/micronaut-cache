@@ -107,16 +107,16 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../io/micronaut/cache/CacheManager.html" title="interface in io.micronaut.cache">CacheManager</a>&lt;org.ehcache.Cache&gt;, java.io.Closeable, java.lang.AutoCloseable</dd>
+<dd>io.micronaut.cache.CacheManager&lt;org.ehcache.Cache&gt;, java.io.Closeable, java.lang.AutoCloseable</dd>
 </dl>
 <hr>
 <br>
-<pre>@Replaces(value=<a href="../../../../io/micronaut/cache/DefaultCacheManager.html" title="class in io.micronaut.cache">DefaultCacheManager.class</a>)
+<pre>@Replaces(value=io.micronaut.cache.DefaultCacheManager.class)
  @Primary
 public class <span class="typeNameLabel">EhcacheManager</span>
 extends java.lang.Object
-implements <a href="../../../../io/micronaut/cache/CacheManager.html" title="interface in io.micronaut.cache">CacheManager</a>&lt;org.ehcache.Cache&gt;, java.io.Closeable</pre>
-<div class="block">A <a href="../../../../io/micronaut/cache/CacheManager.html" title="interface in io.micronaut.cache"><code>CacheManager</code></a> implementation for Ehcache.</div>
+implements io.micronaut.cache.CacheManager&lt;org.ehcache.Cache&gt;, java.io.Closeable</pre>
+<div class="block">A <code>CacheManager</code> implementation for Ehcache.</div>
 <dl>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>1.0.0</dd>
@@ -166,10 +166,8 @@ implements <a href="../../../../io/micronaut/cache/CacheManager.html" title="int
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/ehcache/EhcacheManager.html#close--">close</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;org.ehcache.Cache&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/ehcache/EhcacheManager.html#getCache-java.lang.String-">getCache</a></span>(java.lang.String&nbsp;name)</code>
-<div class="block">Retrieve a cache for the given name.</div>
-</td>
+<td class="colFirst"><code>io.micronaut.cache.SyncCache&lt;org.ehcache.Cache&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/ehcache/EhcacheManager.html#getCache-java.lang.String-">getCache</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
@@ -238,9 +236,7 @@ implements <a href="../../../../io/micronaut/cache/CacheManager.html" title="int
 public&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getCacheNames()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../io/micronaut/cache/CacheManager.html#getCacheNames--">getCacheNames</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../io/micronaut/cache/CacheManager.html" title="interface in io.micronaut.cache">CacheManager</a>&lt;org.ehcache.Cache&gt;</code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The names of the active caches</dd>
+<dd><code>getCacheNames</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.CacheManager&lt;org.ehcache.Cache&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -251,16 +247,10 @@ public&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getCacheNames()</pre>
 <li class="blockList">
 <h4>getCache</h4>
 <pre>@Nonnull
-public&nbsp;<a href="../../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;org.ehcache.Cache&gt;&nbsp;getCache(java.lang.String&nbsp;name)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../io/micronaut/cache/CacheManager.html#getCache-java.lang.String-">CacheManager</a></code></span></div>
-<div class="block">Retrieve a cache for the given name.</div>
+public&nbsp;io.micronaut.cache.SyncCache&lt;org.ehcache.Cache&gt;&nbsp;getCache(java.lang.String&nbsp;name)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../io/micronaut/cache/CacheManager.html#getCache-java.lang.String-">getCache</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../io/micronaut/cache/CacheManager.html" title="interface in io.micronaut.cache">CacheManager</a>&lt;org.ehcache.Cache&gt;</code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>name</code> - The name of the cache</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The <a href="../../../../io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache"><code>SyncCache</code></a> instance</dd>
+<dd><code>getCache</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.CacheManager&lt;org.ehcache.Cache&gt;</code></dd>
 </dl>
 </li>
 </ul>
