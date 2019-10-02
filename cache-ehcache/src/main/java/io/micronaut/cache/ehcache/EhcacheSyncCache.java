@@ -46,6 +46,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
      * @param conversionService the conversion service
      * @param configuration the configuration
      * @param nativeCache the native cache
+     * @param executorService the executor service to offload synchronous operations
      */
     public EhcacheSyncCache(ConversionService<?> conversionService,
                             EhcacheConfiguration configuration,
