@@ -83,7 +83,7 @@ public class EhcacheCacheManager implements io.micronaut.cache.CacheManager<Cach
         EhcacheSyncCache syncCache = this.cacheMap.get(name);
         if (syncCache == null) {
             EhcacheConfiguration configuration = cacheConfigurations.get(name);
-            Cache nativeCache = this.cacheManager.createCache(name, configuration.builder.build());
+            Cache nativeCache = this.cacheManager.createCache(name, configuration.getBuilder());
             syncCache = new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService);
             this.cacheMap.put(name, syncCache);
         }
