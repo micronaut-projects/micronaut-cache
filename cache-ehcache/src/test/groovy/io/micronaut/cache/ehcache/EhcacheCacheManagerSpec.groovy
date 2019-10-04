@@ -4,12 +4,6 @@ import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import spock.lang.Specification
 
-/**
- * TODO: javadoc
- *
- * @author Álvaro Sánchez-Mariscal
- * @since 1.0.0
- */
 class EhcacheCacheManagerSpec extends Specification {
 
     void "it create caches from configuration"() {
