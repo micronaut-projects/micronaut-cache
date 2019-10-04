@@ -16,11 +16,14 @@
 package io.micronaut.cache.ehcache;
 
 import io.micronaut.context.annotation.ConfigurationBuilder;
+import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
+import io.micronaut.core.convert.format.ReadableBytes;
 import io.micronaut.core.naming.Named;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.MemoryUnit;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -38,51 +41,43 @@ import static io.micronaut.cache.ehcache.EhcacheConfiguration.PREFIX;
 public class EhcacheConfiguration implements Named {
 
     public static final String PREFIX = EhcacheCacheManagerConfiguration.PREFIX + ".caches";
-    public static final Integer DEFAULT_MAX_ENTRIES = 10;
     public static final Class<?> DEFAULT_KEY_TYPE = Serializable.class;
     public static final Class<?> DEFAULT_VALUE_TYPE = Serializable.class;
+    public static final Long DEFAULT_MAX_ENTRIES = 10L;
 
     @ConfigurationBuilder(prefixes = "with")
     CacheConfigurationBuilder builder;
 
     private final String name;
 
-    private Integer maxEntries = DEFAULT_MAX_ENTRIES;
     private Class<?> keyType = DEFAULT_KEY_TYPE;
     private Class<?> valueType = DEFAULT_VALUE_TYPE;
+
+    private HeapTieredCacheConfiguration heap;
 
     /**
      * @param name the cache name
      */
     public EhcacheConfiguration(@Parameter String name) {
         this.name = name;
-        initBuilder();
     }
 
-    private void initBuilder() {
-        //TODO allow customisations
-        this.builder = CacheConfigurationBuilder
-                .newCacheConfigurationBuilder(keyType, valueType, ResourcePoolsBuilder.heap(maxEntries));
+    public CacheConfigurationBuilder getBuilder() {
+        ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.heap(DEFAULT_MAX_ENTRIES);
+        if (this.heap != null) {
+            if (this.heap.getMaxSize() != null) {
+                resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder().heap(this.heap.getMaxSize(), MemoryUnit.B);
+            } else if (this.heap.getMaxEntries() != null) {
+                resourcePoolsBuilder = ResourcePoolsBuilder.heap(this.heap.getMaxEntries());
+            }
+        }
+        return CacheConfigurationBuilder.newCacheConfigurationBuilder(keyType, valueType, resourcePoolsBuilder);
     }
 
     @Nonnull
     @Override
     public String getName() {
         return name;
-    }
-
-    /**
-     * @return The maximum number of entries
-     */
-    public Integer getMaxEntries() {
-        return maxEntries;
-    }
-
-    /**
-     * @param maxEntries The maximum number of entries
-     */
-    public void setMaxEntries(Integer maxEntries) {
-        this.maxEntries = maxEntries;
     }
 
     /**
@@ -97,7 +92,6 @@ public class EhcacheConfiguration implements Named {
      */
     public void setKeyType(Class<?> keyType) {
         this.keyType = keyType;
-        initBuilder();
     }
 
     /**
@@ -112,6 +106,43 @@ public class EhcacheConfiguration implements Named {
      */
     public void setValueType(Class<?> valueType) {
         this.valueType = valueType;
-        initBuilder();
+    }
+
+    public HeapTieredCacheConfiguration getHeap() {
+        return heap;
+    }
+
+    public void setHeap(HeapTieredCacheConfiguration heap) {
+        this.heap = heap;
+    }
+
+    @ConfigurationProperties(HeapTieredCacheConfiguration.PREFIX)
+    public static class HeapTieredCacheConfiguration {
+        public static final String PREFIX = "heap";
+
+        private Long maxEntries = DEFAULT_MAX_ENTRIES;
+        private Long maxSize;
+
+        /**
+         * @return The maximum number of entries
+         */
+        public Long getMaxEntries() {
+            return maxEntries;
+        }
+
+        /**
+         * @param maxEntries The maximum number of entries
+         */
+        public void setMaxEntries(Long maxEntries) {
+            this.maxEntries = maxEntries;
+        }
+
+        public Long getMaxSize() {
+            return maxSize;
+        }
+
+        public void setMaxSize(@ReadableBytes Long maxSize) {
+            this.maxSize = maxSize;
+        }
     }
 }
