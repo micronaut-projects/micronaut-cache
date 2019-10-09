@@ -15,13 +15,13 @@ class HazelcastClientConfigurationSpec extends Specification {
         ])
 
         when:
-        HazelcastClientConfiguration hazelcastConfiguration = ctx.getBean(HazelcastClientConfiguration)
+        HazelcastClientConfiguration hazelcastClientConfiguration = ctx.getBean(HazelcastClientConfiguration)
 
         then:
-        hazelcastConfiguration.instanceName == "myInstance"
-        hazelcastConfiguration.networkConfig.connectionTimeout == 99
-        hazelcastConfiguration.networkConfig.addresses[0] == "127.0.0.1:5701"
-        hazelcastConfiguration.networkConfig.addresses[1] == "http://hazelcast:5702"
-        hazelcastConfiguration.networkConfig.redoOperation
+        hazelcastClientConfiguration.instanceName == "myInstance"
+        hazelcastClientConfiguration.networkConfig.connectionTimeout == 99
+        hazelcastClientConfiguration.networkConfig.addresses[0] == "127.0.0.1:5701"
+        hazelcastClientConfiguration.networkConfig.addresses[1] == "http://hazelcast:5702"
+        hazelcastClientConfiguration.networkConfig.redoOperation
     }
 }
