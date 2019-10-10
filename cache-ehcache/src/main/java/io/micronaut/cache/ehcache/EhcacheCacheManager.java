@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  */
 @Replaces(DefaultCacheManager.class)
 @Primary
-public class EhcacheManager implements io.micronaut.cache.CacheManager<Cache>, Closeable {
+public class EhcacheCacheManager implements io.micronaut.cache.CacheManager<Cache>, Closeable {
 
     private final CacheManager cacheManager;
     private final ConversionService<?> conversionService;
@@ -57,10 +57,10 @@ public class EhcacheManager implements io.micronaut.cache.CacheManager<Cache>, C
      * @param conversionService the conversion service
      * @param cacheConfigurations the cache configuration
      */
-    public EhcacheManager(@Nonnull CacheManager cacheManager,
-                          @Nonnull @Named(TaskExecutors.IO) ExecutorService executorService,
-                          @Nonnull ConversionService<?> conversionService,
-                          @Nonnull List<EhcacheConfiguration> cacheConfigurations) {
+    public EhcacheCacheManager(@Nonnull CacheManager cacheManager,
+                               @Nonnull @Named(TaskExecutors.IO) ExecutorService executorService,
+                               @Nonnull ConversionService<?> conversionService,
+                               @Nonnull List<EhcacheConfiguration> cacheConfigurations) {
         this.cacheManager = cacheManager;
         this.conversionService = conversionService;
         this.executorService = executorService;

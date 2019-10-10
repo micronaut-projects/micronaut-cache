@@ -10,7 +10,7 @@ import spock.lang.Specification
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
  */
-class EhcacheManagerSpec extends Specification {
+class EhcacheCacheManagerSpec extends Specification {
 
     void "it create caches from configuration"() {
         given:
@@ -20,13 +20,13 @@ class EhcacheManagerSpec extends Specification {
         ])
 
         when:
-        EhcacheManager ehcacheManager = ctx.getBean(EhcacheManager)
+        EhcacheCacheManager ehcacheCacheManager = ctx.getBean(EhcacheCacheManager)
 
         then:
-        ehcacheManager.cacheNames == ['foo'].toSet()
+        ehcacheCacheManager.cacheNames == ['foo'].toSet()
 
         and:
-        SyncCache cache = ehcacheManager.getCache('foo')
+        SyncCache cache = ehcacheCacheManager.getCache('foo')
         cache.nativeCache.runtimeConfiguration.keyType == Long
         cache.nativeCache.runtimeConfiguration.valueType == String
         cache.nativeCache
