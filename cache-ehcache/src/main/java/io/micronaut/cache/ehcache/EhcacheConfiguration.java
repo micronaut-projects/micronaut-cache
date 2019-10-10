@@ -37,7 +37,7 @@ import static io.micronaut.cache.ehcache.EhcacheConfiguration.PREFIX;
 @EachProperty(PREFIX)
 public class EhcacheConfiguration implements Named {
 
-    public static final String PREFIX = EhcacheManagerConfiguration.PREFIX + ".caches";
+    public static final String PREFIX = EhcacheCacheManagerConfiguration.PREFIX + ".caches";
     public static final Integer DEFAULT_MAX_ENTRIES = 10;
     public static final Class<?> DEFAULT_KEY_TYPE = Serializable.class;
     public static final Class<?> DEFAULT_VALUE_TYPE = Serializable.class;
