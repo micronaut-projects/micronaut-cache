@@ -17,6 +17,7 @@ class EhcacheClusteredSpec extends Specification {
         given:
         ApplicationContext ctx = ApplicationContext.run([
                 "ehcache.cluster.uri": "terracotta://localhost:${terracotta.firstMappedPort}/my-application",
+                "ehcache.cluster.default-server-resource": "offheap-1",
                 "ehcache.caches.foo.enabled": true
         ])
         EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
@@ -25,5 +26,6 @@ class EhcacheClusteredSpec extends Specification {
         expect:
         ehcacheManager.cacheManager.runtimeConfiguration.services[0] instanceof ClusteringServiceConfiguration
         ehcacheManager.cacheManager.runtimeConfiguration.services[0].connectionSource.clusterUri == URI.create("terracotta://localhost:${terracotta.firstMappedPort}/my-application")
+        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.defaultServerResource == "offheap-1"
     }
 }
