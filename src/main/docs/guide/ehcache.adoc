@@ -72,3 +72,25 @@ ehcache:
       disk:
         max-size: 10Gb
 ----
+
+=== Multiple tier setup
+
+A cache can be configured with multiple tiers. Read the
+https://www.ehcache.org/documentation/3.8/tiering.html#multiple-tier-setup[Ehcache documentation] on the valid configuration
+options.
+
+For example, to configure a heap + offheap + disk cache:
+
+[source,yaml]
+----
+ehcache:
+  storage-path: /var/caches
+  caches:
+    my-cache:
+      heap:
+        max-size: 200Mb
+      offheap:
+        max-size: 1Gb
+      disk:
+        max-size: 10Gb
+----
