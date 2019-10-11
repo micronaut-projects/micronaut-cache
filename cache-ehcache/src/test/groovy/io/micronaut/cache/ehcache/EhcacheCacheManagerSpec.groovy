@@ -37,9 +37,9 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.caches.foo.heap.max-entries": 27
         ])
         EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
+        SyncCache cache = ehcacheManager.getCache('foo')
 
         expect:
-        SyncCache cache = ehcacheManager.getCache('foo')
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == EntryUnit.ENTRIES
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
@@ -52,9 +52,9 @@ class EhcacheCacheManagerSpec extends Specification {
         ])
 
         EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
+        SyncCache cache = ehcacheManager.getCache('foo')
 
         expect:
-        SyncCache cache = ehcacheManager.getCache('foo')
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 15 * 1024 * 1024

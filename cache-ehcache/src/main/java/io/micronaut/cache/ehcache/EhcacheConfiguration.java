@@ -64,6 +64,7 @@ public class EhcacheConfiguration implements Named {
 
     public CacheConfigurationBuilder getBuilder() {
         ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.heap(DEFAULT_MAX_ENTRIES);
+        CacheConfigurationBuilder cacheConfigurationBuilder;
         if (this.heap != null) {
             if (this.heap.getMaxSize() != null) {
                 resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder().heap(this.heap.getMaxSize(), MemoryUnit.B);
@@ -71,7 +72,13 @@ public class EhcacheConfiguration implements Named {
                 resourcePoolsBuilder = ResourcePoolsBuilder.heap(this.heap.getMaxEntries());
             }
         }
-        return CacheConfigurationBuilder.newCacheConfigurationBuilder(keyType, valueType, resourcePoolsBuilder);
+        cacheConfigurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(keyType, valueType, resourcePoolsBuilder);
+
+        if (this.heap != null && this.heap.getSizeOfMaxObjectSize() != null) {
+            cacheConfigurationBuilder.withSizeOfMaxObjectGraph(this.heap.getSizeOfMaxObjectSize());
+        }
+
+        return cacheConfigurationBuilder;
     }
 
     @Nonnull
@@ -122,6 +129,7 @@ public class EhcacheConfiguration implements Named {
 
         private Long maxEntries = DEFAULT_MAX_ENTRIES;
         private Long maxSize;
+        private Long sizeOfMaxObjectSize;
 
         /**
          * @return The maximum number of entries
@@ -137,12 +145,32 @@ public class EhcacheConfiguration implements Named {
             this.maxEntries = maxEntries;
         }
 
+        /**
+         * @return The maximum size of the cache, in bytes
+         */
         public Long getMaxSize() {
             return maxSize;
         }
 
+        /**
+         * @param maxSize The maximum size of the cache, in bytes
+         */
         public void setMaxSize(@ReadableBytes Long maxSize) {
             this.maxSize = maxSize;
+        }
+
+        /**
+         * @return The maximum size of a single object
+         */
+        public Long getSizeOfMaxObjectSize() {
+            return sizeOfMaxObjectSize;
+        }
+
+        /**
+         * @param sizeOfMaxObjectSize The maximum size of a single object
+         */
+        public void setSizeOfMaxObjectSize(@ReadableBytes Long sizeOfMaxObjectSize) {
+            this.sizeOfMaxObjectSize = sizeOfMaxObjectSize;
         }
     }
 }
