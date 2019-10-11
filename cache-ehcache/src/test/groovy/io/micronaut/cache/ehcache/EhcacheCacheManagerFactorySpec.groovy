@@ -11,7 +11,7 @@ import spock.lang.Specification
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
  */
-class EhcacheManagerFactorySpec extends Specification {
+class EhcacheCacheManagerFactorySpec extends Specification {
 
     void "it creates a cache manager and initialises it"() {
         given:
