@@ -21,6 +21,8 @@ import io.micronaut.core.convert.format.ReadableBytes;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.units.MemoryUnit;
 
+import java.io.File;
+
 import static io.micronaut.cache.ehcache.EhcacheCacheManagerConfiguration.PREFIX;
 
 /**
@@ -39,6 +41,7 @@ public class EhcacheCacheManagerConfiguration {
     private CacheManagerBuilder builder;
 
     private Long defaultSizeOfMaxObjectSize;
+    private String storagePath;
 
     /**
      * @return the configuration builder
@@ -48,8 +51,13 @@ public class EhcacheCacheManagerConfiguration {
             this.builder = CacheManagerBuilder.newCacheManagerBuilder();
         }
         if (this.defaultSizeOfMaxObjectSize != null) {
-            this.builder.withDefaultSizeOfMaxObjectSize(this.defaultSizeOfMaxObjectSize, MemoryUnit.B);
+            this.builder = this.builder.withDefaultSizeOfMaxObjectSize(this.defaultSizeOfMaxObjectSize, MemoryUnit.B);
         }
+        if (this.getStoragePath() != null) {
+            File storagePath = new File(this.getStoragePath());
+            this.builder = CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(storagePath));
+        }
+
         return builder;
     }
 
@@ -72,5 +80,19 @@ public class EhcacheCacheManagerConfiguration {
      */
     public void setDefaultSizeOfMaxObjectSize(@ReadableBytes Long defaultSizeOfMaxObjectSize) {
         this.defaultSizeOfMaxObjectSize = defaultSizeOfMaxObjectSize;
+    }
+
+    /**
+     * @return the storage path in the file system
+     */
+    public String getStoragePath() {
+        return storagePath;
+    }
+
+    /**
+     * @param storagePath the storage path in the file system
+     */
+    public void setStoragePath(String storagePath) {
+        this.storagePath = storagePath;
     }
 }
