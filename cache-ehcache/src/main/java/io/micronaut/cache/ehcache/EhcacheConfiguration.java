@@ -23,6 +23,7 @@ import io.micronaut.core.convert.format.ReadableBytes;
 import io.micronaut.core.naming.Named;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 
 import javax.annotation.Nonnull;
@@ -43,7 +44,7 @@ public class EhcacheConfiguration implements Named {
     public static final String PREFIX = EhcacheCacheManagerConfiguration.PREFIX + ".caches";
     public static final Class<?> DEFAULT_KEY_TYPE = Serializable.class;
     public static final Class<?> DEFAULT_VALUE_TYPE = Serializable.class;
-    public static final Long DEFAULT_MAX_ENTRIES = 10L;
+    public static final Long DEFAULT_MAX_ENTRIES = 100L;
 
     @ConfigurationBuilder(prefixes = "with")
     CacheConfigurationBuilder builder;
@@ -54,6 +55,7 @@ public class EhcacheConfiguration implements Named {
     private Class<?> valueType = DEFAULT_VALUE_TYPE;
 
     private HeapTieredCacheConfiguration heap;
+    private OffheapTieredCacheConfiguration offheap;
 
     /**
      * @param name the cache name
@@ -66,15 +68,35 @@ public class EhcacheConfiguration implements Named {
      * @return the configuration builder
      */
     public CacheConfigurationBuilder getBuilder() {
-        ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.heap(DEFAULT_MAX_ENTRIES);
+        ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder();
+
+        // Resource pools
+        boolean resourcePoolAdded = false;
+
         if (this.heap != null) {
             if (this.heap.getMaxSize() != null) {
-                resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder().heap(this.heap.getMaxSize(), MemoryUnit.B);
+                resourcePoolsBuilder = resourcePoolsBuilder.heap(this.heap.getMaxSize(), MemoryUnit.B);
+                resourcePoolAdded = true;
             } else if (this.heap.getMaxEntries() != null) {
-                resourcePoolsBuilder = ResourcePoolsBuilder.heap(this.heap.getMaxEntries());
+                resourcePoolsBuilder = resourcePoolsBuilder.heap(this.heap.getMaxEntries(), EntryUnit.ENTRIES);
+                resourcePoolAdded = true;
             }
         }
+
+        if (this.offheap != null) {
+            if (this.offheap.getMaxSize() != null) {
+                resourcePoolsBuilder = resourcePoolsBuilder.offheap(this.offheap.getMaxSize(), MemoryUnit.B);
+                resourcePoolAdded = true;
+            }
+        }
+
+        if (!resourcePoolAdded) {
+            resourcePoolsBuilder = ResourcePoolsBuilder.heap(DEFAULT_MAX_ENTRIES);
+        }
+
         this.builder = CacheConfigurationBuilder.newCacheConfigurationBuilder(keyType, valueType, resourcePoolsBuilder);
+
+        // Cache configuration
 
         if (this.heap != null && this.heap.getSizeOfMaxObjectSize() != null) {
             this.builder.withSizeOfMaxObjectGraph(this.heap.getSizeOfMaxObjectSize());
@@ -132,6 +154,20 @@ public class EhcacheConfiguration implements Named {
     }
 
     /**
+     * @return the off-heap configuration
+     */
+    public OffheapTieredCacheConfiguration getOffheap() {
+        return offheap;
+    }
+
+    /**
+     * @param offheap the off-heap configuration
+     */
+    public void setOffheap(OffheapTieredCacheConfiguration offheap) {
+        this.offheap = offheap;
+    }
+
+    /**
      * Heap tier configuration properties.
      */
     @ConfigurationProperties(HeapTieredCacheConfiguration.PREFIX)
@@ -183,5 +219,30 @@ public class EhcacheConfiguration implements Named {
         public void setSizeOfMaxObjectSize(@ReadableBytes Long sizeOfMaxObjectSize) {
             this.sizeOfMaxObjectSize = sizeOfMaxObjectSize;
         }
+    }
+
+    /**
+     * Off-heap configuration options.
+     */
+    @ConfigurationProperties(OffheapTieredCacheConfiguration.PREFIX)
+    public static class OffheapTieredCacheConfiguration {
+        public static final String PREFIX = "offheap";
+
+        private Long maxSize;
+
+        /**
+         * @return The maximum size of the cache, in bytes
+         */
+        public Long getMaxSize() {
+            return maxSize;
+        }
+
+        /**
+         * @param maxSize The maximum size of the cache, in bytes
+         */
+        public void setMaxSize(@ReadableBytes Long maxSize) {
+            this.maxSize = maxSize;
+        }
+
     }
 }
