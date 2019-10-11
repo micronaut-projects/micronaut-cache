@@ -31,8 +31,8 @@ import static io.micronaut.cache.ehcache.EhcacheCacheManagerConfiguration.PREFIX
  * Configuration class for the Ehcache {@link org.ehcache.CacheManager}.
  *
  * @author Álvaro Sánchez-Mariscal
- * @since 1.0.0
  * @see org.ehcache.config.builders.CacheManagerBuilder
+ * @since 1.0.0
  */
 @ConfigurationProperties(PREFIX)
 public class EhcacheCacheManagerConfiguration {
@@ -62,7 +62,13 @@ public class EhcacheCacheManagerConfiguration {
             this.builder = this.builder.with(CacheManagerBuilder.persistence(storagePath));
         }
         if (this.cluster != null && this.cluster.getUri() != null) {
-            this.builder = this.builder.with(ClusteringServiceConfigurationBuilder.cluster(URI.create(this.cluster.getUri())).autoCreate(c -> c));
+            URI clusterUri = URI.create(this.cluster.getUri());
+            this.builder = this.builder.with(ClusteringServiceConfigurationBuilder.cluster(clusterUri).autoCreate(server -> {
+                if (this.cluster.getDefaultServerResource() != null) {
+                    server = server.defaultServerResource(this.cluster.defaultServerResource);
+                }
+                return server;
+            }));
         }
         return builder;
     }
@@ -124,6 +130,7 @@ public class EhcacheCacheManagerConfiguration {
         public static final String PREFIX = "cluster";
 
         private String uri;
+        private String defaultServerResource;
 
         /**
          * @return cluster URI
@@ -137,6 +144,14 @@ public class EhcacheCacheManagerConfiguration {
          */
         public void setUri(String uri) {
             this.uri = uri;
+        }
+
+        public String getDefaultServerResource() {
+            return defaultServerResource;
+        }
+
+        public void setDefaultServerResource(String defaultServerResource) {
+            this.defaultServerResource = defaultServerResource;
         }
     }
 }
