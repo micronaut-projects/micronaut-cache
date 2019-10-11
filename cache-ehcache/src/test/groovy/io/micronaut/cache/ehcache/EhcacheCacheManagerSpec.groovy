@@ -103,4 +103,60 @@ class EhcacheCacheManagerSpec extends Specification {
         expect:
         cache.nativeCache.runtimeConfiguration.config.serviceConfigurations[0].diskSegments == 2
     }
+
+    void "it can create heap + offheap tiers"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run([
+                "ehcache.caches.foo.heap.max-entries": 27,
+                "ehcache.caches.foo.offheap.max-size": '23Mb'
+        ])
+        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
+        SyncCache cache = ehcacheManager.getCache('foo')
+
+        expect:
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 2
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == EntryUnit.ENTRIES
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].unit == MemoryUnit.B
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
+    }
+
+    void "it can create heap + offheap + disk tiers"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run([
+                "ehcache.caches.foo.heap.max-entries": 27,
+                "ehcache.caches.foo.offheap.max-size": '23Mb',
+                "ehcache.caches.foo.disk.max-size": '50Mb',
+                "ehcache.storage-path": "/tmp/${System.currentTimeMillis()}"
+        ])
+        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
+        SyncCache cache = ehcacheManager.getCache('foo')
+
+        expect:
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 3
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == EntryUnit.ENTRIES
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].unit == MemoryUnit.B
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+    }
+
+    void "it can create heap + disk tiers"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run([
+                "ehcache.caches.foo.heap.max-entries": 27,
+                "ehcache.caches.foo.disk.max-size": '50Mb',
+                "ehcache.storage-path": "/tmp/${System.currentTimeMillis()}"
+        ])
+        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
+        SyncCache cache = ehcacheManager.getCache('foo')
+
+        expect:
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 2
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == EntryUnit.ENTRIES
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+    }
 }
