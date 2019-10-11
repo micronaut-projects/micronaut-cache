@@ -18,10 +18,12 @@ package io.micronaut.cache.ehcache;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.core.convert.format.ReadableBytes;
+import org.ehcache.clustered.client.config.builders.ClusteringServiceConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.units.MemoryUnit;
 
 import java.io.File;
+import java.net.URI;
 
 import static io.micronaut.cache.ehcache.EhcacheCacheManagerConfiguration.PREFIX;
 
@@ -40,6 +42,8 @@ public class EhcacheCacheManagerConfiguration {
     @ConfigurationBuilder(prefixes = "with", excludes = "")
     private CacheManagerBuilder builder;
 
+    private EhcacheClusterConfiguration cluster;
+
     private Long defaultSizeOfMaxObjectSize;
     private String storagePath;
 
@@ -55,9 +59,11 @@ public class EhcacheCacheManagerConfiguration {
         }
         if (this.getStoragePath() != null) {
             File storagePath = new File(this.getStoragePath());
-            this.builder = CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(storagePath));
+            this.builder = this.builder.with(CacheManagerBuilder.persistence(storagePath));
         }
-
+        if (this.cluster != null && this.cluster.getUri() != null) {
+            this.builder = this.builder.with(ClusteringServiceConfigurationBuilder.cluster(URI.create(this.cluster.getUri())).autoCreate(c -> c));
+        }
         return builder;
     }
 
@@ -94,5 +100,43 @@ public class EhcacheCacheManagerConfiguration {
      */
     public void setStoragePath(String storagePath) {
         this.storagePath = storagePath;
+    }
+
+    /**
+     * @return the cluster configuration
+     */
+    public EhcacheClusterConfiguration getCluster() {
+        return cluster;
+    }
+
+    /**
+     * @param cluster the cluster configuration
+     */
+    public void setCluster(EhcacheClusterConfiguration cluster) {
+        this.cluster = cluster;
+    }
+
+    /**
+     * Clustering configuration.
+     */
+    @ConfigurationProperties(EhcacheClusterConfiguration.PREFIX)
+    public static class EhcacheClusterConfiguration {
+        public static final String PREFIX = "cluster";
+
+        private String uri;
+
+        /**
+         * @return cluster URI
+         */
+        public String getUri() {
+            return uri;
+        }
+
+        /**
+         * @param uri cluster URI
+         */
+        public void setUri(String uri) {
+            this.uri = uri;
+        }
     }
 }
