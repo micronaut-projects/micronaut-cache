@@ -40,6 +40,9 @@ public class EhcacheCacheManagerConfiguration {
 
     private Long defaultSizeOfMaxObjectSize;
 
+    /**
+     * @return the configuration builder
+     */
     public CacheManagerBuilder getBuilder() {
         if (this.builder == null) {
             this.builder = CacheManagerBuilder.newCacheManagerBuilder();
@@ -50,14 +53,23 @@ public class EhcacheCacheManagerConfiguration {
         return builder;
     }
 
+    /**
+     * @param builder the configuration builder
+     */
     public void setBuilder(CacheManagerBuilder builder) {
         this.builder = builder;
     }
 
+    /**
+     * @return the default maximum size of the largest object in the cache
+     */
     public Long getDefaultSizeOfMaxObjectSize() {
         return defaultSizeOfMaxObjectSize;
     }
 
+    /**
+     * @param defaultSizeOfMaxObjectSize the default maximum size of the largest object in the cache
+     */
     public void setDefaultSizeOfMaxObjectSize(@ReadableBytes Long defaultSizeOfMaxObjectSize) {
         this.defaultSizeOfMaxObjectSize = defaultSizeOfMaxObjectSize;
     }

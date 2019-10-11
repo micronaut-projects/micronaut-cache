@@ -62,6 +62,9 @@ public class EhcacheConfiguration implements Named {
         this.name = name;
     }
 
+    /**
+     * @return the configuration builder
+     */
     public CacheConfigurationBuilder getBuilder() {
         ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.heap(DEFAULT_MAX_ENTRIES);
         if (this.heap != null) {
@@ -114,14 +117,23 @@ public class EhcacheConfiguration implements Named {
         this.valueType = valueType;
     }
 
+    /**
+     * @return the heap tier configuration
+     */
     public HeapTieredCacheConfiguration getHeap() {
         return heap;
     }
 
+    /**
+     * @param heap the heap tier configuration
+     */
     public void setHeap(HeapTieredCacheConfiguration heap) {
         this.heap = heap;
     }
 
+    /**
+     * Heap tier configuration properties.
+     */
     @ConfigurationProperties(HeapTieredCacheConfiguration.PREFIX)
     public static class HeapTieredCacheConfiguration {
         public static final String PREFIX = "heap";
