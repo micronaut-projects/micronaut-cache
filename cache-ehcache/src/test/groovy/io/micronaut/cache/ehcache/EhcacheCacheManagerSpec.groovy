@@ -78,7 +78,7 @@ class EhcacheCacheManagerSpec extends Specification {
     void "it can create a disk tier"() {
         ApplicationContext ctx = ApplicationContext.run([
                 "ehcache.caches.foo.disk.max-size": '50Mb',
-                "ehcache.storage-path": '/tmp'
+                "ehcache.storage-path": "/tmp/${System.currentTimeMillis()}"
         ])
 
         EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
@@ -88,5 +88,19 @@ class EhcacheCacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+    }
+
+    void "it can configure disk segments"() {
+        ApplicationContext ctx = ApplicationContext.run([
+                "ehcache.caches.foo.disk.max-size": '50Mb',
+                "ehcache.caches.foo.disk.segments": 2,
+                "ehcache.storage-path": "/tmp/${System.currentTimeMillis()}"
+        ])
+
+        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
+        SyncCache cache = ehcacheManager.getCache('foo')
+
+        expect:
+        cache.nativeCache.runtimeConfiguration.config.serviceConfigurations[0].diskSegments == 2
     }
 }
