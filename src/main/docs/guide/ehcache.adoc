@@ -14,6 +14,33 @@ ehcache:
 
 Then, you can use any of the caching annotations with `my-cache` as cache name.
 
-The full list of configuration options is:
+See the configuration reference to check all possible configuration options.
 
-include::{includedir}configurationProperties/io.micronaut.cache.ehcache.EhcacheConfiguration.adoc[]
+== Tiering options
+
+Ehcache supports the concept of https://www.ehcache.org/documentation/3.8/tiering.html[tiered caching]. This library
+allows you to configure tiering caching options on a per-cache basis.
+
+=== Heap tier
+
+It can be sized by number of entries:
+
+[source,yaml]
+----
+ehcache:
+  caches:
+    my-cache:
+      heap:
+        max-entries: 100
+----
+
+Or by size:
+
+[source,yaml]
+----
+ehcache:
+  caches:
+    my-cache:
+      heap:
+        max-size: 15Mb
+----
