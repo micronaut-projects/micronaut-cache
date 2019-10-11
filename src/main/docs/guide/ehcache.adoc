@@ -73,6 +73,37 @@ ehcache:
         max-size: 10Gb
 ----
 
+=== Clustered tier
+
+Ehcache supports distributed caching with http://www.terracotta.org[Terracotta]
+
+This is a complete example configuration:
+
+[source,yaml]
+----
+ehcache:
+  cluster:
+    uri: terracotta://localhost/my-application
+    default-server-resource: offheap-1
+    resource-pools:
+      resource-pool-a:
+        max-size: 8Mb
+        server-resource: offheap-2
+      resource-pool-b:
+        max-size: 10Mb
+  caches:
+    clustered-cache:
+      clustered-dedicated:
+        server-resource: offheap-1
+        max-size: 8Mb
+    shared-cache-1:
+      clustered-shared:
+        server-resource: resource-pool-a
+    shared-cache-3:
+      clustered-shared:
+        server-resource: resource-pool-b
+----
+
 === Multiple tier setup
 
 A cache can be configured with multiple tiers. Read the

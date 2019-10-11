@@ -21,6 +21,7 @@ import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.convert.format.ReadableBytes;
 import io.micronaut.core.naming.Named;
+import org.ehcache.clustered.client.config.builders.ClusteredResourcePoolBuilder;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
@@ -58,6 +59,8 @@ public class EhcacheConfiguration implements Named {
     private HeapTieredCacheConfiguration heap;
     private OffheapTieredCacheConfiguration offheap;
     private DiskTieredCacheConfiguration disk;
+    private ClusteredDedicatedResourcePoolConfiguration clusteredDedicated;
+    private ClusteredSharedResourcePoolConfiguration clusteredShared;
 
     /**
      * @param name the cache name
@@ -98,6 +101,23 @@ public class EhcacheConfiguration implements Named {
                 resourcePoolsBuilder = resourcePoolsBuilder.disk(this.disk.getMaxSize(), MemoryUnit.B);
                 resourcePoolAdded = true;
             }
+        }
+
+        if (this.clusteredDedicated != null) {
+            if (this.clusteredDedicated.getMaxSize() != null) {
+                if (this.clusteredDedicated.getServerResource() != null) {
+                    resourcePoolsBuilder = resourcePoolsBuilder.with(ClusteredResourcePoolBuilder.clusteredDedicated(this.clusteredDedicated.getServerResource(), this.clusteredDedicated.getMaxSize(), MemoryUnit.B));
+                    resourcePoolAdded = true;
+                } else {
+                    resourcePoolsBuilder = resourcePoolsBuilder.with(ClusteredResourcePoolBuilder.clusteredDedicated(this.clusteredDedicated.getMaxSize(), MemoryUnit.B));
+                    resourcePoolAdded = true;
+                }
+            }
+        }
+
+        if (this.clusteredShared != null && this.clusteredShared.getServerResource() != null) {
+            resourcePoolsBuilder = resourcePoolsBuilder.with(ClusteredResourcePoolBuilder.clusteredShared(this.clusteredShared.getServerResource()));
+            resourcePoolAdded = true;
         }
 
         if (!resourcePoolAdded) {
@@ -203,6 +223,34 @@ public class EhcacheConfiguration implements Named {
     }
 
     /**
+     * @return the clustered dedicated configuration
+     */
+    public ClusteredDedicatedResourcePoolConfiguration getClusteredDedicated() {
+        return clusteredDedicated;
+    }
+
+    /**
+     * @param clusteredDedicated the clustered dedicated configuration
+     */
+    public void setClusteredDedicated(ClusteredDedicatedResourcePoolConfiguration clusteredDedicated) {
+        this.clusteredDedicated = clusteredDedicated;
+    }
+
+    /**
+     * @return the clustered shared configuration
+     */
+    public ClusteredSharedResourcePoolConfiguration getClusteredShared() {
+        return clusteredShared;
+    }
+
+    /**
+     * @param clusteredShared the clustered shared configuration
+     */
+    public void setClusteredShared(ClusteredSharedResourcePoolConfiguration clusteredShared) {
+        this.clusteredShared = clusteredShared;
+    }
+
+    /**
      * Heap tier configuration properties.
      */
     @ConfigurationProperties(HeapTieredCacheConfiguration.PREFIX)
@@ -271,5 +319,55 @@ public class EhcacheConfiguration implements Named {
         public void setSegments(Integer segments) {
             this.segments = segments;
         }
+    }
+
+    /**
+     * Clustered dedicated configuration.
+     */
+    @ConfigurationProperties(ClusteredDedicatedResourcePoolConfiguration.PREFIX)
+    public static class ClusteredDedicatedResourcePoolConfiguration extends AbstractResourcePoolConfiguration {
+        public static final String PREFIX = "clustered-dedicated";
+
+        private String serverResource;
+
+        /**
+         * @return the server resource
+         */
+        public String getServerResource() {
+            return serverResource;
+        }
+
+        /**
+         * @param serverResource the server resource
+         */
+        public void setServerResource(String serverResource) {
+            this.serverResource = serverResource;
+        }
+
+    }
+
+    /**
+     * Clustered shared configuration.
+     */
+    @ConfigurationProperties(ClusteredSharedResourcePoolConfiguration.PREFIX)
+    public static class ClusteredSharedResourcePoolConfiguration {
+        public static final String PREFIX = "clustered-shared";
+
+        private String serverResource;
+
+        /**
+         * @return the server resource
+         */
+        public String getServerResource() {
+            return serverResource;
+        }
+
+        /**
+         * @param serverResource the server resource
+         */
+        public void setServerResource(String serverResource) {
+            this.serverResource = serverResource;
+        }
+
     }
 }

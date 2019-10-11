@@ -20,6 +20,7 @@ import io.micronaut.cache.SyncCache;
 import io.micronaut.cache.ehcache.configuration.EhcacheConfiguration;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.scheduling.TaskExecutors;
 import org.ehcache.Cache;
@@ -84,9 +85,13 @@ public class EhcacheCacheManager implements io.micronaut.cache.CacheManager<Cach
         EhcacheSyncCache syncCache = this.cacheMap.get(name);
         if (syncCache == null) {
             EhcacheConfiguration configuration = cacheConfigurations.get(name);
-            Cache nativeCache = this.cacheManager.createCache(name, configuration.getBuilder());
-            syncCache = new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService);
-            this.cacheMap.put(name, syncCache);
+            if (configuration != null) {
+                Cache nativeCache = this.cacheManager.createCache(name, configuration.getBuilder());
+                syncCache = new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService);
+                this.cacheMap.put(name, syncCache);
+            } else {
+                throw new ConfigurationException("No cache configured for name: " + name);
+            }
         }
         return syncCache;
     }
