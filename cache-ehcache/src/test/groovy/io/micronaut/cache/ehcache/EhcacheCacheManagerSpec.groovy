@@ -4,7 +4,6 @@ import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.config.units.EntryUnit
 import org.ehcache.config.units.MemoryUnit
-import org.ehcache.core.EhcacheManager
 import spock.lang.Specification
 
 import static org.ehcache.config.ResourceType.Core.HEAP
@@ -37,7 +36,7 @@ class EhcacheCacheManagerSpec extends Specification {
         ApplicationContext ctx = ApplicationContext.run([
                 "ehcache.caches.foo.heap.max-entries": 27
         ])
-        EhcacheManager ehcacheManager = ctx.getBean(EhcacheManager)
+        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
 
         expect:
         SyncCache cache = ehcacheManager.getCache('foo')
@@ -52,7 +51,7 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.caches.foo.heap.max-size": '15Mb'
         ])
 
-        EhcacheManager ehcacheManager = ctx.getBean(EhcacheManager)
+        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
 
         expect:
         SyncCache cache = ehcacheManager.getCache('foo')
