@@ -80,7 +80,7 @@
 </a>
 <h2 class="title">C</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheManagerFactory.html#cacheManager--">cacheManager()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheManagerFactory.html" title="class in io.micronaut.cache.ehcache">EhcacheManagerFactory</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html#cacheManager--">cacheManager()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManagerFactory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/ehcache/serialization/CharSequenceSerializer.html" title="class in io.micronaut.cache.ehcache.serialization"><span class="typeNameLink">CharSequenceSerializer</span></a> - Class in <a href="io/micronaut/cache/ehcache/serialization/package-summary.html">io.micronaut.cache.ehcache.serialization</a></dt>
 <dd>
@@ -91,9 +91,9 @@
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheManager.html#close--">close()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheManager</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html#close--">close()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManager</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastManager.html#close--">close()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastManager</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html#close--">close()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastCacheManager</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a name="I:D">
@@ -113,29 +113,29 @@
 </a>
 <h2 class="title">E</h2>
 <dl>
+<dt><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheCacheManager</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
+<dd>
+<div class="block">A <code>CacheManager</code> implementation for Ehcache.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html#EhcacheCacheManager-org.ehcache.CacheManager-java.util.concurrent.ExecutorService-io.micronaut.core.convert.ConversionService-java.util.List-">EhcacheCacheManager(CacheManager, ExecutorService, ConversionService&lt;?&gt;, List&lt;EhcacheConfiguration&gt;)</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManager</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerConfiguration.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheCacheManagerConfiguration</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
+<dd>
+<div class="block">Configuration class for the Ehcache <code>CacheManager</code>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerConfiguration.html#EhcacheCacheManagerConfiguration--">EhcacheCacheManagerConfiguration()</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManagerConfiguration.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManagerConfiguration</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheCacheManagerFactory</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
+<dd>
+<div class="block">Factory class that creates a Ehcache <code>CacheManager</code>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html#EhcacheCacheManagerFactory-io.micronaut.cache.ehcache.EhcacheCacheManagerConfiguration-">EhcacheCacheManagerFactory(EhcacheCacheManagerConfiguration)</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManagerFactory</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/ehcache/EhcacheConfiguration.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheConfiguration</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
 <dd>
 <div class="block">Configuration class for an Ehacahe-based cache.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheConfiguration.html#EhcacheConfiguration-java.lang.String-">EhcacheConfiguration(String)</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheConfiguration.html" title="class in io.micronaut.cache.ehcache">EhcacheConfiguration</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/micronaut/cache/ehcache/EhcacheManager.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheManager</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
-<dd>
-<div class="block">A <code>CacheManager</code> implementation for Ehcache.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheManager.html#EhcacheManager-org.ehcache.CacheManager-java.util.concurrent.ExecutorService-io.micronaut.core.convert.ConversionService-java.util.List-">EhcacheManager(CacheManager, ExecutorService, ConversionService&lt;?&gt;, List&lt;EhcacheConfiguration&gt;)</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheManager</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/micronaut/cache/ehcache/EhcacheManagerConfiguration.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheManagerConfiguration</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
-<dd>
-<div class="block">Configuration class for the <code>CacheManager</code>.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheManagerConfiguration.html#EhcacheManagerConfiguration--">EhcacheManagerConfiguration()</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheManagerConfiguration.html" title="class in io.micronaut.cache.ehcache">EhcacheManagerConfiguration</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/micronaut/cache/ehcache/EhcacheManagerFactory.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheManagerFactory</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
-<dd>
-<div class="block">Factory class that creates a <code>CacheManager</code>.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheManagerFactory.html#EhcacheManagerFactory-io.micronaut.cache.ehcache.EhcacheManagerConfiguration-">EhcacheManagerFactory(EhcacheManagerConfiguration)</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheManagerFactory.html" title="class in io.micronaut.cache.ehcache">EhcacheManagerFactory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/ehcache/EhcacheSyncCache.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheSyncCache</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
 <dd>
@@ -163,13 +163,13 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastSyncCache.html#get-java.lang.Object-io.micronaut.core.type.Argument-java.util.function.Supplier-">get(Object, Argument&lt;T&gt;, Supplier&lt;T&gt;)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastSyncCache.html" title="class in io.micronaut.cache.hazelcast">HazelcastSyncCache</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheManager.html#getCache-java.lang.String-">getCache(String)</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheManager</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html#getCache-java.lang.String-">getCache(String)</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManager</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastManager.html#getCache-java.lang.String-">getCache(String)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastManager</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html#getCache-java.lang.String-">getCache(String)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastCacheManager</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheManager.html#getCacheNames--">getCacheNames()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheManager</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html#getCacheNames--">getCacheNames()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManager</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastManager.html#getCacheNames--">getCacheNames()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastManager</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html#getCacheNames--">getCacheNames()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastCacheManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheSyncCache.html#getExecutorService--">getExecutorService()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheSyncCache.html" title="class in io.micronaut.cache.ehcache">EhcacheSyncCache</a></dt>
 <dd>&nbsp;</dd>
@@ -205,6 +205,14 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastAsyncCache.html#HazelcastAsyncCache-io.micronaut.core.convert.ConversionService-com.hazelcast.core.IMap-java.util.concurrent.ExecutorService-">HazelcastAsyncCache(ConversionService&lt;?&gt;, IMap&lt;Object, Object&gt;, ExecutorService)</a></span> - Constructor for class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastAsyncCache.html" title="class in io.micronaut.cache.hazelcast">HazelcastAsyncCache</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastCacheManager</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
+<dd>
+<div class="block">A <code>CacheManager</code> implementation for Hazelcast.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html#HazelcastCacheManager-io.micronaut.core.convert.ConversionService-com.hazelcast.core.HazelcastInstance-java.util.concurrent.ExecutorService-">HazelcastCacheManager(ConversionService&lt;?&gt;, HazelcastInstance, ExecutorService)</a></span> - Constructor for class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastCacheManager</a></dt>
+<dd>
+<div class="block">Constructor.</div>
+</dd>
 <dt><a href="io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastClientConfiguration</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
 <dd>
 <div class="block">Configuration class for an Hazelcast as a client.</div>
@@ -218,14 +226,6 @@
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastClientFactory.html#hazelcastClientInstance-io.micronaut.cache.hazelcast.HazelcastClientConfiguration-">hazelcastClientInstance(HazelcastClientConfiguration)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastClientFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastClientFactory</a></dt>
 <dd>
 <div class="block">Create a singleton <code>HazelcastInstance</code> client, based on configuration.</div>
-</dd>
-<dt><a href="io/micronaut/cache/hazelcast/HazelcastManager.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastManager</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
-<dd>
-<div class="block">A <code>CacheManager</code> implementation for Hazelcast.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastManager.html#HazelcastManager-io.micronaut.core.convert.ConversionService-com.hazelcast.core.HazelcastInstance-java.util.concurrent.ExecutorService-">HazelcastManager(ConversionService&lt;?&gt;, HazelcastInstance, ExecutorService)</a></span> - Constructor for class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastManager</a></dt>
-<dd>
-<div class="block">Constructor.</div>
 </dd>
 <dt><a href="io/micronaut/cache/hazelcast/HazelcastSyncCache.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastSyncCache</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
 <dd>
@@ -263,9 +263,9 @@
 </a>
 <h2 class="title">P</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheConfiguration.html#PREFIX">PREFIX</a></span> - Static variable in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheConfiguration.html" title="class in io.micronaut.cache.ehcache">EhcacheConfiguration</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerConfiguration.html#PREFIX">PREFIX</a></span> - Static variable in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManagerConfiguration.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManagerConfiguration</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheManagerConfiguration.html#PREFIX">PREFIX</a></span> - Static variable in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheManagerConfiguration.html" title="class in io.micronaut.cache.ehcache">EhcacheManagerConfiguration</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheConfiguration.html#PREFIX">PREFIX</a></span> - Static variable in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheConfiguration.html" title="class in io.micronaut.cache.ehcache">EhcacheConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheSyncCache.html#put-java.lang.Object-java.lang.Object-">put(Object, Object)</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheSyncCache.html" title="class in io.micronaut.cache.ehcache">EhcacheSyncCache</a></dt>
 <dd>&nbsp;</dd>
