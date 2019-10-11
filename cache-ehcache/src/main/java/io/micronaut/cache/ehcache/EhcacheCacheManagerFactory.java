@@ -15,25 +15,33 @@
  */
 package io.micronaut.cache.ehcache;
 
-import io.micronaut.context.annotation.ConfigurationBuilder;
-import io.micronaut.context.annotation.ConfigurationProperties;
-import org.ehcache.config.builders.CacheManagerBuilder;
-
-import static io.micronaut.cache.ehcache.EhcacheManagerConfiguration.PREFIX;
+import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.annotation.Factory;
+import org.ehcache.CacheManager;
 
 /**
- * Configuration class for the {@link org.ehcache.CacheManager}.
+ * Factory class that creates a Ehcache {@link CacheManager}.
  *
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
- * @see org.ehcache.config.builders.CacheManagerBuilder
  */
-@ConfigurationProperties(PREFIX)
-public class EhcacheManagerConfiguration {
+@Factory
+public class EhcacheCacheManagerFactory {
 
-    public static final String PREFIX = "ehcache";
+    private EhcacheCacheManagerConfiguration configuration;
 
-    @ConfigurationBuilder(prefixes = "with")
-    CacheManagerBuilder builder = CacheManagerBuilder.newCacheManagerBuilder();
+    /**
+     * @param configuration the configuration
+     */
+    public EhcacheCacheManagerFactory(EhcacheCacheManagerConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
+    /**
+     * @return The {@link CacheManager}
+     */
+    @Bean
+    public CacheManager cacheManager() {
+        return configuration.builder.build(true);
+    }
 }
