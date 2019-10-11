@@ -1,5 +1,6 @@
 package io.micronaut.cache.ehcache
 
+import io.micronaut.cache.ehcache.configuration.EhcacheConfiguration
 import io.micronaut.context.ApplicationContext
 import spock.lang.Specification
 
