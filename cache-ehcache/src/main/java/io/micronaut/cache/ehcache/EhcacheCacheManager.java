@@ -17,6 +17,7 @@ package io.micronaut.cache.ehcache;
 
 import io.micronaut.cache.DefaultCacheManager;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.cache.ehcache.configuration.EhcacheConfiguration;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.convert.ConversionService;

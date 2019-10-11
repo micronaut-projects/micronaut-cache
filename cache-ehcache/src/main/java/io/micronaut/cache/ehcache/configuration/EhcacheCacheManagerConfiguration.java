@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.cache.ehcache;
+package io.micronaut.cache.ehcache.configuration;
 
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.core.convert.format.ReadableBytes;
 import org.ehcache.clustered.client.config.builders.ClusteringServiceConfigurationBuilder;
+import org.ehcache.clustered.client.config.builders.ServerSideConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.units.MemoryUnit;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
-import static io.micronaut.cache.ehcache.EhcacheCacheManagerConfiguration.PREFIX;
+import static io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration.PREFIX;
 
 /**
  * Configuration class for the Ehcache {@link org.ehcache.CacheManager}.
@@ -47,6 +49,15 @@ public class EhcacheCacheManagerConfiguration {
     private Long defaultSizeOfMaxObjectSize;
     private String storagePath;
 
+    private List<EhcacheClusterResourcePoolConfiguration> resourcePoolConfigurations;
+
+    /**
+     * @param resourcePoolConfigurations the resource pool configurations
+     */
+    public EhcacheCacheManagerConfiguration(List<EhcacheClusterResourcePoolConfiguration> resourcePoolConfigurations) {
+        this.resourcePoolConfigurations = resourcePoolConfigurations;
+    }
+
     /**
      * @return the configuration builder
      */
@@ -63,12 +74,7 @@ public class EhcacheCacheManagerConfiguration {
         }
         if (this.cluster != null && this.cluster.getUri() != null) {
             URI clusterUri = URI.create(this.cluster.getUri());
-            this.builder = this.builder.with(ClusteringServiceConfigurationBuilder.cluster(clusterUri).autoCreate(server -> {
-                if (this.cluster.getDefaultServerResource() != null) {
-                    server = server.defaultServerResource(this.cluster.defaultServerResource);
-                }
-                return server;
-            }));
+            this.builder = this.builder.with(ClusteringServiceConfigurationBuilder.cluster(clusterUri).autoCreate(this::configureServer));
         }
         return builder;
     }
@@ -122,6 +128,22 @@ public class EhcacheCacheManagerConfiguration {
         this.cluster = cluster;
     }
 
+    private ServerSideConfigurationBuilder configureServer(ServerSideConfigurationBuilder server) {
+        if (this.cluster.getDefaultServerResource() != null) {
+            server = server.defaultServerResource(this.cluster.defaultServerResource);
+        }
+        if (this.resourcePoolConfigurations != null) {
+            for (EhcacheClusterResourcePoolConfiguration resourcePoolConfiguration : this.resourcePoolConfigurations) {
+                if (resourcePoolConfiguration.getServerResource() != null) {
+                    server = server.resourcePool(resourcePoolConfiguration.getName(), resourcePoolConfiguration.getMaxSize(), MemoryUnit.B, resourcePoolConfiguration.getServerResource());
+                } else {
+                    server = server.resourcePool(resourcePoolConfiguration.getName(), resourcePoolConfiguration.getMaxSize(), MemoryUnit.B);
+                }
+            }
+        }
+        return server;
+    }
+
     /**
      * Clustering configuration.
      */
@@ -146,10 +168,16 @@ public class EhcacheCacheManagerConfiguration {
             this.uri = uri;
         }
 
+        /**
+         * @return the default server resource
+         */
         public String getDefaultServerResource() {
             return defaultServerResource;
         }
 
+        /**
+         * @param defaultServerResource the default server resource
+         */
         public void setDefaultServerResource(String defaultServerResource) {
             this.defaultServerResource = defaultServerResource;
         }
