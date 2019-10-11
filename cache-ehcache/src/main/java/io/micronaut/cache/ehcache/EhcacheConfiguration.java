@@ -25,6 +25,7 @@ import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
+import org.ehcache.impl.config.store.disk.OffHeapDiskStoreConfiguration;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -68,6 +69,7 @@ public class EhcacheConfiguration implements Named {
     /**
      * @return the configuration builder
      */
+    @SuppressWarnings("unchecked")
     public CacheConfigurationBuilder getBuilder() {
         ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder();
 
@@ -108,6 +110,10 @@ public class EhcacheConfiguration implements Named {
 
         if (this.heap != null && this.heap.getSizeOfMaxObjectSize() != null) {
             this.builder = this.builder.withSizeOfMaxObjectGraph(this.heap.getSizeOfMaxObjectSize());
+        }
+
+        if (this.disk != null && this.disk.getSegments() != null) {
+            this.builder = this.builder.withService(new OffHeapDiskStoreConfiguration(this.disk.getSegments()));
         }
 
         return this.builder;
@@ -282,6 +288,7 @@ public class EhcacheConfiguration implements Named {
         public static final String PREFIX = "disk";
 
         private Long maxSize;
+        private Integer segments;
 
         /**
          * @return The maximum size of the cache, in bytes
@@ -295,6 +302,20 @@ public class EhcacheConfiguration implements Named {
          */
         public void setMaxSize(@ReadableBytes Long maxSize) {
             this.maxSize = maxSize;
+        }
+
+        /**
+         * @return The disk segments used
+         */
+        public Integer getSegments() {
+            return segments;
+        }
+
+        /**
+         * @param segments The disk segments used
+         */
+        public void setSegments(Integer segments) {
+            this.segments = segments;
         }
     }
 }
