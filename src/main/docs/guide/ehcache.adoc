@@ -21,6 +21,8 @@ See the configuration reference to check all possible configuration options.
 Ehcache supports the concept of https://www.ehcache.org/documentation/3.8/tiering.html[tiered caching]. This library
 allows you to configure tiering caching options on a per-cache basis.
 
+If no tier is explicitly configured, the cache will be configured with a heap tier of 100 entries maximum.
+
 === Heap tier
 
 It can be sized by number of entries:
@@ -31,7 +33,7 @@ ehcache:
   caches:
     my-cache:
       heap:
-        max-entries: 100
+        max-entries: 5000
 ----
 
 Or by size:
@@ -42,5 +44,19 @@ ehcache:
   caches:
     my-cache:
       heap:
-        max-size: 15Mb
+        max-size: 200Mb
 ----
+
+=== Off-heap tier
+
+[source,yaml]
+----
+ehcache:
+  caches:
+    my-cache:
+      offheap:
+        max-size: 1Gb
+----
+
+Do not forget to define in the java options the `-XX:MaxDirectMemorySize` option, according to the off-heap size you
+intend to use.

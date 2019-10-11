@@ -6,7 +6,7 @@ import org.ehcache.config.units.EntryUnit
 import org.ehcache.config.units.MemoryUnit
 import spock.lang.Specification
 
-import static org.ehcache.config.ResourceType.Core.HEAP
+import static org.ehcache.config.ResourceType.Core.*
 
 class EhcacheCacheManagerSpec extends Specification {
 
@@ -28,7 +28,7 @@ class EhcacheCacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.keyType == Long
         cache.nativeCache.runtimeConfiguration.valueType == String
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
-        cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 10
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 100
     }
 
     void "it can create entries-based heap tiered cache"() {
@@ -60,4 +60,18 @@ class EhcacheCacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 15 * 1024 * 1024
     }
 
+    void "it can create an offheap tier"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run([
+                "ehcache.caches.foo.offheap.max-size": '23Mb'
+        ])
+
+        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
+        SyncCache cache = ehcacheManager.getCache('foo')
+
+        expect:
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].unit == MemoryUnit.B
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
+    }
 }
