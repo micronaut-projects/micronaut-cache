@@ -74,4 +74,19 @@ class EhcacheCacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
     }
+
+    void "it can create a disk tier"() {
+        ApplicationContext ctx = ApplicationContext.run([
+                "ehcache.caches.foo.disk.max-size": '50Mb',
+                "ehcache.storage-path": '/tmp'
+        ])
+
+        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
+        SyncCache cache = ehcacheManager.getCache('foo')
+
+        expect:
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
+        cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+    }
 }

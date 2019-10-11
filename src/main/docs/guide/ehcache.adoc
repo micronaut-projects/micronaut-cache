@@ -60,3 +60,15 @@ ehcache:
 
 Do not forget to define in the java options the `-XX:MaxDirectMemorySize` option, according to the off-heap size you
 intend to use.
+
+=== Disk tier
+
+[source,yaml]
+----
+ehcache:
+  storage-path: /var/caches
+  caches:
+    my-cache:
+      disk:
+        max-size: 10Gb
+----

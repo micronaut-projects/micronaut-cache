@@ -56,6 +56,7 @@ public class EhcacheConfiguration implements Named {
 
     private HeapTieredCacheConfiguration heap;
     private OffheapTieredCacheConfiguration offheap;
+    private DiskTieredCacheConfiguration disk;
 
     /**
      * @param name the cache name
@@ -90,6 +91,13 @@ public class EhcacheConfiguration implements Named {
             }
         }
 
+        if (this.disk != null) {
+            if (this.disk.getMaxSize() != null) {
+                resourcePoolsBuilder = resourcePoolsBuilder.disk(this.disk.getMaxSize(), MemoryUnit.B);
+                resourcePoolAdded = true;
+            }
+        }
+
         if (!resourcePoolAdded) {
             resourcePoolsBuilder = ResourcePoolsBuilder.heap(DEFAULT_MAX_ENTRIES);
         }
@@ -99,10 +107,17 @@ public class EhcacheConfiguration implements Named {
         // Cache configuration
 
         if (this.heap != null && this.heap.getSizeOfMaxObjectSize() != null) {
-            this.builder.withSizeOfMaxObjectGraph(this.heap.getSizeOfMaxObjectSize());
+            this.builder = this.builder.withSizeOfMaxObjectGraph(this.heap.getSizeOfMaxObjectSize());
         }
 
         return this.builder;
+    }
+
+    /**
+     * @param builder The cache configuration builder
+     */
+    public void setBuilder(CacheConfigurationBuilder builder) {
+        this.builder = builder;
     }
 
     @Nonnull
@@ -165,6 +180,20 @@ public class EhcacheConfiguration implements Named {
      */
     public void setOffheap(OffheapTieredCacheConfiguration offheap) {
         this.offheap = offheap;
+    }
+
+    /**
+     * @return the disk tier configuration
+     */
+    public DiskTieredCacheConfiguration getDisk() {
+        return disk;
+    }
+
+    /**
+     * @param disk the disk tier configuration
+     */
+    public void setDisk(DiskTieredCacheConfiguration disk) {
+        this.disk = disk;
     }
 
     /**
@@ -243,6 +272,29 @@ public class EhcacheConfiguration implements Named {
         public void setMaxSize(@ReadableBytes Long maxSize) {
             this.maxSize = maxSize;
         }
+    }
 
+    /**
+     * Disk tier configuration options.
+     */
+    @ConfigurationProperties(DiskTieredCacheConfiguration.PREFIX)
+    public static class DiskTieredCacheConfiguration {
+        public static final String PREFIX = "disk";
+
+        private Long maxSize;
+
+        /**
+         * @return The maximum size of the cache, in bytes
+         */
+        public Long getMaxSize() {
+            return maxSize;
+        }
+
+        /**
+         * @param maxSize The maximum size of the cache, in bytes
+         */
+        public void setMaxSize(@ReadableBytes Long maxSize) {
+            this.maxSize = maxSize;
+        }
     }
 }
