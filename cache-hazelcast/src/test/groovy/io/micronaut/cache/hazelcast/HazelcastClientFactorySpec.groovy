@@ -6,12 +6,6 @@ import io.micronaut.context.ApplicationContext
 import spock.lang.Shared
 import spock.lang.Specification
 
-/**
- * TODO: javadoc
- *
- * @author Nirav Assar
- * @since 1.0.0
- */
 class HazelcastClientFactorySpec extends Specification {
 
     @Shared

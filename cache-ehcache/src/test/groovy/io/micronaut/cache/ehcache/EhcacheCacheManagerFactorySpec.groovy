@@ -5,12 +5,6 @@ import org.ehcache.CacheManager
 import org.ehcache.Status
 import spock.lang.Specification
 
-/**
- * TODO: javadoc
- *
- * @author Álvaro Sánchez-Mariscal
- * @since 1.0.0
- */
 class EhcacheCacheManagerFactorySpec extends Specification {
 
     void "it creates a cache manager and initialises it"() {

@@ -15,6 +15,7 @@
  */
 package io.micronaut.cache.ehcache;
 
+import io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import org.ehcache.CacheManager;
@@ -42,6 +43,6 @@ public class EhcacheCacheManagerFactory {
      */
     @Bean
     public CacheManager cacheManager() {
-        return configuration.builder.build(true);
+        return configuration.getBuilder().build(true);
     }
 }
