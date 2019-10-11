@@ -18,6 +18,9 @@ class EhcacheClusteredSpec extends Specification {
         ApplicationContext ctx = ApplicationContext.run([
                 "ehcache.cluster.uri": "terracotta://localhost:${terracotta.firstMappedPort}/my-application",
                 "ehcache.cluster.default-server-resource": "offheap-1",
+                "ehcache.cluster.resource-pools.resource-pool-a.max-size": "8Mb",
+                "ehcache.cluster.resource-pools.resource-pool-a.server-resource": "offheap-2",
+                "ehcache.cluster.resource-pools.resource-pool-b.max-size": "10Mb",
                 "ehcache.caches.foo.enabled": true
         ])
         EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
@@ -27,5 +30,9 @@ class EhcacheClusteredSpec extends Specification {
         ehcacheManager.cacheManager.runtimeConfiguration.services[0] instanceof ClusteringServiceConfiguration
         ehcacheManager.cacheManager.runtimeConfiguration.services[0].connectionSource.clusterUri == URI.create("terracotta://localhost:${terracotta.firstMappedPort}/my-application")
         ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.defaultServerResource == "offheap-1"
+        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools.size() == 2
+        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-a'].size == 8 * 1024 * 1024
+        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-a'].serverResource == "offheap-2"
+        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-b'].size == 10 * 1024 * 1024
     }
 }

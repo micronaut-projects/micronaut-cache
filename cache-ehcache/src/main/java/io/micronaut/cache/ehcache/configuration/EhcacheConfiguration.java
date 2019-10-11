@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.cache.ehcache;
+package io.micronaut.cache.ehcache.configuration;
 
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
@@ -30,7 +30,7 @@ import org.ehcache.impl.config.store.disk.OffHeapDiskStoreConfiguration;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 
-import static io.micronaut.cache.ehcache.EhcacheConfiguration.PREFIX;
+import static io.micronaut.cache.ehcache.configuration.EhcacheConfiguration.PREFIX;
 
 /**
  * Configuration class for an Ehacahe-based cache.
@@ -206,11 +206,10 @@ public class EhcacheConfiguration implements Named {
      * Heap tier configuration properties.
      */
     @ConfigurationProperties(HeapTieredCacheConfiguration.PREFIX)
-    public static class HeapTieredCacheConfiguration {
+    public static class HeapTieredCacheConfiguration extends AbstractResourcePoolConfiguration {
         public static final String PREFIX = "heap";
 
         private Long maxEntries = DEFAULT_MAX_ENTRIES;
-        private Long maxSize;
         private Long sizeOfMaxObjectSize;
 
         /**
@@ -225,20 +224,6 @@ public class EhcacheConfiguration implements Named {
          */
         public void setMaxEntries(Long maxEntries) {
             this.maxEntries = maxEntries;
-        }
-
-        /**
-         * @return The maximum size of the cache, in bytes
-         */
-        public Long getMaxSize() {
-            return maxSize;
-        }
-
-        /**
-         * @param maxSize The maximum size of the cache, in bytes
-         */
-        public void setMaxSize(@ReadableBytes Long maxSize) {
-            this.maxSize = maxSize;
         }
 
         /**
@@ -260,49 +245,18 @@ public class EhcacheConfiguration implements Named {
      * Off-heap configuration options.
      */
     @ConfigurationProperties(OffheapTieredCacheConfiguration.PREFIX)
-    public static class OffheapTieredCacheConfiguration {
+    public static class OffheapTieredCacheConfiguration extends AbstractResourcePoolConfiguration {
         public static final String PREFIX = "offheap";
-
-        private Long maxSize;
-
-        /**
-         * @return The maximum size of the cache, in bytes
-         */
-        public Long getMaxSize() {
-            return maxSize;
-        }
-
-        /**
-         * @param maxSize The maximum size of the cache, in bytes
-         */
-        public void setMaxSize(@ReadableBytes Long maxSize) {
-            this.maxSize = maxSize;
-        }
     }
 
     /**
      * Disk tier configuration options.
      */
     @ConfigurationProperties(DiskTieredCacheConfiguration.PREFIX)
-    public static class DiskTieredCacheConfiguration {
+    public static class DiskTieredCacheConfiguration extends AbstractResourcePoolConfiguration {
         public static final String PREFIX = "disk";
 
-        private Long maxSize;
         private Integer segments;
-
-        /**
-         * @return The maximum size of the cache, in bytes
-         */
-        public Long getMaxSize() {
-            return maxSize;
-        }
-
-        /**
-         * @param maxSize The maximum size of the cache, in bytes
-         */
-        public void setMaxSize(@ReadableBytes Long maxSize) {
-            this.maxSize = maxSize;
-        }
 
         /**
          * @return The disk segments used
