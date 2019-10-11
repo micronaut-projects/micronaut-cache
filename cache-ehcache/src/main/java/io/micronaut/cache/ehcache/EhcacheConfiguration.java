@@ -64,7 +64,6 @@ public class EhcacheConfiguration implements Named {
 
     public CacheConfigurationBuilder getBuilder() {
         ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.heap(DEFAULT_MAX_ENTRIES);
-        CacheConfigurationBuilder cacheConfigurationBuilder;
         if (this.heap != null) {
             if (this.heap.getMaxSize() != null) {
                 resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder().heap(this.heap.getMaxSize(), MemoryUnit.B);
@@ -72,13 +71,13 @@ public class EhcacheConfiguration implements Named {
                 resourcePoolsBuilder = ResourcePoolsBuilder.heap(this.heap.getMaxEntries());
             }
         }
-        cacheConfigurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(keyType, valueType, resourcePoolsBuilder);
+        this.builder = CacheConfigurationBuilder.newCacheConfigurationBuilder(keyType, valueType, resourcePoolsBuilder);
 
         if (this.heap != null && this.heap.getSizeOfMaxObjectSize() != null) {
-            cacheConfigurationBuilder.withSizeOfMaxObjectGraph(this.heap.getSizeOfMaxObjectSize());
+            this.builder.withSizeOfMaxObjectGraph(this.heap.getSizeOfMaxObjectSize());
         }
 
-        return cacheConfigurationBuilder;
+        return this.builder;
     }
 
     @Nonnull

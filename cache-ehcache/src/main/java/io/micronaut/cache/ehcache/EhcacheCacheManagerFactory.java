@@ -42,6 +42,6 @@ public class EhcacheCacheManagerFactory {
      */
     @Bean
     public CacheManager cacheManager() {
-        return configuration.builder.build(true);
+        return configuration.getBuilder().build(true);
     }
 }

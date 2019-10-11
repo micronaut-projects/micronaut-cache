@@ -17,7 +17,9 @@ package io.micronaut.cache.ehcache;
 
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.core.convert.format.ReadableBytes;
 import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.units.MemoryUnit;
 
 import static io.micronaut.cache.ehcache.EhcacheCacheManagerConfiguration.PREFIX;
 
@@ -33,7 +35,30 @@ public class EhcacheCacheManagerConfiguration {
 
     public static final String PREFIX = "ehcache";
 
-    @ConfigurationBuilder(prefixes = "with")
-    CacheManagerBuilder builder = CacheManagerBuilder.newCacheManagerBuilder();
+    @ConfigurationBuilder(prefixes = "with", excludes = "")
+    private CacheManagerBuilder builder;
 
+    private Long defaultSizeOfMaxObjectSize;
+
+    public CacheManagerBuilder getBuilder() {
+        if (this.builder == null) {
+            this.builder = CacheManagerBuilder.newCacheManagerBuilder();
+        }
+        if (this.defaultSizeOfMaxObjectSize != null) {
+            this.builder.withDefaultSizeOfMaxObjectSize(this.defaultSizeOfMaxObjectSize, MemoryUnit.B);
+        }
+        return builder;
+    }
+
+    public void setBuilder(CacheManagerBuilder builder) {
+        this.builder = builder;
+    }
+
+    public Long getDefaultSizeOfMaxObjectSize() {
+        return defaultSizeOfMaxObjectSize;
+    }
+
+    public void setDefaultSizeOfMaxObjectSize(@ReadableBytes Long defaultSizeOfMaxObjectSize) {
+        this.defaultSizeOfMaxObjectSize = defaultSizeOfMaxObjectSize;
+    }
 }
