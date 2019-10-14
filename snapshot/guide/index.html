@@ -816,7 +816,7 @@ Micronaut Framework on bean creation of <code>HazelcastClientConfiguration</code
     @Override
     public HazelcastClientConfiguration onCreated(BeanCreatedEvent&lt;HazelcastClientConfiguration&gt; event) {
         HazelcastClientConfiguration configuration = event.getBean();
-        configuration.getGrouConfig().setName("myName");
+        configuration.getGroupConfig().setName("myName");
     }
 }</code></pre>
 </div>
