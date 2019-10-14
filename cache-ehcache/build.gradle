@@ -5,11 +5,12 @@ dependencies {
     compileOnly "io.micronaut:micronaut-inject-java:$micronautVersion"
 
     compile "io.micronaut:micronaut-runtime:$micronautVersion"
-    compile "org.ehcache:ehcache:$ehcacheVersion"
+    compile "org.ehcache:ehcache-clustered:$ehcacheVersion"
 
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 
     testCompile "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testCompile "io.micronaut:micronaut-inject-java:$micronautVersion"
     testCompile "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+    testCompile "org.testcontainers:spock:$testcontainersVersion"
 }
