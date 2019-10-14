@@ -38,7 +38,7 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener<Haz
     @Override
     public HazelcastClientConfiguration onCreated(BeanCreatedEvent<HazelcastClientConfiguration> event) {
         HazelcastClientConfiguration configuration = event.getBean();
-        configuration.getGrouConfig().setName("myName");
+        configuration.getGroupConfig().setName("myName");
     }
 }
 ----
