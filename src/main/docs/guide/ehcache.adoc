@@ -14,6 +14,114 @@ ehcache:
 
 Then, you can use any of the caching annotations with `my-cache` as cache name.
 
-The full list of configuration options is:
+See the configuration reference to check all possible configuration options.
 
-include::{includedir}configurationProperties/io.micronaut.cache.ehcache.EhcacheConfiguration.adoc[]
+== Tiering options
+
+Ehcache supports the concept of https://www.ehcache.org/documentation/3.8/tiering.html[tiered caching]. This library
+allows you to configure tiering caching options on a per-cache basis.
+
+If no tier is explicitly configured, the cache will be configured with a heap tier of 100 entries maximum.
+
+=== Heap tier
+
+It can be sized by number of entries:
+
+[source,yaml]
+----
+ehcache:
+  caches:
+    my-cache:
+      heap:
+        max-entries: 5000
+----
+
+Or by size:
+
+[source,yaml]
+----
+ehcache:
+  caches:
+    my-cache:
+      heap:
+        max-size: 200Mb
+----
+
+=== Off-heap tier
+
+[source,yaml]
+----
+ehcache:
+  caches:
+    my-cache:
+      offheap:
+        max-size: 1Gb
+----
+
+Do not forget to define in the java options the `-XX:MaxDirectMemorySize` option, according to the off-heap size you
+intend to use.
+
+=== Disk tier
+
+[source,yaml]
+----
+ehcache:
+  storage-path: /var/caches
+  caches:
+    my-cache:
+      disk:
+        max-size: 10Gb
+----
+
+=== Clustered tier
+
+Ehcache supports distributed caching with http://www.terracotta.org[Terracotta]
+
+This is a complete example configuration:
+
+[source,yaml]
+----
+ehcache:
+  cluster:
+    uri: terracotta://localhost/my-application
+    default-server-resource: offheap-1
+    resource-pools:
+      resource-pool-a:
+        max-size: 8Mb
+        server-resource: offheap-2
+      resource-pool-b:
+        max-size: 10Mb
+  caches:
+    clustered-cache:
+      clustered-dedicated:
+        server-resource: offheap-1
+        max-size: 8Mb
+    shared-cache-1:
+      clustered-shared:
+        server-resource: resource-pool-a
+    shared-cache-3:
+      clustered-shared:
+        server-resource: resource-pool-b
+----
+
+=== Multiple tier setup
+
+A cache can be configured with multiple tiers. Read the
+https://www.ehcache.org/documentation/3.8/tiering.html#multiple-tier-setup[Ehcache documentation] on the valid configuration
+options.
+
+For example, to configure a heap + offheap + disk cache:
+
+[source,yaml]
+----
+ehcache:
+  storage-path: /var/caches
+  caches:
+    my-cache:
+      heap:
+        max-size: 200Mb
+      offheap:
+        max-size: 1Gb
+      disk:
+        max-size: 10Gb
+----
