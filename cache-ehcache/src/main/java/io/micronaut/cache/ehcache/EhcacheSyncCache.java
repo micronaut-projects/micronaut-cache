@@ -16,6 +16,7 @@
 package io.micronaut.cache.ehcache;
 
 import io.micronaut.cache.SyncCache;
+import io.micronaut.cache.ehcache.configuration.EhcacheConfiguration;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;

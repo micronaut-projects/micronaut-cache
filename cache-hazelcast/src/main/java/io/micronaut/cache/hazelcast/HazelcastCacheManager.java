@@ -41,7 +41,7 @@ import java.util.concurrent.ExecutorService;
  */
 @Replaces(DefaultCacheManager.class)
 @Primary
-public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap<Object, Object>>, Closeable {
+public class HazelcastCacheManager implements io.micronaut.cache.CacheManager<IMap<Object, Object>>, Closeable {
 
     private Map<String, HazelcastSyncCache> cacheMap;
     private final ConversionService<?> conversionService;
@@ -55,9 +55,9 @@ public class HazelcastManager implements io.micronaut.cache.CacheManager<IMap<Ob
      * @param hazelcastClientInstance the client instance of hazelcast client
      * @param executorService managers the pool of executors
      */
-    public HazelcastManager(ConversionService<?> conversionService,
-                            HazelcastInstance hazelcastClientInstance,
-                            @Named("io") ExecutorService executorService) {
+    public HazelcastCacheManager(ConversionService<?> conversionService,
+                                 HazelcastInstance hazelcastClientInstance,
+                                 @Named("io") ExecutorService executorService) {
         this.conversionService = conversionService;
         this.executorService = executorService;
         this.cacheMap = new HashMap<>();

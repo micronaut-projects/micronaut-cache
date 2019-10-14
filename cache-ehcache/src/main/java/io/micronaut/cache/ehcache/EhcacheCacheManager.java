@@ -17,8 +17,10 @@ package io.micronaut.cache.ehcache;
 
 import io.micronaut.cache.DefaultCacheManager;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.cache.ehcache.configuration.EhcacheConfiguration;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.scheduling.TaskExecutors;
 import org.ehcache.Cache;
@@ -43,7 +45,7 @@ import java.util.stream.Collectors;
  */
 @Replaces(DefaultCacheManager.class)
 @Primary
-public class EhcacheManager implements io.micronaut.cache.CacheManager<Cache>, Closeable {
+public class EhcacheCacheManager implements io.micronaut.cache.CacheManager<Cache>, Closeable {
 
     private final CacheManager cacheManager;
     private final ConversionService<?> conversionService;
@@ -57,10 +59,10 @@ public class EhcacheManager implements io.micronaut.cache.CacheManager<Cache>, C
      * @param conversionService the conversion service
      * @param cacheConfigurations the cache configuration
      */
-    public EhcacheManager(@Nonnull CacheManager cacheManager,
-                          @Nonnull @Named(TaskExecutors.IO) ExecutorService executorService,
-                          @Nonnull ConversionService<?> conversionService,
-                          @Nonnull List<EhcacheConfiguration> cacheConfigurations) {
+    public EhcacheCacheManager(@Nonnull CacheManager cacheManager,
+                               @Nonnull @Named(TaskExecutors.IO) ExecutorService executorService,
+                               @Nonnull ConversionService<?> conversionService,
+                               @Nonnull List<EhcacheConfiguration> cacheConfigurations) {
         this.cacheManager = cacheManager;
         this.conversionService = conversionService;
         this.executorService = executorService;
@@ -83,9 +85,13 @@ public class EhcacheManager implements io.micronaut.cache.CacheManager<Cache>, C
         EhcacheSyncCache syncCache = this.cacheMap.get(name);
         if (syncCache == null) {
             EhcacheConfiguration configuration = cacheConfigurations.get(name);
-            Cache nativeCache = this.cacheManager.createCache(name, configuration.builder.build());
-            syncCache = new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService);
-            this.cacheMap.put(name, syncCache);
+            if (configuration != null) {
+                Cache nativeCache = this.cacheManager.createCache(name, configuration.getBuilder());
+                syncCache = new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService);
+                this.cacheMap.put(name, syncCache);
+            } else {
+                throw new ConfigurationException("No cache configured for name: " + name);
+            }
         }
         return syncCache;
     }
