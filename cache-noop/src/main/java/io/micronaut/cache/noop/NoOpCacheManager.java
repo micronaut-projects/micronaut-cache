@@ -21,9 +21,9 @@ import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A no operation {@link io.micronaut.cache.CacheManager} implementation suitable for disabling caching.
@@ -41,7 +41,7 @@ public class NoOpCacheManager implements io.micronaut.cache.CacheManager<Object>
      * Constructor.
      */
     public NoOpCacheManager() {
-        this.cacheMap = new HashMap<>();
+        this.cacheMap = new ConcurrentHashMap<>();
     }
 
     @Nonnull
