@@ -34,6 +34,8 @@ public class NoOpSyncCache implements SyncCache<Object> {
 
     /**
      * Constructor.
+     *
+     * @param name the cache name
      */
     public NoOpSyncCache(String name) {
         this.name = name;
