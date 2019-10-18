@@ -16,33 +16,53 @@
 package io.micronaut.cache.ehcache;
 
 import io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration;
+import io.micronaut.cache.ehcache.configuration.EhcacheConfiguration;
 import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Parameter;
+import io.micronaut.core.convert.ConversionService;
+import io.micronaut.scheduling.TaskExecutors;
+import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.concurrent.ExecutorService;
+
 /**
- * Factory class that creates a Ehcache {@link CacheManager}.
+ * Factory class that creates an Ehcache {@link CacheManager} and {@link EhcacheSyncCache} beans.
  *
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
  */
 @Factory
-public class EhcacheCacheManagerFactory {
+public class EhcacheCacheFactory {
 
     private EhcacheCacheManagerConfiguration configuration;
 
     /**
      * @param configuration the configuration
      */
-    public EhcacheCacheManagerFactory(EhcacheCacheManagerConfiguration configuration) {
+    public EhcacheCacheFactory(EhcacheCacheManagerConfiguration configuration) {
         this.configuration = configuration;
     }
 
     /**
      * @return The {@link CacheManager}
      */
-    @Bean
+    @Singleton
+    @Bean(preDestroy = "close")
     public CacheManager cacheManager() {
         return configuration.getBuilder().build(true);
+    }
+
+    @EachBean(EhcacheConfiguration.class)
+    EhcacheSyncCache syncCache(@Parameter EhcacheConfiguration configuration,
+                               CacheManager cacheManager,
+                               ConversionService<?> conversionService,
+                               @Named(TaskExecutors.IO) ExecutorService executorService) {
+        Cache<?, ?> nativeCache = cacheManager.createCache(configuration.getName(), configuration.getBuilder());
+        return new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService);
     }
 }
