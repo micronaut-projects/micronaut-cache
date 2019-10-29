@@ -17,8 +17,14 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
+import com.hazelcast.client.config.SocketOptions;
+import com.hazelcast.config.ConfigPatternMatcher;
+import com.hazelcast.config.GroupConfig;
+import com.hazelcast.config.SocketInterceptorConfig;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
+
+import javax.annotation.Nullable;
 
 /**
  * Configuration class for an Hazelcast as a client.
@@ -26,16 +32,26 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  * @author Nirav Assar
  * @since 1.0.0
  */
-@ConfigurationProperties("hazelcast")
+@ConfigurationProperties(value = "hazelcast.client", includes = {"properties", "executorPoolSize", "licenseKey", "instanceName",
+    "labels", "userContext"})
 public class HazelcastClientConfiguration extends ClientConfig {
 
-    @ConfigurationBuilder("network")
+    @ConfigurationBuilder(value = "network", includes = {"smartRouting", "connectionAttemptPeriod", "connectionAttemptLimit",
+        "connectionTimeout", "addresses", "redoOperation", "outboundPortDefinitions", "outboundPorts"})
     ClientNetworkConfig networkConfig = new ClientNetworkConfig();
+
+    @ConfigurationBuilder("network.socket")
+    SocketOptions socketOptions = new SocketOptions();
+
+    @ConfigurationBuilder("group")
+    GroupConfig groupConfig = new GroupConfig();
 
     /**
      * Default constructor.
      */
     HazelcastClientConfiguration() {
+        networkConfig.setSocketOptions(socketOptions);
         super.setNetworkConfig(networkConfig);
+        super.setGroupConfig(groupConfig);
     }
 }

@@ -17,20 +17,14 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import io.micronaut.cache.DefaultCacheManager;
+import io.micronaut.cache.DynamicCacheManager;
 import io.micronaut.cache.SyncCache;
-import io.micronaut.context.annotation.Primary;
-import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.scheduling.TaskExecutors;
 
 import javax.annotation.Nonnull;
 import javax.inject.Named;
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -39,11 +33,9 @@ import java.util.concurrent.ExecutorService;
  * @author Nirav Assar
  * @since 1.0.0
  */
-@Replaces(DefaultCacheManager.class)
-@Primary
-public class HazelcastCacheManager implements io.micronaut.cache.CacheManager<IMap<Object, Object>>, Closeable {
+@Singleton
+public class HazelcastCacheManager implements DynamicCacheManager<IMap<Object, Object>> {
 
-    private Map<String, HazelcastSyncCache> cacheMap;
     private final ConversionService<?> conversionService;
     private final ExecutorService executorService;
     private final HazelcastInstance hazelcastClientInstance;
@@ -57,36 +49,17 @@ public class HazelcastCacheManager implements io.micronaut.cache.CacheManager<IM
      */
     public HazelcastCacheManager(ConversionService<?> conversionService,
                                  HazelcastInstance hazelcastClientInstance,
-                                 @Named("io") ExecutorService executorService) {
+                                 @Named(TaskExecutors.IO) ExecutorService executorService) {
         this.conversionService = conversionService;
         this.executorService = executorService;
-        this.cacheMap = new HashMap<>();
         this.hazelcastClientInstance = hazelcastClientInstance;
-    }
-
-    @Nonnull
-    @Override
-    public Set<String> getCacheNames() {
-        Set<String> names = new HashSet<String>();
-        names.add(this.hazelcastClientInstance.getName());
-        return names;
     }
 
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
     public SyncCache<IMap<Object, Object>> getCache(String name) {
-        HazelcastSyncCache syncCache = this.cacheMap.get(name);
-        if (syncCache == null) {
-            IMap<Object, Object> nativeCache = hazelcastClientInstance.getMap(name);
-            syncCache = new HazelcastSyncCache(conversionService, nativeCache, executorService);
-            this.cacheMap.put(name, syncCache);
-        }
-        return syncCache;
-    }
-
-    @Override
-    public void close() throws IOException {
-        hazelcastClientInstance.shutdown();
+        IMap<Object, Object> nativeCache = hazelcastClientInstance.getMap(name);
+        return new HazelcastSyncCache(conversionService, nativeCache, executorService);
     }
 }
