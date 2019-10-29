@@ -18,13 +18,9 @@ package io.micronaut.cache.hazelcast;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
 import com.hazelcast.client.config.SocketOptions;
-import com.hazelcast.config.ConfigPatternMatcher;
 import com.hazelcast.config.GroupConfig;
-import com.hazelcast.config.SocketInterceptorConfig;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
-
-import javax.annotation.Nullable;
 
 /**
  * Configuration class for an Hazelcast as a client.

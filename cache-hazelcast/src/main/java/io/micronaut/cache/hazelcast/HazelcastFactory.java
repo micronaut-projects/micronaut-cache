@@ -18,7 +18,6 @@ package io.micronaut.cache.hazelcast;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
-import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 
 import javax.inject.Singleton;

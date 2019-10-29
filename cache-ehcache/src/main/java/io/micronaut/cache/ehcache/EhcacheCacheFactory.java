@@ -57,6 +57,15 @@ public class EhcacheCacheFactory {
         return configuration.getBuilder().build(true);
     }
 
+    /**
+     * Creates a cache instance based on configuration.
+     *
+     * @param configuration     The configuration
+     * @param cacheManager      The cache manager
+     * @param conversionService The conversion service
+     * @param executorService   The executor
+     * @return The sync cache
+     */
     @EachBean(EhcacheConfiguration.class)
     EhcacheSyncCache syncCache(@Parameter EhcacheConfiguration configuration,
                                CacheManager cacheManager,
