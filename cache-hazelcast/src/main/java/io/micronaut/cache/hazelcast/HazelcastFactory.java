@@ -16,7 +16,9 @@
 package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
+import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 
 import javax.inject.Singleton;
@@ -28,16 +30,16 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Factory
-public class HazelcastClientFactory {
+public class HazelcastFactory {
 
     /**
      * Create a singleton {@link HazelcastInstance} client, based on configuration.
      *
-     * @param hazelcastClientConfiguration the configuration read it as a bean
+     * @param clientConfig the configuration read it as a bean
      * @return {@link HazelcastInstance}
      */
     @Singleton
-    public HazelcastInstance hazelcastClientInstance(HazelcastClientConfiguration hazelcastClientConfiguration) {
-        return HazelcastClient.newHazelcastClient(hazelcastClientConfiguration);
+    public HazelcastInstance hazelcastClientInstance(ClientConfig clientConfig) {
+        return HazelcastClient.newHazelcastClient(clientConfig);
     }
 }
