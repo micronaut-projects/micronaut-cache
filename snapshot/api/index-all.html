@@ -67,7 +67,7 @@
 <!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a name="I:A">
+<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a name="I:A">
 <!--   -->
 </a>
 <h2 class="title">A</h2>
@@ -86,7 +86,7 @@
 </a>
 <h2 class="title">C</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html#cacheManager--">cacheManager()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManagerFactory</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheFactory.html#cacheManager--">cacheManager()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheFactory.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheFactory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/ehcache/serialization/CharSequenceSerializer.html" title="class in io.micronaut.cache.ehcache.serialization"><span class="typeNameLink">CharSequenceSerializer</span></a> - Class in <a href="io/micronaut/cache/ehcache/serialization/package-summary.html">io.micronaut.cache.ehcache.serialization</a></dt>
 <dd>
@@ -97,13 +97,11 @@
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html#close--">close()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManager</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html#close--">close()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastCacheManager</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration.html#ClusteredDedicatedResourcePoolConfiguration--">ClusteredDedicatedResourcePoolConfiguration()</a></span> - Constructor for class io.micronaut.cache.ehcache.configuration.<a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration">EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredSharedResourcePoolConfiguration.html#ClusteredSharedResourcePoolConfiguration--">ClusteredSharedResourcePoolConfiguration()</a></span> - Constructor for class io.micronaut.cache.ehcache.configuration.<a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredSharedResourcePoolConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration">EhcacheConfiguration.ClusteredSharedResourcePoolConfiguration</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/converters/MapToConcurrentMapConverter.html#convert-java.util.Map-java.lang.Class-io.micronaut.core.convert.ConversionContext-">convert(Map, Class&lt;ConcurrentMap&gt;, ConversionContext)</a></span> - Method in class io.micronaut.cache.hazelcast.converters.<a href="io/micronaut/cache/hazelcast/converters/MapToConcurrentMapConverter.html" title="class in io.micronaut.cache.hazelcast.converters">MapToConcurrentMapConverter</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a name="I:D">
@@ -125,11 +123,11 @@
 </a>
 <h2 class="title">E</h2>
 <dl>
-<dt><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheCacheManager</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
+<dt><a href="io/micronaut/cache/ehcache/EhcacheCacheFactory.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheCacheFactory</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
 <dd>
-<div class="block">A <code>CacheManager</code> implementation for Ehcache.</div>
+<div class="block">Factory class that creates an Ehcache <code>CacheManager</code> and <a href="io/micronaut/cache/ehcache/EhcacheSyncCache.html" title="class in io.micronaut.cache.ehcache"><code>EhcacheSyncCache</code></a> beans.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html#EhcacheCacheManager-org.ehcache.CacheManager-java.util.concurrent.ExecutorService-io.micronaut.core.convert.ConversionService-java.util.List-">EhcacheCacheManager(CacheManager, ExecutorService, ConversionService&lt;?&gt;, List&lt;EhcacheConfiguration&gt;)</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManager</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheFactory.html#EhcacheCacheFactory-io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration-">EhcacheCacheFactory(EhcacheCacheManagerConfiguration)</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheFactory.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheFactory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration"><span class="typeNameLink">EhcacheCacheManagerConfiguration</span></a> - Class in <a href="io/micronaut/cache/ehcache/configuration/package-summary.html">io.micronaut.cache.ehcache.configuration</a></dt>
 <dd>
@@ -141,12 +139,6 @@
 <dd>
 <div class="block">Clustering configuration.</div>
 </dd>
-<dt><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheCacheManagerFactory</span></a> - Class in <a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a></dt>
-<dd>
-<div class="block">Factory class that creates a Ehcache <code>CacheManager</code>.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html#EhcacheCacheManagerFactory-io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration-">EhcacheCacheManagerFactory(EhcacheCacheManagerConfiguration)</a></span> - Constructor for class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManagerFactory.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManagerFactory</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.EhcacheClusterConfiguration.html#EhcacheClusterConfiguration--">EhcacheClusterConfiguration()</a></span> - Constructor for class io.micronaut.cache.ehcache.configuration.<a href="io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.EhcacheClusterConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration">EhcacheCacheManagerConfiguration.EhcacheClusterConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/ehcache/configuration/EhcacheClusterResourcePoolConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration"><span class="typeNameLink">EhcacheClusterResourcePoolConfiguration</span></a> - Class in <a href="io/micronaut/cache/ehcache/configuration/package-summary.html">io.micronaut.cache.ehcache.configuration</a></dt>
@@ -211,13 +203,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.html#getBuilder--">getBuilder()</a></span> - Method in class io.micronaut.cache.ehcache.configuration.<a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration">EhcacheConfiguration</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html#getCache-java.lang.String-">getCache(String)</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManager</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html#getCache-java.lang.String-">getCache(String)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastCacheManager</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html#getCacheNames--">getCacheNames()</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheManager.html" title="class in io.micronaut.cache.ehcache">EhcacheCacheManager</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html#getCacheNames--">getCacheNames()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastCacheManager.html" title="class in io.micronaut.cache.hazelcast">HazelcastCacheManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.html#getCluster--">getCluster()</a></span> - Method in class io.micronaut.cache.ehcache.configuration.<a href="io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration">EhcacheCacheManagerConfiguration</a></dt>
 <dd>&nbsp;</dd>
@@ -299,16 +285,16 @@
 <dd>
 <div class="block">Configuration class for an Hazelcast as a client.</div>
 </dd>
-<dt><a href="io/micronaut/cache/hazelcast/HazelcastClientFactory.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastClientFactory</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
-<dd>
-<div class="block">Factory class that creates a <code>HazelcastInstance</code>.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastClientFactory.html#HazelcastClientFactory--">HazelcastClientFactory()</a></span> - Constructor for class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastClientFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastClientFactory</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastClientFactory.html#hazelcastClientInstance-io.micronaut.cache.hazelcast.HazelcastClientConfiguration-">hazelcastClientInstance(HazelcastClientConfiguration)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastClientFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastClientFactory</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastClientInstance-com.hazelcast.client.config.ClientConfig-">hazelcastClientInstance(ClientConfig)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastFactory</a></dt>
 <dd>
 <div class="block">Create a singleton <code>HazelcastInstance</code> client, based on configuration.</div>
 </dd>
+<dt><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastFactory</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
+<dd>
+<div class="block">Factory class that creates a <code>HazelcastInstance</code>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html#HazelcastFactory--">HazelcastFactory()</a></span> - Constructor for class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastFactory</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/hazelcast/HazelcastSyncCache.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastSyncCache</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
 <dd>
 <div class="block">A <code>SyncCache</code> implementation based on Hazelcast.</div>
@@ -336,12 +322,32 @@
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastSyncCache.html#invalidateAll--">invalidateAll()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastSyncCache.html" title="class in io.micronaut.cache.hazelcast">HazelcastSyncCache</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/ehcache/package-summary.html">io.micronaut.cache.ehcache</a> - package io.micronaut.cache.ehcache</dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Classes related to the integration of Ehcache caches into Micronaut's
+ cache manager.</div>
+</dd>
 <dt><a href="io/micronaut/cache/ehcache/configuration/package-summary.html">io.micronaut.cache.ehcache.configuration</a> - package io.micronaut.cache.ehcache.configuration</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/ehcache/serialization/package-summary.html">io.micronaut.cache.ehcache.serialization</a> - package io.micronaut.cache.ehcache.serialization</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a> - package io.micronaut.cache.hazelcast</dt>
+<dd>
+<div class="block">Classes related to the integration of Hazelcast caches into Micronaut's
+ cache manager.</div>
+</dd>
+<dt><a href="io/micronaut/cache/hazelcast/converters/package-summary.html">io.micronaut.cache.hazelcast.converters</a> - package io.micronaut.cache.hazelcast.converters</dt>
+<dd>&nbsp;</dd>
+</dl>
+<a name="I:M">
+<!--   -->
+</a>
+<h2 class="title">M</h2>
+<dl>
+<dt><a href="io/micronaut/cache/hazelcast/converters/MapToConcurrentMapConverter.html" title="class in io.micronaut.cache.hazelcast.converters"><span class="typeNameLink">MapToConcurrentMapConverter</span></a> - Class in <a href="io/micronaut/cache/hazelcast/converters/package-summary.html">io.micronaut.cache.hazelcast.converters</a></dt>
+<dd>
+<div class="block">Converts a map to a concurrent map.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/converters/MapToConcurrentMapConverter.html#MapToConcurrentMapConverter--">MapToConcurrentMapConverter()</a></span> - Constructor for class io.micronaut.cache.hazelcast.converters.<a href="io/micronaut/cache/hazelcast/converters/MapToConcurrentMapConverter.html" title="class in io.micronaut.cache.hazelcast.converters">MapToConcurrentMapConverter</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a name="I:O">
@@ -446,7 +452,7 @@
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.html#setValueType-java.lang.Class-">setValueType(Class&lt;?&gt;)</a></span> - Method in class io.micronaut.cache.ehcache.configuration.<a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration">EhcacheConfiguration</a></dt>
 <dd>&nbsp;</dd>
 </dl>
-<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;</div>
+<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;</div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">
 <!--   -->
