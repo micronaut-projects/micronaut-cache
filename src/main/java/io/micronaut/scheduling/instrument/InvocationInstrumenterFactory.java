@@ -13,34 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.reactive.rxjava2;
+package io.micronaut.scheduling.instrument;
 
-import io.micronaut.core.annotation.Internal;
-import org.reactivestreams.Subscription;
+import java.util.Optional;
 
 /**
- * Helper methods for instrumented components.
+ * An factory interface for invocation instrumentation, factory method decides if instrumentation is needed.
  *
- * @author graemerocher
- * @since 1.1
+ * @author Denis Stepanov
+ * @since 1.3
  */
-@Internal
-interface InstrumentedComponent {
+public interface InvocationInstrumenterFactory {
 
     /**
-     * Validate the throwable.
-     *
-     * @param t The throwable
+     * An optional invocation instrumentation.
+     * @return An optional invocation instrumentation.
      */
-    void onStateError(Throwable t);
-
-    /**
-     * Validates the subscriptions.
-     *
-     * @param upstream     The upstream
-     * @param subscription The downstream
-     * @return True if they are valid
-     */
-    boolean validate(Subscription upstream, Subscription subscription);
+    Optional<InvocationInstrumenter> newInvocationInstrumenter();
 
 }
