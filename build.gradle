@@ -60,7 +60,7 @@ subprojects { Project subproject ->
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
-    apply from: "https://raw.githubusercontent.com/micronaut-projects/micronaut-core/db49e046d5eb145f63a9a01916d7b3ed9c92af50/gradle/publishing.gradle"
+    apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/02a1aab7ec29ae19e6c9464ee9ea9676ea697a21/publishing.gradle"
 
     jar {
         manifest {
@@ -132,7 +132,7 @@ subprojects { Project subproject ->
 
     checkstyle {
         toolVersion = 8.10
-        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 
         // Per submodule
         maxErrors = 0
