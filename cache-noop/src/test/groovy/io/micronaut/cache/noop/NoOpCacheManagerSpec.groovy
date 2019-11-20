@@ -30,7 +30,9 @@ class NoOpCacheManagerSpec extends Specification {
     NoOpCacheManager cacheManager
 
     def setupSpec() {
-        ApplicationContext ctx = ApplicationContext.run(ApplicationContext)
+        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+                "noop-cache.enabled": true
+        ])
         this.cacheManager = ctx.getBean(NoOpCacheManager)
     }
 

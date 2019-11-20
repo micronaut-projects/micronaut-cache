@@ -20,6 +20,8 @@ import io.micronaut.cache.SyncCache;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.util.StringUtils;
 import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0.0
  */
 @Replaces(DefaultCacheManager.class)
+@Requires(property = "noop-cache.enabled", value = StringUtils.TRUE)
 @Primary
 public class NoOpCacheManager implements io.micronaut.cache.CacheManager<Object> {
 
