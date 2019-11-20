@@ -1,5 +1,6 @@
 package io.micronaut.cache.ehcache
 
+import io.micronaut.cache.CacheManager
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.config.units.EntryUnit
@@ -8,7 +9,7 @@ import spock.lang.Specification
 
 import static org.ehcache.config.ResourceType.Core.*
 
-class EhcacheCacheManagerSpec extends Specification {
+class CacheManagerSpec extends Specification {
 
     void "it create caches from configuration"() {
         given:
@@ -18,13 +19,13 @@ class EhcacheCacheManagerSpec extends Specification {
         ])
 
         when:
-        EhcacheCacheManager ehcacheCacheManager = ctx.getBean(EhcacheCacheManager)
+        CacheManager cacheManager = ctx.getBean(CacheManager)
 
         then:
-        ehcacheCacheManager.cacheNames == ['foo'].toSet()
+        cacheManager.cacheNames == ['foo'].toSet()
 
         and:
-        SyncCache cache = ehcacheCacheManager.getCache('foo')
+        SyncCache cache = cacheManager.getCache('foo')
         cache.nativeCache.runtimeConfiguration.keyType == Long
         cache.nativeCache.runtimeConfiguration.valueType == String
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
@@ -36,8 +37,8 @@ class EhcacheCacheManagerSpec extends Specification {
         ApplicationContext ctx = ApplicationContext.run([
                 "ehcache.caches.foo.heap.max-entries": 27
         ])
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache cache = ehcacheManager.getCache('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
@@ -51,8 +52,8 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.caches.foo.heap.max-size": '15Mb'
         ])
 
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache cache = ehcacheManager.getCache('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
@@ -66,8 +67,8 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.caches.foo.offheap.max-size": '23Mb'
         ])
 
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache cache = ehcacheManager.getCache('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
@@ -81,8 +82,8 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.storage-path": "/tmp/${System.currentTimeMillis()}"
         ])
 
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache cache = ehcacheManager.getCache('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
@@ -97,8 +98,8 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.storage-path": "/tmp/${System.currentTimeMillis()}"
         ])
 
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache cache = ehcacheManager.getCache('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
         cache.nativeCache.runtimeConfiguration.config.serviceConfigurations[0].diskSegments == 2
@@ -110,8 +111,8 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.caches.foo.heap.max-entries": 27,
                 "ehcache.caches.foo.offheap.max-size": '23Mb'
         ])
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache cache = ehcacheManager.getCache('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 2
@@ -129,8 +130,8 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.caches.foo.disk.max-size": '50Mb',
                 "ehcache.storage-path": "/tmp/${System.currentTimeMillis()}"
         ])
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache cache = ehcacheManager.getCache('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 3
@@ -149,8 +150,8 @@ class EhcacheCacheManagerSpec extends Specification {
                 "ehcache.caches.foo.disk.max-size": '50Mb',
                 "ehcache.storage-path": "/tmp/${System.currentTimeMillis()}"
         ])
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache cache = ehcacheManager.getCache('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 2
