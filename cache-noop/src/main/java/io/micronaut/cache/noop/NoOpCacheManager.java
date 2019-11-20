@@ -30,6 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A no operation {@link io.micronaut.cache.CacheManager} implementation suitable for disabling caching.
  *
+ * <p>Will simply accept any items into the cache without actually storing them.
+ *
  * @author Marcel Overdijk
  * @since 1.0.0
  */
