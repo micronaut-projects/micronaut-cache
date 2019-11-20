@@ -49,7 +49,7 @@ public class EhcacheConfiguration implements Named {
     public static final Long DEFAULT_MAX_ENTRIES = 100L;
 
     @ConfigurationBuilder(prefixes = "with")
-    CacheConfigurationBuilder builder;
+    CacheConfigurationBuilder<?, ?> builder;
 
     private final String name;
 
@@ -73,7 +73,7 @@ public class EhcacheConfiguration implements Named {
      * @return the configuration builder
      */
     @SuppressWarnings("unchecked")
-    public CacheConfigurationBuilder getBuilder() {
+    public CacheConfigurationBuilder<?, ?> getBuilder() {
         ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder();
 
         // Resource pools

@@ -19,26 +19,25 @@ When using the link:{api}/io/micronaut/cache/annotation/Cacheable.html[@Cacheabl
 the Hazelcast client and use the underlying https://docs.hazelcast.org/docs/latest/javadoc/com/hazelcast/core/IMap.html[IMap] Cache Datastore
 on the server.
 
-The full list of configuration options is below. Amongst the list, properties that have default built-in https://docs.micronaut.io/latest/api/io/micronaut/core/convert/TypeConverter.html[TypeConverter] can be set
-in YAML.  For example, `hazelcast.network.connectionTimeout` and `hazelcast.network.smart-routing` are primitive types and can be set in YAML files.
-
-For other types, Micronaut users must create a https://docs.micronaut.io/latest/api/io/micronaut/core/convert/TypeConverter.html[TypeConverter] to set the property
-in YAML.
+The full list of configurable options is below.
 
 include::{includedir}configurationProperties/io.micronaut.cache.hazelcast.HazelcastClientConfiguration.adoc[]
 
-An alternative but more direct option is to create a https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html[BeanCreatedEventListener] for
-link:{api}/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html[HazelcastClientConfiguration]. This will be invoked by the
-Micronaut Framework on bean creation of `HazelcastClientConfiguration`, and from the event you can programmatically add to the instance. For example:
+For settings not in the above list, a https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html[BeanCreatedEventListener] can be registered for
+link:{api}/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html[HazelcastClientConfiguration]. The listener will allow all properties to be set directly on the configuration instance.
 
 [source,java]
 ----
+@Singleton
 public class HazelcastAdditionalSettings implements BeanCreatedEventListener<HazelcastClientConfiguration> {
 
     @Override
     public HazelcastClientConfiguration onCreated(BeanCreatedEvent<HazelcastClientConfiguration> event) {
         HazelcastClientConfiguration configuration = event.getBean();
-        configuration.getGrouConfig().setName("myName");
+        // Set anything on the configuration
+        return configuration;
     }
 }
 ----
+
+Alternatively, the `HazelcastClientConfiguration` bean may be replaced with your own implementation.

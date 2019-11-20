@@ -22,9 +22,9 @@ class HazelcastClientFactorySpec extends Specification {
     void "test hazelcast client instance is created"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
-                "hazelcast.instanceName": "myInstance",
-                "hazelcast.network.addresses": ['127.0.0.1:5701'],
-                "hazelcast.network.connectionTimeout": 99
+                "hazelcast.client.instanceName": "myInstance",
+                "hazelcast.client.network.addresses": ['127.0.0.1:5701'],
+                "hazelcast.client.network.connectionTimeout": 99
         ])
 
         when:

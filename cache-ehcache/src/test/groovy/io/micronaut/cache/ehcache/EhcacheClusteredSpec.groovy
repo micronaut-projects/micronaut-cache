@@ -2,6 +2,7 @@ package io.micronaut.cache.ehcache
 
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
+import org.ehcache.CacheManager
 import org.ehcache.clustered.client.config.ClusteringServiceConfiguration
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.spock.Testcontainers
@@ -28,19 +29,20 @@ class EhcacheClusteredSpec extends Specification {
                 "ehcache.caches.shared-cache-1.clustered-shared.server-resource": "resource-pool-a",
                 "ehcache.caches.shared-cache-2.clustered-shared.server-resource": "resource-pool-b"
         ])
-        EhcacheCacheManager ehcacheManager = ctx.getBean(EhcacheCacheManager)
-        SyncCache clusteredCache = ehcacheManager.getCache('clustered-cache')
-        SyncCache sharedCache1 = ehcacheManager.getCache('shared-cache-1')
-        SyncCache sharedCache2 = ehcacheManager.getCache('shared-cache-2')
+        CacheManager ehcacheManager = ctx.getBean(CacheManager)
+        io.micronaut.cache.CacheManager cacheManager = ctx.getBean(io.micronaut.cache.CacheManager)
+        SyncCache clusteredCache = cacheManager.getCache('clustered-cache')
+        SyncCache sharedCache1 = cacheManager.getCache('shared-cache-1')
+        SyncCache sharedCache2 = cacheManager.getCache('shared-cache-2')
 
         expect:
-        ehcacheManager.cacheManager.runtimeConfiguration.services[0] instanceof ClusteringServiceConfiguration
-        ehcacheManager.cacheManager.runtimeConfiguration.services[0].connectionSource.clusterUri == URI.create("terracotta://localhost:${terracotta.firstMappedPort}/my-application")
-        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.defaultServerResource == "offheap-1"
-        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools.size() == 2
-        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-a'].size == 8 * 1024 * 1024
-        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-a'].serverResource == "offheap-2"
-        ehcacheManager.cacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-b'].size == 10 * 1024 * 1024
+        ehcacheManager.runtimeConfiguration.services[0] instanceof ClusteringServiceConfiguration
+        ehcacheManager.runtimeConfiguration.services[0].connectionSource.clusterUri == URI.create("terracotta://localhost:${terracotta.firstMappedPort}/my-application")
+        ehcacheManager.runtimeConfiguration.services[0].serverConfiguration.defaultServerResource == "offheap-1"
+        ehcacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools.size() == 2
+        ehcacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-a'].size == 8 * 1024 * 1024
+        ehcacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-a'].serverResource == "offheap-2"
+        ehcacheManager.runtimeConfiguration.services[0].serverConfiguration.resourcePools['resource-pool-b'].size == 10 * 1024 * 1024
 
         clusteredCache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         clusteredCache.nativeCache.runtimeConfiguration.resourcePools.pools[DEDICATED].fromResource == "offheap-1"
