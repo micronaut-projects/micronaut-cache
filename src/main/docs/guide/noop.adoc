@@ -1,0 +1,13 @@
+Dependent on the environment or when testing it might be undesirable to actually cache items.
+In such situations a no operation cache manager can be used that will simply accept any items into the cache without actually storing them.
+
+Add the Micronaut no operation cache module as a dependency:
+
+dependency:io.micronaut.cache:micronaut-cache-noop:{version}[]
+
+The no operation cache manager needs to be enabled explicitly:
+
+[source,yaml]
+----
+noop-cache.enabled: true
+----

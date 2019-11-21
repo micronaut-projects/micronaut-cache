@@ -4,3 +4,4 @@ jcache: JCache API support
 redis: Redis Support
 ehcache: Ehcache Support
 hazelcast: Hazelcast Support
+noop: No Operation Cache Support
