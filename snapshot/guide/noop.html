@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3 JCache API support 1.0.0.BUILD-SNAPSHOT</title>
+    <title>7 No Operation Cache Support 1.0.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -68,18 +68,16 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/cache-abstraction.html">&lt;&lt; <strong>2</strong><span>Cache Abstraction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/hazelcast.html">&lt;&lt; <strong>6</strong><span>Hazelcast Support</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/redis.html"><strong>4</strong><span>Redis Support</span> >></a></div>
-                
 
 
                 <div class="project">
-                    <h1>3 JCache API support</h1>
+                    <h1>7 No Operation Cache Support</h1>
 
                     <p><strong>Version:</strong> 1.0.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -88,34 +86,52 @@ function addJsClass() {
 
                 
 
-<h1 id="jcache">3 JCache API support</h1>
+<h1 id="noop">7 No Operation Cache Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/jcache.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/noop.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>When there is a JSR 107 (JCache) implementation in the classpath (Ehcache, Hazelcast, Infinispan, etc), the caching
-abstraction will use the JCache API internally by default. If you want Micronaut to use the concrete implementation API,
-JCache needs to be disabled:</p>
+<p>Dependent on the environment or when testing it might be undesirable to actually cache items.
+In such situations a no operation cache manager can be used that will simply accept any items into the cache without actually storing them.</p>
+</div>
+<div class="paragraph">
+<p>Add the Micronaut no operation cache module as a dependency:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="gradle">compile <span class="hljs-string">'io.micronaut.cache:micronaut-cache-noop:1.0.0.BUILD-SNAPSHOT'</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-cache-noop&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0.BUILD-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>The no operation cache manager needs to be enabled explicitly:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
-  jcache:
-    enabled: false</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">noop-cache.enabled: true</code></pre>
 </div>
 </div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/cache-abstraction.html">&lt;&lt; <strong>2</strong><span>Cache Abstraction</span></a></div>
-                
-                    <div class="toc-item next-right"><a href="../guide/redis.html"><strong>4</strong><span>Redis Support</span> >></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/hazelcast.html">&lt;&lt; <strong>6</strong><span>Hazelcast Support</span></a></div>
                 
                 <div style="clear:both"></div>
             </div>

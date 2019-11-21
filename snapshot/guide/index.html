@@ -56,6 +56,8 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#hazelcast"><strong>6</strong><span>Hazelcast Support</span></a></div>
                                 
+                                <div class="toc-item" style="margin-left:0"><a href="#noop"><strong>7</strong><span>No Operation Cache Support</span></a></div>
+                                
                             </div>
                         </div>
                     </li>
@@ -96,6 +98,8 @@
         <div class="toc-item" style="margin-left:0px" id="toc-item-ehcache"><a href="#ehcache"><strong>5</strong><span>Ehcache Support</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-hazelcast"><a href="#hazelcast"><strong>6</strong><span>Hazelcast Support</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-noop"><a href="#noop"><strong>7</strong><span>No Operation Cache Support</span></a></div>
         
         </div>
     </div>
@@ -671,6 +675,49 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;
 </div>
 <div class="paragraph">
 <p>Alternatively, the <code>HazelcastClientConfiguration</code> bean may be replaced with your own implementation.</p>
+</div>
+
+
+<h1 id="noop">7 No Operation Cache Support</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/noop.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Dependent on the environment or when testing it might be undesirable to actually cache items.
+In such situations a no operation cache manager can be used that will simply accept any items into the cache without actually storing them.</p>
+</div>
+<div class="paragraph">
+<p>Add the Micronaut no operation cache module as a dependency:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="gradle">compile <span class="hljs-string">'io.micronaut.cache:micronaut-cache-noop:1.0.0.BUILD-SNAPSHOT'</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-cache-noop&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0.BUILD-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>The no operation cache manager needs to be enabled explicitly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">noop-cache.enabled: true</code></pre>
+</div>
 </div>
 
     </div>
