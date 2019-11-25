@@ -1,6 +1,7 @@
 package io.micronaut.cache.ehcache
 
 import io.micronaut.cache.CacheManager
+import org.ehcache.CacheManager as EhcacheCacheManager
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.config.units.EntryUnit
@@ -198,15 +199,18 @@ class CacheManagerSpec extends Specification {
         StatisticsService statisticsService = ctx.getBean(StatisticsService)
         CacheManager cacheManager = ctx.getBean(CacheManager)
         SyncCache cache = cacheManager.getCache('foo')
+        CacheStatistics cacheStatistics = statisticsService.getCacheStatistics('foo')
 
         expect:
         cache
+        cacheStatistics
+        cacheStatistics.cachePuts == 0
 
         when:
-        CacheStatistics cacheStatistics = statisticsService.getCacheStatistics('foo')
+        cache.put("foo", "bar")
 
         then:
-        cacheStatistics
+        cacheStatistics.cachePuts == 1
 
         cleanup:
         ctx.close()
