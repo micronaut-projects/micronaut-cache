@@ -16,17 +16,24 @@
 package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.core.IMap;
+import com.hazelcast.internal.json.JsonObject;
+import com.hazelcast.monitor.LocalMapStats;
 import io.micronaut.cache.AsyncCache;
+import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
+import org.reactivestreams.Publisher;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * A {@link SyncCache} implementation based on Hazelcast.
@@ -114,5 +121,47 @@ public class HazelcastSyncCache implements SyncCache<IMap<Object, Object>> {
     @Override
     public AsyncCache<IMap<Object, Object>> async() {
         return new HazelcastAsyncCache(conversionService, nativeCache, executorService);
+    }
+
+    @Override
+    public Publisher<CacheInfo> getCacheInfo() {
+        CacheInfo cacheInfo = new CacheInfo() {
+            @Nonnull
+            @Override
+            public Map<String, Object> get() {
+                Map<String, Object> data = new LinkedHashMap<>(2);
+                data.put("implementationClass", getNativeCache().getClass().getName());
+                data.put("hazelcast", getHazelcastInfo());
+                return data;
+            }
+
+            @Nonnull
+            @Override
+            public String getName() {
+                return this.getName();
+            }
+        };
+
+        return Publishers.just(cacheInfo);
+    }
+
+    private Map<String, Object> getHazelcastInfo() {
+//        Map<String, Object> values = new LinkedHashMap<>(8);
+        LocalMapStats stats = nativeCache.getLocalMapStats();
+        Iterable<JsonObject.Member> iterable = () -> stats.toJson().iterator();
+        return StreamSupport.stream(iterable.spliterator(), false)
+                .map(member -> new AbstractMap.SimpleEntry<>(member.getName(), member.getValue().asLong()))
+                .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+//
+//
+//        values.put("backupCount", stats.getBackupCount());
+//        values.put("backupEntryCount", stats.getBackupEntryCount());
+//        values.put("backupEntryMemoryCost", stats.getBackupEntryMemoryCost());
+//        values.put("creationTime", stats.getCreationTime());
+//        values.put("dirtyEntryCount", stats.getDirtyEntryCount());
+//        values.put("eventOperationCount", stats.getEventOperationCount());
+//        values.put("operationCount", stats.getGetOperationCount());
+//        values.put("heapCost", stats.getHeapCost());
+//        return values;
     }
 }
