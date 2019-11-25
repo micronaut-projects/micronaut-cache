@@ -5,6 +5,8 @@ import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.config.units.EntryUnit
 import org.ehcache.config.units.MemoryUnit
+import org.ehcache.core.spi.service.StatisticsService
+import org.ehcache.core.statistics.CacheStatistics
 import spock.lang.Specification
 
 import static org.ehcache.config.ResourceType.Core.*
@@ -159,5 +161,17 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+    }
+
+    void "it publishes cache statistics"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run([
+                "ehcache.caches.foo.heap.max-entries": 27
+        ])
+        StatisticsService statisticsService = ctx.getBean(StatisticsService)
+        CacheStatistics cacheStatistics = statisticsService.getCacheStatistics('foo')
+
+        expect:
+        cacheStatistics
     }
 }
