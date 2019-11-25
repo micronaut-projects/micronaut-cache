@@ -32,6 +32,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.valueType == String
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 100
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create entries-based heap tiered cache"() {
@@ -46,6 +49,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == EntryUnit.ENTRIES
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create size-based heap tiered cache"() {
@@ -61,6 +67,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 15 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create an offheap tier"() {
@@ -76,6 +85,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create a disk tier"() {
@@ -91,6 +103,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can configure disk segments"() {
@@ -105,6 +120,9 @@ class CacheManagerSpec extends Specification {
 
         expect:
         cache.nativeCache.runtimeConfiguration.config.serviceConfigurations[0].diskSegments == 2
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create heap + offheap tiers"() {
@@ -122,6 +140,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create heap + offheap + disk tiers"() {
@@ -143,6 +164,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create heap + disk tiers"() {
@@ -161,6 +185,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it publishes cache statistics"() {
@@ -169,9 +196,19 @@ class CacheManagerSpec extends Specification {
                 "ehcache.caches.foo.heap.max-entries": 27
         ])
         StatisticsService statisticsService = ctx.getBean(StatisticsService)
-        CacheStatistics cacheStatistics = statisticsService.getCacheStatistics('foo')
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
 
         expect:
+        cache
+
+        when:
+        CacheStatistics cacheStatistics = statisticsService.getCacheStatistics('foo')
+
+        then:
         cacheStatistics
+
+        cleanup:
+        ctx.close()
     }
 }
