@@ -8,7 +8,6 @@ import io.micronaut.context.ApplicationContext
 import org.ehcache.config.units.EntryUnit
 import org.ehcache.config.units.MemoryUnit
 import org.ehcache.core.spi.service.StatisticsService
-import org.ehcache.core.statistics.CacheStatistics
 import spock.lang.Specification
 
 import static org.ehcache.config.ResourceType.Core.*
@@ -197,10 +196,8 @@ class CacheManagerSpec extends Specification {
         ApplicationContext ctx = ApplicationContext.run([
                 "ehcache.caches.foo.heap.max-entries": 27
         ])
-        StatisticsService statisticsService = ctx.getBean(StatisticsService)
         CacheManager cacheManager = ctx.getBean(CacheManager)
         SyncCache cache = cacheManager.getCache('foo')
-        CacheStatistics cacheStatistics = statisticsService.getCacheStatistics('foo')
         CacheInfo cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
 
         expect:
