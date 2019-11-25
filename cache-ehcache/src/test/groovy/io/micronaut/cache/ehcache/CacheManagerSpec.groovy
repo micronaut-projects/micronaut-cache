@@ -1,7 +1,8 @@
 package io.micronaut.cache.ehcache
 
+import io.micronaut.cache.CacheInfo
 import io.micronaut.cache.CacheManager
-import org.ehcache.CacheManager as EhcacheCacheManager
+import io.reactivex.Flowable
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.config.units.EntryUnit
@@ -191,7 +192,7 @@ class CacheManagerSpec extends Specification {
         ctx.close()
     }
 
-    void "it publishes cache statistics"() {
+    void "it publishes cache info"() {
         given:
         ApplicationContext ctx = ApplicationContext.run([
                 "ehcache.caches.foo.heap.max-entries": 27
@@ -200,17 +201,18 @@ class CacheManagerSpec extends Specification {
         CacheManager cacheManager = ctx.getBean(CacheManager)
         SyncCache cache = cacheManager.getCache('foo')
         CacheStatistics cacheStatistics = statisticsService.getCacheStatistics('foo')
+        CacheInfo cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
 
         expect:
-        cache
-        cacheStatistics
-        cacheStatistics.cachePuts == 0
+        cacheInfo.get()['implementationClass'] == 'org.ehcache.core.Ehcache'
+        cacheInfo.get()['ehcache']['cachePuts'] == 0
+
 
         when:
         cache.put("foo", "bar")
 
         then:
-        cacheStatistics.cachePuts == 1
+        cacheInfo.get()['ehcache']['cachePuts'] == 1
 
         cleanup:
         ctx.close()

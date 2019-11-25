@@ -56,7 +56,7 @@ public class EhcacheCacheFactory {
      */
     @Singleton
     @Bean(preDestroy = "close")
-    public CacheManager cacheManager(StatisticsService statisticsService) {
+    CacheManager cacheManager(StatisticsService statisticsService) {
         CacheManagerBuilder builder = configuration.getBuilder();
         return builder
                 .using(statisticsService)
@@ -65,7 +65,7 @@ public class EhcacheCacheFactory {
 
     @Singleton
     @Bean(preDestroy = "stop")
-    public StatisticsService statisticsService() {
+    StatisticsService statisticsService() {
         return new DefaultStatisticsService();
     }
 
@@ -83,9 +83,10 @@ public class EhcacheCacheFactory {
     EhcacheSyncCache syncCache(@Parameter EhcacheConfiguration configuration,
                                CacheManager cacheManager,
                                ConversionService<?> conversionService,
-                               @Named(TaskExecutors.IO) ExecutorService executorService) {
+                               @Named(TaskExecutors.IO) ExecutorService executorService,
+                               StatisticsService statisticsService) {
         Cache<?, ?> nativeCache = cacheManager.createCache(configuration.getName(), configuration.getBuilder());
-        return new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService, statisticsService());
+        return new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService, statisticsService);
     }
 
 }
