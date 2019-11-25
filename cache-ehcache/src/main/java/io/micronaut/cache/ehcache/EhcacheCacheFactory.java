@@ -56,13 +56,15 @@ public class EhcacheCacheFactory {
      */
     @Singleton
     @Bean(preDestroy = "close")
-    public CacheManager cacheManager() {
+    public CacheManager cacheManager(StatisticsService statisticsService) {
         CacheManagerBuilder builder = configuration.getBuilder();
-        return builder.using(statisticsService()).build(true);
+        return builder
+                .using(statisticsService)
+                .build(true);
     }
 
     @Singleton
-    @Bean
+    @Bean(preDestroy = "stop")
     public StatisticsService statisticsService() {
         return new DefaultStatisticsService();
     }
