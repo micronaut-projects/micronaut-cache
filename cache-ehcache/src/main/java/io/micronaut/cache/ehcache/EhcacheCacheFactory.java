@@ -25,6 +25,9 @@ import io.micronaut.core.convert.ConversionService;
 import io.micronaut.scheduling.TaskExecutors;
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.core.spi.service.StatisticsService;
+import org.ehcache.core.statistics.DefaultStatisticsService;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -54,8 +57,16 @@ public class EhcacheCacheFactory {
     @Singleton
     @Bean(preDestroy = "close")
     public CacheManager cacheManager() {
-        return configuration.getBuilder().build(true);
+        CacheManagerBuilder builder = configuration.getBuilder();
+        return builder.using(statisticsService()).build(true);
     }
+
+    @Singleton
+    @Bean
+    public StatisticsService statisticsService() {
+        return new DefaultStatisticsService();
+    }
+
 
     /**
      * Creates a cache instance based on configuration.
@@ -72,6 +83,7 @@ public class EhcacheCacheFactory {
                                ConversionService<?> conversionService,
                                @Named(TaskExecutors.IO) ExecutorService executorService) {
         Cache<?, ?> nativeCache = cacheManager.createCache(configuration.getName(), configuration.getBuilder());
-        return new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService);
+        return new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService, statisticsService());
     }
+
 }
