@@ -34,7 +34,7 @@ import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 
 /**
- * Factory class that creates an Ehcache {@link CacheManager} and {@link EhcacheSyncCache} beans.
+ * Factory class that creates an Ehcache {@link CacheManager}, an {@link EhcacheSyncCache} and an {@link StatisticsService} beans.
  *
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
@@ -52,6 +52,7 @@ public class EhcacheCacheFactory {
     }
 
     /**
+     * @param statisticsService the Ehcache statistics service
      * @return The {@link CacheManager}
      */
     @Singleton
@@ -63,6 +64,9 @@ public class EhcacheCacheFactory {
                 .build(true);
     }
 
+    /**
+     * @return the Ehcache statistics service
+     */
     @Singleton
     @Bean(preDestroy = "stop")
     StatisticsService statisticsService() {
@@ -77,6 +81,7 @@ public class EhcacheCacheFactory {
      * @param cacheManager      The cache manager
      * @param conversionService The conversion service
      * @param executorService   The executor
+     * @param statisticsService The statistics service
      * @return The sync cache
      */
     @EachBean(EhcacheConfiguration.class)
