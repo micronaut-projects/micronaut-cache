@@ -1,10 +1,13 @@
 package io.micronaut.cache.ehcache
 
+import io.micronaut.cache.CacheInfo
 import io.micronaut.cache.CacheManager
+import io.reactivex.Flowable
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.config.units.EntryUnit
 import org.ehcache.config.units.MemoryUnit
+import org.ehcache.core.spi.service.StatisticsService
 import spock.lang.Specification
 
 import static org.ehcache.config.ResourceType.Core.*
@@ -30,6 +33,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.valueType == String
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 100
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create entries-based heap tiered cache"() {
@@ -44,6 +50,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == EntryUnit.ENTRIES
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create size-based heap tiered cache"() {
@@ -59,6 +68,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 15 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create an offheap tier"() {
@@ -74,6 +86,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create a disk tier"() {
@@ -89,6 +104,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools.size() == 1
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can configure disk segments"() {
@@ -103,6 +121,9 @@ class CacheManagerSpec extends Specification {
 
         expect:
         cache.nativeCache.runtimeConfiguration.config.serviceConfigurations[0].diskSegments == 2
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create heap + offheap tiers"() {
@@ -120,6 +141,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create heap + offheap + disk tiers"() {
@@ -141,6 +165,9 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[OFFHEAP].size == 23 * 1024 * 1024
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can create heap + disk tiers"() {
@@ -159,5 +186,32 @@ class CacheManagerSpec extends Specification {
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[HEAP].size == 27
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].unit == MemoryUnit.B
         cache.nativeCache.runtimeConfiguration.resourcePools.pools[DISK].size == 50 * 1024 * 1024
+
+        cleanup:
+        ctx.close()
+    }
+
+    void "it publishes cache info"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run([
+                "ehcache.caches.foo.heap.max-entries": 27
+        ])
+        CacheManager cacheManager = ctx.getBean(CacheManager)
+        SyncCache cache = cacheManager.getCache('foo')
+        CacheInfo cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
+
+        expect:
+        cacheInfo.get()['implementationClass'] == 'org.ehcache.core.Ehcache'
+        cacheInfo.get()['ehcache']['cachePuts'] == 0
+
+
+        when:
+        cache.put("foo", "bar")
+
+        then:
+        cacheInfo.get()['ehcache']['cachePuts'] == 1
+
+        cleanup:
+        ctx.close()
     }
 }
