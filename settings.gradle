@@ -2,4 +2,5 @@ rootProject.name = 'micronaut-cache'
 
 include 'cache-ehcache'
 include 'cache-hazelcast'
+include 'cache-infinispan'
 include 'cache-noop'
