@@ -17,9 +17,6 @@ package io.micronaut.cache.hazelcast
 
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
-import io.micronaut.cache.CacheInfo
-import io.micronaut.cache.CacheManager
-import io.micronaut.cache.SyncCache
 import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.context.ApplicationContext
@@ -86,33 +83,6 @@ class HazelcastSyncCacheSpec extends Specification {
 
         then:
         publisherService.callCount.get() == 2
-    }
-
-    void "it publishes cache info"() {
-        given:
-        ApplicationContext ctx = ApplicationContext.run(
-                "hazelcast.instanceName": "sampleCache",
-                "hazelcast.network.addresses": ['127.0.0.1:5701']
-        )
-
-        when:
-        CacheManager cacheManager = ctx.getBean(CacheManager)
-        SyncCache cache = cacheManager.getCache('counter')
-        CacheInfo cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
-
-        then:
-        cacheInfo.get()['implementationClass'] == 'com.hazelcast.client.proxy.ClientMapProxy'
-        cacheInfo.get()['hazelcast']['putCount'] == 0
-
-        when:
-        cache.put("foo", "bar")
-        cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
-
-        then:
-        cacheInfo.get()['hazelcast']['putCount'] == 1
-
-        cleanup:
-        ctx.close()
     }
 
     @Singleton
