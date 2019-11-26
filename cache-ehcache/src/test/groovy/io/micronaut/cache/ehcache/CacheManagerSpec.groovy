@@ -204,6 +204,7 @@ class CacheManagerSpec extends Specification {
         cacheInfo.get()['implementationClass'] == 'org.ehcache.core.Ehcache'
         cacheInfo.get()['ehcache']['cachePuts'] == 0
 
+
         when:
         cache.put("foo", "bar")
 
