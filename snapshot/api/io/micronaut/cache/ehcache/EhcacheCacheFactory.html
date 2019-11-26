@@ -17,12 +17,6 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -75,13 +69,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.java.lang.Object">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -110,7 +104,7 @@ var activeTableTab = "activeTableTab";
 <pre>@Factory
 public class <span class="typeNameLabel">EhcacheCacheFactory</span>
 extends java.lang.Object</pre>
-<div class="block">Factory class that creates an Ehcache <code>CacheManager</code> and <a href="../../../../io/micronaut/cache/ehcache/EhcacheSyncCache.html" title="class in io.micronaut.cache.ehcache"><code>EhcacheSyncCache</code></a> beans.</div>
+<div class="block">Factory class that creates an Ehcache <code>CacheManager</code>, an <a href="../../../../io/micronaut/cache/ehcache/EhcacheSyncCache.html" title="class in io.micronaut.cache.ehcache"><code>EhcacheSyncCache</code></a> and an <code>StatisticsService</code> beans.</div>
 <dl>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>1.0.0</dd>
@@ -146,17 +140,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>org.ehcache.CacheManager</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/ehcache/EhcacheCacheFactory.html#cacheManager--">cacheManager</a></span>()</code>&nbsp;</td>
-</tr>
-</table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -188,29 +171,6 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>configuration</code> - the configuration</dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a name="cacheManager--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>cacheManager</h4>
-<pre>@Singleton
- @Bean(preDestroy="close")
-public&nbsp;org.ehcache.CacheManager&nbsp;cacheManager()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The <code>CacheManager</code></dd>
 </dl>
 </li>
 </ul>
@@ -269,13 +229,13 @@ public&nbsp;org.ehcache.CacheManager&nbsp;cacheManager()</pre>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.java.lang.Object">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">
