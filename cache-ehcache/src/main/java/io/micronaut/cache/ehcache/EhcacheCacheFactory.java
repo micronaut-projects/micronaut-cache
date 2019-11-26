@@ -25,13 +25,16 @@ import io.micronaut.core.convert.ConversionService;
 import io.micronaut.scheduling.TaskExecutors;
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.core.spi.service.StatisticsService;
+import org.ehcache.core.statistics.DefaultStatisticsService;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 
 /**
- * Factory class that creates an Ehcache {@link CacheManager} and {@link EhcacheSyncCache} beans.
+ * Factory class that creates an Ehcache {@link CacheManager}, an {@link EhcacheSyncCache} and an {@link StatisticsService} beans.
  *
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
@@ -49,13 +52,27 @@ public class EhcacheCacheFactory {
     }
 
     /**
+     * @param statisticsService the Ehcache statistics service
      * @return The {@link CacheManager}
      */
     @Singleton
     @Bean(preDestroy = "close")
-    public CacheManager cacheManager() {
-        return configuration.getBuilder().build(true);
+    CacheManager cacheManager(StatisticsService statisticsService) {
+        CacheManagerBuilder builder = configuration.getBuilder();
+        return builder
+                .using(statisticsService)
+                .build(true);
     }
+
+    /**
+     * @return the Ehcache statistics service
+     */
+    @Singleton
+    @Bean(preDestroy = "stop")
+    StatisticsService statisticsService() {
+        return new DefaultStatisticsService();
+    }
+
 
     /**
      * Creates a cache instance based on configuration.
@@ -64,14 +81,17 @@ public class EhcacheCacheFactory {
      * @param cacheManager      The cache manager
      * @param conversionService The conversion service
      * @param executorService   The executor
+     * @param statisticsService The statistics service
      * @return The sync cache
      */
     @EachBean(EhcacheConfiguration.class)
     EhcacheSyncCache syncCache(@Parameter EhcacheConfiguration configuration,
                                CacheManager cacheManager,
                                ConversionService<?> conversionService,
-                               @Named(TaskExecutors.IO) ExecutorService executorService) {
+                               @Named(TaskExecutors.IO) ExecutorService executorService,
+                               StatisticsService statisticsService) {
         Cache<?, ?> nativeCache = cacheManager.createCache(configuration.getName(), configuration.getBuilder());
-        return new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService);
+        return new EhcacheSyncCache(conversionService, configuration, nativeCache, executorService, statisticsService);
     }
+
 }
