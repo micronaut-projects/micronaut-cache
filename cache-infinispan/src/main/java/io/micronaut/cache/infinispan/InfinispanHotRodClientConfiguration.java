@@ -1,9 +1,8 @@
 package io.micronaut.cache.infinispan;
 
+import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
-import io.micronaut.core.util.Toggleable;
-import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
-import org.infinispan.commons.marshall.ProtoStreamMarshaller;
+import org.infinispan.client.hotrod.configuration.*;
 
 /**
  * TODO: javadoc
@@ -15,80 +14,78 @@ import org.infinispan.commons.marshall.ProtoStreamMarshaller;
 public class InfinispanHotRodClientConfiguration {
 
     private static final String DEFAULT_HOST = "127.0.0.1";
-    private static final Integer DEFAULT_PORT = 11222;
 
-    @io.micronaut.context.annotation.ConfigurationBuilder
-    private ConfigurationBuilder builder;
+    @ConfigurationBuilder(prefixes = {"set", ""}, includes = {"addCluster", "addServers", "balancingStrategy", "connectionTimeout", "forceReturnValues", "keySizeEstimate", "marshaller", "addContextInitializer", "protocolVersion", "socketTimeout", "tcpNoDelay", "tcpKeepAlive", "valueSizeEstimate", "maxRetries", "batchSize"})
+    private org.infinispan.client.hotrod.configuration.ConfigurationBuilder builder = new org.infinispan.client.hotrod.configuration.ConfigurationBuilder();
 
-    private String host = DEFAULT_HOST;
-    private Integer port = DEFAULT_PORT;
-    private StatisticsConfiguration statistics = new StatisticsConfiguration();
+    @ConfigurationBuilder(value = "server", prefixes = {"set", ""}, includes = {"host", "port"})
+    private ServerConfigurationBuilder server = builder.addServer();
 
-    public String getHost() {
-        return host;
+    @ConfigurationBuilder(value = "statistics", prefixes = {"set", ""}, includes = {"enabled", "jmxEnabled", "jmxDomain", "jmxName"})
+    private StatisticsConfigurationBuilder statistics = builder.statistics();
+
+    @ConfigurationBuilder(value = "connection-pool", prefixes = {"set", ""}, includes = {"maxActive", "maxWait", "minIdle", "minEvictableIdleTime", "maxPendingRequests"})
+    private ConnectionPoolConfigurationBuilder connectionPool = builder.connectionPool();
+
+    @ConfigurationBuilder(value = "async-executor-factory", prefixes = {"set", ""}, includes = {"factoryClass"})
+    private ExecutorFactoryConfigurationBuilder asyncExecutorFactory = builder.asyncExecutorFactory();
+
+    @ConfigurationBuilder(value = "security.authentication", prefixes = {"set", ""}, includes = {"enabled", "saslMechanism", "serverName", "username", "password", "realm"})
+    private AuthenticationConfigurationBuilder authentication = builder.security().authentication();
+
+    @ConfigurationBuilder(value = "security.ssl", prefixes = {"set", ""}, includes = {"enabled", "keyStoreFileName", "keyStoreType", "keyStorePassword", "keyStoreCertificatePassword", "keyAlias", "trustStoreFileName", "trustStorePath", "trustStoreType", "trustStorePassword", "sniHostName", "protocol"})
+    private SslConfigurationBuilder ssl = builder.security().ssl();
+
+    @ConfigurationBuilder(value = "near-cache", prefixes = {"set", ""}, includes = {"maxEntries", "cacheNamePattern"})
+    private NearCacheConfigurationBuilder nearCache = builder.nearCache();
+
+    public ServerConfigurationBuilder getServer() {
+        return server;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    public StatisticsConfiguration getStatistics() {
+    public StatisticsConfigurationBuilder getStatistics() {
         return statistics;
     }
 
-    public void setStatistics(StatisticsConfiguration statistics) {
-        this.statistics = statistics;
+    public ConnectionPoolConfigurationBuilder getConnectionPool() {
+        return connectionPool;
     }
 
-    public ConfigurationBuilder getBuilder() {
-        if (builder == null) {
-            builder = new ConfigurationBuilder();
+    public ExecutorFactoryConfigurationBuilder getAsyncExecutorFactory() {
+        return asyncExecutorFactory;
+    }
+
+    public AuthenticationConfigurationBuilder getAuthentication() {
+        return authentication;
+    }
+
+    public SslConfigurationBuilder getSsl() {
+        return ssl;
+    }
+
+    public NearCacheConfigurationBuilder getNearCache() {
+        return nearCache;
+    }
+
+    public org.infinispan.client.hotrod.configuration.ConfigurationBuilder getBuilder() {
+        if (this.server.create().host() == null) {
+            this.server.host(DEFAULT_HOST);
         }
-        this.builder
-                .marshaller(new ProtoStreamMarshaller())
-                .addServer()
-                    .host(host)
-                    .port(port);
-        if (statistics.isEnabled()) {
-            this.builder
-                    .statistics()
-                        .enable()
-                        .jmxDomain(statistics.jmxDomain);
-        }
+
+        builder
+                .addServer().read(server.create())
+                .connectionPool().read(connectionPool.create())
+                .asyncExecutorFactory().read(asyncExecutorFactory.create())
+                .statistics().read(statistics.create());
+
+        SecurityConfigurationBuilder security = builder.security();
+        security.authentication().read(authentication.create());
+        security.ssl().read(ssl.create());
+        builder.security().read(security.create());
+
+        builder.nearCache().read(nearCache.create());
+
         return builder;
     }
 
-    @ConfigurationProperties("statistics")
-    static class StatisticsConfiguration implements Toggleable {
-
-        private static final boolean DEFAULT_ENABLED = false;
-
-        private boolean enabled = DEFAULT_ENABLED;
-        private String jmxDomain;
-
-        @Override
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public String getJmxDomain() {
-            return jmxDomain;
-        }
-
-        public void setJmxDomain(String jmxDomain) {
-            this.jmxDomain = jmxDomain;
-        }
-    }
 }
