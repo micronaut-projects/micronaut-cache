@@ -47,8 +47,8 @@ class InfinispanCacheFactorySpec extends Specification {
     void "it can customise connection settings"() {
         given:
         ApplicationContext ctx = ApplicationContext.run([
-                "infinispan.client.hotrod.host": "cache.example.com",
-                "infinispan.client.hotrod.port": 11223
+                "infinispan.client.hotrod.server.host": "cache.example.com",
+                "infinispan.client.hotrod.server.port": 11223
         ])
 
         when:
