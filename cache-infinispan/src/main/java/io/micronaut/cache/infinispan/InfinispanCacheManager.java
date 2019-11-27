@@ -5,6 +5,8 @@ import io.micronaut.cache.SyncCache;
 import io.micronaut.core.convert.ConversionService;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.commons.configuration.BasicConfiguration;
+import org.infinispan.configuration.cache.ConfigurationBuilder;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
@@ -32,7 +34,8 @@ public class InfinispanCacheManager implements DynamicCacheManager<RemoteCache<O
     @Nonnull
     @Override
     public SyncCache<RemoteCache<Object, Object>> getCache(String name) {
-        RemoteCache<Object, Object> nativeCache = remoteCacheManager.getCache(name);
+        BasicConfiguration basicConfiguration = new ConfigurationBuilder().build();
+        RemoteCache<Object, Object> nativeCache = remoteCacheManager.administration().getOrCreateCache(name, basicConfiguration);
         return new InfinispanSyncCache(nativeCache, conversionService, executorService, name);
     }
 }
