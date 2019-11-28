@@ -1,5 +1,6 @@
 package io.micronaut.cache.infinispan;
 
+import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -9,7 +10,6 @@ import org.infinispan.client.hotrod.RemoteCache;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 /**
@@ -22,14 +22,10 @@ public class InfinispanSyncCache implements SyncCache<RemoteCache<Object, Object
 
     private final RemoteCache<Object, Object> nativeCache;
     private final ConversionService<?> conversionService;
-    private final ExecutorService executorService;
-    private final String name;
 
-    public InfinispanSyncCache(RemoteCache<Object, Object> nativeCache, ConversionService<?> conversionService, ExecutorService executorService, String name) {
+    public InfinispanSyncCache(RemoteCache<Object, Object> nativeCache, ConversionService<?> conversionService) {
         this.nativeCache = nativeCache;
         this.conversionService = conversionService;
-        this.executorService = executorService;
-        this.name = name;
     }
 
     @Nonnull
@@ -86,5 +82,11 @@ public class InfinispanSyncCache implements SyncCache<RemoteCache<Object, Object
     @Override
     public RemoteCache<Object, Object> getNativeCache() {
         return nativeCache;
+    }
+
+    @Nonnull
+    @Override
+    public AsyncCache<RemoteCache<Object, Object>> async() {
+        return new InfinispanAsyncCache(nativeCache, conversionService);
     }
 }
