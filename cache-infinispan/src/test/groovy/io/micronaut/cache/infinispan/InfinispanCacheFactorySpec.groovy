@@ -47,7 +47,7 @@ class InfinispanCacheFactorySpec extends Specification {
     void "it can customise connection settings"() {
         given:
         ApplicationContext ctx = ApplicationContext.run([
-                "infinispan.client.hotrod.server.host": "cache.example.com",
+                "infinispan.client.hotrod.server.host": "localhost",
                 "infinispan.client.hotrod.server.port": 11223
         ])
 
@@ -55,8 +55,30 @@ class InfinispanCacheFactorySpec extends Specification {
         RemoteCacheManager remoteCacheManager = ctx.getBean(RemoteCacheManager)
 
         then:
-        remoteCacheManager.servers.first() == 'cache.example.com:11223'
+        remoteCacheManager.servers.size() == 1
+        remoteCacheManager.servers.last() == 'localhost:11223'
 
+        cleanup:
+        ctx.close()
+    }
+
+    void "it can read configuration from hotrod-client.properties"() {
+        given:
+        ApplicationContext ctx = ApplicationContext.run([
+                "infinispan.client.hotrod.config-file": "classpath:hotrod.properties"
+        ])
+
+        when:
+        RemoteCacheManager remoteCacheManager = ctx.getBean(RemoteCacheManager)
+
+        then:
+        remoteCacheManager.servers.size() == 2
+        remoteCacheManager.servers.first() == 'localhost:11224'
+        remoteCacheManager.servers.last() == 'localhost:11225'
+        remoteCacheManager.configuration.statistics().enabled()
+
+        cleanup:
+        ctx.close()
     }
 
 }
