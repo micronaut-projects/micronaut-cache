@@ -2,7 +2,19 @@ package io.micronaut.cache.infinispan;
 
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.core.io.ResourceResolver;
 import org.infinispan.client.hotrod.configuration.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.Properties;
 
 /**
  * TODO: javadoc
@@ -14,6 +26,11 @@ import org.infinispan.client.hotrod.configuration.*;
 public class InfinispanHotRodClientConfiguration {
 
     private static final String DEFAULT_HOST = "127.0.0.1";
+    private static final String DEFAULT_CONFIG_FILE = "classpath:hotrod-client.properties";
+
+    private static final Logger LOG = LoggerFactory.getLogger(InfinispanHotRodClientConfiguration.class);
+
+    private ResourceResolver resourceResolver;
 
     @ConfigurationBuilder(prefixes = {"set", ""}, includes = {"addCluster", "addServers", "balancingStrategy", "connectionTimeout", "forceReturnValues", "keySizeEstimate", "marshaller", "addContextInitializer", "protocolVersion", "socketTimeout", "tcpNoDelay", "tcpKeepAlive", "valueSizeEstimate", "maxRetries", "batchSize"})
     private org.infinispan.client.hotrod.configuration.ConfigurationBuilder builder = new org.infinispan.client.hotrod.configuration.ConfigurationBuilder();
@@ -38,6 +55,12 @@ public class InfinispanHotRodClientConfiguration {
 
     @ConfigurationBuilder(value = "near-cache", prefixes = {"set", ""}, includes = {"maxEntries", "cacheNamePattern"})
     private NearCacheConfigurationBuilder nearCache = builder.nearCache();
+
+    private String configFile = DEFAULT_CONFIG_FILE;
+
+    public InfinispanHotRodClientConfiguration(ResourceResolver resourceResolver) {
+        this.resourceResolver = resourceResolver;
+    }
 
     public ServerConfigurationBuilder getServer() {
         return server;
@@ -67,13 +90,38 @@ public class InfinispanHotRodClientConfiguration {
         return nearCache;
     }
 
+    public String getConfigFile() {
+        return configFile;
+    }
+
+    public void setConfigFile(String configFile) {
+        this.configFile = configFile;
+    }
+
     public org.infinispan.client.hotrod.configuration.ConfigurationBuilder getBuilder() {
+        if (configFile != null) {
+            Optional<URL> configResource = resourceResolver.getResource(configFile);
+            if (configResource.isPresent()) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Reading Infinispan configuration from file: {}", configFile);
+                }
+                Properties properties = new Properties();
+                try(Reader r = new FileReader(Paths.get(configResource.get().toURI()).toFile())) {
+                    properties.load(r);
+                    builder.withProperties(properties);
+                } catch (IOException | URISyntaxException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn("An error has ocurred while reading the configuration file [{}]: {}", configFile, e.getMessage());
+                    }
+                }
+            }
+        }
+
         if (this.server.create().host() == null) {
             this.server.host(DEFAULT_HOST);
         }
 
         builder
-                .addServer().read(server.create())
                 .connectionPool().read(connectionPool.create())
                 .asyncExecutorFactory().read(asyncExecutorFactory.create())
                 .statistics().read(statistics.create());
