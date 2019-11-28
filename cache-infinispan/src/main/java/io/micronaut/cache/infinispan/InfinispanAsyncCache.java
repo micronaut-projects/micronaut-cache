@@ -1,11 +1,14 @@
 package io.micronaut.cache.infinispan;
 
 import io.micronaut.cache.AsyncCache;
+import io.micronaut.cache.CacheInfo;
+import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
 import org.infinispan.client.hotrod.RemoteCache;
+import org.reactivestreams.Publisher;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -77,6 +80,11 @@ public class InfinispanAsyncCache implements AsyncCache<RemoteCache<Object, Obje
         return nativeCache
                 .clearAsync()
                 .handle((aVoid, throwable) -> throwable != null);
+    }
+
+    @Override
+    public Publisher<CacheInfo> getCacheInfo() {
+        return Publishers.just(new InfinispanCacheInfo(nativeCache));
     }
 
     @Override
