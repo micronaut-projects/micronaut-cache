@@ -33,30 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
  */
-class InfinispanSyncCacheSpec extends Specification {
-
-    @Shared
-    HotRodServer server = new HotRodServer()
-
-    void setupSpec() {
-        GlobalConfiguration globalConfiguration = new GlobalConfigurationBuilder()
-                .globalState()
-                    .enable()
-                    .persistentLocation(System.getProperty('java.io.tmpdir'))
-                    .sharedPersistentLocation(System.getProperty('java.io.tmpdir'))
-                    .configurationStorage(ConfigurationStorage.OVERLAY)
-                .build()
-        DefaultCacheManager defaultCacheManager = new DefaultCacheManager(globalConfiguration)
-        HotRodServerConfiguration configuration = new HotRodServerConfigurationBuilder()
-                .adminOperationsHandler(new EmbeddedServerAdminOperationHandler())
-                .build()
-        HotRodServer server = new HotRodServer()
-        server.start(configuration, defaultCacheManager)
-    }
-
-    void cleanupSpec() {
-        server.stop()
-    }
+class InfinispanSyncCacheSpec extends Specification implements EmbeddedHotRodServerSupport {
 
     void "test publisher cache methods are not called for hits"() {
         given:

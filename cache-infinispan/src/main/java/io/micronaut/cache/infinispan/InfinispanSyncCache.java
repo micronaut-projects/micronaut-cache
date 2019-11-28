@@ -1,14 +1,19 @@
 package io.micronaut.cache.infinispan;
 
 import io.micronaut.cache.AsyncCache;
+import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
 import org.infinispan.client.hotrod.RemoteCache;
+import org.reactivestreams.Publisher;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -89,4 +94,10 @@ public class InfinispanSyncCache implements SyncCache<RemoteCache<Object, Object
     public AsyncCache<RemoteCache<Object, Object>> async() {
         return new InfinispanAsyncCache(nativeCache, conversionService);
     }
+
+    @Override
+    public Publisher<CacheInfo> getCacheInfo() {
+        return Publishers.just(new InfinispanCacheInfo(nativeCache));
+    }
+
 }
