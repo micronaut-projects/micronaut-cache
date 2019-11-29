@@ -1,0 +1,72 @@
+https://infinispan.org/[Infinispan] caching is supported. Micronaut will create an Infinispan client instance to connect to
+an existing Infinispan server using the HotRod protocol.
+
+To get started, add the Micronaut Infinispan module as a dependency:
+
+dependency:io.micronaut.cache:micronaut-cache-infinispan:{version}[]
+
+By default, Micronaut will setup a
+https://docs.jboss.org/infinispan/10.0/apidocs/org/infinispan/client/hotrod/RemoteCacheManager.html[`RemoteCacheManager`]
+over `127.0.0.1:11222`. To define custom addresses:
+
+[source,yaml]
+----
+infinispan:
+  client:
+    hotrod:
+      server:
+        host: infinispan.example.com
+        port: 10222
+----
+
+Micronaut will attempt by default to read a `/hotrod-client.properties` file from the classpath, and if found, use it.
+This file is expected to be in
+https://docs.jboss.org/infinispan/10.0/apidocs/org/infinispan/client/hotrod/configuration/package-summary.html#package.description[Infinispan configuration format], for example:
+
+[source,properties]
+----
+# Hot Rod client configuration
+infinispan.client.hotrod.server_list = 127.0.0.1:11222
+infinispan.client.hotrod.marshaller = org.infinispan.commons.marshall.ProtoStreamMarshaller
+infinispan.client.hotrod.async_executor_factory = org.infinispan.client.hotrod.impl.async.DefaultAsyncExecutorFactory
+infinispan.client.hotrod.default_executor_factory.pool_size = 1
+infinispan.client.hotrod.hash_function_impl.2 = org.infinispan.client.hotrod.impl.consistenthash.ConsistentHashV2
+infinispan.client.hotrod.tcp_no_delay = true
+infinispan.client.hotrod.tcp_keep_alive = false
+infinispan.client.hotrod.request_balancing_strategy = org.infinispan.client.hotrod.impl.transport.tcp.RoundRobinBalancingStrategy
+infinispan.client.hotrod.key_size_estimate = 64
+infinispan.client.hotrod.value_size_estimate = 512
+infinispan.client.hotrod.force_return_values = false
+
+## Connection pooling configuration
+maxActive = -1
+maxIdle = -1
+whenExhaustedAction = 1
+minEvictableIdleTimeMillis=300000
+minIdle = 1
+----
+
+To read this file from a different classpath location:
+
+[source,yaml]
+----
+infinispan:
+  client:
+    hotrod:
+      config-file: classpath:my-infinispan.properties
+----
+
+NOTE: You can use both an Infinispan's property file and Micronaut configuration properties. The latter will
+complement/override values from the former.
+
+The full list of configurable options via Micronaut properties is below.
+
+include::{includedir}configurationProperties/io.micronaut.cache.infinispan.InfinispanHotRodClientConfiguration.adoc[]
+
+To disable Infinispan:
+
+[source,yaml]
+----
+infinispan:
+  enabled: false
+----
