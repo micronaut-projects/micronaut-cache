@@ -14,8 +14,6 @@ class InfinispanCacheInfoSpec extends Specification implements EmbeddedHotRodSer
         given:
         ApplicationContext applicationContext = ApplicationContext.run([
                 'infinispan.client.hotrod.statistics.enabled': true,
-                'infinispan.client.hotrod.statistics.jmx-enabled': true,
-                'infinispan.client.hotrod.statistics.jmx-domain': 'org.infinispan'
         ])
         InfinispanCacheManager cacheManager = applicationContext.getBean(InfinispanCacheManager)
         SyncCache<RemoteCache<Object, Object>> cache = cacheManager.getCache("InfinispanCacheInfoSpec")
@@ -23,8 +21,6 @@ class InfinispanCacheInfoSpec extends Specification implements EmbeddedHotRodSer
 
         expect:
         configuration.statistics.create().enabled()
-        configuration.statistics.create().jmxEnabled()
-        configuration.statistics.create().jmxDomain() == "org.infinispan"
 
         when:
         CacheInfo cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
