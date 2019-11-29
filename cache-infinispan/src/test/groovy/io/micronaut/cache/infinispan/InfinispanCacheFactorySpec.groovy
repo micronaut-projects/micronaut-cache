@@ -3,9 +3,6 @@ package io.micronaut.cache.infinispan
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.exceptions.NoSuchBeanException
 import org.infinispan.client.hotrod.RemoteCacheManager
-import org.infinispan.manager.DefaultCacheManager
-import org.infinispan.manager.EmbeddedCacheManager
-import spock.lang.Shared
 import spock.lang.Specification
 
 /**

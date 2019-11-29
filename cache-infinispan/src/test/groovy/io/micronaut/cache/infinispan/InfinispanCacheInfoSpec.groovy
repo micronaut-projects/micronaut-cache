@@ -8,11 +8,6 @@ import io.reactivex.Flowable
 import org.infinispan.client.hotrod.RemoteCache
 import spock.lang.Specification
 
-import javax.management.MBeanInfo
-import javax.management.MBeanServer
-import javax.management.ObjectName
-import java.lang.management.ManagementFactory
-
 /**
  * TODO: javadoc
  *
@@ -29,7 +24,7 @@ class InfinispanCacheInfoSpec extends Specification implements EmbeddedHotRodSer
                 'infinispan.client.hotrod.statistics.jmx-domain': 'org.infinispan'
         ])
         InfinispanCacheManager cacheManager = applicationContext.getBean(InfinispanCacheManager)
-        SyncCache<RemoteCache<Object, Object>> cache = cacheManager.getCache("test")
+        SyncCache<RemoteCache<Object, Object>> cache = cacheManager.getCache("InfinispanCacheInfoSpec")
         InfinispanHotRodClientConfiguration configuration = applicationContext.getBean(InfinispanHotRodClientConfiguration)
 
         expect:
@@ -47,7 +42,11 @@ class InfinispanCacheInfoSpec extends Specification implements EmbeddedHotRodSer
 
         when:
         cache.put("foo", "bar")
-        cache.get("foo", Argument.of(String))
+
+        then:
+        cache.get("foo", Argument.of(String)).get() == "bar"
+
+        when:
         cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
 
         then:

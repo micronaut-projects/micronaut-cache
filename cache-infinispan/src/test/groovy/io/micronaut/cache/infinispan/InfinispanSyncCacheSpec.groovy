@@ -4,27 +4,11 @@ import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.async.annotation.SingleResult
-import io.micronaut.core.io.socket.SocketUtils
 import io.reactivex.Flowable
 import io.reactivex.Single
-import org.infinispan.configuration.cache.ConfigurationBuilder
-import org.infinispan.configuration.global.GlobalConfiguration
-import org.infinispan.configuration.global.GlobalConfigurationBuilder
-import org.infinispan.configuration.global.GlobalStateConfigurationBuilder
-import org.infinispan.configuration.global.TransportConfigurationBuilder
-import org.infinispan.globalstate.ConfigurationStorage
-import org.infinispan.manager.DefaultCacheManager
-import org.infinispan.manager.EmbeddedCacheManager
-import org.infinispan.remoting.transport.Transport
-import org.infinispan.server.core.admin.embeddedserver.EmbeddedServerAdminOperationHandler
-import org.infinispan.server.hotrod.HotRodServer
-import org.infinispan.server.hotrod.configuration.HotRodServerConfiguration
-import org.infinispan.server.hotrod.configuration.HotRodServerConfigurationBuilder
-import spock.lang.Shared
 import spock.lang.Specification
 
 import javax.inject.Singleton
-import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -66,6 +50,9 @@ class InfinispanSyncCacheSpec extends Specification implements EmbeddedHotRodSer
 
         then:
         publisherService.callCount.get() == 2
+
+        cleanup:
+        applicationContext.close()
     }
 
     @Singleton

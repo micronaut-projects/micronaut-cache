@@ -13,7 +13,7 @@ import spock.lang.Shared
 trait EmbeddedHotRodServerSupport {
 
     @Shared
-    HotRodServer server = new HotRodServer()
+    HotRodServer server
 
     void setupSpec() {
         GlobalConfiguration globalConfiguration = new GlobalConfigurationBuilder()
@@ -29,7 +29,7 @@ trait EmbeddedHotRodServerSupport {
         HotRodServerConfiguration configuration = new HotRodServerConfigurationBuilder()
                 .adminOperationsHandler(new EmbeddedServerAdminOperationHandler())
                 .build()
-        HotRodServer server = new HotRodServer()
+        server = new HotRodServer()
         server.start(configuration, defaultCacheManager)
     }
 

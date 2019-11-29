@@ -3,7 +3,6 @@ package io.micronaut.cache.infinispan;
 import io.micronaut.cache.CacheInfo;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.client.hotrod.impl.ClientStatistics;
 import org.infinispan.client.hotrod.jmx.RemoteCacheClientStatisticsMXBean;
 
 import javax.annotation.Nonnull;
