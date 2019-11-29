@@ -17,6 +17,8 @@ trait EmbeddedHotRodServerSupport {
 
     void setupSpec() {
         GlobalConfiguration globalConfiguration = new GlobalConfigurationBuilder()
+                .cacheContainer()
+                    .statistics(true)
                 .globalJmxStatistics()
                     .enable()
                 .globalState()
