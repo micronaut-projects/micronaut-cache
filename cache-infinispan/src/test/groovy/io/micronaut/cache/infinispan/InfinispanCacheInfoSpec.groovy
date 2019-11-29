@@ -3,9 +3,15 @@ package io.micronaut.cache.infinispan
 import io.micronaut.cache.CacheInfo
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
+import io.micronaut.core.type.Argument
 import io.reactivex.Flowable
 import org.infinispan.client.hotrod.RemoteCache
 import spock.lang.Specification
+
+import javax.management.MBeanInfo
+import javax.management.MBeanServer
+import javax.management.ObjectName
+import java.lang.management.ManagementFactory
 
 /**
  * TODO: javadoc
@@ -24,13 +30,32 @@ class InfinispanCacheInfoSpec extends Specification implements EmbeddedHotRodSer
         ])
         InfinispanCacheManager cacheManager = applicationContext.getBean(InfinispanCacheManager)
         SyncCache<RemoteCache<Object, Object>> cache = cacheManager.getCache("test")
+        InfinispanHotRodClientConfiguration configuration = applicationContext.getBean(InfinispanHotRodClientConfiguration)
+
+        expect:
+        configuration.statistics.create().enabled()
+        configuration.statistics.create().jmxEnabled()
+        configuration.statistics.create().jmxDomain() == "org.infinispan"
 
         when:
         CacheInfo cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
-        println cacheInfo.get()
 
         then:
         cacheInfo.get()['implementationClass'] == 'org.infinispan.client.hotrod.impl.RemoteCacheImpl'
-//        cacheInfo.get()['infinispan'] == 'org.infinispan.client.hotrod.impl.RemoteCacheImpl'
+        cacheInfo.get()['infinispan']['clientStatistics']['remoteStores'] == 0
+        cacheInfo.get()['infinispan']['clientStatistics']['remoteHits'] == 0
+
+        when:
+        cache.put("foo", "bar")
+        cache.get("foo", Argument.of(String))
+        cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
+
+        then:
+        cacheInfo.get()['infinispan']['clientStatistics']['remoteStores'] == 1
+        cacheInfo.get()['infinispan']['clientStatistics']['remoteHits'] == 1
+
+
+        cleanup:
+        applicationContext.close()
     }
 }
