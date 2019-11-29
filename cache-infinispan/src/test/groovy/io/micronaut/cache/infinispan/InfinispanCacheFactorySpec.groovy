@@ -5,12 +5,6 @@ import io.micronaut.context.exceptions.NoSuchBeanException
 import org.infinispan.client.hotrod.RemoteCacheManager
 import spock.lang.Specification
 
-/**
- * TODO: javadoc
- *
- * @author Álvaro Sánchez-Mariscal
- * @since 1.0.0
- */
 class InfinispanCacheFactorySpec extends Specification {
 
     void "it creates a remote cache manager"(){

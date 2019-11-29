@@ -11,12 +11,6 @@ import spock.lang.Specification
 import javax.inject.Singleton
 import java.util.concurrent.atomic.AtomicInteger
 
-/**
- * TODO: javadoc
- *
- * @author Álvaro Sánchez-Mariscal
- * @since 1.0.0
- */
 class InfinispanSyncCacheSpec extends Specification implements EmbeddedHotRodServerSupport {
 
     void "test publisher cache methods are not called for hits"() {
