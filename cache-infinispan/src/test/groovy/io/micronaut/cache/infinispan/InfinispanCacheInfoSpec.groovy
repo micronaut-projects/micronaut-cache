@@ -8,12 +8,6 @@ import io.reactivex.Flowable
 import org.infinispan.client.hotrod.RemoteCache
 import spock.lang.Specification
 
-/**
- * TODO: javadoc
- *
- * @author Álvaro Sánchez-Mariscal
- * @since 1.0.0
- */
 class InfinispanCacheInfoSpec extends Specification implements EmbeddedHotRodServerSupport {
 
     void "it publishes cache info stats"() {
@@ -52,7 +46,6 @@ class InfinispanCacheInfoSpec extends Specification implements EmbeddedHotRodSer
         then:
         cacheInfo.get()['infinispan']['clientStatistics']['remoteStores'] == 1
         cacheInfo.get()['infinispan']['clientStatistics']['remoteHits'] == 1
-
 
         cleanup:
         applicationContext.close()
