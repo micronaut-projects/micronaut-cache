@@ -15,11 +15,17 @@
  */
 package io.micronaut.cache.infinispan;
 
+import io.micronaut.cache.infinispan.health.InfinispanClient;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.discovery.ServiceInstanceList;
+import io.micronaut.discovery.StaticServiceInstanceList;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 
 import javax.inject.Singleton;
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Factory class that creates an Infinispan {@link RemoteCacheManager}.
@@ -47,6 +53,18 @@ public class InfinispanCacheFactory {
     @Bean(preDestroy = "close")
     RemoteCacheManager remoteCacheManager() {
         return new RemoteCacheManager(configuration.getBuilder().build());
+    }
+
+    @Bean
+    StaticServiceInstanceList infinispanInstanceList(RemoteCacheManager remoteCacheManager) {
+        List<URI> serverList = remoteCacheManager
+                .getConfiguration()
+                .servers()
+                .stream()
+                .map(s -> "http://" + s.host() + ":" + s.port())
+                .map(URI::create)
+                .collect(Collectors.toList());
+        return new StaticServiceInstanceList(InfinispanClient.ID, serverList);
     }
 
 }
