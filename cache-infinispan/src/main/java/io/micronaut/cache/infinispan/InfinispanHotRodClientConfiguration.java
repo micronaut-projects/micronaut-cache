@@ -20,7 +20,6 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.io.ResourceResolver;
 import org.infinispan.client.hotrod.configuration.*;
-import org.infinispan.client.hotrod.impl.async.DefaultAsyncExecutorFactory;
 import org.infinispan.commons.executors.ExecutorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +83,7 @@ public class InfinispanHotRodClientConfiguration {
     /**
      * @param resourceResolver the resource resolver
      * @param executorFactory the executor factory
-     * @param environment
+     * @param environment the Micronaut environment
      */
     public InfinispanHotRodClientConfiguration(ResourceResolver resourceResolver, ExecutorFactory executorFactory, Environment environment) {
         this.resourceResolver = resourceResolver;
