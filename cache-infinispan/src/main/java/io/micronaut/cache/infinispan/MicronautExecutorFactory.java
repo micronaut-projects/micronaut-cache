@@ -15,14 +15,16 @@
  */
 package io.micronaut.cache.infinispan;
 
+import io.micronaut.scheduling.TaskExecutors;
 import org.infinispan.commons.executors.ExecutorFactory;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 /**
- * A {@link ExecutorFactory} implementation based on the existing {@link ExecutorService} bean.
+ * An {@link ExecutorFactory} implementation based on the existing IO {@link ExecutorService} bean.
  *
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
@@ -35,7 +37,7 @@ public class MicronautExecutorFactory implements ExecutorFactory {
     /**
      * @param executorService the executor service
      */
-    public MicronautExecutorFactory(ExecutorService executorService) {
+    public MicronautExecutorFactory(@Named(TaskExecutors.IO) ExecutorService executorService) {
         this.executorService = executorService;
     }
 
