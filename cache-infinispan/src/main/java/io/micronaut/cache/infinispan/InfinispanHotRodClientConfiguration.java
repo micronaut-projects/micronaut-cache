@@ -181,6 +181,18 @@ public class InfinispanHotRodClientConfiguration {
             asyncExecutorFactory.factory(executorFactory);
         }
 
+        builder
+                .connectionPool().read(connectionPool.create())
+                .asyncExecutorFactory().read(asyncExecutorFactory.create())
+                .statistics().read(statistics.create());
+
+        SecurityConfigurationBuilder security = builder.security();
+        security.authentication().read(authentication.create());
+        security.ssl().read(ssl.create());
+        builder.security().read(security.create());
+
+        builder.nearCache().read(nearCache.create());
+
         return builder;
     }
 
