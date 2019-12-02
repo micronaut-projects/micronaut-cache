@@ -17,6 +17,7 @@ package io.micronaut.cache.infinispan;
 
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.env.Environment;
 import io.micronaut.core.io.ResourceResolver;
 import org.infinispan.client.hotrod.configuration.*;
 import org.infinispan.client.hotrod.impl.async.DefaultAsyncExecutorFactory;
@@ -52,6 +53,7 @@ public class InfinispanHotRodClientConfiguration {
 
     private ResourceResolver resourceResolver;
     private ExecutorFactory executorFactory;
+    private Environment environment;
 
     @ConfigurationBuilder(prefixes = {"set", ""}, includes = {"addCluster", "addServers", "balancingStrategy", "connectionTimeout", "forceReturnValues", "keySizeEstimate", "marshaller", "addContextInitializer", "protocolVersion", "socketTimeout", "tcpNoDelay", "tcpKeepAlive", "valueSizeEstimate", "maxRetries", "batchSize"})
     private org.infinispan.client.hotrod.configuration.ConfigurationBuilder builder = new org.infinispan.client.hotrod.configuration.ConfigurationBuilder();
@@ -82,10 +84,12 @@ public class InfinispanHotRodClientConfiguration {
     /**
      * @param resourceResolver the resource resolver
      * @param executorFactory the executor factory
+     * @param environment
      */
-    public InfinispanHotRodClientConfiguration(ResourceResolver resourceResolver, ExecutorFactory executorFactory) {
+    public InfinispanHotRodClientConfiguration(ResourceResolver resourceResolver, ExecutorFactory executorFactory, Environment environment) {
         this.resourceResolver = resourceResolver;
         this.executorFactory = executorFactory;
+        this.environment = environment;
     }
 
     /**
@@ -177,7 +181,7 @@ public class InfinispanHotRodClientConfiguration {
             server.host(DEFAULT_HOST);
         }
 
-        if (DefaultAsyncExecutorFactory.class.equals(asyncExecutorFactory.create().factoryClass())) {
+        if (!environment.containsProperty((PREFIX + ".async-executor-factory.factory-class"))) {
             asyncExecutorFactory.factory(executorFactory);
         }
 
