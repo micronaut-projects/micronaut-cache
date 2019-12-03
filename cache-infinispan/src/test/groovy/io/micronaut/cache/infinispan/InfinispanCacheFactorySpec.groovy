@@ -83,6 +83,9 @@ class InfinispanCacheFactorySpec extends Specification {
         then:
         remoteCacheManager.configuration.asyncExecutorFactory().factory().class == MicronautExecutorFactory
         !remoteCacheManager.configuration.asyncExecutorFactory().factoryClass()
+
+        cleanup:
+        ctx.close()
     }
 
     void "it can use Infinispan's executor factory if explicitly set" () {
@@ -95,6 +98,9 @@ class InfinispanCacheFactorySpec extends Specification {
         then:
         remoteCacheManager.configuration.asyncExecutorFactory().factoryClass() == DefaultAsyncExecutorFactory
         !remoteCacheManager.configuration.asyncExecutorFactory().factory()
+
+        cleanup:
+        ctx.close()
     }
 
 }
