@@ -15,11 +15,25 @@
  */
 package io.micronaut.cache.hazelcast
 
+import com.hazelcast.config.CacheSimpleConfig
+import com.hazelcast.config.Config
+import com.hazelcast.config.EvictionConfig
+import com.hazelcast.config.EvictionPolicy
+import com.hazelcast.config.InMemoryFormat
+import com.hazelcast.config.MapConfig
+import com.hazelcast.config.MaxSizeConfig
+import com.hazelcast.config.NearCacheConfig
+import com.hazelcast.config.PartitioningStrategyConfig
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
+import com.hazelcast.core.IMap
+import io.micronaut.cache.SyncCache
 import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.Cacheable
+import io.micronaut.cache.tck.AbstractSyncCacheSpec
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
 import io.micronaut.core.async.annotation.SingleResult
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -35,74 +49,38 @@ import java.util.concurrent.atomic.AtomicInteger
  * @since 1.0
  */
 @Retry
-class HazelcastSyncCacheSpec extends Specification {
+class HazelcastSyncCacheSpec extends AbstractSyncCacheSpec {
 
     @Shared
     HazelcastInstance hazelcastServerInstance
 
     def setupSpec() {
-        hazelcastServerInstance = Hazelcast.newHazelcastInstance()
+        MapConfig mapConfig = new MapConfig()
+                .setMaxSizeConfig(new MaxSizeConfig()
+                        .setMaxSizePolicy(MaxSizeConfig.MaxSizePolicy.PER_PARTITION)
+                        .setSize(3))
+                .setEvictionPolicy(EvictionPolicy.LRU)
+                .setName("test")
+        Config config = new Config("sampleCache")
+        config.setProperty("hazelcast.partition.count", "1")
+        config.addMapConfig(mapConfig)
+        hazelcastServerInstance = Hazelcast.getOrCreateHazelcastInstance(config)
     }
 
     def cleanupSpec() {
         hazelcastServerInstance.shutdown()
     }
 
-    void "test publisher cache methods are not called for hits"() {
-        given:
-        ApplicationContext applicationContext = ApplicationContext.run(
+    @Override
+    ApplicationContext createApplicationContext() {
+        return ApplicationContext.run(
                 "hazelcast.instanceName": "sampleCache",
                 "hazelcast.network.addresses": ['127.0.0.1:5701']
         )
-
-        PublisherService publisherService = applicationContext.getBean(PublisherService)
-
-        expect:
-        publisherService.callCount.get() == 0
-
-        when:
-        publisherService.flowableValue("abc").blockingFirst()
-
-        then:
-        publisherService.callCount.get() == 1
-
-        when:
-        publisherService.flowableValue("abc").blockingFirst()
-
-        then:
-        publisherService.callCount.get() == 1
-
-        when:
-        publisherService.singleValue("abcd").blockingGet()
-
-        then:
-        publisherService.callCount.get() == 2
-
-        when:
-        publisherService.singleValue("abcd").blockingGet()
-
-        then:
-        publisherService.callCount.get() == 2
     }
 
-    @Singleton
-    @CacheConfig('counter')
-    static class PublisherService {
-
-        AtomicInteger callCount = new AtomicInteger()
-
-        @Cacheable
-        @SingleResult
-        Flowable<Integer> flowableValue(String name) {
-            callCount.incrementAndGet()
-            return Flowable.just(0)
-        }
-
-        @Cacheable
-        Single<Integer> singleValue(String name) {
-            callCount.incrementAndGet()
-            return Single.just(0)
-        }
-
+    @Override
+    void flushCache(SyncCache syncCache) {
     }
+
 }
