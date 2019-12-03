@@ -15,34 +15,17 @@
  */
 package io.micronaut.cache.hazelcast
 
-import com.hazelcast.config.CacheSimpleConfig
 import com.hazelcast.config.Config
-import com.hazelcast.config.EvictionConfig
 import com.hazelcast.config.EvictionPolicy
-import com.hazelcast.config.InMemoryFormat
 import com.hazelcast.config.MapConfig
 import com.hazelcast.config.MaxSizeConfig
-import com.hazelcast.config.NearCacheConfig
-import com.hazelcast.config.PartitioningStrategyConfig
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
-import com.hazelcast.core.IMap
 import io.micronaut.cache.SyncCache
-import io.micronaut.cache.annotation.CacheConfig
-import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.cache.tck.AbstractSyncCacheSpec
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.event.BeanCreatedEvent
-import io.micronaut.context.event.BeanCreatedEventListener
-import io.micronaut.core.async.annotation.SingleResult
-import io.reactivex.Flowable
-import io.reactivex.Single
 import spock.lang.Retry
 import spock.lang.Shared
-import spock.lang.Specification
-
-import javax.inject.Singleton
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * @author Nirav Assar
