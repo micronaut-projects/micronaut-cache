@@ -3,8 +3,6 @@ package io.micronaut.cache.ehcache
 import io.micronaut.cache.SyncCache
 import io.micronaut.cache.tck.AbstractSyncCacheSpec
 import io.micronaut.context.ApplicationContext
-import org.ehcache.core.Ehcache
-import org.ehcache.impl.internal.store.heap.OnHeapStore
 
 class EhcacheSyncCacheSpec extends AbstractSyncCacheSpec {
 
@@ -19,6 +17,5 @@ class EhcacheSyncCacheSpec extends AbstractSyncCacheSpec {
 
     @Override
     void flushCache(SyncCache syncCache) {
-        ((OnHeapStore) ((Ehcache)syncCache.nativeCache).store).enforceCapacity()
     }
 }
