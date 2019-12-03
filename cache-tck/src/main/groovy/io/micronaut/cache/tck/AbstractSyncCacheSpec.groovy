@@ -16,23 +16,15 @@
 package io.micronaut.cache.tck
 
 import io.micronaut.cache.CacheManager
+import io.micronaut.cache.DynamicCacheManager
 import io.micronaut.cache.SyncCache
-import io.micronaut.cache.annotation.*
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Requires
 import io.micronaut.context.exceptions.ConfigurationException
-import io.micronaut.core.async.annotation.SingleResult
 import io.micronaut.inject.qualifiers.Qualifiers
-import io.reactivex.Flowable
-import io.reactivex.Single
-import spock.lang.Ignore
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
-
-import javax.inject.Singleton
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionStage
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * @author Graeme Rocher
@@ -42,6 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger
 abstract class AbstractSyncCacheSpec extends Specification {
 
     abstract ApplicationContext createApplicationContext()
+
+    abstract void flushCache(SyncCache syncCache)
 
     void "test cacheable annotations"() {
         given:
@@ -189,7 +183,7 @@ abstract class AbstractSyncCacheSpec extends Specification {
         syncCache.put("two", 2)
         syncCache.put("three", 3)
         syncCache.put("four", 4)
-        syncCache.invalidateAll()
+        flushCache(syncCache)
         PollingConditions conditions = new PollingConditions(timeout: 15, delay: 0.5)
 
         then:
@@ -230,7 +224,7 @@ abstract class AbstractSyncCacheSpec extends Specification {
         applicationContext.stop()
     }
 
-    @Ignore
+    @Requires(missingBeans = DynamicCacheManager)
     void "test exception is thrown if non configured cache is retrieved"() {
         given:
         ApplicationContext applicationContext = ApplicationContext.run(
