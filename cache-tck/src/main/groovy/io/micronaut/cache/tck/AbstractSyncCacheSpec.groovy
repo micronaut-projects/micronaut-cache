@@ -16,12 +16,8 @@
 package io.micronaut.cache.tck
 
 import io.micronaut.cache.CacheManager
-import io.micronaut.cache.DynamicCacheManager
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Requires
-import io.micronaut.context.exceptions.ConfigurationException
-import io.micronaut.inject.qualifiers.Qualifiers
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions

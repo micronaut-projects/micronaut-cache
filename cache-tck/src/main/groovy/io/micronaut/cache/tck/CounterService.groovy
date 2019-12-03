@@ -14,12 +14,6 @@ import javax.inject.Singleton
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
-/**
- * TODO: javadoc
- *
- * @author Álvaro Sánchez-Mariscal
- * @since 1.0.0
- */
 @Singleton
 @CacheConfig('counter')
 class CounterService {
