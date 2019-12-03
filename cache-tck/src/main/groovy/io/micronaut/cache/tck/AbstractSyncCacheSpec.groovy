@@ -171,9 +171,10 @@ abstract class AbstractSyncCacheSpec extends Specification {
     void "test configure sync cache"() {
         given:
         ApplicationContext applicationContext = createApplicationContext()
+        CacheManager cacheManager = applicationContext.getBean(CacheManager)
 
         when:
-        SyncCache syncCache = applicationContext.getBean(SyncCache, Qualifiers.byName('test'))
+        SyncCache syncCache = applicationContext.get("test", SyncCache).orElse(cacheManager.getCache('test'))
 
         then:
         syncCache.name == 'test'
@@ -182,6 +183,10 @@ abstract class AbstractSyncCacheSpec extends Specification {
         syncCache.put("one", 1)
         syncCache.put("two", 2)
         syncCache.put("three", 3)
+
+        syncCache.get("two", Integer)
+        syncCache.get("three", Integer)
+
         syncCache.put("four", 4)
         flushCache(syncCache)
         PollingConditions conditions = new PollingConditions(timeout: 15, delay: 0.5)
@@ -224,23 +229,4 @@ abstract class AbstractSyncCacheSpec extends Specification {
         applicationContext.stop()
     }
 
-    @Requires(missingBeans = DynamicCacheManager)
-    void "test exception is thrown if non configured cache is retrieved"() {
-        given:
-        ApplicationContext applicationContext = ApplicationContext.run(
-                'micronaut.caches.test.initialCapacity':1,
-                'micronaut.caches.test.maximumSize':3
-        )
-        CacheManager cacheManager = applicationContext.getBean(CacheManager)
-
-        when:
-        cacheManager.getCache("fooBar")
-
-        then:
-        def ex = thrown(ConfigurationException)
-        ex.message == "No cache configured for name: fooBar"
-
-        cleanup:
-        applicationContext.stop()
-    }
 }
