@@ -17,7 +17,6 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.core.ExecutionCallback;
 import com.hazelcast.core.IMap;
-import com.hazelcast.map.AbstractEntryProcessor;
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -25,7 +24,6 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -108,22 +106,14 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
     public <T> CompletableFuture<Optional<T>> putIfAbsent(@Nonnull Object key, @Nonnull T value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
-        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
-        nativeCache.submitToKey(key, new AbstractEntryProcessor()  {
-            @Override
-            public Object process(Map.Entry entry) {
-                Object remoteValue = entry.getValue();
-                if (remoteValue == null) {
-                    entry.setValue(value);
-                    future.complete(Optional.empty());
-                } else {
-                    final Class<T> aClass = (Class<T>) value.getClass();
-                    future.complete(conversionService.convert(remoteValue, aClass));
-                }
-                return value;
+        return CompletableFuture.supplyAsync(() -> {
+            Object remoteValue = nativeCache.putIfAbsent(key, value);
+            if (remoteValue == null) {
+                return Optional.empty();
             }
-        });
-        return future;
+            final Class<T> aClass = (Class<T>) value.getClass();
+            return conversionService.convert(remoteValue, aClass);
+        }, executorService);
     }
 
     @SuppressWarnings("unchecked")
