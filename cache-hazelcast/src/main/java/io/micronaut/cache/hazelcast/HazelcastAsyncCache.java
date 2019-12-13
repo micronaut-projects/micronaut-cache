@@ -132,9 +132,9 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        nativeCache.putAsync(key, value).andThen(new ExecutionCallback<Object>() {
+        nativeCache.setAsync(key, value).andThen(new ExecutionCallback<Void>() {
             @Override
-            public void onResponse(Object response) {
+            public void onResponse(Void response) {
                 future.complete(true);
             }
 
