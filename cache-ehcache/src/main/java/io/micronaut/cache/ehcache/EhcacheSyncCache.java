@@ -90,7 +90,14 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     @Override
     public <T> T get(@Nonnull Object key, @Nonnull Argument<T> requiredType, @Nonnull Supplier<T> supplier) {
         ArgumentUtils.requireNonNull("key", key);
-        return get(key, requiredType).orElseGet(supplier);
+        Optional<T> existingValue = get(key, requiredType);
+        if (existingValue.isPresent()) {
+            return existingValue.get();
+        } else {
+            T value = supplier.get();
+            put(key, value);
+            return value;
+        }
     }
 
     @SuppressWarnings("unchecked")
