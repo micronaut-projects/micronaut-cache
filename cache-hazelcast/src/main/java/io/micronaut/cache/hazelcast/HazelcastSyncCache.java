@@ -86,7 +86,7 @@ public class HazelcastSyncCache implements SyncCache<IMap<Object, Object>> {
     public void put(@Nonnull Object key, @Nonnull Object value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
-        nativeCache.put(key, value);
+        nativeCache.set(key, value);
     }
 
     @SuppressWarnings("unchecked")
