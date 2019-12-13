@@ -22,6 +22,8 @@ import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
+import java.util.function.Supplier
+
 /**
  * @author Graeme Rocher
  * @since 1.0
@@ -219,6 +221,30 @@ abstract class AbstractSyncCacheSpec extends Specification {
             !syncCache.get("two", Integer).isPresent()
             !syncCache.get("three", Integer).isPresent()
             !syncCache.get("four", Integer).isPresent()
+        }
+
+        cleanup:
+        applicationContext.stop()
+    }
+
+    void "test get with supplier"() {
+        given:
+        ApplicationContext applicationContext = createApplicationContext()
+        CacheManager cacheManager = applicationContext.getBean(CacheManager)
+
+        when:
+        SyncCache syncCache = applicationContext.get("test", SyncCache).orElse(cacheManager.getCache('test'))
+
+        syncCache.get("five", Integer, new Supplier<Integer>() {
+            Integer get() {
+                return 5
+            }
+        })
+        PollingConditions conditions = new PollingConditions(timeout: 15, delay: 0.5)
+
+        then:
+        conditions.eventually {
+            syncCache.get("five", Integer).isPresent()
         }
 
         cleanup:
