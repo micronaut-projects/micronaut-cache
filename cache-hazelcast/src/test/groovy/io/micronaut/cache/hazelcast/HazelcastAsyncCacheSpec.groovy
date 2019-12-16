@@ -9,10 +9,8 @@ import com.hazelcast.core.HazelcastInstance
 import io.micronaut.cache.AsyncCache
 import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
-import spock.lang.Ignore
 import spock.lang.Shared
 
-@Ignore("Will be fixed by https://github.com/micronaut-projects/micronaut-cache/pull/31")
 class HazelcastAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
