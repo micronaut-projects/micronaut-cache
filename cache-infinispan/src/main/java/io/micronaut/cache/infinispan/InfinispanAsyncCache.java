@@ -60,7 +60,17 @@ public class InfinispanAsyncCache implements AsyncCache<RemoteCache<Object, Obje
 
     @Override
     public <T> CompletableFuture<T> get(@Nonnull Object key, @Nonnull Argument<T> requiredType, @Nonnull Supplier<T> supplier) {
-        return get(key, requiredType).thenApply(optionalValue -> optionalValue.orElseGet(supplier));
+        ArgumentUtils.requireNonNull("key", key);
+        CompletableFuture<Optional<T>> optionalCompletableFuture = get(key, requiredType);
+        return optionalCompletableFuture.thenApply(existingValue -> {
+            if (existingValue.isPresent()) {
+                return existingValue.get();
+            } else {
+                T value = supplier.get();
+                put(key, value);
+                return value;
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
