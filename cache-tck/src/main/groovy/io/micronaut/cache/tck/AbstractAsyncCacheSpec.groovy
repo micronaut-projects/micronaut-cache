@@ -34,7 +34,7 @@ abstract class AbstractAsyncCacheSpec extends Specification {
     void "test async cacheable annotations"() {
         given:
         ApplicationContext applicationContext = createApplicationContext()
-        PollingConditions conditions = new PollingConditions(timeout: 15, delay: 0.5)
+        PollingConditions conditions = new PollingConditions(timeout: 30, delay: 0.5)
 
         when:
         AsyncCounterService counterService = applicationContext.getBean(AsyncCounterService)
