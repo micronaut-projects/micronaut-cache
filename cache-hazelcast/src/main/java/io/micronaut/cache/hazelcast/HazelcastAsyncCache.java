@@ -82,24 +82,16 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
     @Override
     public <T> CompletableFuture<T> get(@Nonnull Object key, @Nonnull Argument<T> requiredType, @Nonnull Supplier<T> supplier) {
         ArgumentUtils.requireNonNull("key", key);
-        CompletableFuture<T> future = new CompletableFuture<>();
-        nativeCache.getAsync(key).andThen(new ExecutionCallback<Object>() {
-            @Override
-            public void onResponse(Object response) {
-                if (response != null) {
-                    future.complete(conversionService.convert(response, ConversionContext.of(requiredType))
-                            .orElse(supplier.get()));
-                } else {
-                    future.complete(supplier.get());
-                }
+        CompletableFuture<Optional<T>> optionalCompletableFuture = get(key, requiredType);
+        return optionalCompletableFuture.thenApply(existingValue -> {
+            if (existingValue.isPresent()) {
+                return existingValue.get();
+            } else {
+                T value = supplier.get();
+                put(key, value);
+                return value;
             }
-
-            @Override
-            public void onFailure(Throwable t) {
-                future.completeExceptionally(t);
-            }
-        }, executorService);
-        return future;
+        });
     }
 
     @SuppressWarnings("unchecked")
