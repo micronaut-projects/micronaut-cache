@@ -38,5 +38,5 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         BASE_BRANCH: master 
-        BRANCH: gh-pages 
+        BRANCH: gh-pages
         FOLDER: build/docs
