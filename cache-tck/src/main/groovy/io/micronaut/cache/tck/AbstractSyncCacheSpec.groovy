@@ -202,7 +202,6 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         then:
         conditions.eventually {
-
             !syncCache.get("one", Integer).isPresent()
             !syncCache.get("two", Integer).isPresent()
             syncCache.get("three", Integer).isPresent()
