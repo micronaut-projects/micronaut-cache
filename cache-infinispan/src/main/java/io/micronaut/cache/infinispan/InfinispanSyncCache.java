@@ -18,7 +18,6 @@ package io.micronaut.cache.infinispan;
 import io.micronaut.cache.AbstractMapBasedSyncCache;
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.CacheInfo;
-import io.micronaut.cache.SyncCache;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ConversionService;
 import org.infinispan.client.hotrod.RemoteCache;
@@ -27,7 +26,7 @@ import org.reactivestreams.Publisher;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link SyncCache} implementation based on Infinispan's {@link RemoteCache}.
+ * A {@link io.micronaut.cache.SyncCache} implementation based on Infinispan's {@link RemoteCache}.
  *
  * @author Álvaro Sánchez-Mariscal
  * @since 1.0.0
@@ -46,7 +45,6 @@ public class InfinispanSyncCache extends AbstractMapBasedSyncCache<RemoteCache<O
     public String getName() {
         return getNativeCache().getName();
     }
-
 
     @Nonnull
     @Override

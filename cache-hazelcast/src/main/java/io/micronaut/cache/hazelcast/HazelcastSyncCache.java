@@ -18,7 +18,6 @@ package io.micronaut.cache.hazelcast;
 import com.hazelcast.core.IMap;
 import io.micronaut.cache.AbstractMapBasedSyncCache;
 import io.micronaut.cache.AsyncCache;
-import io.micronaut.cache.SyncCache;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.util.ArgumentUtils;
 
@@ -26,7 +25,7 @@ import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutorService;
 
 /**
- * A {@link SyncCache} implementation based on Hazelcast.
+ * A {@link io.micronaut.cache.SyncCache} implementation based on Hazelcast.
  *
  * @author Nirav Assar
  * @since 1.0.0
@@ -46,7 +45,6 @@ public class HazelcastSyncCache extends AbstractMapBasedSyncCache<IMap<Object, O
         super(conversionService, nativeCache);
         this.executorService = executorService;
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
