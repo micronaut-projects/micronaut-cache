@@ -39,8 +39,7 @@
         </div>
         <div class="navLinks">
             <ul>
-                    <li>
-                        <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)" class="desktop">
+                    <li class='desktop'><select style='margin-top: 10px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option selected='selected' value='https://micronaut-projects.github.io/micronaut-cache/snapshot/guide/index.html'>1.0.0.BUILD-SNAPSHOT</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0.M1/guide/index.html'>1.0.0.M1</option></select></li><li><div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)" class="desktop">
                             <a href="../guide/index.html" class="button">Table of contents</a>
                             <div id="nav-summary-childs" style="display:none;">
                                 
@@ -59,6 +58,8 @@
                                 <div class="toc-item" style="margin-left:0"><a href="#infinispan"><strong>7</strong><span>Infinispan Support</span></a></div>
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#noop"><strong>8</strong><span>No Operation Cache Support</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>9</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -105,6 +106,8 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-noop"><a href="#noop"><strong>8</strong><span>No Operation Cache Support</span></a></div>
         
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>9</strong><span>Repository</span></a></div>
+        
         </div>
     </div>
     
@@ -116,8 +119,7 @@
         <p><strong>Version:</strong> <select style='margin-top: 10px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option selected='selected' value='https://micronaut-projects.github.io/micronaut-cache/snapshot/guide/index.html'>1.0.0.BUILD-SNAPSHOT</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0.M1/guide/index.html'>1.0.0.M1</option></select></p>
     </div>
     
-
-<h1 id="introduction">1 Introduction</h1>
+<h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/introduction.adoc"'>
@@ -165,8 +167,7 @@ The configuration implementations in this module require at least Micronaut vers
 <a href="https://docs.micronaut.io/latest/guide/index.html#usingsnapshots">documentation to use snapshots</a>.</p>
 </div>
 
-
-<h1 id="cache-abstraction">2 Cache Abstraction</h1>
+<h1 id="cache-abstraction"><a class="anchor" href="#cache-abstraction"></a>2 Cache Abstraction</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/cache-abstraction.adoc"'>
@@ -248,16 +249,12 @@ The configuration implementations in this module require at least Micronaut vers
 </table>
 </div>
 <div class="paragraph">
-<p>To configure a weigher to be used with the <code>maximumWeight</code> configuration, create a bean that implements <code>io.micronaut.caffeine.cache.Weigher</code>. To associate a given weigher with only a specific cache, annotate the bean with <code>@Named(&lt;cache name&gt;)</code>. Weighers without a named qualifier will apply to all caches that don&#8217;t have a named weigher. If no beans are found, a default implementation will be used.</p>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in &lt;stdin&gt; - include::/home/runner/work/micronaut-cache/micronaut-cache/build/generated/configurationProperties/io.micronaut.cache.DefaultCacheConfiguration.adoc[]</p>
+<p>To configure a weigher to be used with the <code>maximumWeight</code> configuration, create a bean that implements <code>io.micronaut.caffeine.cache.Weigher</code>. To associate a given weigher with only a specific cache, annotate the bean with <code>@Named(&lt;cache name&gt;)</code>. Weighers without a named qualifier will apply to all caches that don&#8217;t have a named weigher. If no beans are found, a default implementation (<a href="https://docs.micronaut.io/latest/guide/configurationreference.html#io.micronaut.cache.DefaultCacheConfiguration">DefaultCacheConfiguration</a>) will be used.</p>
 </div>
 </div>
 </div>
 
-
-<h1 id="jcache">3 JCache API support</h1>
+<h1 id="jcache"><a class="anchor" href="#jcache"></a>3 JCache API support</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/jcache.adoc"'>
@@ -279,8 +276,7 @@ JCache needs to be disabled:</p>
 </div>
 </div>
 
-
-<h1 id="redis">4 Redis Support</h1>
+<h1 id="redis"><a class="anchor" href="#redis"></a>4 Redis Support</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/redis.adoc"'>
@@ -313,8 +309,7 @@ JCache needs to be disabled:</p>
 <p>If you wish to use Redis to cache results the <a href="https://micronaut-projects.github.io/micronaut-redis/snapshot/guide/#cache">Micronaut Redis</a> module provides a <a href="../api/io/micronaut/cache/CacheManager.html">CacheManager</a> implementation that allows using Redis as a backing cache.</p>
 </div>
 
-
-<h1 id="ehcache">5 Ehcache Support</h1>
+<h1 id="ehcache"><a class="anchor" href="#ehcache"></a>5 Ehcache Support</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/ehcache.adoc"'>
@@ -488,8 +483,7 @@ options.</p>
 </div>
 </div>
 
-
-<h1 id="hazelcast">6 Hazelcast Support</h1>
+<h1 id="hazelcast"><a class="anchor" href="#hazelcast"></a>6 Hazelcast Support</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/hazelcast.adoc"'>
@@ -521,6 +515,15 @@ an existing Hazelcast server cluster.</p>
 </div>
 </div>
 </p>
+</div>
+<div class="paragraph">
+<p>You can also add Hazelcast module to your project using cli feature as below:</p>
+</div>
+<div class="listingblock">
+<div class="title">Create a Micronaut application with Hazelcast module</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ mn create-app hello-world -f hazelcast</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>The minimal configuration to use Hazelcast is to simply declare <code>hazelcast:</code> with a network configuration for addresses of the
@@ -681,8 +684,7 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;
 <p>Alternatively, the <code>HazelcastClientConfiguration</code> bean may be replaced with your own implementation.</p>
 </div>
 
-
-<h1 id="infinispan">7 Infinispan Support</h1>
+<h1 id="infinispan"><a class="anchor" href="#infinispan"></a>7 Infinispan Support</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/infinispan.adoc"'>
@@ -1043,8 +1045,7 @@ complement/override values from the former.
 </div>
 </div>
 
-
-<h1 id="noop">8 No Operation Cache Support</h1>
+<h1 id="noop"><a class="anchor" href="#noop"></a>8 No Operation Cache Support</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/noop.adoc"'>
@@ -1084,6 +1085,22 @@ In such situations a no operation cache manager can be used that will simply acc
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">noop-cache.enabled: true</code></pre>
 </div>
+</div>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>9 Repository</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/repository.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>You can find the source code of this project in this repository:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/micronaut-projects/micronaut-cache">https://github.com/micronaut-projects/micronaut-cache</a></p>
 </div>
 
     </div>

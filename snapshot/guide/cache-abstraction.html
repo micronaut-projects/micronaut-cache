@@ -62,6 +62,9 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/noop.html"><strong>8</strong><span>No Operation Cache Support</span></a>
                         </div>
                         
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/repository.html"><strong>9</strong><span>Repository</span></a>
+                        </div>
+                        
                     </div>
                 </div>
             </li>
@@ -99,8 +102,7 @@ function addJsClass() {
                 
 
                 
-
-<h1 id="cache-abstraction">2 Cache Abstraction</h1>
+<h1 id="cache-abstraction"><a class="anchor" href="#cache-abstraction"></a>2 Cache Abstraction</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/cache-abstraction.adoc"'>
@@ -182,10 +184,7 @@ function addJsClass() {
 </table>
 </div>
 <div class="paragraph">
-<p>To configure a weigher to be used with the <code>maximumWeight</code> configuration, create a bean that implements <code>io.micronaut.caffeine.cache.Weigher</code>. To associate a given weigher with only a specific cache, annotate the bean with <code>@Named(&lt;cache name&gt;)</code>. Weighers without a named qualifier will apply to all caches that don&#8217;t have a named weigher. If no beans are found, a default implementation will be used.</p>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in &lt;stdin&gt; - include::/home/runner/work/micronaut-cache/micronaut-cache/build/generated/configurationProperties/io.micronaut.cache.DefaultCacheConfiguration.adoc[]</p>
+<p>To configure a weigher to be used with the <code>maximumWeight</code> configuration, create a bean that implements <code>io.micronaut.caffeine.cache.Weigher</code>. To associate a given weigher with only a specific cache, annotate the bean with <code>@Named(&lt;cache name&gt;)</code>. Weighers without a named qualifier will apply to all caches that don&#8217;t have a named weigher. If no beans are found, a default implementation (<a href="https://docs.micronaut.io/latest/guide/configurationreference.html#io.micronaut.cache.DefaultCacheConfiguration">DefaultCacheConfiguration</a>) will be used.</p>
 </div>
 </div>
 </div>
