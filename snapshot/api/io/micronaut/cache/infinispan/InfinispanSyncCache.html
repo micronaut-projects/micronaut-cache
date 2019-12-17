@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var methods = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -98,7 +98,12 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li>io.micronaut.cache.AbstractMapBasedSyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</li>
+<li>
+<ul class="inheritance">
 <li>io.micronaut.cache.infinispan.InfinispanSyncCache</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -112,8 +117,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">InfinispanSyncCache</span>
-extends java.lang.Object
-implements io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</pre>
+extends io.micronaut.cache.AbstractMapBasedSyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</pre>
 <div class="block">A <code>SyncCache</code> implementation based on Infinispan's <code>RemoteCache</code>.</div>
 <dl>
 <dt><span class="simpleTagLabel">Since:</span></dt>
@@ -139,8 +143,8 @@ implements io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCa
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#InfinispanSyncCache-org.infinispan.client.hotrod.RemoteCache-io.micronaut.core.convert.ConversionService-">InfinispanSyncCache</a></span>(org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&nbsp;nativeCache,
-                   io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#InfinispanSyncCache-io.micronaut.core.convert.ConversionService-org.infinispan.client.hotrod.RemoteCache-">InfinispanSyncCache</a></span>(io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService,
+                   org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&nbsp;nativeCache)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -162,47 +166,21 @@ implements io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCa
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#async--">async</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>&lt;T&gt;&nbsp;java.util.Optional&lt;T&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#get-java.lang.Object-io.micronaut.core.type.Argument-">get</a></span>(java.lang.Object&nbsp;key,
-   io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType)</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#get-java.lang.Object-io.micronaut.core.type.Argument-java.util.function.Supplier-">get</a></span>(java.lang.Object&nbsp;key,
-   io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType,
-   java.util.function.Supplier&lt;T&gt;&nbsp;supplier)</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>org.reactivestreams.Publisher&lt;io.micronaut.cache.CacheInfo&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#getCacheInfo--">getCacheInfo</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#getName--">getName</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#getNativeCache--">getNativeCache</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#invalidate-java.lang.Object-">invalidate</a></span>(java.lang.Object&nbsp;key)</code>&nbsp;</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#invalidateAll--">invalidateAll</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#put-java.lang.Object-java.lang.Object-">put</a></span>(java.lang.Object&nbsp;key,
-   java.lang.Object&nbsp;value)</code>&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>&lt;T&gt;&nbsp;java.util.Optional&lt;T&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/infinispan/InfinispanSyncCache.html#putIfAbsent-java.lang.Object-T-">putIfAbsent</a></span>(java.lang.Object&nbsp;key,
-           T&nbsp;value)</code>&nbsp;</td>
-</tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.io.micronaut.cache.AbstractMapBasedSyncCache">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;io.micronaut.cache.AbstractMapBasedSyncCache</h3>
+<code>get, get, getConversionService, getNativeCache, invalidate, invalidateAll, put, putIfAbsent</code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -231,18 +209,18 @@ implements io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCa
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="InfinispanSyncCache-org.infinispan.client.hotrod.RemoteCache-io.micronaut.core.convert.ConversionService-">
+<a name="InfinispanSyncCache-io.micronaut.core.convert.ConversionService-org.infinispan.client.hotrod.RemoteCache-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>InfinispanSyncCache</h4>
-<pre>public&nbsp;InfinispanSyncCache(org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&nbsp;nativeCache,
-                           io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService)</pre>
+<pre>public&nbsp;InfinispanSyncCache(io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService,
+                           org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&nbsp;nativeCache)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>nativeCache</code> - the Infinispan remote cache</dd>
 <dd><code>conversionService</code> - the conversion service</dd>
+<dd><code>nativeCache</code> - the native cache</dd>
 </dl>
 </li>
 </ul>
@@ -254,103 +232,6 @@ implements io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCa
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="get-java.lang.Object-io.micronaut.core.type.Argument-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>get</h4>
-<pre>@Nonnull
-public&nbsp;&lt;T&gt;&nbsp;java.util.Optional&lt;T&gt;&nbsp;get(@Nonnull
-                                              java.lang.Object&nbsp;key,
-                                              @Nonnull
-                                              io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>get</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
-</li>
-</ul>
-<a name="get-java.lang.Object-io.micronaut.core.type.Argument-java.util.function.Supplier-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>get</h4>
-<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;get(@Nonnull
-                 java.lang.Object&nbsp;key,
-                 @Nonnull
-                 io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType,
-                 @Nonnull
-                 java.util.function.Supplier&lt;T&gt;&nbsp;supplier)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>get</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
-</li>
-</ul>
-<a name="putIfAbsent-java.lang.Object-java.lang.Object-">
-<!--   -->
-</a><a name="putIfAbsent-java.lang.Object-T-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>putIfAbsent</h4>
-<pre>@Nonnull
-public&nbsp;&lt;T&gt;&nbsp;java.util.Optional&lt;T&gt;&nbsp;putIfAbsent(@Nonnull
-                                                      java.lang.Object&nbsp;key,
-                                                      @Nonnull
-                                                      T&nbsp;value)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>putIfAbsent</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
-</li>
-</ul>
-<a name="put-java.lang.Object-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>put</h4>
-<pre>public&nbsp;void&nbsp;put(@Nonnull
-                java.lang.Object&nbsp;key,
-                @Nonnull
-                java.lang.Object&nbsp;value)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>put</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
-</li>
-</ul>
-<a name="invalidate-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>invalidate</h4>
-<pre>public&nbsp;void&nbsp;invalidate(@Nonnull
-                       java.lang.Object&nbsp;key)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>invalidate</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
-</li>
-</ul>
-<a name="invalidateAll--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>invalidateAll</h4>
-<pre>public&nbsp;void&nbsp;invalidateAll()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>invalidateAll</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
-</li>
-</ul>
 <a name="getName--">
 <!--   -->
 </a>
@@ -361,19 +242,8 @@ public&nbsp;&lt;T&gt;&nbsp;java.util.Optional&lt;T&gt;&nbsp;putIfAbsent(@Nonnull
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>getName</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.Cache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
-</li>
-</ul>
-<a name="getNativeCache--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getNativeCache</h4>
-<pre>public&nbsp;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&nbsp;getNativeCache()</pre>
-<dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>getNativeCache</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.Cache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
+<dd><code>getName</code>&nbsp;in class&nbsp;<code>io.micronaut.cache.AbstractMapBasedSyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -385,10 +255,6 @@ public&nbsp;&lt;T&gt;&nbsp;java.util.Optional&lt;T&gt;&nbsp;putIfAbsent(@Nonnull
 <h4>async</h4>
 <pre>@Nonnull
 public&nbsp;io.micronaut.cache.AsyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;&nbsp;async()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>async</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.SyncCache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
 </li>
 </ul>
 <a name="getCacheInfo--">
@@ -398,10 +264,6 @@ public&nbsp;io.micronaut.cache.AsyncCache&lt;org.infinispan.client.hotrod.Remote
 <li class="blockList">
 <h4>getCacheInfo</h4>
 <pre>public&nbsp;org.reactivestreams.Publisher&lt;io.micronaut.cache.CacheInfo&gt;&nbsp;getCacheInfo()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>getCacheInfo</code>&nbsp;in interface&nbsp;<code>io.micronaut.cache.Cache&lt;org.infinispan.client.hotrod.RemoteCache&lt;java.lang.Object,java.lang.Object&gt;&gt;</code></dd>
-</dl>
 </li>
 </ul>
 </li>
