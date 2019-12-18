@@ -15,25 +15,22 @@
  */
 package io.micronaut.scheduling.instrument;
 
-import io.micronaut.core.annotation.Indexed;
-
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
- * An interface for reactive instrumentation where the instrumenter is initialized a head of time
- * at the point where state is available.
+ * An factory interface for invocation instrumentation, factory method decides if instrumentation is needed.
  *
+ * @author Denis Stepanov
  * @author graemerocher
- * @since 1.1
- * @deprecated Use {@link InvocationInstrumenter} and {@link ReactiveInvocationInstrumenterFactory} instead.
+ * @since 1.3
  */
-@Indexed(ReactiveInstrumenter.class)
-@Deprecated
-public interface ReactiveInstrumenter {
+public interface InvocationInstrumenterFactory {
 
     /**
-     * An optional instrumentation.
-     * @return An optional instrumentation.
+     * An optional invocation instrumentation.
+     * @return An invocation instrumentation or null if non exists for this factory.
      */
-    Optional<RunnableInstrumenter> newInstrumentation();
+    @Nullable
+    InvocationInstrumenter newInvocationInstrumenter();
+
 }
