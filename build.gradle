@@ -62,7 +62,7 @@ subprojects { Project subproject ->
     targetCompatibility = '1.8'
 
     if (!subproject.name.contains('tck')) {
-        apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/3ca806eb776b72483a4c0fda5ff1a5caebe0c281/publishing.gradle"
+        apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/v1.0.0/publishing.gradle"
     }
 
 
