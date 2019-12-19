@@ -15,13 +15,19 @@
  */
 package io.micronaut.cache.tck
 
+import groovy.util.logging.Slf4j
+import io.micronaut.cache.Cache
+import io.micronaut.cache.CacheErrorHandler
 import io.micronaut.cache.CacheManager
+import io.micronaut.cache.DefaultCacheErrorHandler
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Replaces
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
+import javax.inject.Singleton
 import java.util.function.Supplier
 
 /**
@@ -248,6 +254,35 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         cleanup:
         applicationContext.stop()
+    }
+
+    @Singleton
+    @Replaces(DefaultCacheErrorHandler)
+    @Slf4j
+    static class LoggingErrorHandler implements CacheErrorHandler {
+        @Override
+        boolean handleInvalidateError(Cache<?> cache, Object key, RuntimeException e) {
+            log.error("Error invalidating cache [" + cache.getName() + "] for key: " + key, e)
+            return false
+        }
+
+        @Override
+        boolean handleInvalidateError(Cache<?> cache, RuntimeException e) {
+            log.error("Error invalidating cache: " + cache.getName(), e)
+            return false
+        }
+
+        @Override
+        boolean handlePutError(Cache<?> cache, Object key, Object result, RuntimeException e) {
+            log.error("Error caching value [" + result + "] for key [" + key + "] in cache: " + cache.getName(), e)
+            return false
+        }
+
+        @Override
+        boolean handleLoadError(Cache<?> cache, Object key, RuntimeException e) {
+            log.error("Error loading for key [" + key + "] in cache: " + cache.getName(), e);
+            return false
+        }
     }
 
 }
