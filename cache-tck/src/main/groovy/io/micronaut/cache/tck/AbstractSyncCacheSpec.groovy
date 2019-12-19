@@ -22,6 +22,7 @@ import io.micronaut.cache.CacheManager
 import io.micronaut.cache.DefaultCacheErrorHandler
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
 import spock.lang.Retry
 import spock.lang.Specification
@@ -258,6 +259,7 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
     @Singleton
     @Replaces(DefaultCacheErrorHandler)
+    @Primary
     @Slf4j
     static class LoggingErrorHandler implements CacheErrorHandler {
         @Override
