@@ -33,10 +33,9 @@
 .navTitle {
     width: auto;
     background: none;
-    padding-right: 5px !important;
-    padding-left: 0 !important;
     float: left;
     max-width: 200px;
+    padding: 0 5px 0 0 !important;
 }
 .navTitle img {width: 100%;}
 @media screen and (min-width: 375px) {
@@ -48,7 +47,9 @@
 .wiki-table th, #navigation {
     background: #000000 !important;
 }
-
+#navigation ul {
+    padding-top: 0;
+}
 #navigation a {
     color: #FFFFFF !important;
     text-shadow: none !important;
