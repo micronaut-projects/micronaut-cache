@@ -169,7 +169,7 @@ abstract class AbstractAsyncCacheSpec extends Specification {
 
         asyncCache.put("four", 4)
         flushCache(asyncCache)
-        PollingConditions conditions = new PollingConditions(timeout: 15, delay: 0.5)
+        PollingConditions conditions = new PollingConditions(timeout: 30, delay: 0.5)
 
         then:
         conditions.eventually {

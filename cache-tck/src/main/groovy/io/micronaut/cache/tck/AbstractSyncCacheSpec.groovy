@@ -15,13 +15,20 @@
  */
 package io.micronaut.cache.tck
 
+import groovy.util.logging.Slf4j
+import io.micronaut.cache.Cache
+import io.micronaut.cache.CacheErrorHandler
 import io.micronaut.cache.CacheManager
+import io.micronaut.cache.DefaultCacheErrorHandler
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Primary
+import io.micronaut.context.annotation.Replaces
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
+import javax.inject.Singleton
 import java.util.function.Supplier
 
 /**
@@ -187,7 +194,7 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         syncCache.put("four", 4)
         flushCache(syncCache)
-        PollingConditions conditions = new PollingConditions(timeout: 15, delay: 0.5)
+        PollingConditions conditions = new PollingConditions(timeout: 30, delay: 0.5)
 
         then:
         conditions.eventually {
@@ -202,7 +209,6 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         then:
         conditions.eventually {
-
             !syncCache.get("one", Integer).isPresent()
             !syncCache.get("two", Integer).isPresent()
             syncCache.get("three", Integer).isPresent()
@@ -249,6 +255,36 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         cleanup:
         applicationContext.stop()
+    }
+
+    @Singleton
+    @Replaces(DefaultCacheErrorHandler)
+    @Primary
+    @Slf4j
+    static class LoggingErrorHandler implements CacheErrorHandler {
+        @Override
+        boolean handleInvalidateError(Cache<?> cache, Object key, RuntimeException e) {
+            log.error("Error invalidating cache [" + cache.getName() + "] for key: " + key, e)
+            return false
+        }
+
+        @Override
+        boolean handleInvalidateError(Cache<?> cache, RuntimeException e) {
+            log.error("Error invalidating cache: " + cache.getName(), e)
+            return false
+        }
+
+        @Override
+        boolean handlePutError(Cache<?> cache, Object key, Object result, RuntimeException e) {
+            log.error("Error caching value [" + result + "] for key [" + key + "] in cache: " + cache.getName(), e)
+            return false
+        }
+
+        @Override
+        boolean handleLoadError(Cache<?> cache, Object key, RuntimeException e) {
+            log.error("Error loading for key [" + key + "] in cache: " + cache.getName(), e);
+            return false
+        }
     }
 
 }

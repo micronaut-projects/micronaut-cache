@@ -5,6 +5,14 @@ Add the Micronaut Hazelcast module as a dependency:
 
 dependency:io.micronaut.cache:micronaut-cache-hazelcast:{version}[]
 
+You can also add Hazelcast module to your project using cli feature as below:
+
+[source,bash]
+.Create a Micronaut application with Hazelcast module
+----
+$ mn create-app hello-world -f hazelcast
+----
+
 The minimal configuration to use Hazelcast is to simply declare `hazelcast:` with a network configuration for addresses of the
 Hazelcast cluster (example below).
 
