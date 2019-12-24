@@ -1,5 +1,5 @@
 https://hazelcast.org/[Hazelcast] caching is supported. Micronaut will create a Hazelcast client instance to connect to
-an existing Hazelcast server cluster.
+an existing Hazelcast server cluster or create an standalone embedded Hazelcast member instance.
 
 Add the Micronaut Hazelcast module as a dependency:
 
@@ -15,6 +15,8 @@ hazelcast:
     addresses: ['121.0.0.1:5701']
 ----
 
+If you provide a Hazelcast configuration file (ex.: `hazelcast.xml`, `hazelcast.yml`, `hazelcast-client.xml`, or `hazelcast-client.yml`) in the working directory or classpath, Micronaut will use this configuration file to configure Hazelcast instance.
+
 When using the link:{api}/io/micronaut/cache/annotation/Cacheable.html[@Cacheable] and other Cache Annotations, Micronaut will create
 the Hazelcast client and use the underlying https://docs.hazelcast.org/docs/latest/javadoc/com/hazelcast/core/IMap.html[IMap] Cache Datastore
 on the server.
@@ -24,7 +26,7 @@ The full list of configurable options is below.
 include::{includedir}configurationProperties/io.micronaut.cache.hazelcast.HazelcastClientConfiguration.adoc[]
 
 For settings not in the above list, a https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html[BeanCreatedEventListener] can be registered for
-link:{api}/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html[HazelcastClientConfiguration]. The listener will allow all properties to be set directly on the configuration instance.
+link:{api}/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html[HazelcastClientConfiguration] or link:{api}/io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html[HazelcastMemberConfiguration]. The listener will allow all properties to be set directly on the configuration instance.
 
 [source,java]
 ----
@@ -40,4 +42,4 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener<Haz
 }
 ----
 
-Alternatively, the `HazelcastClientConfiguration` bean may be replaced with your own implementation.
+Alternatively, the `HazelcastClientConfiguration` or `HazelcastMemberConfiguration` bean may be replaced with your own implementation.

@@ -19,47 +19,42 @@ import com.hazelcast.config.Config
 import com.hazelcast.config.EvictionPolicy
 import com.hazelcast.config.MapConfig
 import com.hazelcast.config.MaxSizeConfig
-import com.hazelcast.core.Hazelcast
-import com.hazelcast.core.HazelcastInstance
 import io.micronaut.cache.SyncCache
 import io.micronaut.cache.tck.AbstractSyncCacheSpec
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
 import spock.lang.Retry
-import spock.lang.Shared
+
+import javax.inject.Singleton
 
 /**
- * @author Nirav Assar
  * @since 1.0
  */
 @Retry
-class HazelcastSyncCacheSpec extends AbstractSyncCacheSpec {
+class HazelcastMemberSyncCacheSpec extends AbstractSyncCacheSpec {
 
-    @Shared
-    HazelcastInstance hazelcastServerInstance
+    @Singleton
+    static class CustomConfig implements BeanCreatedEventListener<Config> {
+        @Override
+        Config onCreated(BeanCreatedEvent<Config> event) {
+            MapConfig mapConfig = new MapConfig()
+                    .setMaxSizeConfig(new MaxSizeConfig()
+                            .setMaxSizePolicy(MaxSizeConfig.MaxSizePolicy.PER_PARTITION)
+                            .setSize(3))
+                    .setEvictionPolicy(EvictionPolicy.LRU)
+                    .setName("test")
+            event.getBean().addMapConfig(mapConfig)
+            event.getBean().setInstanceName("sampleCache")
+            event.getBean().setProperty("hazelcast.partition.count", "1")
 
-    def setupSpec() {
-        MapConfig mapConfig = new MapConfig()
-                .setMaxSizeConfig(new MaxSizeConfig()
-                        .setMaxSizePolicy(MaxSizeConfig.MaxSizePolicy.PER_PARTITION)
-                        .setSize(3))
-                .setEvictionPolicy(EvictionPolicy.LRU)
-                .setName("test")
-        Config config = new Config("sampleCache")
-        config.setProperty("hazelcast.partition.count", "1")
-        config.addMapConfig(mapConfig)
-        hazelcastServerInstance = Hazelcast.getOrCreateHazelcastInstance(config)
-    }
-
-    def cleanupSpec() {
-        hazelcastServerInstance.shutdown()
+            event.getBean()
+        }
     }
 
     @Override
     ApplicationContext createApplicationContext() {
-        return ApplicationContext.run(
-                "hazelcast.client.instanceName": "sampleCache",
-                "hazelcast.client.network.addresses": ['127.0.0.1:5701']
-        )
+        return ApplicationContext.run()
     }
 
     @Override
