@@ -36,8 +36,8 @@ class HazelcastAsyncCacheSpec extends AbstractAsyncCacheSpec {
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run(
-                "hazelcast.instanceName": "sampleCache",
-                "hazelcast.network.addresses": ['127.0.0.1:5701']
+                "hazelcast.client.instanceName": "sampleCache",
+                "hazelcast.client.network.addresses": ['127.0.0.1:5701']
         )
     }
 

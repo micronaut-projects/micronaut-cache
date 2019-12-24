@@ -19,8 +19,10 @@ import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
 import com.hazelcast.client.config.SocketOptions;
 import com.hazelcast.config.GroupConfig;
+import io.micronaut.cache.hazelcast.condition.HazelcastConfigResourceCondition;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.Requires;
 
 /**
  * Configuration class for an Hazelcast as a client.
@@ -30,6 +32,9 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  */
 @ConfigurationProperties(value = "hazelcast.client", includes = {"properties", "executorPoolSize", "licenseKey", "instanceName",
     "labels", "userContext"})
+@Requires(condition = HazelcastConfigResourceCondition.class)
+@Requires(missingBeans = ClientConfig.class)
+@Requires(property = "hazelcast.client")
 public class HazelcastClientConfiguration extends ClientConfig {
 
     @ConfigurationBuilder(value = "network", includes = {"smartRouting", "connectionAttemptPeriod", "connectionAttemptLimit",

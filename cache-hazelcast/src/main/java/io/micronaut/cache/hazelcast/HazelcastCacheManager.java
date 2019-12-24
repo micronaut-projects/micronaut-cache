@@ -38,28 +38,28 @@ public class HazelcastCacheManager implements DynamicCacheManager<IMap<Object, O
 
     private final ConversionService<?> conversionService;
     private final ExecutorService executorService;
-    private final HazelcastInstance hazelcastClientInstance;
+    private final HazelcastInstance hazelcastInstance;
 
     /**
      * Constructor.
      *
      * @param conversionService convert values that are returned
-     * @param hazelcastClientInstance the client instance of hazelcast client
+     * @param hazelcastInstance the client instance of hazelcast client
      * @param executorService managers the pool of executors
      */
     public HazelcastCacheManager(ConversionService<?> conversionService,
-                                 HazelcastInstance hazelcastClientInstance,
+                                 HazelcastInstance hazelcastInstance,
                                  @Named(TaskExecutors.IO) ExecutorService executorService) {
         this.conversionService = conversionService;
         this.executorService = executorService;
-        this.hazelcastClientInstance = hazelcastClientInstance;
+        this.hazelcastInstance = hazelcastInstance;
     }
 
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
     public SyncCache<IMap<Object, Object>> getCache(String name) {
-        IMap<Object, Object> nativeCache = hazelcastClientInstance.getMap(name);
+        IMap<Object, Object> nativeCache = hazelcastInstance.getMap(name);
         return new HazelcastSyncCache(conversionService, nativeCache, executorService);
     }
 }
