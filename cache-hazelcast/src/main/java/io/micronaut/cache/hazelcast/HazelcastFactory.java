@@ -17,8 +17,12 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import io.micronaut.cache.hazelcast.condition.HazelcastConfigResourceCondition;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Requires;
 
 import javax.inject.Singleton;
 
@@ -37,8 +41,35 @@ public class HazelcastFactory {
      * @param clientConfig the configuration read it as a bean
      * @return {@link HazelcastInstance}
      */
+    @Requires(beans = ClientConfig.class)
     @Singleton
-    public HazelcastInstance hazelcastClientInstance(ClientConfig clientConfig) {
+    public HazelcastInstance hazelcastInstance(ClientConfig clientConfig) {
         return HazelcastClient.newHazelcastClient(clientConfig);
+    }
+
+    /**
+     * Create a singleton {@link HazelcastInstance} member, based on configuration.
+     *
+     * @param config the configuration read it as a bean
+     * @return {@link HazelcastInstance}
+     */
+    @Requires(beans = Config.class)
+    @Singleton
+    public HazelcastInstance hazelcastInstance(Config config) {
+        return Hazelcast.newHazelcastInstance(config);
+    }
+
+    /**
+     * Create a singleton {@link HazelcastInstance} member or client, if a default Hazelcast configuration resource exists.
+     *
+     * @return {@link HazelcastInstance}
+     */
+    @Requires(missingBeans = {Config.class, ClientConfig.class})
+    @Singleton
+    public HazelcastInstance hazelcastInstance() {
+        if (HazelcastConfigResourceCondition.resourceExists("hazelcast-client.xml", "hazelcast-client.yml")){
+            return HazelcastClient.newHazelcastClient();
+        }
+        return Hazelcast.newHazelcastInstance();
     }
 }
