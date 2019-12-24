@@ -9,8 +9,8 @@ buildscript {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
-        classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:$micronautDocsVersion"
-        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:$micronautDocsVersion"
+        classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:1.0.12"
+        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:1.0.12"
         classpath 'com.adarshr:gradle-test-logger-plugin:2.0.0'
     }
 }
@@ -43,7 +43,7 @@ subprojects { Project subproject ->
         isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
     }
     repositories {
-        //mavenLocal()
+        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
         maven { url "https://oss.jfrog.org/oss-snapshot-local/" }
     }
@@ -60,7 +60,11 @@ subprojects { Project subproject ->
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
-    apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/3ca806eb776b72483a4c0fda5ff1a5caebe0c281/publishing.gradle"
+
+    if (!subproject.name.contains('tck')) {
+        apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/v1.0.0/publishing.gradle"
+    }
+
 
     jar {
         manifest {
@@ -162,5 +166,8 @@ allprojects {
     testlogger {
         showFullStackTraces true
         showStandardStreams true
+        showPassedStandardStreams false
+        showSkippedStandardStreams false
+        showFailedStandardStreams true
     }
 }

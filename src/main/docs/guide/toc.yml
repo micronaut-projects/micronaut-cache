@@ -6,3 +6,4 @@ ehcache: Ehcache Support
 hazelcast: Hazelcast Support
 infinispan: Infinispan Support
 noop: No Operation Cache Support
+repository: Repository

@@ -53,6 +53,6 @@ public class InfinispanCacheManager implements DynamicCacheManager<RemoteCache<O
     public SyncCache<RemoteCache<Object, Object>> getCache(String name) {
         BasicConfiguration basicConfiguration = new ConfigurationBuilder().build();
         RemoteCache<Object, Object> nativeCache = remoteCacheManager.administration().getOrCreateCache(name, basicConfiguration);
-        return new InfinispanSyncCache(nativeCache, conversionService);
+        return new InfinispanSyncCache(conversionService, nativeCache);
     }
 }

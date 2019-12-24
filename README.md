@@ -7,7 +7,7 @@ This project includes caching support for [Micronaut](http://micronaut.io).
 
 ## Documentation
 
-See the [Documentation](https://micronaut-projects.github.io/micronaut-cache/latest/guide) for more information.
+See the [stable](https://micronaut-projects.github.io/micronaut-cache/latest/guide) or [snapshot](https://micronaut-projects.github.io/micronaut-cache/snapshot/guide) documentation for more information.
 
 See the [Snapshot Documentation](https://micronaut-projects.github.io/micronaut-cache/snapshot/guide) for the 
 current development docs.
