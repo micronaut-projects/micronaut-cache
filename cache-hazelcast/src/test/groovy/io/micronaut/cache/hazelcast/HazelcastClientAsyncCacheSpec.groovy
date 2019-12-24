@@ -11,7 +11,7 @@ import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import spock.lang.Shared
 
-class HazelcastAsyncCacheSpec extends AbstractAsyncCacheSpec {
+class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
     HazelcastInstance hazelcastServerInstance
