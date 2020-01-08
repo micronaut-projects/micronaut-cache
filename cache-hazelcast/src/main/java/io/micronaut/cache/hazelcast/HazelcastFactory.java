@@ -64,7 +64,7 @@ public class HazelcastFactory {
     }
 
     /**
-     * Create a singleton {@link HazelcastInstance} client, if client config resource exists
+     * Create a singleton {@link HazelcastInstance} client, if client config resource exists.
      *
      * @return {@link HazelcastInstance}
      */
