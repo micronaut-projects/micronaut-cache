@@ -15,9 +15,7 @@
  */
 package io.micronaut.cache.hazelcast;
 
-import com.hazelcast.client.config.ClientConfig;
-import com.hazelcast.client.config.ClientNetworkConfig;
-import com.hazelcast.client.config.SocketOptions;
+import com.hazelcast.config.Config;
 import com.hazelcast.config.GroupConfig;
 import io.micronaut.cache.hazelcast.condition.HazelcastConfigResourceCondition;
 import io.micronaut.context.annotation.ConfigurationBuilder;
@@ -25,24 +23,15 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
 
 /**
- * Configuration class for an Hazelcast as a client.
+ * Configuration class for an Hazelcast as a member.
  *
- * @author Nirav Assar
  * @since 1.0.0
  */
-@ConfigurationProperties(value = "hazelcast.client", includes = {"properties", "executorPoolSize", "licenseKey", "instanceName",
-    "labels", "userContext"})
+@ConfigurationProperties(value = "hazelcast", includes = {"properties", "licenseKey", "instanceName"})
 @Requires(condition = HazelcastConfigResourceCondition.class)
-@Requires(missingBeans = ClientConfig.class)
-@Requires(property = "hazelcast.client")
-public class HazelcastClientConfiguration extends ClientConfig {
-
-    @ConfigurationBuilder(value = "network", includes = {"smartRouting", "connectionAttemptPeriod", "connectionAttemptLimit",
-        "connectionTimeout", "addresses", "redoOperation", "outboundPortDefinitions", "outboundPorts"})
-    ClientNetworkConfig networkConfig = new ClientNetworkConfig();
-
-    @ConfigurationBuilder("network.socket")
-    SocketOptions socketOptions = new SocketOptions();
+@Requires(missingBeans = Config.class)
+@Requires(missingProperty = "hazelcast.client")
+public class HazelcastMemberConfiguration extends Config {
 
     @ConfigurationBuilder("group")
     GroupConfig groupConfig = new GroupConfig();
@@ -50,9 +39,7 @@ public class HazelcastClientConfiguration extends ClientConfig {
     /**
      * Default constructor.
      */
-    HazelcastClientConfiguration() {
-        networkConfig.setSocketOptions(socketOptions);
-        super.setNetworkConfig(networkConfig);
+    public HazelcastMemberConfiguration() {
         super.setGroupConfig(groupConfig);
     }
 }

@@ -13,6 +13,7 @@
     </root>
 
     <logger name="io.micronaut.cache" level="TRACE" />
+<!--    <logger name="io.micronaut.context.condition" level="TRACE" />-->
     <logger name="org.jcache" level="TRACE" />
     <logger name="com.hazelcast" level="TRACE" />
 </configuration>

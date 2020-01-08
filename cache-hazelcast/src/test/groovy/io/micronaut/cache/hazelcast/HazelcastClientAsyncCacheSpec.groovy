@@ -11,7 +11,7 @@ import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import spock.lang.Shared
 
-class HazelcastAsyncCacheSpec extends AbstractAsyncCacheSpec {
+class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
     HazelcastInstance hazelcastServerInstance
@@ -36,8 +36,8 @@ class HazelcastAsyncCacheSpec extends AbstractAsyncCacheSpec {
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run(
-                "hazelcast.instanceName": "sampleCache",
-                "hazelcast.network.addresses": ['127.0.0.1:5701']
+                "hazelcast.client.instanceName": "sampleCache",
+                "hazelcast.client.network.addresses": ['127.0.0.1:5701']
         )
     }
 
