@@ -1,39 +1,69 @@
 package io.micronaut.cache.hazelcast.condition;
 
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.condition.Condition;
 import io.micronaut.context.condition.ConditionContext;
-import io.micronaut.core.io.file.DefaultFileSystemResourceLoader;
-import io.micronaut.core.io.scan.DefaultClassPathResourceLoader;
+import io.micronaut.core.io.ResourceLoader;
+import io.micronaut.core.io.ResourceResolver;
+import io.micronaut.core.io.file.FileSystemResourceLoader;
+import io.micronaut.core.io.scan.ClassPathResourceLoader;
 
-import java.net.URL;
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
- * Condition class for checking Hazelcast config resources.
+ * Condition classes for checking Hazelcast config resources.
  *
  * @since 1.0.0
  */
 public class HazelcastConfigResourceCondition implements Condition {
+
+    public static final String[] CLIENT_CONFIG_FILES = {"hazelcast-client.xml", "hazelcast-client.yml"};
+    public static final String[] INSTANCE_CONFIG_FILES = {"hazelcast.xml", "hazelcast.yml"};
+
     @Override
     public boolean matches(ConditionContext context) {
-        return !resourceExists("hazelcast.xml", "hazelcast.yml", "hazelcast-client.xml", "hazelcast-client.yml");
+        String[] allConfigFiles = Stream.concat(Arrays.stream(CLIENT_CONFIG_FILES), Arrays.stream(INSTANCE_CONFIG_FILES))
+                .toArray(String[]::new);
+        return !resourceExists(context, allConfigFiles);
     }
 
-    public static boolean resourceExists(String... paths){
-        DefaultFileSystemResourceLoader fileSystemResourceLoader = new DefaultFileSystemResourceLoader(".");
-        DefaultClassPathResourceLoader classPathResourceLoader = new DefaultClassPathResourceLoader(
-                BeanContext.class.getClassLoader());
-        for (String path : paths) {
-            Optional<URL> fileConfig = fileSystemResourceLoader.getResource(path);
-            if(fileConfig.isPresent()){
-                return true;
-            }
-            Optional<URL> classpathConfig = classPathResourceLoader.getResource(path);
-            if (classpathConfig.isPresent()){
+    protected boolean resourceExists(ConditionContext<?> context, String[] paths) {
+        final BeanContext beanContext = context.getBeanContext();
+        ResourceResolver resolver;
+        final List<ResourceLoader> resourceLoaders;
+        if (beanContext instanceof ApplicationContext) {
+            ResourceLoader resourceLoader = ((ApplicationContext) beanContext).getEnvironment();
+            resourceLoaders = Arrays.asList(resourceLoader, FileSystemResourceLoader.defaultLoader());
+        } else {
+            resourceLoaders = Arrays.asList(
+                    ClassPathResourceLoader.defaultLoader(beanContext.getClassLoader()),
+                    FileSystemResourceLoader.defaultLoader()
+            );
+        }
+        resolver = new ResourceResolver(resourceLoaders);
+        for (String resourcePath : paths) {
+            if (resolver.getResource(resourcePath).isPresent()) {
                 return true;
             }
         }
         return false;
     }
+
+    public static class HazelcastClientConfigCondition extends HazelcastConfigResourceCondition {
+        @Override
+        public boolean matches(ConditionContext context) {
+            return resourceExists(context, CLIENT_CONFIG_FILES);
+        }
+    }
+
+    public static class HazelcastInstanceConfigCondition extends HazelcastConfigResourceCondition {
+        @Override
+        public boolean matches(ConditionContext context) {
+            return resourceExists(context, INSTANCE_CONFIG_FILES);
+        }
+    }
+
 }

@@ -146,6 +146,9 @@ abstract class AbstractAsyncCacheSpec extends Specification {
             counterService.getValue("test") == 1
             counterService.getValue2("test") == 1
         }
+
+        cleanup:
+        applicationContext.stop()
     }
 
     void "test configure async cache"() {

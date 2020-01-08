@@ -138,6 +138,9 @@ abstract class AbstractSyncCacheSpec extends Specification {
         then:
         counterService.getValue("test") == 1
         counterService.getValue2("test") == 1
+
+        cleanup:
+        applicationContext.stop()
     }
 
     void "test publisher cache methods are not called for hits"() {
@@ -171,6 +174,9 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         then:
         publisherService.callCount.get() == 2
+
+        cleanup:
+        applicationContext.stop()
     }
 
     void "test configure sync cache"() {
