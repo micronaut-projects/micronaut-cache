@@ -35,8 +35,10 @@ import java.util.stream.Stream;
  */
 public class HazelcastConfigResourceCondition implements Condition {
 
-    public static final String[] CLIENT_CONFIG_FILES = {"hazelcast-client.xml", "hazelcast-client.yml"};
-    public static final String[] INSTANCE_CONFIG_FILES = {"hazelcast.xml", "hazelcast.yml"};
+    public static final String[] CLIENT_CONFIG_FILES = {"hazelcast-client.xml", "hazelcast-client.yml",
+                                                        "classpath:hazelcast-client.xml", "classpath:hazelcast-client.yml"};
+    public static final String[] INSTANCE_CONFIG_FILES = {"hazelcast.xml", "hazelcast.yml", "classpath:hazelcast.xml",
+                                                          "classpath:hazelcast.yml"};
 
     @Override
     public boolean matches(ConditionContext context) {
