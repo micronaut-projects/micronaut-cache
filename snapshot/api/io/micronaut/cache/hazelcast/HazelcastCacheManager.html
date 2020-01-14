@@ -141,7 +141,7 @@ implements io.micronaut.cache.DynamicCacheManager&lt;com.hazelcast.core.IMap&lt;
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/hazelcast/HazelcastCacheManager.html#HazelcastCacheManager-io.micronaut.core.convert.ConversionService-com.hazelcast.core.HazelcastInstance-java.util.concurrent.ExecutorService-">HazelcastCacheManager</a></span>(io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService,
-                     com.hazelcast.core.HazelcastInstance&nbsp;hazelcastClientInstance,
+                     com.hazelcast.core.HazelcastInstance&nbsp;hazelcastInstance,
                      java.util.concurrent.ExecutorService&nbsp;executorService)</code>
 <div class="block">Constructor.</div>
 </td>
@@ -194,14 +194,14 @@ implements io.micronaut.cache.DynamicCacheManager&lt;com.hazelcast.core.IMap&lt;
 <li class="blockList">
 <h4>HazelcastCacheManager</h4>
 <pre>public&nbsp;HazelcastCacheManager(io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService,
-                             com.hazelcast.core.HazelcastInstance&nbsp;hazelcastClientInstance,
+                             com.hazelcast.core.HazelcastInstance&nbsp;hazelcastInstance,
                              @Named(value="io")
                              java.util.concurrent.ExecutorService&nbsp;executorService)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>conversionService</code> - convert values that are returned</dd>
-<dd><code>hazelcastClientInstance</code> - the client instance of hazelcast client</dd>
+<dd><code>hazelcastInstance</code> - the client instance of hazelcast client</dd>
 <dd><code>executorService</code> - managers the pool of executors</dd>
 </dl>
 </li>

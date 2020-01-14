@@ -108,6 +108,7 @@
 <br>
 <pre>@ConfigurationProperties(value="hazelcast.client",
                          includes={"properties","executorPoolSize","licenseKey","instanceName","labels","userContext"})
+ @Requires(condition=<a href="../../../../io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.class</a>) @Requires(missingBeans=com.hazelcast.client.config.ClientConfig.class) @Requires(property="hazelcast.client")
 public class <span class="typeNameLabel">HazelcastClientConfiguration</span>
 extends com.hazelcast.client.config.ClientConfig</pre>
 <div class="block">Configuration class for an Hazelcast as a client.</div>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../io/micronaut/cache/hazelcast/HazelcastSyncCache.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?io/micronaut/cache/hazelcast/HazelcastFactory.html" target="_top">Frames</a></li>
@@ -154,8 +154,26 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>com.hazelcast.core.HazelcastInstance</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastClientInstance-com.hazelcast.client.config.ClientConfig-">hazelcastClientInstance</a></span>(com.hazelcast.client.config.ClientConfig&nbsp;clientConfig)</code>
-<div class="block">Create a singleton <code>HazelcastInstance</code> client, based on configuration.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastClient--">hazelcastClient</a></span>()</code>
+<div class="block">Create a singleton <code>HazelcastInstance</code> client, if client config resource exists.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>com.hazelcast.core.HazelcastInstance</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastInstance--">hazelcastInstance</a></span>()</code>
+<div class="block">Create a singleton <code>HazelcastInstance</code> instance, if instance config resource exists.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>com.hazelcast.core.HazelcastInstance</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastInstance-com.hazelcast.client.config.ClientConfig-">hazelcastInstance</a></span>(com.hazelcast.client.config.ClientConfig&nbsp;clientConfig)</code>
+<div class="block">Create a singleton <code>HazelcastInstance</code> client, based on an existing <code>ClientConfig</code> bean.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>com.hazelcast.core.HazelcastInstance</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastInstance-com.hazelcast.config.Config-">hazelcastInstance</a></span>(com.hazelcast.config.Config&nbsp;config)</code>
+<div class="block">Create a singleton <code>HazelcastInstance</code> member, based on an existing <code>Config</code> bean.</div>
 </td>
 </tr>
 </table>
@@ -197,18 +215,74 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="hazelcastClientInstance-com.hazelcast.client.config.ClientConfig-">
+<a name="hazelcastInstance-com.hazelcast.client.config.ClientConfig-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hazelcastInstance</h4>
+<pre>@Requires(beans=com.hazelcast.client.config.ClientConfig.class)
+ @Singleton
+ @Bean(preDestroy="shutdown")
+public&nbsp;com.hazelcast.core.HazelcastInstance&nbsp;hazelcastInstance(com.hazelcast.client.config.ClientConfig&nbsp;clientConfig)</pre>
+<div class="block">Create a singleton <code>HazelcastInstance</code> client, based on an existing <code>ClientConfig</code> bean.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>clientConfig</code> - the configuration read it as a bean</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>HazelcastInstance</code></dd>
+</dl>
+</li>
+</ul>
+<a name="hazelcastInstance-com.hazelcast.config.Config-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hazelcastInstance</h4>
+<pre>@Requires(beans=com.hazelcast.config.Config.class)
+ @Singleton
+ @Bean(preDestroy="shutdown")
+public&nbsp;com.hazelcast.core.HazelcastInstance&nbsp;hazelcastInstance(com.hazelcast.config.Config&nbsp;config)</pre>
+<div class="block">Create a singleton <code>HazelcastInstance</code> member, based on an existing <code>Config</code> bean.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>config</code> - the configuration read it as a bean</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>HazelcastInstance</code></dd>
+</dl>
+</li>
+</ul>
+<a name="hazelcastClient--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hazelcastClient</h4>
+<pre>@Requires(missingBeans={com.hazelcast.config.Config.class,com.hazelcast.client.config.ClientConfig.class}) @Requires(condition=<a href="../../../../io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastClientConfigCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.HazelcastClientConfigCondition.class</a>)
+ @Singleton
+ @Named(value="hazelcastInstance")
+ @Bean(preDestroy="shutdown")
+public&nbsp;com.hazelcast.core.HazelcastInstance&nbsp;hazelcastClient()</pre>
+<div class="block">Create a singleton <code>HazelcastInstance</code> client, if client config resource exists.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>HazelcastInstance</code></dd>
+</dl>
+</li>
+</ul>
+<a name="hazelcastInstance--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>hazelcastClientInstance</h4>
-<pre>@Singleton
-public&nbsp;com.hazelcast.core.HazelcastInstance&nbsp;hazelcastClientInstance(com.hazelcast.client.config.ClientConfig&nbsp;clientConfig)</pre>
-<div class="block">Create a singleton <code>HazelcastInstance</code> client, based on configuration.</div>
+<h4>hazelcastInstance</h4>
+<pre>@Requires(missingBeans={com.hazelcast.config.Config.class,com.hazelcast.client.config.ClientConfig.class}) @Requires(condition=<a href="../../../../io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition.class</a>)
+ @Singleton
+ @Bean(preDestroy="shutdown")
+public&nbsp;com.hazelcast.core.HazelcastInstance&nbsp;hazelcastInstance()</pre>
+<div class="block">Create a singleton <code>HazelcastInstance</code> instance, if instance config resource exists.</div>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>clientConfig</code> - the configuration read it as a bean</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>HazelcastInstance</code></dd>
 </dl>
@@ -242,7 +316,7 @@ public&nbsp;com.hazelcast.core.HazelcastInstance&nbsp;hazelcastClientInstance(co
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../io/micronaut/cache/hazelcast/HazelcastSyncCache.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?io/micronaut/cache/hazelcast/HazelcastFactory.html" target="_top">Frames</a></li>

@@ -113,7 +113,7 @@ function addJsClass() {
 
 <div class="paragraph">
 <p><a href="https://hazelcast.org/">Hazelcast</a> caching is supported. Micronaut will create a Hazelcast client instance to connect to
-an existing Hazelcast server cluster.</p>
+an existing Hazelcast server cluster or create an standalone embedded Hazelcast member instance.</p>
 </div>
 <div class="paragraph">
 <p>Add the Micronaut Hazelcast module as a dependency:</p>
@@ -154,6 +154,9 @@ Hazelcast cluster (example below).</p>
   network:
     addresses: ['121.0.0.1:5701']</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>If you provide a Hazelcast configuration file (ex.: <code>hazelcast.xml</code>, <code>hazelcast.yml</code>, <code>hazelcast-client.xml</code>, or <code>hazelcast-client.yml</code>) in the working directory or classpath, Micronaut will use this configuration file to configure Hazelcast instance.</p>
 </div>
 <div class="paragraph">
 <p>When using the <a href="../api/io/micronaut/cache/annotation/Cacheable.html">@Cacheable</a> and other Cache Annotations, Micronaut will create
@@ -283,7 +286,7 @@ on the server.</p>
 </table>
 <div class="paragraph">
 <p>For settings not in the above list, a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a> can be registered for
-<a href="../api/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html">HazelcastClientConfiguration</a>. The listener will allow all properties to be set directly on the configuration instance.</p>
+<a href="../api/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html">HazelcastClientConfiguration</a> or <a href="../api/io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html">HazelcastMemberConfiguration</a>. The listener will allow all properties to be set directly on the configuration instance.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -300,7 +303,7 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively, the <code>HazelcastClientConfiguration</code> bean may be replaced with your own implementation.</p>
+<p>Alternatively, the <code>HazelcastClientConfiguration</code> or <code>HazelcastMemberConfiguration</code> bean may be replaced with your own implementation.</p>
 </div>
 
 

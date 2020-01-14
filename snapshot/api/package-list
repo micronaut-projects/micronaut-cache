@@ -2,6 +2,7 @@ io.micronaut.cache.ehcache
 io.micronaut.cache.ehcache.configuration
 io.micronaut.cache.ehcache.serialization
 io.micronaut.cache.hazelcast
+io.micronaut.cache.hazelcast.condition
 io.micronaut.cache.hazelcast.converters
 io.micronaut.cache.infinispan
 io.micronaut.cache.noop

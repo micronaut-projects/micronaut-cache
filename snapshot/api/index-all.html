@@ -97,6 +97,8 @@
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html#CLIENT_CONFIG_FILES">CLIENT_CONFIG_FILES</a></span> - Static variable in class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration.html#ClusteredDedicatedResourcePoolConfiguration--">ClusteredDedicatedResourcePoolConfiguration()</a></span> - Constructor for class io.micronaut.cache.ehcache.configuration.<a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration">EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredSharedResourcePoolConfiguration.html#ClusteredSharedResourcePoolConfiguration--">ClusteredSharedResourcePoolConfiguration()</a></span> - Constructor for class io.micronaut.cache.ehcache.configuration.<a href="io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredSharedResourcePoolConfiguration.html" title="class in io.micronaut.cache.ehcache.configuration">EhcacheConfiguration.ClusteredSharedResourcePoolConfiguration</a></dt>
@@ -329,13 +331,29 @@
 <dd>
 <div class="block">Constructor.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastClient--">hazelcastClient()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastFactory</a></dt>
+<dd>
+<div class="block">Create a singleton <code>HazelcastInstance</code> client, if client config resource exists.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastClientConfigCondition.html#HazelcastClientConfigCondition--">HazelcastClientConfigCondition()</a></span> - Constructor for class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastClientConfigCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.HazelcastClientConfigCondition</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastClientConfiguration</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
 <dd>
 <div class="block">Configuration class for an Hazelcast as a client.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastClientInstance-com.hazelcast.client.config.ClientConfig-">hazelcastClientInstance(ClientConfig)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastFactory</a></dt>
+<dt><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition"><span class="typeNameLink">HazelcastConfigResourceCondition</span></a> - Class in <a href="io/micronaut/cache/hazelcast/condition/package-summary.html">io.micronaut.cache.hazelcast.condition</a></dt>
 <dd>
-<div class="block">Create a singleton <code>HazelcastInstance</code> client, based on configuration.</div>
+<div class="block">Condition classes for checking Hazelcast config resources.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html#HazelcastConfigResourceCondition--">HazelcastConfigResourceCondition()</a></span> - Constructor for class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastClientConfigCondition.html" title="class in io.micronaut.cache.hazelcast.condition"><span class="typeNameLink">HazelcastConfigResourceCondition.HazelcastClientConfigCondition</span></a> - Class in <a href="io/micronaut/cache/hazelcast/condition/package-summary.html">io.micronaut.cache.hazelcast.condition</a></dt>
+<dd>
+<div class="block">Condition that matches if any client config file exists.</div>
+</dd>
+<dt><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition.html" title="class in io.micronaut.cache.hazelcast.condition"><span class="typeNameLink">HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition</span></a> - Class in <a href="io/micronaut/cache/hazelcast/condition/package-summary.html">io.micronaut.cache.hazelcast.condition</a></dt>
+<dd>
+<div class="block">Condition that matches if any instance config file exitsts.</div>
 </dd>
 <dt><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastFactory</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
 <dd>
@@ -343,6 +361,28 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html#HazelcastFactory--">HazelcastFactory()</a></span> - Constructor for class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastFactory</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastInstance-com.hazelcast.client.config.ClientConfig-">hazelcastInstance(ClientConfig)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastFactory</a></dt>
+<dd>
+<div class="block">Create a singleton <code>HazelcastInstance</code> client, based on an existing <code>ClientConfig</code> bean.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastInstance-com.hazelcast.config.Config-">hazelcastInstance(Config)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastFactory</a></dt>
+<dd>
+<div class="block">Create a singleton <code>HazelcastInstance</code> member, based on an existing <code>Config</code> bean.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastFactory.html#hazelcastInstance--">hazelcastInstance()</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastFactory.html" title="class in io.micronaut.cache.hazelcast">HazelcastFactory</a></dt>
+<dd>
+<div class="block">Create a singleton <code>HazelcastInstance</code> instance, if instance config resource exists.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition.html#HazelcastInstanceConfigCondition--">HazelcastInstanceConfigCondition()</a></span> - Constructor for class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastMemberConfiguration</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
+<dd>
+<div class="block">Configuration class for an Hazelcast as a member.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html#HazelcastMemberConfiguration--">HazelcastMemberConfiguration()</a></span> - Constructor for class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html" title="class in io.micronaut.cache.hazelcast">HazelcastMemberConfiguration</a></dt>
+<dd>
+<div class="block">Default constructor.</div>
+</dd>
 <dt><a href="io/micronaut/cache/hazelcast/HazelcastSyncCache.html" title="class in io.micronaut.cache.hazelcast"><span class="typeNameLink">HazelcastSyncCache</span></a> - Class in <a href="io/micronaut/cache/hazelcast/package-summary.html">io.micronaut.cache.hazelcast</a></dt>
 <dd>
 <div class="block">A <code>SyncCache</code> implementation based on Hazelcast.</div>
@@ -393,6 +433,8 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/infinispan/InfinispanSyncCache.html#InfinispanSyncCache-io.micronaut.core.convert.ConversionService-org.infinispan.client.hotrod.RemoteCache-">InfinispanSyncCache(ConversionService&lt;?&gt;, RemoteCache&lt;Object, Object&gt;)</a></span> - Constructor for class io.micronaut.cache.infinispan.<a href="io/micronaut/cache/infinispan/InfinispanSyncCache.html" title="class in io.micronaut.cache.infinispan">InfinispanSyncCache</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html#INSTANCE_CONFIG_FILES">INSTANCE_CONFIG_FILES</a></span> - Static variable in class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/EhcacheSyncCache.html#invalidate-java.lang.Object-">invalidate(Object)</a></span> - Method in class io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheSyncCache.html" title="class in io.micronaut.cache.ehcache">EhcacheSyncCache</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/HazelcastAsyncCache.html#invalidate-java.lang.Object-">invalidate(Object)</a></span> - Method in class io.micronaut.cache.hazelcast.<a href="io/micronaut/cache/hazelcast/HazelcastAsyncCache.html" title="class in io.micronaut.cache.hazelcast">HazelcastAsyncCache</a></dt>
@@ -423,6 +465,8 @@
 <div class="block">Classes related to the integration of Hazelcast caches into Micronaut's
  cache manager.</div>
 </dd>
+<dt><a href="io/micronaut/cache/hazelcast/condition/package-summary.html">io.micronaut.cache.hazelcast.condition</a> - package io.micronaut.cache.hazelcast.condition</dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/hazelcast/converters/package-summary.html">io.micronaut.cache.hazelcast.converters</a> - package io.micronaut.cache.hazelcast.converters</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/infinispan/package-summary.html">io.micronaut.cache.infinispan</a> - package io.micronaut.cache.infinispan</dt>
@@ -442,6 +486,12 @@
 <div class="block">Converts a map to a concurrent map.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/converters/MapToConcurrentMapConverter.html#MapToConcurrentMapConverter--">MapToConcurrentMapConverter()</a></span> - Constructor for class io.micronaut.cache.hazelcast.converters.<a href="io/micronaut/cache/hazelcast/converters/MapToConcurrentMapConverter.html" title="class in io.micronaut.cache.hazelcast.converters">MapToConcurrentMapConverter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastClientConfigCondition.html#matches-io.micronaut.context.condition.ConditionContext-">matches(ConditionContext)</a></span> - Method in class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastClientConfigCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.HazelcastClientConfigCondition</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition.html#matches-io.micronaut.context.condition.ConditionContext-">matches(ConditionContext)</a></span> - Method in class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.HazelcastInstanceConfigCondition</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html#matches-io.micronaut.context.condition.ConditionContext-">matches(ConditionContext)</a></span> - Method in class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/cache/infinispan/MicronautExecutorFactory.html" title="class in io.micronaut.cache.infinispan"><span class="typeNameLink">MicronautExecutorFactory</span></a> - Class in <a href="io/micronaut/cache/infinispan/package-summary.html">io.micronaut.cache.infinispan</a></dt>
 <dd>
@@ -531,6 +581,10 @@
 <dl>
 <dt><span class="memberNameLink"><a href="io/micronaut/cache/ehcache/serialization/CharSequenceSerializer.html#read-java.nio.ByteBuffer-">read(ByteBuffer)</a></span> - Method in class io.micronaut.cache.ehcache.serialization.<a href="io/micronaut/cache/ehcache/serialization/CharSequenceSerializer.html" title="class in io.micronaut.cache.ehcache.serialization">CharSequenceSerializer</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html#resourceExists-io.micronaut.context.condition.ConditionContext-java.lang.String:A-">resourceExists(ConditionContext&lt;?&gt;, String[])</a></span> - Method in class io.micronaut.cache.hazelcast.condition.<a href="io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition</a></dt>
+<dd>
+<div class="block">Checks whether any path given exists.</div>
+</dd>
 </dl>
 <a name="I:S">
 <!--   -->
