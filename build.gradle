@@ -91,7 +91,7 @@ subprojects { Project subproject ->
         }
 
         retry {
-            failOnPassedAfterRetry = true
+            failOnPassedAfterRetry = false
             maxFailures = 10
             maxRetries = 5
         }
