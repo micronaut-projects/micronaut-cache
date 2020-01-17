@@ -263,6 +263,20 @@ abstract class AbstractSyncCacheSpec extends Specification {
         applicationContext.stop()
     }
 
+    void "test putIfAbsent semantics"() {
+        given:
+        ApplicationContext applicationContext = createApplicationContext()
+        CacheManager cacheManager = applicationContext.getBean(CacheManager)
+
+        when:
+        SyncCache syncCache = applicationContext.get("test", SyncCache).orElse(cacheManager.getCache('test'))
+
+        then:
+        !syncCache.putIfAbsent("six", 6).isPresent() // returns empty because the key was added
+        syncCache.putIfAbsent("six", 7).get() == 6 // returns the original value
+        syncCache.get("six", Integer).get() == 6
+    }
+
     @Singleton
     @Replaces(DefaultCacheErrorHandler)
     @Primary
