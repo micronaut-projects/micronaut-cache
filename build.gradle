@@ -17,7 +17,7 @@ buildscript {
 
 plugins {
     id 'com.github.hierynomus.license' version '0.15.0' apply false
-    id "org.gradle.test-retry" version "1.0.0" apply false
+    id "org.gradle.test-retry" version "1.0.1" apply false
 }
 
 repositories {
