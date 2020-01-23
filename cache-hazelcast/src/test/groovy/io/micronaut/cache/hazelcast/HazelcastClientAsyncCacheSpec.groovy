@@ -1,17 +1,24 @@
 package io.micronaut.cache.hazelcast
 
-import com.hazelcast.config.Config
+import com.hazelcast.client.HazelcastClient
+import com.hazelcast.client.config.ClientConfig
 import com.hazelcast.config.EvictionPolicy
 import com.hazelcast.config.MapConfig
 import com.hazelcast.config.MaxSizeConfig
-import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
 import io.micronaut.cache.AsyncCache
 import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
+import org.testcontainers.containers.GenericContainer
+import org.testcontainers.spock.Testcontainers
 import spock.lang.Shared
 
+@Testcontainers
 class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec {
+
+    @Shared
+    public GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast")
+            .withExposedPorts(5701)
 
     @Shared
     HazelcastInstance hazelcastServerInstance
@@ -23,10 +30,11 @@ class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec {
                         .setSize(3))
                 .setEvictionPolicy(EvictionPolicy.LRU)
                 .setName("test")
-        Config config = new Config("sampleCache")
-        config.setProperty("hazelcast.partition.count", "1")
-        config.addMapConfig(mapConfig)
-        hazelcastServerInstance = Hazelcast.getOrCreateHazelcastInstance(config)
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getGroupConfig().setName("dev");
+        clientConfig.getNetworkConfig().addAddress("127.0.0.1:${hazelcast.firstMappedPort}");
+        hazelcastServerInstance = HazelcastClient.newHazelcastClient(clientConfig)
+        hazelcastServerInstance.config.addMapConfig(mapConfig)
     }
 
     def cleanupSpec() {
@@ -36,8 +44,7 @@ class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec {
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run(
-                "hazelcast.client.instanceName": "sampleCache",
-                "hazelcast.client.network.addresses": ['127.0.0.1:5701']
+                "hazelcast.client.network.addresses": ["127.0.0.1:${hazelcast.firstMappedPort}"]
         )
     }
 

@@ -8,7 +8,7 @@ import io.reactivex.Flowable
 import org.infinispan.client.hotrod.RemoteCache
 import spock.lang.Specification
 
-class InfinispanCacheInfoSpec extends Specification implements EmbeddedHotRodServerSupport {
+class InfinispanCacheInfoSpec extends Specification {
 
     void "it publishes cache info stats"() {
         given:
