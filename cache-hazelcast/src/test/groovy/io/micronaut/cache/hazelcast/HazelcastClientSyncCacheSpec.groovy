@@ -31,7 +31,6 @@ import spock.lang.Shared
  * @author Nirav Assar
  * @since 1.0
  */
-@Retry
 class HazelcastClientSyncCacheSpec extends AbstractSyncCacheSpec {
 
     @Shared
