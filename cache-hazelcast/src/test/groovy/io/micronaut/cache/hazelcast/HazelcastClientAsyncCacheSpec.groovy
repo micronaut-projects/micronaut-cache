@@ -21,6 +21,7 @@ class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec implements Ha
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run(
+                "hazelcast.client.group.name": 'dev',
                 "hazelcast.client.network.addresses": ["127.0.0.1:${hazelcast.firstMappedPort}"]
         )
     }

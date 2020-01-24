@@ -20,6 +20,7 @@ class HazelcastClientFactorySpec extends Specification implements HazelcastClien
     void "test hazelcast client instance is created"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+                "hazelcast.client.group.name": 'dev',
                 "hazelcast.client.instanceName": "myInstance",
                 "hazelcast.client.network.addresses": ["127.0.0.1:${hazelcast.firstMappedPort}"],
                 "hazelcast.client.network.connectionTimeout": 99
