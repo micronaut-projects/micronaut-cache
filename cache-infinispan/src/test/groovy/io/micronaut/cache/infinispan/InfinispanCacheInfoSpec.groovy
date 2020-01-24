@@ -26,11 +26,7 @@ class InfinispanCacheInfoSpec extends Specification {
                 "infinispan.client.hotrod.statistics.enabled": true,
                 "infinispan.client.hotrod.force-return-values": true,
                 "infinispan.client.hotrod.server.host": "localhost",
-                "infinispan.client.hotrod.server.port": infinispan.firstMappedPort,
-                "infinispan.client.hotrod.security.authentication.username": 'user',
-                "infinispan.client.hotrod.security.authentication.password": 'pass',
-                "infinispan.client.hotrod.security.authentication.realm": 'default',
-                "infinispan.client.hotrod.security.authentication.server-name": 'infinispan'
+                "infinispan.client.hotrod.server.port": infinispan.firstMappedPort
         ])
         InfinispanCacheManager cacheManager = applicationContext.getBean(InfinispanCacheManager)
         SyncCache<RemoteCache<Object, Object>> cache = cacheManager.getCache("InfinispanCacheInfoSpec")

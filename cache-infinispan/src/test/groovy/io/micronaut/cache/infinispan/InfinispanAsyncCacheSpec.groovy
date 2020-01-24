@@ -21,11 +21,7 @@ class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
         return ApplicationContext.run([
                 "infinispan.client.hotrod.force-return-values": true,
                 "infinispan.client.hotrod.server.host": "localhost",
-                "infinispan.client.hotrod.server.port": infinispan.firstMappedPort,
-                "infinispan.client.hotrod.security.authentication.username": 'user',
-                "infinispan.client.hotrod.security.authentication.password": 'pass',
-                "infinispan.client.hotrod.security.authentication.realm": 'default',
-                "infinispan.client.hotrod.security.authentication.server-name": 'infinispan'
+                "infinispan.client.hotrod.server.port": infinispan.firstMappedPort
         ])
     }
 
