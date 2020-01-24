@@ -44,7 +44,6 @@ class HazelcastMemberSyncCacheSpec extends AbstractSyncCacheSpec {
                     .setEvictionPolicy(EvictionPolicy.LRU)
                     .setName("test")
             event.getBean().addMapConfig(mapConfig)
-            event.getBean().setProperty("hazelcast.partition.count", "1")
             event.getBean()
         }
     }
