@@ -40,6 +40,7 @@ class HazelcastClientSyncCacheSpec extends AbstractSyncCacheSpec implements Haze
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run(
+                "hazelcast.client.group.name": 'dev',
                 "hazelcast.client.network.addresses": ["127.0.0.1:${hazelcast.firstMappedPort}"]
         )
     }
