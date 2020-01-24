@@ -58,8 +58,4 @@ class HazelcastMemberAsyncCacheSpec extends AbstractAsyncCacheSpec {
         return ApplicationContext.run()
     }
 
-    @Override
-    void flushCache(AsyncCache syncCache) {
-
-    }
 }

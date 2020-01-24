@@ -40,8 +40,6 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
     abstract ApplicationContext createApplicationContext()
 
-    abstract void flushCache(SyncCache syncCache)
-
     void "test cacheable annotations"() {
         given:
         ApplicationContext applicationContext = createApplicationContext()
@@ -183,6 +181,7 @@ abstract class AbstractSyncCacheSpec extends Specification {
         given:
         ApplicationContext applicationContext = createApplicationContext()
         CacheManager cacheManager = applicationContext.getBean(CacheManager)
+        PollingConditions conditions = new PollingConditions(timeout: 10, delay: 1)
 
         when:
         SyncCache syncCache = applicationContext.get("test", SyncCache).orElse(cacheManager.getCache('test'))
@@ -199,8 +198,7 @@ abstract class AbstractSyncCacheSpec extends Specification {
         syncCache.get("three", Integer)
 
         syncCache.put("four", 4)
-        flushCache(syncCache)
-        PollingConditions conditions = new PollingConditions(timeout: 30, delay: 0.5)
+        syncCache.invalidate("one")
 
         then:
         conditions.eventually {
@@ -222,13 +220,11 @@ abstract class AbstractSyncCacheSpec extends Specification {
             syncCache.get("four", Integer).isPresent()
         }
 
-
         when:
         syncCache.invalidateAll()
 
         then:
         conditions.eventually {
-
             !syncCache.get("one", Integer).isPresent()
             !syncCache.get("two", Integer).isPresent()
             !syncCache.get("three", Integer).isPresent()
