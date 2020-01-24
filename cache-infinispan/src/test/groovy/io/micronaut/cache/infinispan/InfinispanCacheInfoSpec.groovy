@@ -15,7 +15,7 @@ import spock.lang.Specification
 class InfinispanCacheInfoSpec extends Specification {
 
     @Shared
-    GenericContainer infinispan = new GenericContainer("infinispan/server:10.0.1.Final")
+    GenericContainer infinispan = new GenericContainer("infinispan/server")
             .withExposedPorts(11222)
             .withEnv('USER', 'user')
             .withEnv('PASS', 'pass')
