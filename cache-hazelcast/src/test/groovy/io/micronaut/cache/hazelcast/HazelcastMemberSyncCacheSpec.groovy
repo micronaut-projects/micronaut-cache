@@ -56,8 +56,4 @@ class HazelcastMemberSyncCacheSpec extends AbstractSyncCacheSpec {
         return ApplicationContext.run()
     }
 
-    @Override
-    void flushCache(SyncCache syncCache) {
-    }
-
 }
