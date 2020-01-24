@@ -44,9 +44,6 @@ class HazelcastMemberSyncCacheSpec extends AbstractSyncCacheSpec {
                     .setEvictionPolicy(EvictionPolicy.LRU)
                     .setName("test")
             event.getBean().addMapConfig(mapConfig)
-            event.getBean().setInstanceName("sampleCache")
-            event.getBean().setProperty("hazelcast.partition.count", "1")
-
             event.getBean()
         }
     }
@@ -54,10 +51,6 @@ class HazelcastMemberSyncCacheSpec extends AbstractSyncCacheSpec {
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run()
-    }
-
-    @Override
-    void flushCache(SyncCache syncCache) {
     }
 
 }

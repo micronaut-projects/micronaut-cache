@@ -29,8 +29,6 @@ abstract class AbstractAsyncCacheSpec extends Specification {
 
     abstract ApplicationContext createApplicationContext()
 
-    abstract void flushCache(AsyncCache syncCache)
-
     void "test async cacheable annotations"() {
         given:
         ApplicationContext applicationContext = createApplicationContext()
@@ -155,6 +153,7 @@ abstract class AbstractAsyncCacheSpec extends Specification {
         given:
         ApplicationContext applicationContext = createApplicationContext()
         CacheManager cacheManager = applicationContext.getBean(CacheManager)
+        PollingConditions conditions = new PollingConditions(timeout: 10, delay: 1)
 
         when:
         AsyncCache asyncCache = applicationContext.get("test", AsyncCache).orElse(cacheManager.getCache('test').async())
@@ -171,8 +170,7 @@ abstract class AbstractAsyncCacheSpec extends Specification {
         asyncCache.get("three", Integer)
 
         asyncCache.put("four", 4)
-        flushCache(asyncCache)
-        PollingConditions conditions = new PollingConditions(timeout: 30, delay: 0.5)
+        asyncCache.invalidate("one")
 
         then:
         conditions.eventually {
