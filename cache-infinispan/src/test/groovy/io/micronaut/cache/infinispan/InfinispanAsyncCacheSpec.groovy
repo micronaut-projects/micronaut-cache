@@ -1,15 +1,16 @@
 package io.micronaut.cache.infinispan
 
-import io.micronaut.cache.AsyncCache
 import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.spock.Testcontainers
+import spock.lang.Shared
 
 @Testcontainers
 class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
-    public GenericContainer infinispan = new GenericContainer("infinispan/server:10.0.1.Final")
+    @Shared
+    GenericContainer infinispan = new GenericContainer("infinispan/server")
             .withExposedPorts(11222)
             .withEnv('USER', 'user')
             .withEnv('PASS', 'pass')
@@ -26,10 +27,6 @@ class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
                 "infinispan.client.hotrod.security.authentication.realm": 'default',
                 "infinispan.client.hotrod.security.authentication.server-name": 'infinispan'
         ])
-    }
-
-    @Override
-    void flushCache(AsyncCache syncCache) {
     }
 
 }
