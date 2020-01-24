@@ -12,9 +12,8 @@ dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 
     testCompile project(":cache-tck")
-    testCompile "org.infinispan:infinispan-server-hotrod:10.0.1.Final"
-
     testCompile "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testCompile "io.micronaut:micronaut-inject-java:$micronautVersion"
     testCompile "io.micronaut.test:micronaut-test-spock:1.1.2"
+    testCompile "org.testcontainers:spock:1.12.4"
 }

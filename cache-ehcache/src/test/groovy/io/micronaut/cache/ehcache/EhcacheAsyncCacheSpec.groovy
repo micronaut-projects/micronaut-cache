@@ -10,13 +10,8 @@ class EhcacheAsyncCacheSpec extends AbstractAsyncCacheSpec {
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run(
                 "ehcache.caches.counter.enabled": true,
-                "ehcache.caches.counter2.enabled": true,
-                "ehcache.caches.test.heap.max-entries": 3
+                "ehcache.caches.counter2.enabled": true
         )
     }
 
-    @Override
-    void flushCache(AsyncCache syncCache) {
-
-    }
 }
