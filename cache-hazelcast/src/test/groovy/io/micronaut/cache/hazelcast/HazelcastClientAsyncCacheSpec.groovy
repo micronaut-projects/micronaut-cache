@@ -11,7 +11,7 @@ import spock.lang.Shared
 class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec implements HazelcastClientSupport {
 
     @Shared
-    GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast")
+    GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast:3.12.6")
             .withExposedPorts(5701)
 
     @Shared
