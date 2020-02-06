@@ -15,7 +15,6 @@
  */
 package io.micronaut.cache.hazelcast;
 
-import com.hazelcast.core.ExecutionCallback;
 import com.hazelcast.map.IMap;
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.core.convert.ConversionContext;
@@ -66,8 +65,7 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
                 } else {
                     future.complete(Optional.empty());
                 }
-            }
-            else {
+            } else {
                 future.completeExceptionally(throwable);
             }
         }, executorService);
@@ -114,8 +112,7 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
         nativeCache.setAsync(key, value).whenCompleteAsync((response, throwable) -> {
             if (throwable == null) {
                 future.complete(true);
-            }
-            else {
+            }  else {
                 future.completeExceptionally(throwable);
             }
         }, executorService);
@@ -130,8 +127,7 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
         nativeCache.removeAsync(key).whenCompleteAsync((response, throwable) -> {
             if (throwable == null) {
                 future.complete(true);
-            }
-            else {
+            } else {
                 future.completeExceptionally(throwable);
             }
         }, executorService);
