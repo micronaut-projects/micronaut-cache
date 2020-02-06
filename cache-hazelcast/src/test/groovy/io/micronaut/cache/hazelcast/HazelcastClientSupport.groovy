@@ -14,7 +14,7 @@ trait HazelcastClientSupport {
 
     def setupSpec() {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.getGroupConfig().setName("dev");
+        clientConfig.setClusterName("dev");
         clientConfig.getNetworkConfig().addAddress("127.0.0.1:${getHazelcast().firstMappedPort}");
         setHazelcastServerInstance(HazelcastClient.newHazelcastClient(clientConfig))
     }

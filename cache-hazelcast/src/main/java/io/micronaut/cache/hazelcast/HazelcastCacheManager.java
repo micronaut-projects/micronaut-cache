@@ -16,7 +16,7 @@
 package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import io.micronaut.cache.DynamicCacheManager;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.core.convert.ConversionService;
