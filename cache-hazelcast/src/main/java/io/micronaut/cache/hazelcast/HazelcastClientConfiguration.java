@@ -17,8 +17,8 @@ package io.micronaut.cache.hazelcast;
 
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
+import com.hazelcast.client.config.ConnectionRetryConfig;
 import com.hazelcast.client.config.SocketOptions;
-import com.hazelcast.config.GroupConfig;
 import io.micronaut.cache.hazelcast.condition.HazelcastConfigResourceCondition;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
@@ -30,22 +30,22 @@ import io.micronaut.context.annotation.Requires;
  * @author Nirav Assar
  * @since 1.0.0
  */
-@ConfigurationProperties(value = "hazelcast.client", includes = {"properties", "executorPoolSize", "licenseKey", "instanceName",
-    "labels", "userContext"})
+@ConfigurationProperties(value = "hazelcast.client", includes = {"properties", "instanceName", "labels", "userContext",
+                                                                 "clusterName"})
 @Requires(condition = HazelcastConfigResourceCondition.class)
 @Requires(missingBeans = ClientConfig.class)
 @Requires(property = "hazelcast.client")
 public class HazelcastClientConfiguration extends ClientConfig {
 
-    @ConfigurationBuilder(value = "network", includes = {"smartRouting", "connectionAttemptPeriod", "connectionAttemptLimit",
-        "connectionTimeout", "addresses", "redoOperation", "outboundPortDefinitions", "outboundPorts"})
+    @ConfigurationBuilder(value = "network", includes = {"smartRouting", "connectionTimeout", "addresses",
+                                                         "redoOperation", "outboundPortDefinitions", "outboundPorts"})
     ClientNetworkConfig networkConfig = new ClientNetworkConfig();
+
+    @ConfigurationBuilder(value = "connectionRetry", includes = {"initialBackoffMillis", "maxBackoffMillis"})
+    ConnectionRetryConfig connectionRetryConfig = new ConnectionRetryConfig();
 
     @ConfigurationBuilder("network.socket")
     SocketOptions socketOptions = new SocketOptions();
-
-    @ConfigurationBuilder("group")
-    GroupConfig groupConfig = new GroupConfig();
 
     /**
      * Default constructor.
@@ -53,6 +53,6 @@ public class HazelcastClientConfiguration extends ClientConfig {
     HazelcastClientConfiguration() {
         networkConfig.setSocketOptions(socketOptions);
         super.setNetworkConfig(networkConfig);
-        super.setGroupConfig(groupConfig);
+        super.getConnectionStrategyConfig().setConnectionRetryConfig(connectionRetryConfig);
     }
 }

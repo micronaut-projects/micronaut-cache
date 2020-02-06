@@ -19,8 +19,7 @@ package io.micronaut.cache.hazelcast
 import com.hazelcast.config.Config
 import com.hazelcast.config.EvictionPolicy
 import com.hazelcast.config.MapConfig
-import com.hazelcast.config.MaxSizeConfig
-import io.micronaut.cache.AsyncCache
+import com.hazelcast.config.MaxSizePolicy
 import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.event.BeanCreatedEvent
@@ -39,12 +38,11 @@ class HazelcastMemberAsyncCacheSpec extends AbstractAsyncCacheSpec {
     static class CustomConfig implements BeanCreatedEventListener<Config> {
         @Override
         Config onCreated(BeanCreatedEvent<Config> event) {
-            MapConfig mapConfig = new MapConfig()
-                    .setMaxSizeConfig(new MaxSizeConfig()
-                            .setMaxSizePolicy(MaxSizeConfig.MaxSizePolicy.PER_PARTITION)
-                            .setSize(3))
+            MapConfig mapConfig = new MapConfig().setName("test")
+            mapConfig.getEvictionConfig()
+                    .setMaxSizePolicy(MaxSizePolicy.PER_PARTITION)
+                    .setSize(3)
                     .setEvictionPolicy(EvictionPolicy.LRU)
-                    .setName("test")
             event.getBean().addMapConfig(mapConfig)
             event.getBean()
         }
