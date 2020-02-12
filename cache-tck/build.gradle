@@ -10,6 +10,6 @@ dependencies {
         exclude module:'groovy-all'
     }
 
-    compile "io.micronaut.test:micronaut-test-spock:1.1.2"
+    compile "io.micronaut.test:micronaut-test-spock:1.1.3"
     compile "io.micronaut.test:micronaut-test-core:1.1.2"
 }
