@@ -11,5 +11,4 @@ dependencies {
     }
 
     compile "io.micronaut.test:micronaut-test-spock:1.1.5"
-    compile "io.micronaut.test:micronaut-test-core:1.1.3"
 }
