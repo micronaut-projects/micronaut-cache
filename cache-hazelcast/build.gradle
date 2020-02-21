@@ -1,5 +1,5 @@
 ext {
-    hazelcastVersion = "3.12.6"
+    hazelcastVersion = "4.0"
 }
 
 dependencies {
@@ -9,7 +9,7 @@ dependencies {
     compileOnly "io.micronaut:micronaut-inject-java:$micronautVersion"
 
     compile "io.micronaut:micronaut-runtime:$micronautVersion"
-    compile "com.hazelcast:hazelcast-client:$hazelcastVersion"
+    compile "com.hazelcast:hazelcast:$hazelcastVersion"
 
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 
