@@ -1,6 +1,8 @@
 buildscript {
+    ext {
+        micronautDocsVersion = "1.0.21"
+    }
     repositories {
-//        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -46,7 +48,6 @@ subprojects { Project subproject ->
         isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
     }
     repositories {
-//        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
         maven { url "https://oss.jfrog.org/oss-snapshot-local/" }
     }
