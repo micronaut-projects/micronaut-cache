@@ -8,3 +8,15 @@ NOTE: The configuration implementations in this module require at least Micronau
 
 To use the `BUILD-SNAPSHOT` version of this library, check the
 https://docs.micronaut.io/latest/guide/index.html#usingsnapshots[documentation to use snapshots].
+
+#### Release History
+
+For more information, check the https://github.com/micronaut-projects/micronaut-cache/releases[GitHub release list].
+
+##### 1.0
+
+Initial Release
+
+##### 1.1
+
+Adds support for Hazelcast 4.0
