@@ -11,7 +11,7 @@ import spock.lang.Shared
 class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec implements HazelcastClientSupport {
 
     @Shared
-    GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast:3.12.6")
+    GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast:4.0")
             .withExposedPorts(5701)
 
     @Shared
@@ -21,7 +21,7 @@ class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec implements Ha
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run(
-                "hazelcast.client.group.name": 'dev',
+                "hazelcast.client.clusterName": 'dev',
                 "hazelcast.client.network.addresses": ["127.0.0.1:${hazelcast.firstMappedPort}"]
         )
     }
