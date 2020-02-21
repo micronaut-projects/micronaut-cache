@@ -67,7 +67,7 @@
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.com.hazelcast.config.Config">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#methods.inherited.from.class.com.hazelcast.config.Config">Method</a></li>
 </ul>
@@ -107,7 +107,7 @@
 <hr>
 <br>
 <pre>@ConfigurationProperties(value="hazelcast",
-                         includes={"properties","licenseKey","instanceName"})
+                         includes={"properties","licenseKey","instanceName","clusterName"})
  @Requires(condition=<a href="../../../../io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.class</a>) @Requires(missingBeans=com.hazelcast.config.Config.class) @Requires(missingProperty="hazelcast.client")
 public class <span class="typeNameLabel">HazelcastMemberConfiguration</span>
 extends com.hazelcast.config.Config</pre>
@@ -122,6 +122,21 @@ extends com.hazelcast.config.Config</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="fields.inherited.from.class.com.hazelcast.config.Config">
+<!--   -->
+</a>
+<h3>Fields inherited from class&nbsp;com.hazelcast.config.Config</h3>
+<code>DEFAULT_CLUSTER_NAME</code></li>
+</ul>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -152,7 +167,7 @@ extends com.hazelcast.config.Config</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.hazelcast.config.Config</h3>
-<code>addAtomicLongConfig, addAtomicReferenceConfig, addCacheConfig, addCardinalityEstimatorConfig, addCountDownLatchConfig, addDurableExecutorConfig, addEventJournalConfig, addExecutorConfig, addFlakeIdGeneratorConfig, addJobTrackerConfig, addListConfig, addListenerConfig, addLockConfig, addMapConfig, addMerkleTreeConfig, addMultiMapConfig, addPNCounterConfig, addQueueConfig, addQuorumConfig, addReliableTopicConfig, addReplicatedMapConfig, addRingBufferConfig, addScheduledExecutorConfig, addSemaphoreConfig, addSetConfig, addTopicConfig, addWanReplicationConfig, findAtomicLongConfig, findAtomicReferenceConfig, findCacheConfig, findCacheConfigOrNull, findCacheEventJournalConfig, findCardinalityEstimatorConfig, findCountDownLatchConfig, findDurableExecutorConfig, findExecutorConfig, findFlakeIdGeneratorConfig, findJobTrackerConfig, findListConfig, findLockConfig, findMapConfig, findMapEventJournalConfig, findMapMerkleTreeConfig, findMultiMapConfig, findPNCounterConfig, findQueueConfig, findQuorumConfig, findReliableTopicConfig, findReplicatedMapConfig, findRingbufferConfig, findScheduledExecutorConfig, findSemaphoreConfig, findSetConfig, findTopicConfig, getAdvancedNetworkConfig, getAtomicLongConfig, getAtomicLongConfigs, getAtomicReferenceConfig, getAtomicReferenceConfigs, getCacheConfig, getCacheConfigs, getCacheEventJournalConfig, getCacheEventJournalConfigs, getCardinalityEstimatorConfig, getCardinalityEstimatorConfigs, getClassLoader, getConfigPatternMatcher, getConfigurationFile, getConfigurationUrl, getCountDownLatchConfig, getCountDownLatchConfigs, getCPSubsystemConfig, getCRDTReplicationConfig, getDurableExecutorConfig, getDurableExecutorConfigs, getExecutorConfig, getExecutorConfigs, getFlakeIdGeneratorConfig, getFlakeIdGeneratorConfigs, getGroupConfig, getHotRestartPersistenceConfig, getInstanceName, getJobTrackerConfig, getJobTrackerConfigs, getLicenseKey, getListConfig, getListConfigs, getListenerConfigs, getLockConfig, getLockConfigs, getManagedContext, getManagementCenterConfig, getMapConfig, getMapConfigOrNull, getMapConfigs, getMapEventJournalConfig, getMapEventJournalConfigs, getMapMerkleTreeConfig, getMapMerkleTreeConfigs, getMemberAttributeConfig, getMultiMapConfig, getMultiMapConfigs, getNativeMemoryConfig, getNetworkConfig, getPartitionGroupConfig, getPNCounterConfig, getPNCounterConfigs, getProperties, getProperty, getQueueConfig, getQueueConfigs, getQuorumConfig, getQuorumConfigs, getReliableTopicConfig, getReliableTopicConfigs, getReplicatedMapConfig, getReplicatedMapConfigs, getRingbufferConfig, getRingbufferConfigs, getScheduledExecutorConfig, getScheduledExecutorConfigs, getSecurityConfig, getSemaphoreConfig, getSemaphoreConfigs, getSemaphoreConfigsAsMap, getSerializationConfig, getServicesConfig, getSetConfig, getSetConfigs, getTopicConfig, getTopicConfigs, getUserCodeDeploymentConfig, getUserContext, getWanReplicationConfig, getWanReplicationConfigs, isLiteMember, setAdvancedNetworkConfig, setAtomicLongConfigs, setAtomicReferenceConfigs, setCacheConfigs, setCacheEventJournalConfigs, setCardinalityEstimatorConfigs, setClassLoader, setConfigPatternMatcher, setConfigurationFile, setConfigurationUrl, setCountDownLatchConfigs, setCPSubsystemConfig, setCRDTReplicationConfig, setDurableExecutorConfigs, setExecutorConfigs, setFlakeIdGeneratorConfigs, setGroupConfig, setHotRestartPersistenceConfig, setInstanceName, setJobTrackerConfigs, setLicenseKey, setListConfigs, setListenerConfigs, setLiteMember, setLockConfigs, setManagedContext, setManagementCenterConfig, setMapConfigs, setMapEventJournalConfigs, setMapMerkleTreeConfigs, setMemberAttributeConfig, setMultiMapConfigs, setNativeMemoryConfig, setNetworkConfig, setPartitionGroupConfig, setPNCounterConfigs, setProperties, setProperty, setQueueConfigs, setQuorumConfigs, setReliableTopicConfigs, setReplicatedMapConfigs, setRingbufferConfigs, setScheduledExecutorConfigs, setSecurityConfig, setSemaphoreConfigs, setSerializationConfig, setServicesConfig, setSetConfigs, setTopicConfigs, setUserCodeDeploymentConfig, setUserContext, setWanReplicationConfigs, toString</code></li>
+<code>addCacheConfig, addCardinalityEstimatorConfig, addDurableExecutorConfig, addExecutorConfig, addFlakeIdGeneratorConfig, addListConfig, addListenerConfig, addMapConfig, addMultiMapConfig, addPNCounterConfig, addQueueConfig, addReliableTopicConfig, addReplicatedMapConfig, addRingBufferConfig, addScheduledExecutorConfig, addSetConfig, addSplitBrainProtectionConfig, addTopicConfig, addWanReplicationConfig, findCacheConfig, findCacheConfigOrNull, findCardinalityEstimatorConfig, findDurableExecutorConfig, findExecutorConfig, findFlakeIdGeneratorConfig, findListConfig, findMapConfig, findMultiMapConfig, findPNCounterConfig, findQueueConfig, findReliableTopicConfig, findReplicatedMapConfig, findRingbufferConfig, findScheduledExecutorConfig, findSetConfig, findSplitBrainProtectionConfig, findTopicConfig, getAdvancedNetworkConfig, getCacheConfig, getCacheConfigs, getCardinalityEstimatorConfig, getCardinalityEstimatorConfigs, getClassLoader, getClusterName, getConfigPatternMatcher, getConfigurationFile, getConfigurationUrl, getCPSubsystemConfig, getCRDTReplicationConfig, getDurableExecutorConfig, getDurableExecutorConfigs, getExecutorConfig, getExecutorConfigs, getFlakeIdGeneratorConfig, getFlakeIdGeneratorConfigs, getHotRestartPersistenceConfig, getInstanceName, getLicenseKey, getListConfig, getListConfigs, getListenerConfigs, getManagedContext, getManagementCenterConfig, getMapConfig, getMapConfigOrNull, getMapConfigs, getMemberAttributeConfig, getMetricsConfig, getMultiMapConfig, getMultiMapConfigs, getNativeMemoryConfig, getNetworkConfig, getPartitionGroupConfig, getPNCounterConfig, getPNCounterConfigs, getProperties, getProperty, getQueueConfig, getQueueConfigs, getReliableTopicConfig, getReliableTopicConfigs, getReplicatedMapConfig, getReplicatedMapConfigs, getRingbufferConfig, getRingbufferConfigs, getScheduledExecutorConfig, getScheduledExecutorConfigs, getSecurityConfig, getSerializationConfig, getServicesConfig, getSetConfig, getSetConfigs, getSplitBrainProtectionConfig, getSplitBrainProtectionConfigs, getTopicConfig, getTopicConfigs, getUserCodeDeploymentConfig, getUserContext, getWanReplicationConfig, getWanReplicationConfigs, isLiteMember, setAdvancedNetworkConfig, setCacheConfigs, setCardinalityEstimatorConfigs, setClassLoader, setClusterName, setConfigPatternMatcher, setConfigurationFile, setConfigurationUrl, setCPSubsystemConfig, setCRDTReplicationConfig, setDurableExecutorConfigs, setExecutorConfigs, setFlakeIdGeneratorConfigs, setHotRestartPersistenceConfig, setInstanceName, setLicenseKey, setListConfigs, setListenerConfigs, setLiteMember, setManagedContext, setManagementCenterConfig, setMapConfigs, setMemberAttributeConfig, setMetricsConfig, setMultiMapConfigs, setNativeMemoryConfig, setNetworkConfig, setPartitionGroupConfig, setPNCounterConfigs, setProperties, setProperty, setQueueConfigs, setReliableTopicConfigs, setReplicatedMapConfigs, setRingbufferConfigs, setScheduledExecutorConfigs, setSecurityConfig, setSerializationConfig, setSetConfigs, setSplitBrainProtectionConfigs, setTopicConfigs, setUserCodeDeploymentConfig, setUserContext, setWanReplicationConfigs, toString</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -238,7 +253,7 @@ extends com.hazelcast.config.Config</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.com.hazelcast.config.Config">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#methods.inherited.from.class.com.hazelcast.config.Config">Method</a></li>
 </ul>

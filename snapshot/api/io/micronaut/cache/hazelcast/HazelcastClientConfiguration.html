@@ -107,7 +107,7 @@
 <hr>
 <br>
 <pre>@ConfigurationProperties(value="hazelcast.client",
-                         includes={"properties","executorPoolSize","licenseKey","instanceName","labels","userContext"})
+                         includes={"properties","instanceName","labels","userContext","clusterName"})
  @Requires(condition=<a href="../../../../io/micronaut/cache/hazelcast/condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.class</a>) @Requires(missingBeans=com.hazelcast.client.config.ClientConfig.class) @Requires(property="hazelcast.client")
 public class <span class="typeNameLabel">HazelcastClientConfiguration</span>
 extends com.hazelcast.client.config.ClientConfig</pre>
@@ -135,14 +135,14 @@ extends com.hazelcast.client.config.ClientConfig</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.hazelcast.client.config.ClientConfig</h3>
-<code>addAddress, addFlakeIdGeneratorConfig, addLabel, addListenerConfig, addNearCacheConfig, addNearCacheConfig, addProxyFactoryConfig, addQueryCacheConfig, addReliableTopicConfig, equals, findFlakeIdGeneratorConfig, getAddresses, getClassLoader, getConfigPatternMatcher, getConnectionAttemptLimit, getConnectionAttemptPeriod, getConnectionStrategyConfig, getConnectionTimeout, getCredentials, getExecutorPoolSize, getFlakeIdGeneratorConfig, getFlakeIdGeneratorConfigMap, getGroupConfig, getInstanceName, getLabels, getLicenseKey, getListenerConfigs, getLoadBalancer, getManagedContext, getNativeMemoryConfig, getNearCacheConfig, getNearCacheConfigMap, getNetworkConfig, getOrCreateQueryCacheConfig, getOrNullQueryCacheConfig, getProperties, getProperty, getProxyFactoryConfigs, getQueryCacheConfigs, getReliableTopicConfig, getReliableTopicConfigMap, getSecurityConfig, getSerializationConfig, getSocketInterceptorConfig, getSocketOptions, getUserCodeDeploymentConfig, getUserContext, hashCode, isRedoOperation, isSmartRouting, setAddresses, setClassLoader, setConfigPatternMatcher, setConnectionAttemptLimit, setConnectionAttemptPeriod, setConnectionStrategyConfig, setConnectionTimeout, setCredentials, setExecutorPoolSize, setFlakeIdGeneratorConfigMap, setGroupConfig, setInstanceName, setLabels, setLicenseKey, setListenerConfigs, setLoadBalancer, setManagedContext, setNativeMemoryConfig, setNearCacheConfigMap, setNetworkConfig, setProperties, setProperty, setProxyFactoryConfigs, setQueryCacheConfigs, setRedoOperation, setReliableTopicConfigMap, setSecurityConfig, setSerializationConfig, setSmartRouting, setSocketInterceptorConfig, setSocketOptions, setUserCodeDeploymentConfig, setUserContext</code></li>
+<code>addFlakeIdGeneratorConfig, addLabel, addListenerConfig, addNearCacheConfig, addProxyFactoryConfig, addQueryCacheConfig, addReliableTopicConfig, equals, findFlakeIdGeneratorConfig, getClassLoader, getClusterName, getConfigPatternMatcher, getConnectionStrategyConfig, getFlakeIdGeneratorConfig, getFlakeIdGeneratorConfigMap, getInstanceName, getLabels, getListenerConfigs, getLoadBalancer, getManagedContext, getMetricsConfig, getNativeMemoryConfig, getNearCacheConfig, getNearCacheConfigMap, getNetworkConfig, getOrCreateQueryCacheConfig, getOrNullQueryCacheConfig, getProperties, getProperty, getProxyFactoryConfigs, getQueryCacheConfigs, getReliableTopicConfig, getReliableTopicConfigMap, getSecurityConfig, getSerializationConfig, getUserCodeDeploymentConfig, getUserContext, hashCode, isBackupAckToClientEnabled, setBackupAckToClientEnabled, setClassLoader, setClusterName, setConfigPatternMatcher, setConnectionStrategyConfig, setCredentials, setFlakeIdGeneratorConfigMap, setInstanceName, setLabels, setListenerConfigs, setLoadBalancer, setManagedContext, setMetricsConfig, setNativeMemoryConfig, setNearCacheConfigMap, setNetworkConfig, setProperties, setProperty, setProxyFactoryConfigs, setQueryCacheConfigs, setReliableTopicConfigMap, setSecurityConfig, setSerializationConfig, setUserCodeDeploymentConfig, setUserContext, toString</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, finalize, getClass, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, finalize, getClass, notify, notifyAll, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
