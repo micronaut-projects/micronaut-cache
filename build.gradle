@@ -14,7 +14,7 @@ buildscript {
         classpath "de.marcphilipp.gradle:nexus-publish-plugin:0.4.0"
         classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
         classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:1.0.22"
-        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:1.0.21"
+        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:1.0.22"
         classpath 'com.adarshr:gradle-test-logger-plugin:2.0.0'
     }
 }
