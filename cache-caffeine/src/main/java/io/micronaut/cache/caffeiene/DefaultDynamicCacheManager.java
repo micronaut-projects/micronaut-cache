@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.cache;
+package io.micronaut.cache.caffeiene;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import io.micronaut.cache.DynamicCacheManager;
+import io.micronaut.cache.SyncCache;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ConversionService;
@@ -53,7 +56,7 @@ public class DefaultDynamicCacheManager implements DynamicCacheManager<com.githu
 
     @NonNull
     @Override
-    public SyncCache<com.github.benmanes.caffeine.cache.Cache> getCache(String name) {
+    public SyncCache<Cache> getCache(String name) {
         return new DefaultSyncCache(new DefaultCacheConfiguration(name, applicationConfiguration), applicationContext, conversionService);
     }
 }

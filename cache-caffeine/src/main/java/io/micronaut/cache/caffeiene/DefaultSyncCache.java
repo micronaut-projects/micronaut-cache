@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.cache;
+package io.micronaut.cache.caffeiene;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Policy;
 import com.github.benmanes.caffeine.cache.Weigher;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import io.micronaut.cache.CacheConfiguration;
+import io.micronaut.cache.CacheInfo;
+import io.micronaut.cache.SyncCache;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.core.convert.ConversionContext;
@@ -48,7 +51,7 @@ import java.util.function.Supplier;
  * @since 1.0
  */
 @EachBean(CacheConfiguration.class)
-public class DefaultSyncCache implements SyncCache<com.github.benmanes.caffeine.cache.Cache> {
+public class DefaultSyncCache implements SyncCache<Cache> {
 
     private final CacheConfiguration cacheConfiguration;
     private final com.github.benmanes.caffeine.cache.Cache cache;
