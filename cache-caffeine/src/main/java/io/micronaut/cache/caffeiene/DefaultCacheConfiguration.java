@@ -16,7 +16,6 @@
 package io.micronaut.cache.caffeiene;
 
 import io.micronaut.cache.CacheConfiguration;
-import io.micronaut.cache.DefaultSyncCache;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.runtime.ApplicationConfiguration;
