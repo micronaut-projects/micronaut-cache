@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
- * Graal native specific substitutions.
+ * Contains a cache implementation backed by Caffeine.
  *
  * @author graemerocher
  * @since 1.0
  */
-package io.micronaut.cache.graal;
+package io.micronaut.cache.caffeiene;

@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.cache;
+package io.micronaut.cache.caffeiene;
 
+import io.micronaut.cache.CacheConfiguration;
+import io.micronaut.cache.DefaultSyncCache;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.runtime.ApplicationConfiguration;
