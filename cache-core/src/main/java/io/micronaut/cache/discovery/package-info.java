@@ -15,7 +15,7 @@
  */
 
 /**
- * Caches related to the discovery client
+ * Caches related to the discovery client.
  *
  * @author James Kleeh
  * @since 2.0.0
