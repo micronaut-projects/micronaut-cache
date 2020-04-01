@@ -1,6 +1,7 @@
 rootProject.name = 'micronaut-cache'
 
 include 'cache-core'
+include 'cache-management'
 include 'cache-caffeine'
 include 'cache-ehcache'
 include 'cache-hazelcast'
