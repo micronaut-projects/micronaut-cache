@@ -29,7 +29,6 @@ class SyncCacheJavaSpec extends Specification {
                 'micronaut.caches.counter.initialCapacity':10,
                 'micronaut.caches.counter.maximumSize':20,
                 'micronaut.caches.counter.testMode':true
-
         )
 
         when:

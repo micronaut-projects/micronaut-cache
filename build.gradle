@@ -49,6 +49,7 @@ subprojects { Project subproject ->
         isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
     }
     repositories {
+        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
         maven { url "https://oss.jfrog.org/oss-snapshot-local/" }
     }
@@ -75,8 +76,6 @@ subprojects { Project subproject ->
 
     bintray.publish = true
 
-    apply plugin: "org.gradle.test-retry"
-
     tasks.withType(Test) {
         jvmArgs '-Duser.country=US'
         jvmArgs '-Duser.language=en'
@@ -86,12 +85,6 @@ subprojects { Project subproject ->
         afterSuite {
             System.out.print(".")
             System.out.flush()
-        }
-
-        retry {
-            failOnPassedAfterRetry = false
-            maxFailures = 10
-            maxRetries = 5
         }
 
         reports.html.enabled = !System.getenv("TRAVIS")

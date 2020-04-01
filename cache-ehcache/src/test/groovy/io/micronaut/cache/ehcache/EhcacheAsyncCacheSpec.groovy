@@ -10,7 +10,8 @@ class EhcacheAsyncCacheSpec extends AbstractAsyncCacheSpec {
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run(
                 "ehcache.caches.counter.enabled": true,
-                "ehcache.caches.counter2.enabled": true
+                "ehcache.caches.counter2.enabled": true,
+                "ehcache.caches.test.enabled": true
         )
     }
 
