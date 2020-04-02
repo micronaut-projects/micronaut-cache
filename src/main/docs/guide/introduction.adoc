@@ -2,7 +2,7 @@ This project brings additional cache implementations to Micronaut.
 
 To get started, you need to declare the following dependency:
 
-dependency:io.micronaut:micronaut-runtime[]
+dependency:io.micronaut.cache:micronaut-cache-core[]
 
 NOTE: The configuration implementations in this module require at least Micronaut version 1.3.0. Each implementation is a separate dependency.
 
@@ -12,6 +12,12 @@ https://docs.micronaut.io/latest/guide/index.html#usingsnapshots[documentation t
 #### Release History
 
 For more information, check the https://github.com/micronaut-projects/micronaut-cache/releases[GitHub release list].
+
+##### 2.0
+
+* Migrated Code from Core to Cache Module
+* New Caffeine Module
+* Now targets Micronaut 2.x
 
 ##### 1.0
 
