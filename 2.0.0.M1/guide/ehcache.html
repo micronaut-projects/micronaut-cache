@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>5 Ehcache Support 2.0.0.M1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut Cache
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/cache-abstraction.html"><strong>2</strong><span>Cache Abstraction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/jcache.html"><strong>3</strong><span>JCache API support</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/redis.html"><strong>4</strong><span>Redis Support</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/ehcache.html"><strong>5</strong><span>Ehcache Support</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/hazelcast.html"><strong>6</strong><span>Hazelcast Support</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/infinispan.html"><strong>7</strong><span>Infinispan Support</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/noop.html"><strong>8</strong><span>No Operation Cache Support</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/repository.html"><strong>9</strong><span>Repository</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/redis.html">&lt;&lt; <strong>4</strong><span>Redis Support</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/hazelcast.html"><strong>6</strong><span>Hazelcast Support</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>5 Ehcache Support</h1>
+
+                    <p><strong>Version:</strong> 2.0.0.M1</p>
+                </div>
+
+                
+
+                
+<h1 id="ehcache"><a class="anchor" href="#ehcache"></a>5 Ehcache Support</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/ehcache.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To use <a href="https://www.ehcache.org/">Ehcache</a> as the caching implementation, add it as a dependency to your application:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-ehcache:2.0.0.M1")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-cache-ehcache&lt;/artifactId&gt;
+    &lt;version&gt;2.0.0.M1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>To have Micronaut create a cache, the minimum configuration is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
+  caches:
+    my-cache:
+      enabled: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, you can use any of the caching annotations with <code>my-cache</code> as cache name.</p>
+</div>
+<div class="paragraph">
+<p>See the configuration reference to check all possible configuration options.</p>
+</div>
+<div class="sect1">
+<h2 id="_tiering_options">Tiering options</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ehcache supports the concept of <a href="https://www.ehcache.org/documentation/3.8/tiering.html">tiered caching</a>. This library
+allows you to configure tiering caching options on a per-cache basis.</p>
+</div>
+<div class="paragraph">
+<p>If no tier is explicitly configured, the cache will be configured with a heap tier of 100 entries maximum.</p>
+</div>
+<div class="sect2">
+<h3 id="_heap_tier">Heap tier</h3>
+<div class="paragraph">
+<p>It can be sized by number of entries:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
+  caches:
+    my-cache:
+      heap:
+        max-entries: 5000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or by size:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
+  caches:
+    my-cache:
+      heap:
+        max-size: 200Mb</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_off_heap_tier">Off-heap tier</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
+  caches:
+    my-cache:
+      offheap:
+        max-size: 1Gb</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Do not forget to define in the java options the <code>-XX:MaxDirectMemorySize</code> option, according to the off-heap size you
+intend to use.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_disk_tier">Disk tier</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
+  storage-path: /var/caches
+  caches:
+    my-cache:
+      disk:
+        max-size: 10Gb</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_clustered_tier">Clustered tier</h3>
+<div class="paragraph">
+<p>Ehcache supports distributed caching with <a href="http://www.terracotta.org">Terracotta</a></p>
+</div>
+<div class="paragraph">
+<p>This is a complete example configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
+  cluster:
+    uri: terracotta://localhost/my-application
+    default-server-resource: offheap-1
+    resource-pools:
+      resource-pool-a:
+        max-size: 8Mb
+        server-resource: offheap-2
+      resource-pool-b:
+        max-size: 10Mb
+  caches:
+    clustered-cache:
+      clustered-dedicated:
+        server-resource: offheap-1
+        max-size: 8Mb
+    shared-cache-1:
+      clustered-shared:
+        server-resource: resource-pool-a
+    shared-cache-3:
+      clustered-shared:
+        server-resource: resource-pool-b</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_multiple_tier_setup">Multiple tier setup</h3>
+<div class="paragraph">
+<p>A cache can be configured with multiple tiers. Read the
+<a href="https://www.ehcache.org/documentation/3.8/tiering.html#multiple-tier-setup">Ehcache documentation</a> on the valid configuration
+options.</p>
+</div>
+<div class="paragraph">
+<p>For example, to configure a heap + offheap + disk cache:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
+  storage-path: /var/caches
+  caches:
+    my-cache:
+      heap:
+        max-size: 200Mb
+      offheap:
+        max-size: 1Gb
+      disk:
+        max-size: 10Gb</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/redis.html">&lt;&lt; <strong>4</strong><span>Redis Support</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/hazelcast.html"><strong>6</strong><span>Hazelcast Support</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
