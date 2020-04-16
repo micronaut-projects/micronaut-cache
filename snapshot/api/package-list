@@ -1,6 +1,7 @@
 io.micronaut.cache
 io.micronaut.cache.annotation
 io.micronaut.cache.caffeiene
+io.micronaut.cache.discovery
 io.micronaut.cache.ehcache
 io.micronaut.cache.ehcache.configuration
 io.micronaut.cache.ehcache.serialization
@@ -11,5 +12,6 @@ io.micronaut.cache.hazelcast.converters
 io.micronaut.cache.infinispan
 io.micronaut.cache.interceptor
 io.micronaut.cache.jcache
+io.micronaut.cache.management
 io.micronaut.cache.noop
 io.micronaut.cache.serialize
