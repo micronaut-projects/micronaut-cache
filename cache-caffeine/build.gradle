@@ -1,8 +1,12 @@
 dependencies {
+    annotationProcessor "io.micronaut:micronaut-graal"
+
     api project(":cache-core")
     api "com.github.ben-manes.caffeine:caffeine:2.8.0"
 
+    compileOnly "org.graalvm.nativeimage:svm"
     compileOnly "ch.qos.logback:logback-classic:1.2.3"
+
     testImplementation "ch.qos.logback:logback-classic:1.2.3"
 
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
