@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 /**
- * Caches related to the discovery client.
+ * Graal native specific substitutions.
  *
- * @author James Kleeh
- * @since 2.0.0
+ * @author graemerocher
+ * @since 1.0
  */
-@Configuration
-@Requires(configuration = "io.micronaut.discovery.client")
-package io.micronaut.cache.discovery;
-
-import io.micronaut.context.annotation.Configuration;
-import io.micronaut.context.annotation.Requires;
+package io.micronaut.cache.caffeiene.graal;
