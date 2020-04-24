@@ -5,5 +5,5 @@ dependencies {
     testImplementation project(":cache-tck")
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testImplementation "io.micronaut.test:micronaut-test-spock:1.1.5"
-    testImplementation "org.testcontainers:spock:1.13.0"
+    testImplementation "org.testcontainers:spock:1.14.1"
 }
