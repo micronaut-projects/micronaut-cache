@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.cache.caffeiene;
+package io.micronaut.cache.caffeine;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import io.micronaut.cache.DynamicCacheManager;

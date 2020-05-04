@@ -19,4 +19,4 @@
  * @author graemerocher
  * @since 1.0
  */
-package io.micronaut.cache.caffeiene;
+package io.micronaut.cache.caffeine;
