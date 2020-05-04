@@ -3,6 +3,8 @@ dependencies {
     api "com.github.ben-manes.caffeine:caffeine:2.8.0"
 
     compileOnly "ch.qos.logback:logback-classic:1.2.3"
+    compileOnly "io.micronaut.configuration:micronaut-micrometer-core"
+
     testImplementation "ch.qos.logback:logback-classic:1.2.3"
 
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
@@ -11,4 +13,6 @@ dependencies {
     testImplementation "io.micronaut:micronaut-http-client"
     testImplementation "io.micronaut:micronaut-management"
     testImplementation "io.micronaut:micronaut-http-server-netty"
+
+    testImplementation "io.micronaut.configuration:micronaut-micrometer-core"
 }
