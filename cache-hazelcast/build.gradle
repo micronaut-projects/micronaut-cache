@@ -1,5 +1,5 @@
 ext {
-    hazelcastVersion = "4.0"
+    hazelcastVersion = "4.0.1"
 }
 
 dependencies {
