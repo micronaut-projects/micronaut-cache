@@ -2,7 +2,7 @@ dependencies {
     compile project(":cache-core")
 
     compile 'org.infinispan:infinispan-core:10.1.7.Final'
-    compile "org.infinispan:infinispan-client-hotrod:10.1.5.Final"
+    compile "org.infinispan:infinispan-client-hotrod:10.1.8.Final"
 
     testImplementation project(":cache-tck")
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
