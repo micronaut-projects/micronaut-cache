@@ -125,3 +125,16 @@ ehcache:
       disk:
         max-size: 10Gb
 ----
+
+== Cache Value Conversion
+
+By default, Micronaut will convert values returned from a cache to the requested type. This can have undesirable consequences in certain circumstances. To disable this behavior, set the `convert` configuration to false for the given cache.
+
+.No Conversion Example
+[source,yaml]
+----
+ehcache:
+  caches:
+    my-cache:
+      convert: false
+----

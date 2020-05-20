@@ -47,6 +47,7 @@ public class EhcacheConfiguration implements Named {
     public static final Class<?> DEFAULT_KEY_TYPE = Serializable.class;
     public static final Class<?> DEFAULT_VALUE_TYPE = Serializable.class;
     public static final Long DEFAULT_MAX_ENTRIES = 100L;
+    public static final boolean DEFAULT_CONVERT = true;
 
     @ConfigurationBuilder(prefixes = "with")
     CacheConfigurationBuilder<?, ?> builder;
@@ -55,7 +56,7 @@ public class EhcacheConfiguration implements Named {
 
     private Class<?> keyType = DEFAULT_KEY_TYPE;
     private Class<?> valueType = DEFAULT_VALUE_TYPE;
-
+    private boolean convert = DEFAULT_CONVERT;
     private HeapTieredCacheConfiguration heap;
     private OffheapTieredCacheConfiguration offheap;
     private DiskTieredCacheConfiguration disk;
@@ -178,6 +179,22 @@ public class EhcacheConfiguration implements Named {
      */
     public void setValueType(Class<?> valueType) {
         this.valueType = valueType;
+    }
+
+    /**
+     * @return True if cache values should be converted to the required type. They will
+     * be cast to the type otherwise
+     */
+    public boolean isConvert() {
+        return convert;
+    }
+
+    /**
+     * @param convert Sets whether retrieved cache values should be converted (true), or cast (false)
+     *                to the required type. Default value ({@value #DEFAULT_CONVERT})
+     */
+    public void setConvert(boolean convert) {
+        this.convert = convert;
     }
 
     /**

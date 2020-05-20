@@ -57,6 +57,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     private final com.github.benmanes.caffeine.cache.Cache cache;
     private final ApplicationContext applicationContext;
     private final ConversionService<?> conversionService;
+    private final boolean convert;
 
     /**
      * Construct a sync cache implementation with given configurations.
@@ -88,6 +89,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
         this.applicationContext = applicationContext;
         this.conversionService = conversionService;
         this.cache = buildCache(cacheConfiguration);
+        this.convert = cacheConfiguration.isConvert();
     }
 
     @Override
@@ -124,7 +126,11 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     public <T> Optional<T> get(Object key, Argument<T> requiredType) {
         Object value = cache.getIfPresent(key);
         if (value != null) {
-            return conversionService.convert(value, ConversionContext.of(requiredType));
+            if (convert) {
+                return conversionService.convert(value, ConversionContext.of(requiredType));
+            } else {
+                return Optional.of((T) value);
+            }
         }
         return Optional.empty();
     }
@@ -132,11 +138,11 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     @Override
     public <T> T get(Object key, Argument<T> requiredType, Supplier<T> supplier) {
         Object value = cache.get(key, o -> supplier.get());
-        if (value != null) {
-            Optional<T> converted = conversionService.convert(value, ConversionContext.of(requiredType));
-            return converted.orElseThrow(() ->
-                new IllegalArgumentException("Cache supplier returned a value that cannot be converted to type: " + requiredType.getName())
-            );
+        if (value != null && convert) {
+            return conversionService.convert(value, ConversionContext.of(requiredType))
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Cache supplier returned a value that cannot be converted to type: " + requiredType.getName())
+                    );
         }
         return (T) value;
     }

@@ -19,7 +19,6 @@ If the return type of the method is a non-blocking type (either link:{jdkapi}/ja
 
 In addition if the underlying Cache implementation supports non-blocking cache operations then cache values will be read from the cache without blocking, resulting in the ability to implement completely non-blocking cache operations.
 
-
 == Caching with Caffeine
 
 To cache using https://github.com/ben-manes/caffeine[Caffeine] add the following dependency to your application:
@@ -48,3 +47,18 @@ Names of caches under `micronaut.caches` should be defined in kebab case (lowerc
 ====
 
 To configure a weigher to be used with the `maximumWeight` configuration, create a bean that implements `com.github.benmanes.caffeine.cache.Weigher`. To associate a given weigher with only a specific cache, annotate the bean with `@Named(<cache name>)`. Weighers without a named qualifier will apply to all caches that don't have a named weigher. If no beans are found, a default implementation will be used.
+
+== Cache Value Conversion
+
+By default, Micronaut will convert values returned from a cache to the requested type. This can have undesirable consequences in certain circumstances. To disable this behavior, set the `convert` configuration to false for the given cache.
+
+.No Conversion Example
+[source,yaml]
+----
+micronaut:
+    caches:
+        my-cache:
+            convert: false
+# Or if you are using the JCache manager
+micronaut.jcache.convert: false
+----

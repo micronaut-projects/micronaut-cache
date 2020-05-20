@@ -15,6 +15,7 @@
  */
 package io.micronaut.cache;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
@@ -47,8 +48,17 @@ public abstract class AbstractMapBasedSyncCache<C extends Map<Object, Object>> i
     }
 
     /**
+     * @param nativeCache the native cache
+     */
+    public AbstractMapBasedSyncCache(C nativeCache) {
+        this.conversionService = null;
+        this.nativeCache = nativeCache;
+    }
+
+    /**
      * @return The conversion service
      */
+    @Nullable
     public ConversionService<?> getConversionService() {
         return conversionService;
     }
@@ -59,7 +69,11 @@ public abstract class AbstractMapBasedSyncCache<C extends Map<Object, Object>> i
         ArgumentUtils.requireNonNull("key", key);
         Object value = nativeCache.get(key);
         if (value != null) {
-            return conversionService.convert(value, ConversionContext.of(requiredType));
+            if (conversionService != null) {
+                return conversionService.convert(value, ConversionContext.of(requiredType));
+            } else {
+                return Optional.of((T) value);
+            }
         }
         return Optional.empty();
     }
@@ -83,9 +97,13 @@ public abstract class AbstractMapBasedSyncCache<C extends Map<Object, Object>> i
     public <T> Optional<T> putIfAbsent(@NonNull Object key, @NonNull T value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
-        final T v = (T) nativeCache.putIfAbsent(key, value);
+        final Object v = nativeCache.putIfAbsent(key, value);
         final Class<T> aClass = (Class<T>) value.getClass();
-        return conversionService.convert(v, aClass);
+        if (conversionService != null) {
+            return conversionService.convert(v, aClass);
+        } else  {
+            return Optional.ofNullable((T) v);
+        }
     }
 
     @NonNull

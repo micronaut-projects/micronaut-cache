@@ -15,7 +15,9 @@
  */
 package io.micronaut.cache.jcache;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
@@ -47,7 +49,7 @@ class JCacheSyncCache implements SyncCache<Cache> {
      */
     JCacheSyncCache(
             @NonNull Cache<?, ?> nativeCache,
-            ConversionService<?> conversionService,
+            @Nullable ConversionService<?> conversionService,
             ExecutorService ioExecutor) {
         ArgumentUtils.requireNonNull("nativeCache", nativeCache);
         this.nativeCache = nativeCache;
@@ -65,7 +67,11 @@ class JCacheSyncCache implements SyncCache<Cache> {
         ArgumentUtils.requireNonNull("key", key);
         final Object v = nativeCache.get(key);
         if (v != null) {
-            return conversionService.convert(v, requiredType);
+            if (conversionService != null) {
+                return conversionService.convert(v, ConversionContext.of(requiredType));
+            } else {
+                return Optional.of((T) v);
+            }
         }
         return Optional.empty();
     }
@@ -81,9 +87,13 @@ class JCacheSyncCache implements SyncCache<Cache> {
     public <T> Optional<T> putIfAbsent(Object key, T value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
-        final T v = (T) nativeCache.getAndReplace(key, value);
+        final Object v = nativeCache.getAndReplace(key, value);
         final Class<T> aClass = (Class<T>) value.getClass();
-        return conversionService.convert(v, aClass);
+        if (conversionService != null) {
+            return conversionService.convert(v, aClass);
+        } else  {
+            return Optional.ofNullable((T) v);
+        }
     }
 
     @Override

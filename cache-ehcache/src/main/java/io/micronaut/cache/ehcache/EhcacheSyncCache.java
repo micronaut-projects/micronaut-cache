@@ -50,6 +50,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     private final Cache nativeCache;
     private final ExecutorService executorService;
     private final StatisticsService statisticsService;
+    private final boolean convert;
 
     /**
      * @param conversionService the conversion service
@@ -68,6 +69,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
         this.nativeCache = nativeCache;
         this.executorService = executorService;
         this.statisticsService = statisticsService;
+        this.convert = configuration.isConvert();
     }
 
     @Override
@@ -82,7 +84,11 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
         ArgumentUtils.requireNonNull("key", key);
         Object value = nativeCache.get(key);
         if (value != null) {
-            return conversionService.convert(value, ConversionContext.of(requiredType));
+            if (convert) {
+                return conversionService.convert(value, ConversionContext.of(requiredType));
+            } else {
+                return Optional.of((T) value);
+            }
         }
         return Optional.empty();
     }
@@ -106,9 +112,13 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     public <T> Optional<T> putIfAbsent(@Nonnull Object key, @Nonnull T value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
-        final T v = (T) nativeCache.putIfAbsent(key, value);
+        final Object v = nativeCache.putIfAbsent(key, value);
         final Class<T> aClass = (Class<T>) value.getClass();
-        return conversionService.convert(v, aClass);
+        if (conversionService != null) {
+            return conversionService.convert(v, aClass);
+        } else  {
+            return Optional.ofNullable((T) v);
+        }
     }
 
     @SuppressWarnings("unchecked")

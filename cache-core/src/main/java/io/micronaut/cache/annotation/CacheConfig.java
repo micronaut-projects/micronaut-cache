@@ -59,4 +59,5 @@ public @interface CacheConfig {
      * @return The default bean type of the key generator
      */
     Class<? extends CacheKeyGenerator> keyGenerator() default DefaultCacheKeyGenerator.class;
+
 }
