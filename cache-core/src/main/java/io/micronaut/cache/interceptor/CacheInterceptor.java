@@ -30,11 +30,10 @@ import io.micronaut.core.async.annotation.SingleResult;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.type.Argument;
-import io.micronaut.core.type.MutableArgumentValue;
 import io.micronaut.core.type.ReturnType;
 import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.CollectionUtils;
-import io.micronaut.core.util.StringUtils;
+import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.scheduling.TaskExecutors;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -78,6 +77,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
 
     private final CacheManager cacheManager;
     private final Map<Class<? extends CacheKeyGenerator>, CacheKeyGenerator> keyGenerators = new ConcurrentHashMap<>();
+    private final Map<ExecutableMethod<?, ?>, CacheOperation> cacheOperations = new ConcurrentHashMap<>(30);
     private final BeanContext beanContext;
     private final ExecutorService ioExecutor;
     private final CacheErrorHandler errorHandler;
@@ -136,11 +136,14 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      */
     protected Object interceptSync(MethodInvocationContext context, ReturnType returnTypeObject, Class returnType) {
         final ValueWrapper wrapper = new ValueWrapper();
-        CacheOperation cacheOperation = new CacheOperation(context, returnType);
+        CacheOperation cacheOperation = getCacheOperation(context, returnType);
 
         if (cacheOperation.cacheable) {
             CacheKeyGenerator defaultKeyGenerator = cacheOperation.defaultKeyGenerator;
-            CacheKeyGenerator keyGenerator = resolveKeyGenerator(defaultKeyGenerator, context.classValue(Cacheable.class, MEMBER_KEY_GENERATOR).orElse(null));
+            CacheKeyGenerator keyGenerator = resolveKeyGenerator(
+                    defaultKeyGenerator,
+                    context.classValue(Cacheable.class, MEMBER_KEY_GENERATOR).orElse(null)
+            );
             Object[] parameterValues = resolveParams(context, context.stringValues(Cacheable.class, MEMBER_PARAMETERS));
             Object key = keyGenerator.generateKey(context, parameterValues);
             Argument returnArgument = returnTypeObject.asArgument();
@@ -163,7 +166,10 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                     throw e;
                 }
             } else {
-                String[] cacheNames = resolveCacheNames(cacheOperation.defaultCacheNames, context.stringValues(Cacheable.class, MEMBER_CACHE_NAMES));
+                String[] cacheNames = resolveCacheNames(
+                        cacheOperation.defaultCacheNames,
+                        context.stringValues(Cacheable.class, MEMBER_CACHE_NAMES)
+                );
                 boolean cacheHit = false;
                 for (String cacheName : cacheNames) {
                     SyncCache syncCache = cacheManager.getCache(cacheName);
@@ -245,7 +251,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      * @return The value from the cache
      */
     protected Object interceptCompletableFuture(MethodInvocationContext<Object, Object> context, ReturnType<?> returnTypeObject, Class returnType) {
-        CacheOperation cacheOperation = new CacheOperation(context, returnType);
+        CacheOperation cacheOperation = getCacheOperation(context, returnType);
         CompletableFuture<Object> returnFuture;
         if (cacheOperation.cacheable) {
             AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
@@ -319,28 +325,28 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     /**
      * Saving inside the cache.
      *
-     * @param context Contains information about method invocation
+     * @param method Contains information about method invocation
      * @return The operations to cause the return value to be cached within the given cache name.
      */
-    protected List<AnnotationValue<CachePut>> putOperations(MethodInvocationContext context) {
-        return context.getAnnotationValuesByType(CachePut.class);
+    protected List<AnnotationValue<CachePut>> putOperations(ExecutableMethod<?, ?> method) {
+        return method.getAnnotationValuesByType(CachePut.class);
     }
 
     /**
      * Evict from the cache.
      *
-     * @param context Extended version of {@link io.micronaut.aop.InvocationContext} for {@link MethodInterceptor} instances
+     * @param method Contains information about method invocation
      * @return The operations to cause the eviction of the given caches
      */
-    protected List<AnnotationValue<CacheInvalidate>> invalidateOperations(MethodInvocationContext context) {
-        return context.getAnnotationValuesByType(CacheInvalidate.class);
+    protected List<AnnotationValue<CacheInvalidate>> invalidateOperations(ExecutableMethod<?, ?> method) {
+        return method.getAnnotationValuesByType(CacheInvalidate.class);
     }
 
     private Object interceptPublisher(MethodInvocationContext<Object, Object> context, ReturnType returnTypeObject, Class returnType) {
         if (!Publishers.isSingle(returnType) && !context.isAnnotationPresent(SingleResult.class)) {
             throw new CacheSystemException("Only Reactive types that emit a single result can currently be cached. Use either Single, Maybe or Mono for operations that cache.");
         }
-        CacheOperation cacheOperation = new CacheOperation(context, returnType);
+        CacheOperation cacheOperation = getCacheOperation(context, returnType);
         if (cacheOperation.cacheable) {
             Publisher<Object> publisher = buildCacheablePublisher(context, returnTypeObject, cacheOperation);
             return Publishers.convertPublisher(publisher, returnType);
@@ -359,6 +365,16 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                 }
             }
         }
+    }
+
+    private CacheOperation getCacheOperation(MethodInvocationContext<Object, Object> context, Class returnType) {
+        ExecutableMethod<Object, Object> method = context.getExecutableMethod();
+        CacheOperation cacheOperation = cacheOperations.get(method);
+        if (cacheOperation == null) {
+            cacheOperation = new CacheOperation(method, returnType);
+            cacheOperations.put(method, cacheOperation);
+        }
+        return cacheOperation;
     }
 
     private Publisher<Object> buildCacheInvalidatePublisher(
@@ -507,7 +523,8 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
             MethodInvocationContext<Object, Object> context,
             ReturnType returnTypeObject,
             CacheOperation cacheOperation) {
-        AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
+        AsyncCache<?> asyncCache =
+                cacheManager.getCache(cacheOperation.cacheableCacheName).async();
         CacheKeyGenerator keyGenerator = resolveKeyGenerator(cacheOperation.defaultKeyGenerator, context.classValue(Cacheable.class, MEMBER_KEY_GENERATOR).orElse(null));
         Object[] params = resolveParams(context, context.stringValues(Cacheable.class, MEMBER_PARAMETERS));
         Object key = keyGenerator.generateKey(context, params);
@@ -535,28 +552,26 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
             if (empty) {
                return Publishers.convertPublisher(
                        context.proceed(), Flowable.class)
-                       .flatMap(o -> {
-                           return Single.create(emitter -> {
-                               BiConsumer<Boolean, Throwable> completionHandler = (aBoolean, throwable1) -> {
-                                   if (throwable1 == null) {
-                                       emitter.onSuccess(o);
-                                   } else {
-                                       emitter.onSuccess(o);
-                                   }
-                               };
-                               if (o != null) {
-                                   if (LOG.isTraceEnabled()) {
-                                       LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}", asyncCache.getName(), key, context, o);
-                                   }
-                                   asyncCache.put(key, o).whenComplete(completionHandler);
+                       .flatMap(o -> Single.create(emitter -> {
+                           BiConsumer<Boolean, Throwable> completionHandler = (aBoolean, throwable1) -> {
+                               if (throwable1 == null) {
+                                   emitter.onSuccess(o);
                                } else {
-                                   if (LOG.isTraceEnabled()) {
-                                       LOG.trace("Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null", key, asyncCache.getName(), context);
-                                   }
-                                   asyncCache.invalidate(key).whenComplete(completionHandler);
+                                   emitter.onSuccess(o);
                                }
-                           }).toFlowable();
-                       });
+                           };
+                           if (o != null) {
+                               if (LOG.isTraceEnabled()) {
+                                   LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}", asyncCache.getName(), key, context, o);
+                               }
+                               asyncCache.put(key, o).whenComplete(completionHandler);
+                           } else {
+                               if (LOG.isTraceEnabled()) {
+                                   LOG.trace("Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null", key, asyncCache.getName(), context);
+                               }
+                               asyncCache.invalidate(key).whenComplete(completionHandler);
+                           }
+                       }).toFlowable());
             } else {
                 return maybe.toFlowable();
             }
@@ -882,8 +897,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      *
      */
     private class CacheOperation {
-        final Class returnType;
-        final MethodInvocationContext<?, ?> context;
+        final Class<?> returnType;
         final CacheKeyGenerator defaultKeyGenerator;
         final String[] defaultCacheNames;
         final boolean cacheable;
@@ -891,23 +905,24 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         List<AnnotationValue<CachePut>> putOperations;
         List<AnnotationValue<CacheInvalidate>> invalidateOperations;
 
-        CacheOperation(MethodInvocationContext<?, ?> context, Class returnType) {
-            this.context = context;
+        CacheOperation(ExecutableMethod<?, ?> method, Class<?> returnType) {
             this.returnType = returnType;
 
-            this.defaultKeyGenerator = resolveKeyGenerator(context.classValue(CacheConfig.class, MEMBER_KEY_GENERATOR).orElse(null));
+            this.defaultKeyGenerator = resolveKeyGenerator(
+                    method.classValue(CacheConfig.class, MEMBER_KEY_GENERATOR).orElse(null)
+            );
             boolean isVoid = isVoid();
-            this.putOperations = isVoid ? null : putOperations(context);
-            this.invalidateOperations = invalidateOperations(context);
-            this.defaultCacheNames = context.stringValues(CacheConfig.class, MEMBER_CACHE_NAMES);
-            this.cacheable = context.hasStereotype(Cacheable.class);
+            this.putOperations = isVoid ? null : putOperations(method);
+            this.invalidateOperations = invalidateOperations(method);
+            this.defaultCacheNames = method.stringValues(CacheConfig.class, MEMBER_CACHE_NAMES);
+            this.cacheable = method.hasStereotype(Cacheable.class);
             if (!isVoid && cacheable) {
-                String[] names = resolveCacheNames(defaultCacheNames, context.stringValues(Cacheable.class, MEMBER_CACHE_NAMES));
+                String[] names = resolveCacheNames(defaultCacheNames, method.stringValues(Cacheable.class, MEMBER_CACHE_NAMES));
                 if (ArrayUtils.isNotEmpty(names)) {
                     this.cacheableCacheName = names[0];
                 } else {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn("No cache names defined for invocation [{}]. Skipping cache read operations.", context);
+                        LOG.warn("No cache names defined for invocation [{}]. Skipping cache read operations.", method);
                     }
                 }
             }
