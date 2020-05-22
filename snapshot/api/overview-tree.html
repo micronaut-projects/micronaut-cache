@@ -73,7 +73,8 @@
 <ul class="horizontal">
 <li><a href="io/micronaut/cache/package-tree.html">io.micronaut.cache</a>, </li>
 <li><a href="io/micronaut/cache/annotation/package-tree.html">io.micronaut.cache.annotation</a>, </li>
-<li><a href="io/micronaut/cache/caffeiene/package-tree.html">io.micronaut.cache.caffeiene</a>, </li>
+<li><a href="io/micronaut/cache/caffeine/package-tree.html">io.micronaut.cache.caffeine</a>, </li>
+<li><a href="io/micronaut/cache/caffeine/metrics/package-tree.html">io.micronaut.cache.caffeine.metrics</a>, </li>
 <li><a href="io/micronaut/cache/discovery/package-tree.html">io.micronaut.cache.discovery</a>, </li>
 <li><a href="io/micronaut/cache/ehcache/package-tree.html">io.micronaut.cache.ehcache</a>, </li>
 <li><a href="io/micronaut/cache/ehcache/configuration/package-tree.html">io.micronaut.cache.ehcache.configuration</a>, </li>
@@ -85,6 +86,7 @@
 <li><a href="io/micronaut/cache/infinispan/package-tree.html">io.micronaut.cache.infinispan</a>, </li>
 <li><a href="io/micronaut/cache/interceptor/package-tree.html">io.micronaut.cache.interceptor</a>, </li>
 <li><a href="io/micronaut/cache/jcache/package-tree.html">io.micronaut.cache.jcache</a>, </li>
+<li><a href="io/micronaut/cache/jcache/metrics/package-tree.html">io.micronaut.cache.jcache.metrics</a>, </li>
 <li><a href="io/micronaut/cache/management/package-tree.html">io.micronaut.cache.management</a>, </li>
 <li><a href="io/micronaut/cache/noop/package-tree.html">io.micronaut.cache.noop</a>, </li>
 <li><a href="io/micronaut/cache/serialize/package-tree.html">io.micronaut.cache.serialize</a></li>
@@ -113,12 +115,13 @@
 <li type="circle">io.micronaut.cache.<a href="io/micronaut/cache/AsyncCacheErrorHandler.html" title="class in io.micronaut.cache"><span class="typeNameLink">AsyncCacheErrorHandler</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/CacheErrorHandler.html" title="interface in io.micronaut.cache">CacheErrorHandler</a>)</li>
 <li type="circle">io.micronaut.cache.<a href="io/micronaut/cache/CacheConfiguration.html" title="class in io.micronaut.cache"><span class="typeNameLink">CacheConfiguration</span></a>
 <ul>
-<li type="circle">io.micronaut.cache.caffeiene.<a href="io/micronaut/cache/caffeiene/DefaultCacheConfiguration.html" title="class in io.micronaut.cache.caffeiene"><span class="typeNameLink">DefaultCacheConfiguration</span></a></li>
+<li type="circle">io.micronaut.cache.caffeine.<a href="io/micronaut/cache/caffeine/DefaultCacheConfiguration.html" title="class in io.micronaut.cache.caffeine"><span class="typeNameLink">DefaultCacheConfiguration</span></a></li>
 <li type="circle">io.micronaut.cache.discovery.<a href="io/micronaut/cache/discovery/DiscoveryClientCacheConfiguration.html" title="class in io.micronaut.cache.discovery"><span class="typeNameLink">DiscoveryClientCacheConfiguration</span></a> (implements io.micronaut.core.util.Toggleable)</li>
 </ul>
 </li>
 <li type="circle">io.micronaut.cache.interceptor.<a href="io/micronaut/cache/interceptor/CacheInterceptor.html" title="class in io.micronaut.cache.interceptor"><span class="typeNameLink">CacheInterceptor</span></a> (implements io.micronaut.aop.MethodInterceptor&lt;T,R&gt;)</li>
 <li type="circle">io.micronaut.cache.management.<a href="io/micronaut/cache/management/CachesEndpoint.html" title="class in io.micronaut.cache.management"><span class="typeNameLink">CachesEndpoint</span></a></li>
+<li type="circle">io.micronaut.cache.caffeine.metrics.<a href="io/micronaut/cache/caffeine/metrics/CaffeineCacheMetricsBinder.html" title="class in io.micronaut.cache.caffeine.metrics"><span class="typeNameLink">CaffeineCacheMetricsBinder</span></a> (implements io.micronaut.context.event.BeanCreatedEventListener&lt;T&gt;)</li>
 <li type="circle">io.micronaut.cache.ehcache.serialization.<a href="io/micronaut/cache/ehcache/serialization/CharSequenceSerializer.html" title="class in io.micronaut.cache.ehcache.serialization"><span class="typeNameLink">CharSequenceSerializer</span></a> (implements org.ehcache.spi.serialization.Serializer&lt;T&gt;)</li>
 <li type="circle">com.hazelcast.client.config.ClientConfig
 <ul>
@@ -138,9 +141,9 @@
 <li type="circle">io.micronaut.cache.<a href="io/micronaut/cache/DefaultCacheErrorHandler.html" title="class in io.micronaut.cache"><span class="typeNameLink">DefaultCacheErrorHandler</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/CacheErrorHandler.html" title="interface in io.micronaut.cache">CacheErrorHandler</a>)</li>
 <li type="circle">io.micronaut.cache.interceptor.<a href="io/micronaut/cache/interceptor/DefaultCacheKeyGenerator.html" title="class in io.micronaut.cache.interceptor"><span class="typeNameLink">DefaultCacheKeyGenerator</span></a> (implements io.micronaut.cache.interceptor.<a href="io/micronaut/cache/interceptor/CacheKeyGenerator.html" title="interface in io.micronaut.cache.interceptor">CacheKeyGenerator</a>)</li>
 <li type="circle">io.micronaut.cache.<a href="io/micronaut/cache/DefaultCacheManager.html" title="class in io.micronaut.cache"><span class="typeNameLink">DefaultCacheManager</span></a>&lt;C&gt; (implements io.micronaut.cache.<a href="io/micronaut/cache/CacheManager.html" title="interface in io.micronaut.cache">CacheManager</a>&lt;C&gt;)</li>
-<li type="circle">io.micronaut.cache.caffeiene.<a href="io/micronaut/cache/caffeiene/DefaultDynamicCacheManager.html" title="class in io.micronaut.cache.caffeiene"><span class="typeNameLink">DefaultDynamicCacheManager</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/DynamicCacheManager.html" title="interface in io.micronaut.cache">DynamicCacheManager</a>&lt;C&gt;)</li>
+<li type="circle">io.micronaut.cache.caffeine.<a href="io/micronaut/cache/caffeine/DefaultDynamicCacheManager.html" title="class in io.micronaut.cache.caffeine"><span class="typeNameLink">DefaultDynamicCacheManager</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/DynamicCacheManager.html" title="interface in io.micronaut.cache">DynamicCacheManager</a>&lt;C&gt;)</li>
 <li type="circle">io.micronaut.cache.serialize.<a href="io/micronaut/cache/serialize/DefaultStringKeySerializer.html" title="class in io.micronaut.cache.serialize"><span class="typeNameLink">DefaultStringKeySerializer</span></a> (implements io.micronaut.core.serialize.ObjectSerializer)</li>
-<li type="circle">io.micronaut.cache.caffeiene.<a href="io/micronaut/cache/caffeiene/DefaultSyncCache.html" title="class in io.micronaut.cache.caffeiene"><span class="typeNameLink">DefaultSyncCache</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;C&gt;)</li>
+<li type="circle">io.micronaut.cache.caffeine.<a href="io/micronaut/cache/caffeine/DefaultSyncCache.html" title="class in io.micronaut.cache.caffeine"><span class="typeNameLink">DefaultSyncCache</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;C&gt;)</li>
 <li type="circle">io.micronaut.cache.<a href="io/micronaut/cache/DelegatingAsyncBlockingCache.html" title="class in io.micronaut.cache"><span class="typeNameLink">DelegatingAsyncBlockingCache</span></a>&lt;C&gt; (implements io.micronaut.cache.<a href="io/micronaut/cache/AsyncCache.html" title="interface in io.micronaut.cache">AsyncCache</a>&lt;C&gt;)</li>
 <li type="circle">io.micronaut.cache.<a href="io/micronaut/cache/DelegatingAsyncCache.html" title="class in io.micronaut.cache"><span class="typeNameLink">DelegatingAsyncCache</span></a>&lt;C&gt; (implements io.micronaut.cache.<a href="io/micronaut/cache/AsyncCache.html" title="interface in io.micronaut.cache">AsyncCache</a>&lt;C&gt;)</li>
 <li type="circle">io.micronaut.cache.ehcache.<a href="io/micronaut/cache/ehcache/EhcacheCacheFactory.html" title="class in io.micronaut.cache.ehcache"><span class="typeNameLink">EhcacheCacheFactory</span></a></li>
@@ -164,6 +167,7 @@
 <li type="circle">io.micronaut.cache.infinispan.<a href="io/micronaut/cache/infinispan/InfinispanCacheManager.html" title="class in io.micronaut.cache.infinispan"><span class="typeNameLink">InfinispanCacheManager</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/DynamicCacheManager.html" title="interface in io.micronaut.cache">DynamicCacheManager</a>&lt;C&gt;)</li>
 <li type="circle">io.micronaut.cache.infinispan.<a href="io/micronaut/cache/infinispan/InfinispanHotRodClientConfiguration.html" title="class in io.micronaut.cache.infinispan"><span class="typeNameLink">InfinispanHotRodClientConfiguration</span></a></li>
 <li type="circle">io.micronaut.cache.jcache.<a href="io/micronaut/cache/jcache/JCacheManager.html" title="class in io.micronaut.cache.jcache"><span class="typeNameLink">JCacheManager</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/CacheManager.html" title="interface in io.micronaut.cache">CacheManager</a>&lt;C&gt;)</li>
+<li type="circle">io.micronaut.cache.jcache.metrics.<a href="io/micronaut/cache/jcache/metrics/JCacheMetricsBinder.html" title="class in io.micronaut.cache.jcache.metrics"><span class="typeNameLink">JCacheMetricsBinder</span></a> (implements io.micronaut.context.event.BeanCreatedEventListener&lt;T&gt;)</li>
 <li type="circle">io.micronaut.cache.hazelcast.converters.<a href="io/micronaut/cache/hazelcast/converters/MapToConcurrentMapConverter.html" title="class in io.micronaut.cache.hazelcast.converters"><span class="typeNameLink">MapToConcurrentMapConverter</span></a> (implements io.micronaut.core.convert.TypeConverter&lt;S,T&gt;)</li>
 <li type="circle">io.micronaut.cache.infinispan.<a href="io/micronaut/cache/infinispan/MicronautExecutorFactory.html" title="class in io.micronaut.cache.infinispan"><span class="typeNameLink">MicronautExecutorFactory</span></a> (implements org.infinispan.commons.executors.ExecutorFactory)</li>
 <li type="circle">io.micronaut.cache.noop.<a href="io/micronaut/cache/noop/NoOpCacheManager.html" title="class in io.micronaut.cache.noop"><span class="typeNameLink">NoOpCacheManager</span></a> (implements io.micronaut.cache.<a href="io/micronaut/cache/CacheManager.html" title="interface in io.micronaut.cache">CacheManager</a>&lt;C&gt;)</li>
@@ -206,11 +210,11 @@
 <h2 title="Annotation Type Hierarchy">Annotation Type Hierarchy</h2>
 <ul>
 <li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/CacheInvalidate.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">CacheInvalidate</span></a> (implements java.lang.annotation.Annotation)</li>
-<li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/CachePut.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">CachePut</span></a> (implements java.lang.annotation.Annotation)</li>
-<li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/PutOperations.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">PutOperations</span></a> (implements java.lang.annotation.Annotation)</li>
 <li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/Cacheable.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">Cacheable</span></a> (implements java.lang.annotation.Annotation)</li>
-<li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/CacheConfig.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">CacheConfig</span></a> (implements java.lang.annotation.Annotation)</li>
+<li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/CachePut.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">CachePut</span></a> (implements java.lang.annotation.Annotation)</li>
 <li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/InvalidateOperations.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">InvalidateOperations</span></a> (implements java.lang.annotation.Annotation)</li>
+<li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/PutOperations.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">PutOperations</span></a> (implements java.lang.annotation.Annotation)</li>
+<li type="circle">io.micronaut.cache.annotation.<a href="io/micronaut/cache/annotation/CacheConfig.html" title="annotation in io.micronaut.cache.annotation"><span class="typeNameLink">CacheConfig</span></a> (implements java.lang.annotation.Annotation)</li>
 </ul>
 </div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->

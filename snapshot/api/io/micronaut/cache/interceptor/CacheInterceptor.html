@@ -225,13 +225,13 @@ implements io.micronaut.aop.MethodInterceptor&lt;java.lang.Object,java.lang.Obje
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>protected java.util.List&lt;io.micronaut.core.annotation.AnnotationValue&lt;<a href="../../../../io/micronaut/cache/annotation/CacheInvalidate.html" title="annotation in io.micronaut.cache.annotation">CacheInvalidate</a>&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/interceptor/CacheInterceptor.html#invalidateOperations-io.micronaut.aop.MethodInvocationContext-">invalidateOperations</a></span>(io.micronaut.aop.MethodInvocationContext&nbsp;context)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/interceptor/CacheInterceptor.html#invalidateOperations-io.micronaut.inject.ExecutableMethod-">invalidateOperations</a></span>(io.micronaut.inject.ExecutableMethod&lt;?,?&gt;&nbsp;method)</code>
 <div class="block">Evict from the cache.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected java.util.List&lt;io.micronaut.core.annotation.AnnotationValue&lt;<a href="../../../../io/micronaut/cache/annotation/CachePut.html" title="annotation in io.micronaut.cache.annotation">CachePut</a>&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/interceptor/CacheInterceptor.html#putOperations-io.micronaut.aop.MethodInvocationContext-">putOperations</a></span>(io.micronaut.aop.MethodInvocationContext&nbsp;context)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/interceptor/CacheInterceptor.html#putOperations-io.micronaut.inject.ExecutableMethod-">putOperations</a></span>(io.micronaut.inject.ExecutableMethod&lt;?,?&gt;&nbsp;method)</code>
 <div class="block">Saving inside the cache.</div>
 </td>
 </tr>
@@ -385,33 +385,33 @@ implements io.micronaut.aop.MethodInterceptor&lt;java.lang.Object,java.lang.Obje
 </dl>
 </li>
 </ul>
-<a name="putOperations-io.micronaut.aop.MethodInvocationContext-">
+<a name="putOperations-io.micronaut.inject.ExecutableMethod-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>putOperations</h4>
-<pre>protected&nbsp;java.util.List&lt;io.micronaut.core.annotation.AnnotationValue&lt;<a href="../../../../io/micronaut/cache/annotation/CachePut.html" title="annotation in io.micronaut.cache.annotation">CachePut</a>&gt;&gt;&nbsp;putOperations(io.micronaut.aop.MethodInvocationContext&nbsp;context)</pre>
+<pre>protected&nbsp;java.util.List&lt;io.micronaut.core.annotation.AnnotationValue&lt;<a href="../../../../io/micronaut/cache/annotation/CachePut.html" title="annotation in io.micronaut.cache.annotation">CachePut</a>&gt;&gt;&nbsp;putOperations(io.micronaut.inject.ExecutableMethod&lt;?,?&gt;&nbsp;method)</pre>
 <div class="block">Saving inside the cache.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>context</code> - Contains information about method invocation</dd>
+<dd><code>method</code> - Contains information about method invocation</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The operations to cause the return value to be cached within the given cache name.</dd>
 </dl>
 </li>
 </ul>
-<a name="invalidateOperations-io.micronaut.aop.MethodInvocationContext-">
+<a name="invalidateOperations-io.micronaut.inject.ExecutableMethod-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>invalidateOperations</h4>
-<pre>protected&nbsp;java.util.List&lt;io.micronaut.core.annotation.AnnotationValue&lt;<a href="../../../../io/micronaut/cache/annotation/CacheInvalidate.html" title="annotation in io.micronaut.cache.annotation">CacheInvalidate</a>&gt;&gt;&nbsp;invalidateOperations(io.micronaut.aop.MethodInvocationContext&nbsp;context)</pre>
+<pre>protected&nbsp;java.util.List&lt;io.micronaut.core.annotation.AnnotationValue&lt;<a href="../../../../io/micronaut/cache/annotation/CacheInvalidate.html" title="annotation in io.micronaut.cache.annotation">CacheInvalidate</a>&gt;&gt;&nbsp;invalidateOperations(io.micronaut.inject.ExecutableMethod&lt;?,?&gt;&nbsp;method)</pre>
 <div class="block">Evict from the cache.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>context</code> - Extended version of <code>InvocationContext</code> for <code>MethodInterceptor</code> instances</dd>
+<dd><code>method</code> - Contains information about method invocation</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The operations to cause the eviction of the given caches</dd>
 </dl>
