@@ -25,7 +25,7 @@ import spock.lang.Shared
 
 @Testcontainers
 @Retry
-//@IgnoreIf({System.getenv('GITHUB_WORKFLOW')})
+@IgnoreIf({System.getenv('GITHUB_WORKFLOW')})
 class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
