@@ -29,6 +29,7 @@ import javax.inject.Singleton
 /**
  * @since 1.0
  */
+@spock.lang.Retry
 class HazelcastMemberSyncCacheSpec extends AbstractSyncCacheSpec {
 
     @Singleton

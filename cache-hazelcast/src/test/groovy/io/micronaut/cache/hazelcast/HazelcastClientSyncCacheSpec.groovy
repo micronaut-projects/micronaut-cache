@@ -27,6 +27,7 @@ import spock.lang.Shared
  * @since 1.0
  */
 @Testcontainers
+@spock.lang.Retry
 class HazelcastClientSyncCacheSpec extends AbstractSyncCacheSpec implements HazelcastClientSupport {
 
     @Shared
