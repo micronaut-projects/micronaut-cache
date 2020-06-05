@@ -20,10 +20,12 @@ import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.spock.Testcontainers
+import spock.lang.IgnoreIf
 import spock.lang.Shared
 
 @Testcontainers
 @spock.lang.Retry
+@IgnoreIf({System.getenv('GITHUB_WORKFLOW')})
 class HazelcastClientAsyncCacheSpec extends AbstractAsyncCacheSpec implements HazelcastClientSupport {
 
     @Shared
