@@ -128,6 +128,14 @@ abstract class AbstractAsyncCacheSpec extends Specification {
 
         when:
         counterService.increment("test")
+
+        then:
+        conditions.eventually {
+            counterService.getValue("test") == 1
+            counterService.getValue2("test") == 0
+        }
+
+        when:
         counterService.increment("test")
 
         then:
