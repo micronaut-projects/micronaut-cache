@@ -3,11 +3,11 @@ dependencies {
     runtimeOnly "cglib:cglib-nodep:3.3.0"
     runtimeOnly "org.objenesis:objenesis:3.1"
 
-    compile project(":cache-core")
+    api project(":cache-core")
 
-    compile("org.spockframework:spock-core:${spockVersion}") {
+    api("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'
     }
 
-    compile "io.micronaut.test:micronaut-test-spock:1.1.5"
+    api "io.micronaut.test:micronaut-test-spock:1.1.5"
 }

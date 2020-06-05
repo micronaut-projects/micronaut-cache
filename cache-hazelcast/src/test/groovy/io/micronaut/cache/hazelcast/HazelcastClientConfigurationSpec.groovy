@@ -24,6 +24,7 @@ import spock.lang.Specification
 
 import javax.inject.Singleton
 
+@spock.lang.Retry
 class HazelcastClientConfigurationSpec extends Specification {
 
     void "test nested network configuration"() {

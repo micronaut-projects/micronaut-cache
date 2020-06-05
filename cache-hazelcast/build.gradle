@@ -3,8 +3,8 @@ ext {
 }
 
 dependencies {
-    compile project(":cache-core")
-    compile "com.hazelcast:hazelcast:$hazelcastVersion"
+    api project(":cache-core")
+    api "com.hazelcast:hazelcast:$hazelcastVersion"
 
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 

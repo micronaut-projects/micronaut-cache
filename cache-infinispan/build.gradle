@@ -1,8 +1,8 @@
 dependencies {
-    compile project(":cache-core")
+    api project(":cache-core")
 
-    compile 'org.infinispan:infinispan-core:10.1.8.Final'
-    compile "org.infinispan:infinispan-client-hotrod:10.1.8.Final"
+    api 'org.infinispan:infinispan-core:10.1.8.Final'
+    api "org.infinispan:infinispan-client-hotrod:10.1.8.Final"
 
     testImplementation project(":cache-tck")
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
