@@ -22,6 +22,7 @@ import org.testcontainers.spock.Testcontainers
 import spock.lang.Shared
 
 @Testcontainers
+@spock.lang.Retry
 class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
