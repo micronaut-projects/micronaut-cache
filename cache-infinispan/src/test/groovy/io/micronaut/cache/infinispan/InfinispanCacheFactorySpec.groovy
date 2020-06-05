@@ -63,7 +63,7 @@ class InfinispanCacheFactorySpec extends Specification {
 
         then:
         remoteCacheManager.servers.size() == 1
-        remoteCacheManager.servers.last() == 'localhost:11223'
+        remoteCacheManager.servers.last().endsWith(':11223')
 
         cleanup:
         ctx.close()
@@ -80,8 +80,8 @@ class InfinispanCacheFactorySpec extends Specification {
 
         then:
         remoteCacheManager.servers.size() == 2
-        remoteCacheManager.servers.first() == 'localhost:11224'
-        remoteCacheManager.servers.last() == 'localhost:11225'
+        remoteCacheManager.servers.first().endsWith(':11224')
+        remoteCacheManager.servers.last().endsWith(':11225')
         remoteCacheManager.configuration.statistics().enabled()
 
         cleanup:
