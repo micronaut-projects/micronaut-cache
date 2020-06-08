@@ -1,0 +1,22 @@
+dependencies {
+    api "io.micronaut:micronaut-http"
+    api "io.micronaut:micronaut-inject"
+    api "io.micronaut:micronaut-aop"
+    api "io.micronaut:micronaut-runtime"
+
+    compileOnly "javax.cache:cache-api"
+    compileOnly "io.micronaut:micronaut-management"
+    compileOnly "io.micronaut.configuration:micronaut-micrometer-core"
+
+    compileOnly "ch.qos.logback:logback-classic:1.2.3"
+    testImplementation "ch.qos.logback:logback-classic:1.2.3"
+
+    testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
+    testImplementation "javax.cache:cache-api"
+    testImplementation "io.micronaut:micronaut-inject-groovy"
+}
+
+//compileJava.options.fork = true
+//compileJava.options.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
+
+//compileTestGroovy.groovyOptions.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
