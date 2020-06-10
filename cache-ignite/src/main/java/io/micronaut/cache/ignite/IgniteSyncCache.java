@@ -7,7 +7,6 @@ import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
 import org.apache.ignite.IgniteCache;
-import org.apache.ignite.client.ClientCache;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -51,11 +50,11 @@ public class IgniteSyncCache implements SyncCache<IgniteCache> {
     public <T> Optional<T> putIfAbsent(@NonNull Object key, @NonNull T value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
+        final Class<T> aClass = (Class<T>) value.getClass();
         if(nativeCache.putIfAbsent(key,value)) {
-            final Class<T> aClass = (Class<T>) value.getClass();
             return conversionService.convert(value, aClass);
         }
-        return Optional.empty();
+        return conversionService.convert(value, aClass);
     }
 
     @Override

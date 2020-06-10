@@ -4,13 +4,10 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
-import io.micronaut.core.naming.Named;
 import org.apache.ignite.configuration.CacheConfiguration;
 
-@EachProperty(IgniteCacheConfiguration.PREFIX)
-public class IgniteCacheConfiguration implements Named {
-    public static final String PREFIX = "ignite.caches";
-
+@EachProperty(value = "ignite.caches", primary = "default")
+public class IgniteCacheConfiguration{
     private final String name;
     private String client = "default";
 
@@ -34,7 +31,6 @@ public class IgniteCacheConfiguration implements Named {
     }
 
     @NonNull
-    @Override
     public String getName() {
         return this.name;
     }

@@ -12,17 +12,19 @@ import spock.lang.Shared
 class IgniteAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
-    GenericContainer ignite = new GenericContainer("apacheignite/ignite")
-        .withExposedPorts(47500)
-        .withEnv("CONFIG_URI", "https://raw.githubusercontent.com/apache/ignite/master/examples/config/example-cache.xml")
+    GenericContainer ignite = new GenericContainer("apacheignite/ignite:2.8.0")
+        .withExposedPorts(47500,47100)
 
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run([
-            "ignite.clients.force-return-values": true,
-            "ignite.clients.default.host": "localhost:47500..47509",
+            "ignite.enabled" : true,
+            "ignite.clients.default.force-return-values": true,
             "ignite.clients.default.client-mode": true,
-            "ignite.clients.default.finder.addresses": ["127.0.0.1:47500..47509"]
+            "ignite.clients.default.multicast-ipfinder.addresses": ["localhost:47500..47509"],
+            "ignite.caches.counter.client": "default",
+            "ignite.caches.counter2.client": "default",
+            "ignite.caches.test.client": "default"
         ])
     }
 }
