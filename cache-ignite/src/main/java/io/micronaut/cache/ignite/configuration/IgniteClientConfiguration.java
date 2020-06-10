@@ -20,27 +20,7 @@ public class IgniteClientConfiguration {
 
     @ConfigurationBuilder(excludes = {"Name"})
     private IgniteConfiguration configuration = new IgniteConfiguration();
-
-    private DiscoveryMulticastIpFinder multicastIpfinder;
-    private SharedFilesystemIpFinder filesystemIpfinder;
-    private JdbcIpFinder jdbcIpfinder;
-    private VmIpFinder vmIpfinder;
-
-    public void setMulticastIpfinder(DiscoveryMulticastIpFinder multicastIpfinder) {
-        this.multicastIpfinder = multicastIpfinder;
-    }
-
-    public void setFilesystemIpfinder(SharedFilesystemIpFinder filesystemIpfinder) {
-        this.filesystemIpfinder = filesystemIpfinder;
-    }
-
-    public void setJdbcIpfinder(JdbcIpFinder jdbcIpfinder) {
-        this.jdbcIpfinder = jdbcIpfinder;
-    }
-
-    public void setVmIpfinder(VmIpFinder vmIpfinder) {
-        this.vmIpfinder = vmIpfinder;
-    }
+    public IgniteDiscoveryConfiguration discovery = new IgniteDiscoveryConfiguration();
 
     public IgniteClientConfiguration(@Parameter String name) {
         this.name = name;
@@ -50,68 +30,114 @@ public class IgniteClientConfiguration {
         return configuration;
     }
 
+    public void setDiscovery(IgniteDiscoveryConfiguration discovery) {
+        this.discovery = discovery;
+    }
+
+    public IgniteDiscoveryConfiguration getDiscovery() {
+        return discovery;
+    }
 
     public IgniteConfiguration build() {
         IgniteConfiguration igniteConfiguration = configuration.
             setIgniteInstanceName(name);
-        BuildDiscovery().ifPresent((discoverySpi) -> igniteConfiguration.setDiscoverySpi(discoverySpi));
+        discovery.BuildDiscovery().ifPresent(igniteConfiguration::setDiscoverySpi);
         return igniteConfiguration;
     }
 
+    @ConfigurationProperties("discovery")
+    public static class IgniteDiscoveryConfiguration {
+        DiscoveryMulticastIpFinder multicast;
+        SharedFilesystemIpFinder filesystem;
+        JdbcIpFinder jdbc;
+        VmIpFinder vm;
 
-    @ConfigurationProperties("multicast-ipfinder")
-    public static class DiscoveryMulticastIpFinder {
-        @ConfigurationBuilder
-        private TcpDiscoveryMulticastIpFinder configuration = new TcpDiscoveryMulticastIpFinder();
-
-        public TcpDiscoveryMulticastIpFinder getConfiguration() {
-            return configuration;
-        }
-    }
-
-    @ConfigurationProperties("filesystem-ipfinder")
-    public static class SharedFilesystemIpFinder {
-        @ConfigurationBuilder
-        private TcpDiscoverySharedFsIpFinder configuration = new TcpDiscoverySharedFsIpFinder();
-
-        public TcpDiscoverySharedFsIpFinder getConfiguration() {
-            return configuration;
+        public void setMulticast(DiscoveryMulticastIpFinder multicast) {
+            this.multicast = multicast;
         }
 
-    }
+        public DiscoveryMulticastIpFinder getMulticast() {
+            return multicast;
+        }
 
-    @ConfigurationProperties("jdbc-ipfinder")
-    public static class JdbcIpFinder {
-        @ConfigurationBuilder
-        TcpDiscoveryJdbcIpFinder configuration = new TcpDiscoveryJdbcIpFinder();
+        public SharedFilesystemIpFinder getFilesystem() {
+            return filesystem;
+        }
 
-        public TcpDiscoveryJdbcIpFinder getConfiguration() {
-            return configuration;
+        public void setFilesystem(SharedFilesystemIpFinder filesystem) {
+            this.filesystem = filesystem;
+        }
+
+        public void setJdbc(JdbcIpFinder jdbc) {
+            this.jdbc = jdbc;
+        }
+
+        public JdbcIpFinder getJdbc() {
+            return jdbc;
+        }
+
+        public VmIpFinder getVm() {
+            return vm;
+        }
+
+        public void setVm(VmIpFinder vm) {
+            this.vm = vm;
+        }
+
+        @ConfigurationProperties("multicast")
+        public static class DiscoveryMulticastIpFinder {
+            @ConfigurationBuilder
+            private TcpDiscoveryMulticastIpFinder configuration = new TcpDiscoveryMulticastIpFinder();
+
+            public TcpDiscoveryMulticastIpFinder getConfiguration() {
+                return configuration;
+            }
+        }
+
+        @ConfigurationProperties("filesystem")
+        public static class SharedFilesystemIpFinder {
+            @ConfigurationBuilder
+            private TcpDiscoverySharedFsIpFinder configuration = new TcpDiscoverySharedFsIpFinder();
+
+            public TcpDiscoverySharedFsIpFinder getConfiguration() {
+                return configuration;
+            }
+
+        }
+
+        @ConfigurationProperties("jdbc")
+        public static class JdbcIpFinder {
+            @ConfigurationBuilder
+            TcpDiscoveryJdbcIpFinder configuration = new TcpDiscoveryJdbcIpFinder();
+
+            public TcpDiscoveryJdbcIpFinder getConfiguration() {
+                return configuration;
+            }
+
+        }
+
+        @ConfigurationProperties("vm")
+        public static class VmIpFinder {
+            @ConfigurationBuilder
+            TcpDiscoveryVmIpFinder configuration = new TcpDiscoveryVmIpFinder();
+
+            public TcpDiscoveryVmIpFinder getConfiguration() {
+                return configuration;
+            }
+
+        }
+
+        public Optional<TcpDiscoverySpi> BuildDiscovery() {
+            if (multicast != null)
+                return Optional.of(new TcpDiscoverySpi().setIpFinder(multicast.getConfiguration()));
+            if (vm != null)
+                return Optional.of(new TcpDiscoverySpi().setIpFinder(vm.getConfiguration()));
+            if (jdbc != null)
+                return Optional.of(new TcpDiscoverySpi().setIpFinder(jdbc.getConfiguration()));
+            if (filesystem != null)
+                return Optional.of(new TcpDiscoverySpi().setIpFinder(filesystem.getConfiguration()));
+            return Optional.empty();
         }
 
     }
-
-    @ConfigurationProperties("vm-ipfinder")
-    public static class VmIpFinder {
-        @ConfigurationBuilder
-        TcpDiscoveryVmIpFinder configuration = new TcpDiscoveryVmIpFinder();
-
-        public TcpDiscoveryVmIpFinder getConfiguration() {
-            return configuration;
-        }
-
-    }
-
-    public Optional<TcpDiscoverySpi> BuildDiscovery() {
-        if (multicastIpfinder != null)
-            return Optional.of(new TcpDiscoverySpi().setIpFinder(multicastIpfinder.getConfiguration()));
-        if (vmIpfinder != null)
-            return Optional.of(new TcpDiscoverySpi().setIpFinder(vmIpfinder.getConfiguration()));
-        if (jdbcIpfinder != null)
-            return Optional.of(new TcpDiscoverySpi().setIpFinder(jdbcIpfinder.getConfiguration()));
-        if (filesystemIpfinder != null)
-            return Optional.of(new TcpDiscoverySpi().setIpFinder(filesystemIpfinder.getConfiguration()));
-        return Optional.empty();
-    }
-
 }

@@ -1,6 +1,7 @@
 package io.micronaut.cache.ignite;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -9,24 +10,33 @@ import io.micronaut.core.util.ArgumentUtils;
 import org.apache.ignite.IgniteCache;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 public class IgniteSyncCache implements SyncCache<IgniteCache> {
     private final ConversionService<?> conversionService;
     private final IgniteCache nativeCache;
+    private final ExecutorService executorService;
 
-    public IgniteSyncCache(ConversionService<?> conversionService, IgniteCache nativeCache) {
+    public IgniteSyncCache(ConversionService<?> conversionService, IgniteCache nativeCache, ExecutorService executorService) {
         this.conversionService = conversionService;
         this.nativeCache = nativeCache;
+        this.executorService = executorService;
     }
 
+
+    @NonNull
+    @Override
+    public AsyncCache<IgniteCache> async() {
+        return new IgniteAsyncCache(conversionService, nativeCache, executorService);
+    }
 
     @NonNull
     @Override
     public <T> Optional<T> get(@NonNull Object key, @NonNull Argument<T> requiredType) {
         ArgumentUtils.requireNonNull("key", key);
         Object value = nativeCache.get(key);
-        if(value != null){
+        if (value != null) {
             return conversionService.convert(value, ConversionContext.of(requiredType));
         }
         return Optional.empty();
@@ -51,17 +61,16 @@ public class IgniteSyncCache implements SyncCache<IgniteCache> {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
         final Class<T> aClass = (Class<T>) value.getClass();
-        if(nativeCache.putIfAbsent(key,value)) {
-            return conversionService.convert(value, aClass);
-        }
-        return conversionService.convert(value, aClass);
+        Optional<T> lastResult = get(key, aClass);
+        nativeCache.putIfAbsent(key, value);
+        return lastResult;
     }
 
     @Override
     public void put(@NonNull Object key, @NonNull Object value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
-        nativeCache.putIfAbsent(key,value);
+        nativeCache.putIfAbsent(key, value);
     }
 
     @Override
