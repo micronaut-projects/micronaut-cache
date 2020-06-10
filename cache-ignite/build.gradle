@@ -3,6 +3,7 @@ dependencies {
 
     api 'org.apache.ignite:ignite-core:2.8.0'
 
+    testImplementation project(":cache-tck")
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testImplementation "io.micronaut.test:micronaut-test-spock:1.1.5"
     testImplementation "org.testcontainers:spock:1.14.3"
