@@ -7,7 +7,6 @@ import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.jdbc.TcpDiscoveryJdbcIpFinder;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.sharedfs.TcpDiscoverySharedFsIpFinder;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
@@ -49,7 +48,7 @@ public class IgniteClientConfiguration {
     public static class IgniteDiscoveryConfiguration {
         DiscoveryMulticastIpFinder multicast;
         SharedFilesystemIpFinder filesystem;
-        JdbcIpFinder jdbc;
+        //        JdbcIpFinder jdbc;
         VmIpFinder vm;
 
         public void setMulticast(DiscoveryMulticastIpFinder multicast) {
@@ -68,13 +67,13 @@ public class IgniteClientConfiguration {
             this.filesystem = filesystem;
         }
 
-        public void setJdbc(JdbcIpFinder jdbc) {
-            this.jdbc = jdbc;
-        }
+//        public void setJdbc(JdbcIpFinder jdbc) {
+//            this.jdbc = jdbc;
+//        }
 
-        public JdbcIpFinder getJdbc() {
-            return jdbc;
-        }
+//        public JdbcIpFinder getJdbc() {
+//            return jdbc;
+//        }
 
         public VmIpFinder getVm() {
             return vm;
@@ -105,16 +104,16 @@ public class IgniteClientConfiguration {
 
         }
 
-        @ConfigurationProperties("jdbc")
-        public static class JdbcIpFinder {
-            @ConfigurationBuilder
-            TcpDiscoveryJdbcIpFinder configuration = new TcpDiscoveryJdbcIpFinder();
-
-            public TcpDiscoveryJdbcIpFinder getConfiguration() {
-                return configuration;
-            }
-
-        }
+//        @ConfigurationProperties("jdbc")
+//        public static class JdbcIpFinder {
+//            @ConfigurationBuilder
+//            TcpDiscoveryJdbcIpFinder configuration = new TcpDiscoveryJdbcIpFinder();
+//
+//            public TcpDiscoveryJdbcIpFinder getConfiguration() {
+//                return configuration;
+//            }
+//
+//        }
 
         @ConfigurationProperties("vm")
         public static class VmIpFinder {
@@ -132,8 +131,8 @@ public class IgniteClientConfiguration {
                 return Optional.of(new TcpDiscoverySpi().setIpFinder(multicast.getConfiguration()));
             if (vm != null)
                 return Optional.of(new TcpDiscoverySpi().setIpFinder(vm.getConfiguration()));
-            if (jdbc != null)
-                return Optional.of(new TcpDiscoverySpi().setIpFinder(jdbc.getConfiguration()));
+//            if (jdbc != null)
+//                return Optional.of(new TcpDiscoverySpi().setIpFinder(jdbc.getConfiguration()));
             if (filesystem != null)
                 return Optional.of(new TcpDiscoverySpi().setIpFinder(filesystem.getConfiguration()));
             return Optional.empty();
