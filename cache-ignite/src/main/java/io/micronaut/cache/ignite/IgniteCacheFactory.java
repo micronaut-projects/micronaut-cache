@@ -28,13 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
- * Factory class that creates a {@link org.apache.ignite.client.IgniteClient}
+ * Factory class that creates a {@link org.apache.ignite.client.IgniteClient}, an {@link IgniteSyncCache}.
  *
  * @author Michael Pollind
  */
@@ -43,6 +42,10 @@ public class IgniteCacheFactory implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(IgniteCacheFactory.class);
     private List<Ignite> sessions = new ArrayList<>(2);
 
+    /**
+     * @param configuration The client configuration
+     * @return The {@link Ignite}
+     */
     @EachBean(IgniteClientConfiguration.class)
     @Bean(preDestroy = "close")
     public Ignite igniteClient(IgniteClientConfiguration configuration) {
@@ -51,7 +54,14 @@ public class IgniteCacheFactory implements AutoCloseable {
         return ignite;
     }
 
-
+    /**
+     * @param configuration   the configuration
+     * @param service         the conversion service
+     * @param clients         list of {@link Ignite} clients
+     * @param executorService the executor
+     * @return the sync cache
+     * @throws Exception when client can't be found for cache
+     */
     @EachBean(IgniteCacheConfiguration.class)
     public IgniteSyncCache syncCache(
         IgniteCacheConfiguration configuration,
@@ -60,12 +70,11 @@ public class IgniteCacheFactory implements AutoCloseable {
         @Named(TaskExecutors.IO) ExecutorService executorService) throws Exception {
         for (Ignite client : clients) {
             if (client.name().equals(configuration.getClient())) {
-                return new IgniteSyncCache(service, client.getOrCreateCache(configuration.getConfiguration()), executorService);
+                return new IgniteSyncCache(service, client.getOrCreateCache(configuration.build()), executorService);
             }
         }
         throw new Exception("Can't find ignite client for: " + configuration.getClient());
     }
-
 
     @Override
     public void close() throws Exception {
@@ -74,10 +83,9 @@ public class IgniteCacheFactory implements AutoCloseable {
                 sess.close();
             } catch (Exception e) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn("Error closing data source [" + sess + "]: " + e.getMessage(), e);
+                    LOG.warn("Error closing ignite [" + sess + "]: " + e.getMessage(), e);
                 }
             }
         }
     }
-
 }

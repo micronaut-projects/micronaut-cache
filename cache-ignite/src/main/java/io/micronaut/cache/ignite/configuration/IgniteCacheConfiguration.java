@@ -19,32 +19,58 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
+import io.micronaut.core.naming.Named;
 import org.apache.ignite.configuration.CacheConfiguration;
 
+/**
+ * Ignite cache configuration.
+ */
 @EachProperty(value = "ignite.caches", primary = "default")
-public class IgniteCacheConfiguration{
+public class IgniteCacheConfiguration implements Named {
     private final String name;
     private String client = "default";
 
     @ConfigurationBuilder(excludes = {"Name"})
-    private CacheConfiguration configuration = new CacheConfiguration();
+    private final CacheConfiguration configuration = new CacheConfiguration();
 
+    /**
+     * @param name Name or key for client.
+     */
     public IgniteCacheConfiguration(@Parameter String name) {
         this.name = name;
     }
 
-    public CacheConfiguration getConfiguration() {
-        return configuration.setName(this.name);
-    }
-
+    /**
+     * @param client name of client to reference when building cache.
+     */
     public void setClient(String client) {
         this.client = client;
     }
 
+    /**
+     * @return  name of client to reference when building cache.
+     */
     public String getClient() {
         return client;
     }
 
+    /**
+     * @return ignite cache configuration.
+     */
+    public CacheConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    /**
+     * @return build cache configuration from base and properties.
+     */
+    public CacheConfiguration build() {
+        return new CacheConfiguration(configuration).setName(this.name);
+    }
+
+    /**
+     * @return name or key for client.
+     */
     @NonNull
     public String getName() {
         return this.name;

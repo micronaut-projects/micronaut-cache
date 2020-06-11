@@ -22,6 +22,8 @@ class IgniteClientDiscoverySpec extends Specification {
         then:
         clientConfigs.size() == 1
         clientConfigs.first().discovery.multicast != null
+        clientConfigs.first().discovery.filesystem == null
+        clientConfigs.first().discovery.vm == null
         clientConfigs.first().discovery.multicast.configuration.getAddressRequestAttempts() == 10
         clientConfigs.first().discovery.multicast.configuration.getResponseWaitTime() == 20
         clientConfigs.first().discovery.multicast.configuration.multicastPort == 5000
@@ -43,7 +45,6 @@ class IgniteClientDiscoverySpec extends Specification {
         then:
         clientConfigs.size() == 1
         clientConfigs.first().discovery.filesystem == null
-        clientConfigs.first().discovery.jdbc == null
         clientConfigs.first().discovery.vm != null
         clientConfigs.first().discovery.multicast == null
         clientConfigs.first().discovery.vm.configuration.shared
@@ -65,6 +66,9 @@ class IgniteClientDiscoverySpec extends Specification {
 
         then:
         clientConfigs.size() == 1
+        clientConfigs.first().discovery.multicast == null
+        clientConfigs.first().discovery.filesystem != null
+        clientConfigs.first().discovery.vm == null
         clientConfigs.first().discovery.filesystem.configuration.getPath() == "/var/test/path"
 
     }

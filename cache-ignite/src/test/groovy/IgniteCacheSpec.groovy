@@ -2,6 +2,7 @@ import io.micronaut.cache.ignite.configuration.IgniteCacheConfiguration
 import io.micronaut.context.ApplicationContext
 import org.apache.ignite.cache.CacheAtomicityMode
 import org.apache.ignite.cache.CacheRebalanceMode
+import org.apache.ignite.configuration.CacheConfiguration
 import spock.lang.Specification
 
 class IgniteCacheSpec extends Specification {
@@ -26,12 +27,13 @@ class IgniteCacheSpec extends Specification {
         then:
         cacheConfiguration != null
         cacheConfiguration.size() == 1
-        cacheConfiguration.first().configuration.name == "counter"
-        cacheConfiguration.first().configuration.getRebalanceMode() == CacheRebalanceMode.NONE
-        cacheConfiguration.first().configuration.getDefaultLockTimeout() == 5000
-        cacheConfiguration.first().configuration.getBackups() == 4
-        cacheConfiguration.first().configuration.getGroupName() == "test"
-        cacheConfiguration.first().configuration.atomicityMode == CacheAtomicityMode.ATOMIC
         cacheConfiguration.first().client == "default"
+        CacheConfiguration ch = cacheConfiguration.first().build()
+        ch.name == "counter"
+        ch.getRebalanceMode() == CacheRebalanceMode.NONE
+        ch.getDefaultLockTimeout() == 5000
+        ch.getBackups() == 4
+        ch.getGroupName() == "test"
+        ch.atomicityMode == CacheAtomicityMode.ATOMIC
     }
 }

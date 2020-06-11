@@ -39,7 +39,6 @@ public class IgniteSyncCache implements SyncCache<IgniteCache> {
         this.executorService = executorService;
     }
 
-
     @NonNull
     @Override
     public AsyncCache<IgniteCache> async() {

@@ -88,8 +88,9 @@ public class IgniteAsyncCache implements AsyncCache<IgniteCache> {
             } catch (Exception ex) {
                 newFuture.completeExceptionally(ex);
             }
-            if (throwable != null)
+            if (throwable != null) {
                 newFuture.completeExceptionally(throwable);
+            }
             newFuture.complete(t);
         });
         return newFuture;
