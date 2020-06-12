@@ -6,6 +6,7 @@ To have Micronaut create a cache, the minimum configuration is:
 [source,yaml]
 ---
 ignite:
+  enabled: true
   clients:
     default:
       addresses: [ 'ignite.com' ]

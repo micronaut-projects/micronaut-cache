@@ -7,6 +7,19 @@ import spock.lang.Specification
 
 class IgniteCacheSpec extends Specification {
 
+    void "test ignite cache disabled"() {
+        when:
+        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+            "ignite.enabled"                  : false,
+            "ignite.clients.default.addresses": ["localhost:1080"],
+            "ignite.caches.default.client"    : "test",
+        ])
+
+        then:
+        !ctx.containsBean(IgniteClientConfiguration.class)
+        !ctx.containsBean(IgniteCacheConfiguration.class)
+    }
+
     void "test ignite cache instance"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
@@ -25,6 +38,7 @@ class IgniteCacheSpec extends Specification {
 
         then:
         cacheConfiguration != null
+        clientConfigurations != null
         cacheConfiguration.size() == 1
         clientConfigurations.size() == 1
         clientConfigurations.first().client.addresses.size() == 1
