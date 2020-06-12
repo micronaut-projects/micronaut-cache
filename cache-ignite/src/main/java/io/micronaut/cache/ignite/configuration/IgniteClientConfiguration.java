@@ -21,6 +21,7 @@ import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.naming.Named;
 import org.apache.ignite.configuration.ClientConfiguration;
+import org.apache.ignite.configuration.ClientTransactionConfiguration;
 
 /**
  * Ignite configuration.
@@ -29,14 +30,25 @@ import org.apache.ignite.configuration.ClientConfiguration;
 public class IgniteClientConfiguration implements Named {
     private final String name;
 
-    @ConfigurationBuilder
+    @ConfigurationBuilder(excludes = {"transactionConfiguration", "binaryConfiguration", "sslContextFactory"})
     private final ClientConfiguration client = new ClientConfiguration();
+
+    @ConfigurationBuilder(value = "transactionConfiguration")
+    private final ClientTransactionConfiguration transactionConfiguration = new ClientTransactionConfiguration();
 
     /**
      * @param name Name or key of the client.
      */
     public IgniteClientConfiguration(@Parameter String name) {
         this.name = name;
+        this.client.setTransactionConfiguration(transactionConfiguration);
+    }
+
+    /**
+     * @return transaction configuration
+     */
+    public ClientTransactionConfiguration getTransactionConfiguration() {
+        return transactionConfiguration;
     }
 
     /**
@@ -51,5 +63,4 @@ public class IgniteClientConfiguration implements Named {
     public String getName() {
         return this.name;
     }
-
 }

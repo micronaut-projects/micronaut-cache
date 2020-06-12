@@ -30,7 +30,7 @@ public class IgniteCacheConfiguration implements Named {
     private final String name;
     private String client = "default";
 
-    @ConfigurationBuilder(excludes = {"Name"})
+    @ConfigurationBuilder(excludes = {"name", "keyConfiguration", "queryEntities"})
     private final ClientCacheConfiguration configuration = new ClientCacheConfiguration();
 
     /**
