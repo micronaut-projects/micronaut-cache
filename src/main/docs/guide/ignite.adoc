@@ -1,0 +1,6 @@
+include::{includedir}configurationProperties/io.micronaut.cache.ignite.configuration.IgniteClientConfiguration.adoc[]
+
+
+
+include::{includedir}configurationProperties/io.micronaut.cache.ignite.configuration.IgniteCacheConfiguration.adoc[]
+

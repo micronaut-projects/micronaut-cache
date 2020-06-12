@@ -16,33 +16,33 @@
 package io.micronaut.cache.ignite;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.micronaut.cache.AsyncCache;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
-import org.apache.ignite.IgniteCache;
+import org.apache.ignite.client.ClientCache;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
-public class IgniteSyncCache implements SyncCache<IgniteCache> {
+public class IgniteSyncCache implements SyncCache<ClientCache> {
     private final ConversionService<?> conversionService;
-    private final IgniteCache nativeCache;
+    private final ClientCache nativeCache;
     private final ExecutorService executorService;
 
-    public IgniteSyncCache(ConversionService<?> conversionService, IgniteCache nativeCache, ExecutorService executorService) {
+    public IgniteSyncCache(ConversionService<?> conversionService, ExecutorService executorService, ClientCache nativeCache) {
         this.conversionService = conversionService;
         this.nativeCache = nativeCache;
         this.executorService = executorService;
     }
 
-    @NonNull
+    @Nullable
     @Override
-    public AsyncCache<IgniteCache> async() {
-        return new IgniteAsyncCache(conversionService, nativeCache, executorService);
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
     @NonNull
@@ -84,14 +84,13 @@ public class IgniteSyncCache implements SyncCache<IgniteCache> {
     public void put(@NonNull Object key, @NonNull Object value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
-        nativeCache.putIfAbsent(key, value);
+        nativeCache.put(key, value);
     }
 
     @Override
     public void invalidate(@NonNull Object key) {
         ArgumentUtils.requireNonNull("key", key);
         nativeCache.remove(key);
-
     }
 
     @Override
@@ -105,7 +104,7 @@ public class IgniteSyncCache implements SyncCache<IgniteCache> {
     }
 
     @Override
-    public IgniteCache getNativeCache() {
+    public ClientCache getNativeCache() {
         return nativeCache;
     }
 }

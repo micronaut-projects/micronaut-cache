@@ -13,18 +13,17 @@ class IgniteClientAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
     GenericContainer ignite = new GenericContainer("apacheignite/ignite:2.8.0")
-        .withExposedPorts(47500, 47100)
+        .withNetworkMode("host")
+        .withExposedPorts(10800)
 
     @Override
     ApplicationContext createApplicationContext() {
         return ApplicationContext.run([
-            "ignite.enabled"                                      : true,
-            "ignite.clients.default.force-return-values"          : true,
-            "ignite.clients.default.client-mode"                  : true,
-            "ignite.clients.default.discovery.multicast.addresses": ["localhost:47500..47509"],
-            "ignite.caches.counter.client"                        : "default",
-            "ignite.caches.counter2.client"                       : "default",
-            "ignite.caches.test.client"                           : "default"
+            "ignite.enabled"                  : true,
+            "ignite.clients.default.addresses": ["127.0.0.1:10800"],
+            "ignite.caches.counter.client"    : "default",
+            "ignite.caches.counter2.client"   : "default",
+            "ignite.caches.test.client"       : "default"
         ])
     }
 }

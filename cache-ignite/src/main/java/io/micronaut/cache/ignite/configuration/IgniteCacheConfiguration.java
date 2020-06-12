@@ -20,7 +20,7 @@ import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.naming.Named;
-import org.apache.ignite.configuration.CacheConfiguration;
+import org.apache.ignite.client.ClientCacheConfiguration;
 
 /**
  * Ignite cache configuration.
@@ -31,7 +31,7 @@ public class IgniteCacheConfiguration implements Named {
     private String client = "default";
 
     @ConfigurationBuilder(excludes = {"Name"})
-    private final CacheConfiguration configuration = new CacheConfiguration();
+    private final ClientCacheConfiguration configuration = new ClientCacheConfiguration();
 
     /**
      * @param name Name or key for client.
@@ -48,7 +48,7 @@ public class IgniteCacheConfiguration implements Named {
     }
 
     /**
-     * @return  name of client to reference when building cache.
+     * @return name of client to reference when building cache.
      */
     public String getClient() {
         return client;
@@ -57,15 +57,8 @@ public class IgniteCacheConfiguration implements Named {
     /**
      * @return ignite cache configuration.
      */
-    public CacheConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    /**
-     * @return build cache configuration from base and properties.
-     */
-    public CacheConfiguration build() {
-        return new CacheConfiguration(configuration).setName(this.name);
+    public ClientCacheConfiguration getConfiguration() {
+        return configuration.setName(this.name);
     }
 
     /**

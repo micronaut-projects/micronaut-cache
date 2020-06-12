@@ -17,28 +17,21 @@ package io.micronaut.cache.ignite.configuration;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.micronaut.context.annotation.ConfigurationBuilder;
-import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.naming.Named;
-import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.sharedfs.TcpDiscoverySharedFsIpFinder;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
-
-import java.util.Optional;
+import org.apache.ignite.configuration.ClientConfiguration;
 
 /**
  * Ignite configuration.
  */
 @EachProperty(value = "ignite.clients", primary = "default")
-public class IgniteClientConfiguration implements Named {
+public class IgniteClientConfiguration implements Named{
     private final String name;
 
-    @ConfigurationBuilder(excludes = {"Name"})
-    private final IgniteConfiguration configuration = new IgniteConfiguration();
-    private IgniteDiscoveryConfiguration discovery = new IgniteDiscoveryConfiguration();
+    @ConfigurationBuilder
+    private final ClientConfiguration client = new ClientConfiguration();
+
 
     /**
      * @param name Name or key of the client.
@@ -48,36 +41,10 @@ public class IgniteClientConfiguration implements Named {
     }
 
     /**
-     *
-     * @return the ignite configuration.
+     * @return client configuration
      */
-    public IgniteConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    /**
-     * @return the discovery configuration.
-     */
-    public IgniteDiscoveryConfiguration getDiscovery() {
-        return discovery;
-    }
-
-    /**
-     *
-     * @param discovery the discovery configuration.
-     */
-    public void setDiscovery(IgniteDiscoveryConfiguration discovery) {
-        this.discovery = discovery;
-    }
-
-    /**
-     * @return the configuration builder.
-     */
-    public IgniteConfiguration build() {
-        IgniteConfiguration igniteConfiguration = new IgniteConfiguration(configuration).
-            setIgniteInstanceName(name);
-        discovery.buildDiscovery().ifPresent(igniteConfiguration::setDiscoverySpi);
-        return igniteConfiguration;
+    public ClientConfiguration getClient() {
+        return client;
     }
 
     @NonNull
@@ -86,121 +53,4 @@ public class IgniteClientConfiguration implements Named {
         return this.name;
     }
 
-    /**
-     * Discovery configuration.
-     */
-    @ConfigurationProperties("discovery")
-    public static class IgniteDiscoveryConfiguration {
-        DiscoveryMulticastIpFinder multicast;
-        SharedFilesystemIpFinder filesystem;
-        VmIpFinder vm;
-
-        /**
-         * @param multicast the multicast configuration.
-         */
-        public void setMulticast(DiscoveryMulticastIpFinder multicast) {
-            this.multicast = multicast;
-        }
-
-        /**
-         * @return multicast configuration.
-         */
-        public DiscoveryMulticastIpFinder getMulticast() {
-            return multicast;
-        }
-
-        /**
-         * @return shared filesystem configuration.
-         */
-        public SharedFilesystemIpFinder getFilesystem() {
-            return filesystem;
-        }
-
-        /**
-         * @param filesystem shared filesystem configuration.
-         */
-        public void setFilesystem(SharedFilesystemIpFinder filesystem) {
-            this.filesystem = filesystem;
-        }
-
-        /**
-         * @return fixed ip configuration.
-         */
-        public VmIpFinder getVm() {
-            return vm;
-        }
-
-        /**
-         * @param vm fixed ip configuration.
-         */
-        public void setVm(VmIpFinder vm) {
-            this.vm = vm;
-        }
-
-        /**
-         * @return build Ignite configuration from base and properties.
-         */
-        public Optional<TcpDiscoverySpi> buildDiscovery() {
-            if (multicast != null) {
-                return Optional.of(new TcpDiscoverySpi().setIpFinder(multicast.getConfiguration()));
-            }
-            if (vm != null) {
-                return Optional.of(new TcpDiscoverySpi().setIpFinder(vm.getConfiguration()));
-            }
-            if (filesystem != null) {
-                return Optional.of(new TcpDiscoverySpi().setIpFinder(filesystem.getConfiguration()));
-            }
-            return Optional.empty();
-        }
-
-        /**
-         * {@link TcpDiscoveryMulticastIpFinder} configuration.
-         */
-        @ConfigurationProperties("multicast")
-        public static class DiscoveryMulticastIpFinder {
-            @ConfigurationBuilder
-            private TcpDiscoveryMulticastIpFinder configuration = new TcpDiscoveryMulticastIpFinder();
-
-            /**
-             * @return multicast ip finder configuration
-             */
-            public TcpDiscoveryMulticastIpFinder getConfiguration() {
-                return configuration;
-            }
-        }
-
-        /**
-         * {@link TcpDiscoverySharedFsIpFinder} configuration.
-         */
-        @ConfigurationProperties("filesystem")
-        public static class SharedFilesystemIpFinder {
-            @ConfigurationBuilder
-            private TcpDiscoverySharedFsIpFinder configuration = new TcpDiscoverySharedFsIpFinder();
-
-            /**
-             * @return Filesystem Ip finder configuration.
-             */
-            public TcpDiscoverySharedFsIpFinder getConfiguration() {
-                return configuration;
-            }
-
-        }
-
-        /**
-         * {@link TcpDiscoveryVmIpFinder} configuration.
-         */
-        @ConfigurationProperties("vm")
-        public static class VmIpFinder {
-            @ConfigurationBuilder
-            TcpDiscoveryVmIpFinder configuration = new TcpDiscoveryVmIpFinder();
-
-            /**
-             * @return Fixed Ip finder configuration.
-             */
-            public TcpDiscoveryVmIpFinder getConfiguration() {
-                return configuration;
-            }
-
-        }
-    }
 }

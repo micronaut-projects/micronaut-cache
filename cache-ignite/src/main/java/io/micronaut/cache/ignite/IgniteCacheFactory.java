@@ -17,19 +17,24 @@ package io.micronaut.cache.ignite;
 
 import io.micronaut.cache.ignite.configuration.IgniteCacheConfiguration;
 import io.micronaut.cache.ignite.configuration.IgniteClientConfiguration;
+import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.scheduling.TaskExecutors;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
+import org.apache.ignite.client.IgniteClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -40,7 +45,7 @@ import java.util.concurrent.ExecutorService;
 @Factory
 public class IgniteCacheFactory implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(IgniteCacheFactory.class);
-    private List<Ignite> sessions = new ArrayList<>(2);
+    private final List<IgniteClient> sessions = new ArrayList<>(2);
 
     /**
      * @param configuration The client configuration
@@ -48,37 +53,36 @@ public class IgniteCacheFactory implements AutoCloseable {
      */
     @EachBean(IgniteClientConfiguration.class)
     @Bean(preDestroy = "close")
-    public Ignite igniteClient(IgniteClientConfiguration configuration) {
-        Ignite ignite = Ignition.start(configuration.build());
+    public IgniteClient igniteClient(IgniteClientConfiguration configuration) {
+        IgniteClient ignite = Ignition.startClient(configuration.getClient());
         sessions.add(ignite);
         return ignite;
     }
 
+
     /**
      * @param configuration   the configuration
      * @param service         the conversion service
-     * @param clients         list of {@link Ignite} clients
-     * @param executorService the executor
      * @return the sync cache
      * @throws Exception when client can't be found for cache
      */
     @EachBean(IgniteCacheConfiguration.class)
-    public IgniteSyncCache syncCache(
+    @Requires(beans = IgniteClient.class)
+    public IgniteSyncCache syncCacheThin(
         IgniteCacheConfiguration configuration,
         ConversionService<?> service,
-        List<Ignite> clients,
-        @Named(TaskExecutors.IO) ExecutorService executorService) throws Exception {
-        for (Ignite client : clients) {
-            if (client.name().equals(configuration.getClient())) {
-                return new IgniteSyncCache(service, client.getOrCreateCache(configuration.build()), executorService);
-            }
+        @Named(TaskExecutors.IO) ExecutorService executorService,
+        BeanContext beanContext) throws Exception {
+        Optional<IgniteClient> client = beanContext.findBean(IgniteClient.class, Qualifiers.byName(configuration.getClient()));
+        if(client.isPresent()){
+            return new IgniteSyncCache(service,executorService, client.get().getOrCreateCache(configuration.getConfiguration()));
         }
-        throw new Exception("Can't find ignite client for: " + configuration.getClient());
+        throw new Exception("");
     }
 
     @Override
     public void close() throws Exception {
-        for (Ignite sess : sessions) {
+        for (IgniteClient sess : sessions) {
             try {
                 sess.close();
             } catch (Exception e) {
