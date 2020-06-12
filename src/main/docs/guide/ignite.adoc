@@ -6,12 +6,23 @@ To have Micronaut create a cache, the minimum configuration is:
 [source,yaml]
 ---
 ignite:
+  clients:
+    default:
+      addresses: [ 'ignite.com' ]
   caches:
     my-cache:
       client: default
 ---
 
+The full list of configurable options via Micronaut properties is below.
 
 include::{includedir}configurationProperties/io.micronaut.cache.ignite.configuration.IgniteCacheConfiguration.adoc[]
 include::{includedir}configurationProperties/io.micronaut.cache.ignite.configuration.IgniteClientConfiguration.adoc[]
 
+To disable Ignite:
+
+[source,yaml]
+----
+ignite:
+  enabled: false
+----

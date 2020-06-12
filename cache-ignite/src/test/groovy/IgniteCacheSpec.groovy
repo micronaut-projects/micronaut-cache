@@ -1,4 +1,5 @@
 import io.micronaut.cache.ignite.configuration.IgniteCacheConfiguration
+import io.micronaut.cache.ignite.configuration.IgniteClientConfiguration
 import io.micronaut.context.ApplicationContext
 import org.apache.ignite.cache.CacheAtomicityMode
 import org.apache.ignite.cache.CacheRebalanceMode
@@ -10,7 +11,7 @@ class IgniteCacheSpec extends Specification {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
             "ignite.enabled"                            : true,
-            "ignite.clients.default.addresses"          : ["localhost:47500..47509"],
+            "ignite.clients.default.addresses"          : ["localhost:1080"],
             "ignite.caches.counter.client"              : "default",
             "ignite.caches.counter.group-name"          : "test",
             "ignite.caches.counter.atomicity-mode"      : "ATOMIC",
@@ -20,12 +21,16 @@ class IgniteCacheSpec extends Specification {
         ])
         when:
         Collection<IgniteCacheConfiguration> cacheConfiguration = ctx.getBeansOfType(IgniteCacheConfiguration.class)
+        Collection<IgniteClientConfiguration> clientConfigurations = ctx.getBeansOfType(IgniteClientConfiguration.class)
 
         then:
         cacheConfiguration != null
         cacheConfiguration.size() == 1
+        clientConfigurations.size() == 1
+        clientConfigurations.first().client.addresses.size() == 1
         cacheConfiguration.first().client == "default"
         cacheConfiguration.first().name == "counter"
+        clientConfigurations.first().client.addresses.first() == "localhost:1080"
         cacheConfiguration.first().configuration.getGroupName() == "test"
         cacheConfiguration.first().configuration.getAtomicityMode() == CacheAtomicityMode.ATOMIC
         cacheConfiguration.first().configuration.backups == 4
