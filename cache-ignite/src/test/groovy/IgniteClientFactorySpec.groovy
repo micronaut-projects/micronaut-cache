@@ -16,9 +16,9 @@ class IgniteClientFactorySpec extends Specification {
     void "test ignite client instance is created"() {
         given:
         ApplicationContext ctx = ApplicationContext.run([
-            "ignite.enabled"                                      : true,
-            "ignite.clients.default.addresses": ["127.0.0.1:10800"],
-            "ignite.clients.other.addresses"  : ["127.0.0.1:10800"]
+            "ignite.enabled"                  : true,
+            "ignite.clients.default.addresses": ["127.0.0.1:${ignite.getMappedPort(10800)}"],
+            "ignite.clients.other.addresses"  : ["127.0.0.1:${ignite.getMappedPort(10800)}"]
         ])
         when:
         IgniteClient defaultInstance = ctx.getBean(IgniteClient.class, Qualifiers.byName("default"))

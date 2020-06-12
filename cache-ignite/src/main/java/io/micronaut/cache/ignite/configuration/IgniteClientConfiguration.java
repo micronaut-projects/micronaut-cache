@@ -26,12 +26,11 @@ import org.apache.ignite.configuration.ClientConfiguration;
  * Ignite configuration.
  */
 @EachProperty(value = "ignite.clients", primary = "default")
-public class IgniteClientConfiguration implements Named{
+public class IgniteClientConfiguration implements Named {
     private final String name;
 
     @ConfigurationBuilder
     private final ClientConfiguration client = new ClientConfiguration();
-
 
     /**
      * @param name Name or key of the client.

@@ -61,8 +61,17 @@ public class IgniteCacheFactory implements AutoCloseable {
 
 
     /**
-     * @param configuration   the configuration
+     * @param configuration the configuration
+     * @param service       the conversion service
+     * @return the sync cache
+     * @throws Exception when client can't be found for cache
+     */
+
+    /**
+     * @param configuration   cache configuration
      * @param service         the conversion service
+     * @param executorService the executor
+     * @param beanContext     context
      * @return the sync cache
      * @throws Exception when client can't be found for cache
      */
@@ -74,10 +83,10 @@ public class IgniteCacheFactory implements AutoCloseable {
         @Named(TaskExecutors.IO) ExecutorService executorService,
         BeanContext beanContext) throws Exception {
         Optional<IgniteClient> client = beanContext.findBean(IgniteClient.class, Qualifiers.byName(configuration.getClient()));
-        if(client.isPresent()){
-            return new IgniteSyncCache(service,executorService, client.get().getOrCreateCache(configuration.getConfiguration()));
+        if (client.isPresent()) {
+            return new IgniteSyncCache(service, executorService, client.get().getOrCreateCache(configuration.getConfiguration()));
         }
-        throw new Exception("");
+        throw new Exception("Can't find ignite client for: " + configuration.getClient());
     }
 
     @Override

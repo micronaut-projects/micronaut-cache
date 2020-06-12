@@ -1,6 +1,17 @@
-include::{includedir}configurationProperties/io.micronaut.cache.ignite.configuration.IgniteClientConfiguration.adoc[]
+To use https://ignite.apache.org/[Ehcache] as the caching implementation, add it as a dependency to your application:
 
+dependency:io.micronaut.cache:micronaut-cache-ignite:{version}[]
+
+To have Micronaut create a cache, the minimum configuration is:
+[source,yaml]
+---
+ignite:
+  caches:
+    my-cache:
+      client: default
+---
 
 
 include::{includedir}configurationProperties/io.micronaut.cache.ignite.configuration.IgniteCacheConfiguration.adoc[]
+include::{includedir}configurationProperties/io.micronaut.cache.ignite.configuration.IgniteClientConfiguration.adoc[]
 
