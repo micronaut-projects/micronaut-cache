@@ -1,19 +1,11 @@
 dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:1.0.22"
+    api project(":cache-core")
 
-    compileOnly "io.micronaut:micronaut-inject-java:$micronautVersion"
+    api 'org.infinispan:infinispan-core:10.1.8.Final'
+    api "org.infinispan:infinispan-client-hotrod:10.1.8.Final"
 
-    compile "io.micronaut:micronaut-runtime:$micronautVersion"
-
-    compile 'org.infinispan:infinispan-core:10.1.5.Final'
-    compile "org.infinispan:infinispan-client-hotrod:10.1.5.Final"
-
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
-
-    testCompile project(":cache-tck")
-    testCompile "io.micronaut:micronaut-inject-groovy:$micronautVersion"
-    testCompile "io.micronaut:micronaut-inject-java:$micronautVersion"
-    testCompile "io.micronaut.test:micronaut-test-spock:1.1.5"
-    testCompile "org.testcontainers:spock:1.13.0"
+    testImplementation project(":cache-tck")
+    testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
+    testImplementation "io.micronaut.test:micronaut-test-spock:1.1.5"
+    testImplementation "org.testcontainers:spock:1.14.3"
 }
