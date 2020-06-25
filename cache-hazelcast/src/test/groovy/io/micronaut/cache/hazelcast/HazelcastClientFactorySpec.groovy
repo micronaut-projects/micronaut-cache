@@ -8,6 +8,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
+@spock.lang.Retry
 class HazelcastClientFactorySpec extends Specification implements HazelcastClientSupport {
 
     @Shared
