@@ -208,10 +208,11 @@ implements io.micronaut.aop.MethodInterceptor&lt;java.lang.Object,java.lang.Obje
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/interceptor/CacheInterceptor.html#intercept-io.micronaut.aop.MethodInvocationContext-">intercept</a></span>(io.micronaut.aop.MethodInvocationContext&lt;java.lang.Object,java.lang.Object&gt;&nbsp;context)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>protected java.lang.Object</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/interceptor/CacheInterceptor.html#interceptCompletableFuture-io.micronaut.aop.MethodInvocationContext-io.micronaut.core.type.ReturnType-java.lang.Class-">interceptCompletableFuture</a></span>(io.micronaut.aop.MethodInvocationContext&lt;java.lang.Object,java.lang.Object&gt;&nbsp;context,
-                          io.micronaut.core.type.ReturnType&lt;?&gt;&nbsp;returnTypeObject,
-                          java.lang.Class&nbsp;returnType)</code>
+<td class="colFirst"><code>protected java.util.concurrent.CompletionStage&lt;java.lang.Object&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/interceptor/CacheInterceptor.html#interceptAsCompletableFuture-io.micronaut.aop.MethodInvocationContext-java.util.function.Supplier-io.micronaut.core.type.ReturnType-java.lang.Class-">interceptAsCompletableFuture</a></span>(io.micronaut.aop.MethodInvocationContext&lt;java.lang.Object,java.lang.Object&gt;&nbsp;context,
+                            java.util.function.Supplier&lt;java.util.concurrent.CompletionStage&lt;java.lang.Object&gt;&gt;&nbsp;intercept,
+                            io.micronaut.core.type.ReturnType&lt;?&gt;&nbsp;returnTypeObject,
+                            java.lang.Class&nbsp;returnType)</code>
 <div class="block">Intercept the async method invocation.</div>
 </td>
 </tr>
@@ -365,15 +366,16 @@ implements io.micronaut.aop.MethodInterceptor&lt;java.lang.Object,java.lang.Obje
 </dl>
 </li>
 </ul>
-<a name="interceptCompletableFuture-io.micronaut.aop.MethodInvocationContext-io.micronaut.core.type.ReturnType-java.lang.Class-">
+<a name="interceptAsCompletableFuture-io.micronaut.aop.MethodInvocationContext-java.util.function.Supplier-io.micronaut.core.type.ReturnType-java.lang.Class-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>interceptCompletableFuture</h4>
-<pre>protected&nbsp;java.lang.Object&nbsp;interceptCompletableFuture(io.micronaut.aop.MethodInvocationContext&lt;java.lang.Object,java.lang.Object&gt;&nbsp;context,
-                                                      io.micronaut.core.type.ReturnType&lt;?&gt;&nbsp;returnTypeObject,
-                                                      java.lang.Class&nbsp;returnType)</pre>
+<h4>interceptAsCompletableFuture</h4>
+<pre>protected&nbsp;java.util.concurrent.CompletionStage&lt;java.lang.Object&gt;&nbsp;interceptAsCompletableFuture(io.micronaut.aop.MethodInvocationContext&lt;java.lang.Object,java.lang.Object&gt;&nbsp;context,
+                                                                                              java.util.function.Supplier&lt;java.util.concurrent.CompletionStage&lt;java.lang.Object&gt;&gt;&nbsp;intercept,
+                                                                                              io.micronaut.core.type.ReturnType&lt;?&gt;&nbsp;returnTypeObject,
+                                                                                              java.lang.Class&nbsp;returnType)</pre>
 <div class="block">Intercept the async method invocation.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
