@@ -3,23 +3,23 @@
 # Extend from https://github.com/micronaut-projects/.github/blob/master/.github/settings.yml
 _extends: .github
 
-repository:
+#repository:
   # See https://developer.github.com/v3/repos/#edit for all available settings.
 
   # Updates the default branch for this repository.
-  default_branch: master
+#  default_branch: master
+
 
 # Labels: define labels for Issues and Pull Requests, that are locally relevant to this repo.
-labels:
-  - name: 'relates-to: caffeine'
-    color: fbca04
-    description: Relates to Caffeine
-  - name: 'relates-to: ehcache'
-    color: cfd3d7
-    description: Relates to Ehcache
-  - name: 'relates-to: hazelcast'
-    color: e4e669
-    description: Relates to Hazelcast
-  - name: 'relates-to: infinispan'
-    color: 21b2a1
-    description: Relates to Infinispan
+
+#labels:
+#  - name: 'relates-to: caffeine'
+#    color: fbca04
+#    description: Relates to Caffeine
+
+
+# Branch protection is enabled by default. Uncomment to disable
+
+#branches:
+#  - name: master
+#    protection: null
