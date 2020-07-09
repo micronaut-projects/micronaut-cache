@@ -9,11 +9,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.GH_TOKEN }}
-      - run: touch .github/settings.yml
+      - run: git rm --cached .github/settings.yml && git add .github/settings.yml
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Sync settings
-          commit_options: '--allow-empty'
           file_pattern: .github/settings.yml
           skip_dirty_check: true
           commit_user_name: micronaut-build
