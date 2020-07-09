@@ -1,22 +1,13 @@
 # These settings are synced to GitHub by https://probot.github.io/apps/settings/
 
+# Extend from https://github.com/micronaut-projects/.github/blob/master/.github/settings.yml
+_extends: .github
+
 repository:
   # See https://developer.github.com/v3/repos/#edit for all available settings.
 
   # Updates the default branch for this repository.
   default_branch: master
-
-  # Either `true` to allow squash-merging pull requests, or `false` to prevent
-  # squash-merging.
-  allow_squash_merge: true
-
-  # Either `true` to allow merging pull requests with a merge commit, or `false`
-  # to prevent merging pull requests with merge commits.
-  allow_merge_commit: false
-
-  # Either `true` to allow rebase-merging pull requests, or `false` to prevent
-  # rebase-merging.
-  allow_rebase_merge: false
 
 branches:
   - name: master
