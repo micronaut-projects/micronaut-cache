@@ -180,9 +180,9 @@
 </div>
 <div class="sect2">
 <h3 id="_cache_ehcache_config_properties">Cache Ehcache Config Properties</h3>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheClusterResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheClusterResourcePoolConfiguration">&#128279;</a>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$OffheapTieredCacheConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$OffheapTieredCacheConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheClusterResourcePoolConfiguration.html">EhcacheClusterResourcePoolConfiguration</a></caption>
+<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.OffheapTieredCacheConfiguration.html">EhcacheConfiguration$OffheapTieredCacheConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -197,12 +197,7 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.resource-pools.*.server-resource</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the server resource</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.resource-pools.*.max-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.offheap.max-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum size of the cache, in bytes</p></td>
 </tr>
@@ -292,9 +287,9 @@
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$DiskTieredCacheConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$DiskTieredCacheConfiguration">&#128279;</a>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.DiskTieredCacheConfiguration.html">EhcacheConfiguration$DiskTieredCacheConfiguration</a></caption>
+<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration.html">EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -309,12 +304,12 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.disk.segments</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The disk segments used</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-dedicated.server-resource</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the server resource</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.disk.max-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-dedicated.max-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum size of the cache, in bytes</p></td>
 </tr>
@@ -355,9 +350,9 @@
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$OffheapTieredCacheConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$OffheapTieredCacheConfiguration">&#128279;</a>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$DiskTieredCacheConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$DiskTieredCacheConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 8. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.OffheapTieredCacheConfiguration.html">EhcacheConfiguration$OffheapTieredCacheConfiguration</a></caption>
+<caption class="title">Table 8. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.DiskTieredCacheConfiguration.html">EhcacheConfiguration$DiskTieredCacheConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -372,7 +367,12 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.offheap.max-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.disk.segments</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The disk segments used</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.disk.max-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum size of the cache, in bytes</p></td>
 </tr>
@@ -488,9 +488,9 @@
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration">&#128279;</a>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheClusterResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheClusterResourcePoolConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 10. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration.html">EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration</a></caption>
+<caption class="title">Table 10. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheClusterResourcePoolConfiguration.html">EhcacheClusterResourcePoolConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -505,12 +505,12 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-dedicated.server-resource</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.resource-pools.*.server-resource</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the server resource</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-dedicated.max-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.resource-pools.*.max-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum size of the cache, in bytes</p></td>
 </tr>
