@@ -9,6 +9,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.GH_TOKEN }}
+      - run: touch .github/settings.yml
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Sync settings
