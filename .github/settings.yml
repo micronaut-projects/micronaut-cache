@@ -48,9 +48,11 @@ branches:
       enforce_admins: null
 
       # Enforces a linear commit Git history, which prevents anyone from pushing merge commits to a branch. Set to true to enforce a linear commit history. Set to false to disable a linear commit Git history. Your repository must allow squash merging or rebase merging before you can enable a linear commit history. Default: false. For more information, see "Requiring a linear commit history" in the GitHub Help documentation.
-#      required_linear_history: true
+      required_linear_history: true
 
       # Required. Restrict who can push to this branch. Team and user restrictions are only available for organization-owned repositories. Set to null to disable.
       restrictions:
         users:
           - micronaut-build
+        apps: []
+        teams: []
