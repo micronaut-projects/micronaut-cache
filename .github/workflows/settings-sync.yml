@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Sync settings
