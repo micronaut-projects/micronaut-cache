@@ -9,6 +9,21 @@ repository:
   # Updates the default branch for this repository.
   default_branch: master
 
+# Labels: define labels for Issues and Pull Requests
+labels:
+  - name: 'relates-to: caffeine'
+    color: fbca04
+    description: Relates to Caffeine
+  - name: 'relates-to: ehcache'
+    color: cfd3d7
+    description: Relates to Ehcache
+  - name: 'relates-to: hazelcast'
+    color: e4e669
+    description: Relates to Hazelcast
+  - name: 'relates-to: infinispan'
+    color: 21b2a1
+    description: Relates to Infinispan
+
 branches:
   - name: master
     # https://developer.github.com/v3/repos/branches/#update-branch-protection
