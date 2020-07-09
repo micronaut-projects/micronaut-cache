@@ -9,7 +9,7 @@ repository:
   # Updates the default branch for this repository.
   default_branch: master
 
-# Labels: define labels for Issues and Pull Requests, that are locally relevant to this repo
+# Labels: define labels for Issues and Pull Requests, that are locally relevant to this repo.
 labels:
   - name: 'relates-to: caffeine'
     color: fbca04
