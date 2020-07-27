@@ -9,5 +9,5 @@ dependencies {
         exclude module:'groovy-all'
     }
 
-    api "io.micronaut.test:micronaut-test-spock:1.2.1"
+    api "io.micronaut.test:micronaut-test-spock:1.2.2"
 }

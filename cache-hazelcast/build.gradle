@@ -11,6 +11,6 @@ dependencies {
     testImplementation project(":cache-tck")
     testImplementation "com.hazelcast:hazelcast:$hazelcastVersion"
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
-    testImplementation "io.micronaut.test:micronaut-test-spock:1.2.1"
+    testImplementation "io.micronaut.test:micronaut-test-spock:1.2.2"
     testImplementation "org.testcontainers:spock:1.14.3"
 }
