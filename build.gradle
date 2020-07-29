@@ -37,10 +37,7 @@ subprojects { Project subproject ->
             exclude module:'groovy-all'
         }
         testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"        
-    }
-    tasks.withType(Test) {
-        useJUnitPlatform()
-    }            
+    }       
 }
 
 apply plugin: "io.micronaut.build.docs"
