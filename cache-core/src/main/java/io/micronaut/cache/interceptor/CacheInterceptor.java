@@ -255,24 +255,35 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                             }
                             return CompletableFuture.completedFuture(o.get());
                         } else {
-                            // cache miss proceed with original future
-                            CompletionStage<?> completableFuture = intercept.get();
-                            if (completableFuture == null) {
-                                return CompletableFuture.completedFuture(null);
-                            }
-                            return completableFuture.thenCompose(o1 -> {
-                                if (o1 == null) {
-                                    if (LOG.isTraceEnabled()) {
-                                        LOG.trace("Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null", key, asyncCache.getName(), context);
+                            Object wrapperKey = getCacheableWrapperKey(context, cacheOperation);
+                            CompletableFutureWrapper wrapper = new CompletableFutureWrapper(intercept, context);
+                            return asyncCachePutIfAbsent(asyncCache, wrapperKey, wrapper, errorHandler).thenCompose(
+                                    previousCacheItem -> {
+                                        if (!previousCacheItem.isPresent()) {
+                                            // We were the first ones
+                                            return wrapper.loadSupplierDataAsync().thenCompose(o1 -> {
+                                                if (o1 == null) {
+                                                    if (LOG.isTraceEnabled()) {
+                                                        LOG.trace("Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null", key, asyncCache.getName(), context);
+                                                    }
+                                                    return asyncCacheInvalidate(asyncCache, key, errorHandler)
+                                                            .thenCompose(ignore -> asyncCacheInvalidate(asyncCache, wrapperKey, errorHandler))
+                                                            .thenApply(ignore -> null);
+                                                } else {
+                                                    if (LOG.isTraceEnabled()) {
+                                                        LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}", asyncCache.getName(), key, context, o1);
+                                                    }
+                                                    return asyncCachePut(asyncCache, key, o1, errorHandler)
+                                                            .thenCompose(ignore -> asyncCacheInvalidate(asyncCache, wrapperKey, errorHandler))
+                                                            .thenApply(ignore -> o1);
+                                                }
+                                            });
+                                        } else {
+                                            // Wasn't able to put into cache, somebody already working on result
+                                            return previousCacheItem.get().supplierDataFuture;
+                                        }
                                     }
-                                    return asyncCacheInvalidate(asyncCache, key, errorHandler).thenApply(ignore -> null);
-                                } else {
-                                    if (LOG.isTraceEnabled()) {
-                                        LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}", asyncCache.getName(), key, context, o1);
-                                    }
-                                    return asyncCachePut(asyncCache, key, o1, errorHandler).thenApply(ignore -> o1);
-                                }
-                            });
+                            );
                         }
                     }).toCompletableFuture();
         } else {
@@ -396,6 +407,12 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         CacheKeyGenerator keyGenerator = resolveKeyGenerator(cacheOperation.defaultKeyGenerator, context.classValue(Cacheable.class, MEMBER_KEY_GENERATOR).orElse(null));
         Object[] parameterValues = resolveParams(context, context.stringValues(Cacheable.class, MEMBER_PARAMETERS));
         return keyGenerator.generateKey(context, parameterValues);
+    }
+
+    private Object getCacheableWrapperKey(MethodInvocationContext context, CacheOperation cacheOperation) {
+        CacheKeyGenerator keyGenerator = resolveKeyGenerator(cacheOperation.defaultKeyGenerator, context.classValue(Cacheable.class, MEMBER_KEY_GENERATOR).orElse(null));
+        Object[] parameterValues = resolveParams(context, context.stringValues(Cacheable.class, MEMBER_PARAMETERS));
+        return keyGenerator.generateKey(context, parameterValues, context.getExecutableMethod());
     }
 
     private Object getOperationKey(MethodInvocationContext context, AnnotationValueResolver annotationValueResolver, CacheKeyGenerator keyGenerator) {
@@ -587,6 +604,15 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                 exceptionallyAsync(throwable, () -> errorHandler.handlePutError(asyncCache, key, value, asRuntimeException(throwable)), true));
     }
 
+    private <T> CompletableFuture<Optional<T>> asyncCachePutIfAbsent(AsyncCache<?> asyncCache, Object key, T value, CacheErrorHandler errorHandler) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Putting the value [{}] for the key [{}] of the cache [{}]", value, key, asyncCache.getName());
+        }
+
+        return asyncCache.putIfAbsent(key, value).exceptionally(t ->
+                Optional.of(exceptionallyAsync(t, () -> errorHandler.handlePutError(asyncCache, key, value, asRuntimeException(t)), value)));
+    }
+
     private CompletableFuture<Boolean> asyncCacheInvalidate(AsyncCache<?> asyncCache, Object key, CacheErrorHandler errorHandler) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Invalidating the key [{}] of the cache [{}]", key, asyncCache.getName());
@@ -736,5 +762,35 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     private class ValueWrapper {
         Object value;
         boolean optional;
+    }
+
+    private class CompletableFutureWrapper {
+        Supplier<CompletionStage<Object>> supplier;
+        CompletableFuture<Object> supplierDataFuture = new CompletableFuture<>();
+        MethodInvocationContext<Object, Object> context;
+
+        public CompletableFutureWrapper(
+                Supplier<CompletionStage<Object>> supplier,
+                MethodInvocationContext<Object, Object> context
+        ) {
+            this.supplier = supplier;
+            this.context = context;
+        }
+
+        public CompletionStage<?> loadSupplierDataAsync() {
+
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Loading supplier data");
+            }
+            return supplier.get().whenComplete(
+                    (o, t) -> {
+                        if (t != null) {
+                            supplierDataFuture.completeExceptionally(t);
+                        } else {
+                            supplierDataFuture.complete(o);
+                        }
+                    }
+            );
+        }
     }
 }
