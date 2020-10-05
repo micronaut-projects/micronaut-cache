@@ -2,5 +2,5 @@ dependencies {
     api project(":cache-core")
 
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
-    testImplementation "io.micronaut.test:micronaut-test-spock:2.1.0"
+    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
 }
