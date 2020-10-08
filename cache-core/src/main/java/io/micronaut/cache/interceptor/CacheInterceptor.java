@@ -16,6 +16,7 @@
 package io.micronaut.cache.interceptor;
 
 import io.micronaut.aop.InterceptPhase;
+import io.micronaut.aop.InterceptedMethod;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
 import io.micronaut.cache.AsyncCache;
@@ -115,20 +116,32 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     @Override
     public Object intercept(MethodInvocationContext<Object, Object> context) {
         if (context.hasStereotype(CacheConfig.class)) {
-            ReturnType returnTypeObject = context.getReturnType();
-            Class returnType = returnTypeObject.getType();
-            if (CompletionStage.class.isAssignableFrom(returnType)) {
-                Supplier<CompletionStage<Object>> supplier = () -> (CompletionStage<Object>) context.proceed();
-                return interceptAsCompletableFuture(context, supplier, returnTypeObject, returnType);
-            } else if (Publishers.isConvertibleToPublisher(returnType)) {
-                Supplier<CompletionStage<Object>> supplier = () -> {
-                    Flowable<Object> flowable = Publishers.convertPublisher(context.proceed(), Flowable.class);
-                    return toCompletableFuture(flowable);
-                };
-                CompletionStage<Object> result = interceptAsCompletableFuture(context, supplier, returnTypeObject, returnType);
-                return Publishers.convertPublisher(result, returnType);
-            } else {
-                return interceptSync(context, returnTypeObject, returnType);
+            InterceptedMethod interceptedMethod = InterceptedMethod.of(context);
+            try {
+                ReturnType<?> returnType = context.getReturnType();
+                Argument<?> returnTypeValue = interceptedMethod.returnTypeValue();
+                switch (interceptedMethod.resultType()) {
+                    case COMPLETION_STAGE:
+                        CompletionStage<?> completionStage = interceptAsCompletableFuture(context,
+                                interceptedMethod::interceptResultAsCompletionStage,
+                                returnType,
+                                returnTypeValue);
+                        return interceptedMethod.handleResult(completionStage);
+                    case PUBLISHER:
+                        Supplier<CompletionStage<?>> supplier = () -> {
+                            Flowable<Object> flowable = Publishers.convertPublisher(context.proceed(), Flowable.class);
+                            return toCompletableFuture(flowable);
+                        };
+                        CompletionStage<?> result = interceptAsCompletableFuture(context, supplier, returnType, returnTypeValue);
+                        Object publisherResult = Publishers.convertPublisher(result, returnType.getType());
+                        return interceptedMethod.handleResult(publisherResult);
+                    case SYNCHRONOUS:
+                        return interceptSync(context, returnType);
+                    default:
+                        return interceptedMethod.unsupported();
+                }
+            } catch (Exception e) {
+                return interceptedMethod.handleException(e);
             }
         } else {
             return context.proceed();
@@ -144,18 +157,17 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     /**
      * Intercept the annotated method invocation with sync.
      *
-     * @param context          Contains information about method invocation
-     * @param returnTypeObject The return type of the method in Micronaut
-     * @param returnType       The return type class
+     * @param context    Contains information about method invocation
+     * @param returnType The return type class
      * @return The value from the cache
      */
-    protected Object interceptSync(MethodInvocationContext context, ReturnType returnTypeObject, Class returnType) {
+    protected Object interceptSync(MethodInvocationContext context, ReturnType<?> returnType) {
         final ValueWrapper wrapper = new ValueWrapper();
-        CacheOperation cacheOperation = getCacheOperation(context, returnType);
+        CacheOperation cacheOperation = getCacheOperation(context, returnType.isVoid());
 
         if (cacheOperation.cacheable) {
             Object key = getCacheableKey(context, cacheOperation);
-            Argument returnArgument = returnTypeObject.asArgument();
+            Argument returnArgument = returnType.asArgument();
             if (context.isTrue(Cacheable.class, MEMBER_ATOMIC)) {
                 SyncCache syncCache = cacheManager.getCache(cacheOperation.cacheableCacheName);
 
@@ -236,17 +248,16 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      *
      * @param context          Contains information about method invocation
      * @param returnTypeObject The return type of the method in Micronaut
-     * @param returnType       The return type class
+     * @param requiredType     The return type class
      * @return The value from the cache
      */
-    protected CompletionStage<Object> interceptAsCompletableFuture(MethodInvocationContext<Object, Object> context, Supplier<CompletionStage<Object>> intercept, ReturnType<?> returnTypeObject, Class returnType) {
-        CacheOperation cacheOperation = getCacheOperation(context, returnType);
-        CompletionStage<Object> returnFuture;
+    protected CompletionStage<?> interceptAsCompletableFuture(MethodInvocationContext<Object, Object> context, Supplier<CompletionStage<?>> intercept, ReturnType<?> returnTypeObject, Argument<?> requiredType) {
+        CacheOperation cacheOperation = getCacheOperation(context, returnTypeObject.isVoid() || requiredType.equalsType(Argument.VOID_OBJECT));
+        CompletionStage<?> returnFuture;
         if (cacheOperation.cacheable) {
             AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
             Object key = getCacheableKey(context, cacheOperation);
-            Argument<?> firstTypeVariable = returnTypeObject.getFirstTypeVariable().orElse(Argument.OBJECT_ARGUMENT);
-            returnFuture = asyncCacheGet(asyncCache, key, firstTypeVariable, errorHandler)
+            returnFuture = asyncCacheGet(asyncCache, key, requiredType, errorHandler)
                     .thenCompose(o -> {
                         if (o.isPresent()) {
                             // cache hit, return result
@@ -305,19 +316,19 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         return method.getAnnotationValuesByType(CacheInvalidate.class);
     }
 
-    private CacheOperation getCacheOperation(MethodInvocationContext<Object, Object> context, Class returnType) {
+    private CacheOperation getCacheOperation(MethodInvocationContext<Object, Object> context, boolean isVoid) {
         ExecutableMethod<Object, Object> method = context.getExecutableMethod();
         CacheOperation cacheOperation = cacheOperations.get(method);
         if (cacheOperation == null) {
-            cacheOperation = new CacheOperation(method, returnType);
+            cacheOperation = new CacheOperation(method, isVoid);
             cacheOperations.put(method, cacheOperation);
         }
         return cacheOperation;
     }
 
-    private CompletionStage<Object> processFuturePutOperations(MethodInvocationContext<Object, Object> context,
-                                                               CacheOperation cacheOperation,
-                                                               CompletionStage<Object> value) {
+    private CompletionStage<?> processFuturePutOperations(MethodInvocationContext<Object, Object> context,
+                                                          CacheOperation cacheOperation,
+                                                          CompletionStage<?> value) {
         List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
         if (putOperations != null) {
             for (AnnotationValue<CachePut> putOperation : putOperations) {
@@ -339,9 +350,9 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         return value;
     }
 
-    private CompletionStage<Object> processFutureInvalidateOperations(MethodInvocationContext<Object, Object> context,
-                                                                      CacheOperation cacheOperation,
-                                                                      CompletionStage<Object> value) {
+    private CompletionStage<?> processFutureInvalidateOperations(MethodInvocationContext<Object, Object> context,
+                                                                 CacheOperation cacheOperation,
+                                                                 CompletionStage<?> value) {
         List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
         if (invalidateOperations != null) {
             for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
@@ -653,7 +664,6 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      *
      */
     private class CacheOperation {
-        final Class<?> returnType;
         final CacheKeyGenerator defaultKeyGenerator;
         final String[] defaultCacheNames;
         final boolean cacheable;
@@ -661,13 +671,10 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         List<AnnotationValue<CachePut>> putOperations;
         List<AnnotationValue<CacheInvalidate>> invalidateOperations;
 
-        CacheOperation(ExecutableMethod<?, ?> method, Class<?> returnType) {
-            this.returnType = returnType;
-
+        CacheOperation(ExecutableMethod<?, ?> method, boolean isVoid) {
             this.defaultKeyGenerator = resolveKeyGenerator(
                     method.classValue(CacheConfig.class, MEMBER_KEY_GENERATOR).orElse(null)
             );
-            boolean isVoid = isVoid();
             this.putOperations = isVoid ? null : putOperations(method);
             this.invalidateOperations = invalidateOperations(method);
             this.defaultCacheNames = method.stringValues(CacheConfig.class, MEMBER_CACHE_NAMES);
@@ -686,10 +693,6 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
 
         boolean hasWriteOperations() {
             return putOperations != null || invalidateOperations != null;
-        }
-
-        boolean isVoid() {
-            return void.class == returnType;
         }
 
         String[] getCachePutNames(AnnotationValue<CachePut> cacheConfig) {
