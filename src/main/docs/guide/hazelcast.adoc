@@ -51,3 +51,11 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener<Haz
 ----
 
 Alternatively, the `HazelcastClientConfiguration` or `HazelcastMemberConfiguration` bean may be replaced with your own implementation.
+
+To disable Hazelcast:
+
+[source,yaml]
+----
+hazelcast:
+  enabled: false
+----
