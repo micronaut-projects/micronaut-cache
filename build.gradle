@@ -14,11 +14,6 @@ subprojects { Project subproject ->
     group "io.micronaut.cache"
 
     apply plugin: "io.micronaut.build.common"
-
-    micronautBuild {
-        enforcedPlatform = true
-    }
-
     apply plugin: "io.micronaut.build.dependency-updates"
     apply plugin: "io.micronaut.build.publishing"
 
