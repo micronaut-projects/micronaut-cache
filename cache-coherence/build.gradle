@@ -1,0 +1,23 @@
+ext {
+    coherenceVersion = "20.12-SNAPSHOT"
+}
+
+dependencies {
+    api project(":cache-core")
+    api "com.oracle.coherence.ce:coherence:$coherenceVersion"
+
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+
+    testImplementation project(":cache-tck")
+    testImplementation "com.oracle.coherence.ce:coherence:$coherenceVersion"
+    testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
+    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+    testImplementation "org.testcontainers:spock:1.15.0"
+}
+
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots"
+        mavenContent {
+            snapshotsOnly()
+        }}
+}
