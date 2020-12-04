@@ -23,7 +23,7 @@ import spock.lang.Retry
  * @author Vaso Putica
  */
 @Retry
-class CoherenceClientSyncCacheSpec extends AbstractSyncCacheSpec {
+class CoherenceSyncCacheSpec extends AbstractSyncCacheSpec {
 
     ApplicationContext applicationContext
 
