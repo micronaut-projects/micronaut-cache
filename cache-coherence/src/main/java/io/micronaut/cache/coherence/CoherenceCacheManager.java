@@ -15,6 +15,7 @@
  */
 package io.micronaut.cache.coherence;
 
+import com.tangosol.net.Coherence;
 import com.tangosol.net.NamedCache;
 import com.tangosol.net.Session;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -37,15 +38,14 @@ public class CoherenceCacheManager implements DynamicCacheManager<NamedCache<Obj
 
     private final ConversionService<?> conversionService;
     private final ExecutorService executorService;
-
     private final Session session;
 
     public CoherenceCacheManager(ConversionService<?> conversionService,
                                  @Named(TaskExecutors.IO) ExecutorService executorService,
-                                 Session session) {
+                                 Coherence coherence) {
         this.conversionService = conversionService;
         this.executorService = executorService;
-        this.session = session;
+        this.session = coherence.getSession();
     }
 
     @NonNull

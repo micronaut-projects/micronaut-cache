@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package io.micronaut.cache.coherence
-
-
+import com.tangosol.net.Coherence
 import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import spock.lang.Retry
@@ -26,9 +25,21 @@ import spock.lang.Retry
 @Retry
 class CoherenceClientAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
+    ApplicationContext applicationContext
+
     @Override
     ApplicationContext createApplicationContext() {
-        return ApplicationContext.run()
+        return applicationContext
     }
 
+    void setup() {
+        applicationContext = ApplicationContext.run()
+        Coherence coherence = applicationContext.getBean(Coherence)
+        coherence.start().join()
+    }
+
+    void cleanup() {
+        Coherence.closeAll()
+        applicationContext = null
+    }
 }
