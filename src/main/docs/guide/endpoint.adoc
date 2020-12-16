@@ -1,6 +1,17 @@
-
 The caches endpoint returns information about the caches in the application and
 permits invalidating them.
+
+To use this endpoint, you need the following dependency:
+
+dependency:io.micronaut.cache:micronaut-cache-management[]
+
+Also note it is disabled by default. To enable it:
+
+```yaml
+endpoints:
+    caches:
+        enabled: true
+```
 
 To get a collection of all caches by name with their configuration, send a GET request to /caches.
 
