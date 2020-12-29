@@ -1,12 +1,12 @@
 ext {
-    coherenceVersion = "20.12-SNAPSHOT"
+    coherenceVersion = "20.12"
     micronautCoherenceVersion = "1.0.0.BUILD-SNAPSHOT"
 }
 
 dependencies {
     api project(":cache-core")
     api "com.oracle.coherence.ce:coherence:$coherenceVersion"
-    api "io.micronaut.coherence:micronaut-coherence:$micronautCoherenceVersion"
+    api "io.micronaut.coherence:coherence:$micronautCoherenceVersion"
 
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 
@@ -14,7 +14,7 @@ dependencies {
     testImplementation "com.oracle.coherence.ce:coherence:$coherenceVersion"
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation "org.testcontainers:spock:1.15.0"
+    testImplementation "org.testcontainers:spock:1.15.1"
 }
 
 repositories {
