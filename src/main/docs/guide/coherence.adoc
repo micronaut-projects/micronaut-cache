@@ -1,0 +1,21 @@
+To use https://coherence.java.net/[Coherence] as the caching implementation, add it as a dependency to your applcation:
+
+dependency:io.micronaut.cache:micronaut-cache-coherence:{version}[]
+
+When using the link:{api}/io/micronaut/cache/annotation/Cacheable.html[@Cacheable] and other Cache Annotations, Micronaut will use default Coherence session to obtain cache instance for caching. It's up to user to configure Coherence specific cache.
+
+You can also add Coherence module to your project using cli feature as below:
+
+[source,bash]
+.Create a Micronaut application with Coherence module
+----
+$ mn create-app hello-world -f cache-coherence
+----
+
+To disable Coherence:
+
+[source,yaml]
+----
+coherence:
+  enabled: false
+----
