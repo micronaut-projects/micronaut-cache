@@ -6,7 +6,7 @@ ext {
 dependencies {
     api project(":cache-core")
     api "com.oracle.coherence.ce:coherence:$coherenceVersion"
-    api "io.micronaut.coherence:coherence:$micronautCoherenceVersion"
+    api "io.micronaut.coherence:micronaut-coherence:$micronautCoherenceVersion"
 
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 
