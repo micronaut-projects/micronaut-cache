@@ -7,3 +7,9 @@ dependencies {
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
     testImplementation "org.testcontainers:spock:1.15.1"
 }
+
+micronautBuild {
+    resolutionStrategy {
+        force "org.ehcache:ehcache-clustered:3.8.1"
+    }
+}
