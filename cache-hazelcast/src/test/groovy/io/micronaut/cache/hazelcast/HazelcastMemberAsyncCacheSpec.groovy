@@ -24,14 +24,12 @@ import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
-import spock.lang.Retry
 
 import javax.inject.Singleton
 
 /**
  * @since 1.0
  */
-@Retry
 class HazelcastMemberAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Singleton

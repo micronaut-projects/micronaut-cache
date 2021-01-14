@@ -23,11 +23,10 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-@spock.lang.Retry
 class HazelcastClientFactorySpec extends Specification implements HazelcastClientSupport {
 
     @Shared
-    GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast:4.0")
+    GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast:" + System.getProperty('hazelcastVersion'))
             .withExposedPorts(5701)
 
     @Shared
