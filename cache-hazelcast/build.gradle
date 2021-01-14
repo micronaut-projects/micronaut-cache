@@ -1,5 +1,9 @@
+plugins {
+    id "org.gradle.test-retry" version "1.2.0"
+}
+
 ext {
-    hazelcastVersion = "4.0.3"
+    hazelcastVersion = "4.1.1"
 }
 
 dependencies {
@@ -13,4 +17,12 @@ dependencies {
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
     testImplementation "org.testcontainers:spock:1.15.1"
+}
+
+tasks.withType(Test) {
+    systemProperty("hazelcastVersion", hazelcastVersion)
+    retry {
+        maxRetries = 5
+        maxFailures = 20
+    }
 }

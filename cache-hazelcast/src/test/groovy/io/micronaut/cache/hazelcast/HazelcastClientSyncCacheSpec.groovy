@@ -27,11 +27,10 @@ import spock.lang.Shared
  * @since 1.0
  */
 @Testcontainers
-@spock.lang.Retry
 class HazelcastClientSyncCacheSpec extends AbstractSyncCacheSpec implements HazelcastClientSupport {
 
     @Shared
-    GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast:4.0")
+    GenericContainer hazelcast = new GenericContainer("hazelcast/hazelcast:" + System.getProperty('hazelcastVersion'))
             .withExposedPorts(5701)
 
     @Shared
