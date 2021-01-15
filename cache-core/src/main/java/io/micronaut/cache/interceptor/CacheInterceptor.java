@@ -247,6 +247,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      * Intercept the async method invocation.
      *
      * @param context          Contains information about method invocation
+     * @param intercept        The intercepted result
      * @param returnTypeObject The return type of the method in Micronaut
      * @param requiredType     The return type class
      * @return The value from the cache
