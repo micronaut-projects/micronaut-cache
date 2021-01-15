@@ -24,10 +24,7 @@ import io.micronaut.cache.AsyncCacheErrorHandler;
 import io.micronaut.cache.CacheErrorHandler;
 import io.micronaut.cache.CacheManager;
 import io.micronaut.cache.SyncCache;
-import io.micronaut.cache.annotation.CacheConfig;
-import io.micronaut.cache.annotation.CacheInvalidate;
-import io.micronaut.cache.annotation.CachePut;
-import io.micronaut.cache.annotation.Cacheable;
+import io.micronaut.cache.annotation.*;
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.AnnotationValueResolver;
@@ -115,7 +112,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
 
     @Override
     public Object intercept(MethodInvocationContext<Object, Object> context) {
-        if (context.hasStereotype(CacheConfig.class)) {
+        if (context.hasStereotype(CacheConfig.class) && hasCacheAnnotation(context)) {
             InterceptedMethod interceptedMethod = InterceptedMethod.of(context);
             try {
                 ReturnType<?> returnType = context.getReturnType();
@@ -146,6 +143,14 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         } else {
             return context.proceed();
         }
+    }
+
+    private boolean hasCacheAnnotation(MethodInvocationContext<Object, Object> context) {
+        return context.hasDeclaredAnnotation(Cacheable.class)
+                || context.hasDeclaredAnnotation(CacheInvalidate.class)
+                || context.hasDeclaredAnnotation(InvalidateOperations.class)
+                || context.hasDeclaredAnnotation(CachePut.class)
+                || context.hasDeclaredAnnotation(PutOperations.class);
     }
 
     private CompletableFuture<Object> toCompletableFuture(Flowable<Object> flowable) {
