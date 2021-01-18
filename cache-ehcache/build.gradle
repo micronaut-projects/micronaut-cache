@@ -1,6 +1,6 @@
 dependencies {
     api project(":cache-core")
-    api "org.ehcache:ehcache-clustered:3.8.1"
+    api "org.ehcache:ehcache-clustered:$ehcacheVersion"
 
     testImplementation project(":cache-tck")
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
@@ -10,6 +10,6 @@ dependencies {
 
 micronautBuild {
     resolutionStrategy {
-        force "org.ehcache:ehcache-clustered:3.8.1"
+        force "org.ehcache:ehcache-clustered:$ehcacheVersion"
     }
 }
