@@ -112,7 +112,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
 
     @Override
     public Object intercept(MethodInvocationContext<Object, Object> context) {
-        if (context.hasStereotype(CacheConfig.class) && hasCacheAnnotation(context)) {
+        if (context.hasStereotype(CacheAnnotation.class)) {
             InterceptedMethod interceptedMethod = InterceptedMethod.of(context);
             try {
                 ReturnType<?> returnType = context.getReturnType();
@@ -143,14 +143,6 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         } else {
             return context.proceed();
         }
-    }
-
-    private boolean hasCacheAnnotation(MethodInvocationContext<Object, Object> context) {
-        return context.hasDeclaredAnnotation(Cacheable.class)
-                || context.hasDeclaredAnnotation(CacheInvalidate.class)
-                || context.hasDeclaredAnnotation(InvalidateOperations.class)
-                || context.hasDeclaredAnnotation(CachePut.class)
-                || context.hasDeclaredAnnotation(PutOperations.class);
     }
 
     private CompletableFuture<Object> toCompletableFuture(Flowable<Object> flowable) {

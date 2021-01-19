@@ -38,8 +38,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Around
-@Type(CacheInterceptor.class)
 public @interface CacheConfig {
     /**
      * @return Same as {@link #cacheNames()}

@@ -1,6 +1,7 @@
-package io.micronaut.cache.jcache
+package io.micronaut.cache
 
 import io.micronaut.cache.annotation.CacheConfig
+import io.micronaut.cache.jcache.JCacheManager
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
