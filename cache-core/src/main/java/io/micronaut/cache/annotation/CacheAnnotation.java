@@ -3,6 +3,7 @@ package io.micronaut.cache.annotation;
 import io.micronaut.aop.Around;
 import io.micronaut.cache.interceptor.CacheInterceptor;
 import io.micronaut.context.annotation.Type;
+import io.micronaut.core.annotation.Internal;
 
 import java.lang.annotation.*;
 
@@ -14,9 +15,9 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
 @Documented
 @Around
 @Type(CacheInterceptor.class)
+@Internal
 public @interface CacheAnnotation {
 }
