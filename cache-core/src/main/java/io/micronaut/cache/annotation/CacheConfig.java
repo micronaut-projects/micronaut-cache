@@ -15,12 +15,9 @@
  */
 package io.micronaut.cache.annotation;
 
-import io.micronaut.aop.Around;
-import io.micronaut.cache.interceptor.CacheInterceptor;
 import io.micronaut.cache.interceptor.CacheKeyGenerator;
 import io.micronaut.cache.interceptor.DefaultCacheKeyGenerator;
 import io.micronaut.context.annotation.AliasFor;
-import io.micronaut.context.annotation.Type;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -38,8 +35,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Around
-@Type(CacheInterceptor.class)
 public @interface CacheConfig {
     /**
      * @return Same as {@link #cacheNames()}

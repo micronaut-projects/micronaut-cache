@@ -13,6 +13,5 @@
     </root>
 
     <logger name="io.micronaut.cache" level="TRACE" />
-    <logger name="org.jcache" level="TRACE" />
     <logger name="org.infinispan" level="DEBUG" />
 </configuration>
