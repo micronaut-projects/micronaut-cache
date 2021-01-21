@@ -2,7 +2,11 @@ To use https://coherence.java.net/[Coherence] as the caching implementation, add
 
 dependency:io.micronaut.cache:micronaut-cache-coherence:{version}[]
 
-When using the link:{api}/io/micronaut/cache/annotation/Cacheable.html[@Cacheable] and other Cache Annotations, Micronaut will use default Coherence session to obtain cache instance for caching. It's up to user to configure Coherence specific cache.
+Also, add Coherence dependency - either Coherence CE or commercial version:
+
+dependency:com.oracle.coherence.ce:coherence:20.12[]
+
+When using the link:{api}/io/micronaut/cache/annotation/Cacheable.html[@Cacheable] and other Cache Annotations, Micronaut will use default Coherence session to obtain cache instance for caching. It's up to the user to configure Coherence specific cache.
 
 You can also add Coherence module to your project using cli feature as below:
 
