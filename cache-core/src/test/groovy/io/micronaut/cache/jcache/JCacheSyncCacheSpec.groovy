@@ -40,7 +40,8 @@ class JCacheSyncCacheSpec extends Specification {
     void "test cacheable annotations with jcache"() {
         given:
         ApplicationContext applicationContext = ApplicationContext.run(
-                (JCacheManager.JCACHE_ENABLED):true
+                (JCacheManager.JCACHE_ENABLED):true,
+                'spec.name': 'JCacheSyncCacheSpec'
         )
 
         when:
@@ -135,6 +136,7 @@ class JCacheSyncCacheSpec extends Specification {
 
     @Factory
     @Requires(property = JCacheManager.JCACHE_ENABLED, value = "true")
+    @Requires(property = "spec.name", value = "JCacheSyncCacheSpec")
     static class CacheFactory {
 
         @Singleton
@@ -149,6 +151,7 @@ class JCacheSyncCacheSpec extends Specification {
 
     @Singleton
     @CacheConfig('counter')
+    @Requires(property = "spec.name", value = "JCacheSyncCacheSpec")
     static class CounterService {
         Map<String, Integer> counters = new LinkedHashMap<>()
         Map<String, Integer> counters2 = new LinkedHashMap<>()

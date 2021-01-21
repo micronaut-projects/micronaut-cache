@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2021 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,24 @@
  */
 package io.micronaut.cache.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import io.micronaut.aop.Around;
+import io.micronaut.cache.interceptor.CacheInterceptor;
+import io.micronaut.context.annotation.Type;
+import io.micronaut.core.annotation.Internal;
+
+import java.lang.annotation.*;
 
 /**
- * Allows for repeated annotations of the type {@link CachePut}.
+ * Meta annotation to mark cache operations.
  *
- * @author Graeme Rocher
- * @since 1.0
+ * @author Álvaro Sánchez-Mariscal
+ * @since 2.3.0
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
 @Documented
-@CacheAnnotation
-public @interface PutOperations {
-
-    /**
-     * @return The {@link CachePut} instances for the method
-     */
-    CachePut[] value();
+@Around
+@Type(CacheInterceptor.class)
+@Internal
+public @interface CacheAnnotation {
 }
