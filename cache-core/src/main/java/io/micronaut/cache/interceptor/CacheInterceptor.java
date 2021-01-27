@@ -482,8 +482,12 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         return cacheNames;
     }
 
+    protected Object doContextProceed(MethodInvocationContext context) {
+        return context.proceed();
+    }
+
     private void doProceed(MethodInvocationContext context, ValueWrapper wrapper) {
-        Object result = context.proceed();
+        Object result = doContextProceed(context);
         if (result instanceof Optional) {
             Optional optional = (Optional) result;
             wrapper.optional = true;
