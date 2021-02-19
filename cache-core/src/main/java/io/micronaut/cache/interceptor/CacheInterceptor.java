@@ -328,7 +328,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                                                           CacheOperation cacheOperation,
                                                           CompletionStage<?> value) {
         List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
-        if (putOperations != null) {
+        if (CollectionUtils.isNotEmpty(putOperations)) {
             for (AnnotationValue<CachePut> putOperation : putOperations) {
                 String[] cacheNames = cacheOperation.getCachePutNames(putOperation);
                 if (ArrayUtils.isNotEmpty(cacheNames)) {
@@ -352,7 +352,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                                                                  CacheOperation cacheOperation,
                                                                  CompletionStage<?> value) {
         List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
-        if (invalidateOperations != null) {
+        if (CollectionUtils.isNotEmpty(invalidateOperations)) {
             for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
                 String[] cacheNames = cacheOperation.getCacheInvalidateNames(invalidateOperation);
                 if (ArrayUtils.isNotEmpty(cacheNames)) {
