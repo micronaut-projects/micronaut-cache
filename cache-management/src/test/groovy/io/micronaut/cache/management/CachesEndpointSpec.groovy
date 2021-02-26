@@ -170,6 +170,54 @@ class CachesEndpointSpec extends Specification {
         embeddedServer?.close()
     }
 
+    void "test invalidate single cache key"() {
+        given:
+        EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer,
+                [
+                        "endpoints.caches.enabled": true,
+                        "endpoints.caches.sensitive": false,
+                        "micronaut.caches.foo-cache.maximumSize": 10,
+                        "micronaut.caches.bar-cache.maximumSize": 10
+                ], Environment.TEST)
+        RxHttpClient rxClient = embeddedServer.applicationContext.createBean(RxHttpClient, embeddedServer.getURL())
+        CacheManager cacheManager = embeddedServer.applicationContext.getBean(CacheManager)
+
+        SyncCache fooCache = cacheManager.getCache("foo-cache")
+        fooCache.put("foo1", "value1")
+        fooCache.put("foo2", "value2")
+
+        SyncCache barCache = cacheManager.getCache("bar-cache")
+        barCache.put("bar1", "value1")
+        barCache.put("bar2", "value2")
+
+        when:
+        def response = rxClient.exchange("/caches", Map).blockingFirst()
+        Map result = response.body()
+        Map<String, Map<String, Object>> caches = result.caches
+
+        then:
+        response.code() == HttpStatus.OK.code
+        caches.size() == 2
+        caches["bar-cache"].caffeine.estimatedSize == 2
+        caches["foo-cache"].caffeine.estimatedSize == 2
+
+        when:
+        rxClient.exchange(HttpRequest.DELETE("/caches/bar-cache/bar1")).blockingFirst()
+        response = rxClient.exchange("/caches", Map).blockingFirst()
+        result = response.body()
+        caches = result.caches
+
+        then:
+        response.code() == HttpStatus.OK.code
+        caches.size() == 2
+        caches["bar-cache"].caffeine.estimatedSize == 1
+        caches["foo-cache"].caffeine.estimatedSize == 2
+
+        cleanup:
+        rxClient.close()
+        embeddedServer?.close()
+    }
+
     void "test invalidate all caches"() {
         given:
         EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer,

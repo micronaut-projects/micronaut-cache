@@ -132,4 +132,29 @@ public class CachesEndpoint {
         }
     }
 
+    /**
+     * Invalidates a key witinin the provided cache.
+     *
+     * @param name The name of the cache
+     * @param key the key within the cache to invalidate
+     * @return A maybe that emits a boolean if the operation was successful
+     */
+    @Delete
+    public Maybe<Boolean> invalidateCacheKey(@NotBlank @Selector String name, @NotBlank @Selector String key) {
+        try {
+            final SyncCache<Object> cache = cacheManager.getCache(name);
+            return Maybe.create(emitter -> cache.async().invalidate(key).whenComplete((aBoolean, throwable) -> {
+                if (throwable != null) {
+                    emitter.onError(throwable);
+                } else {
+                    emitter.onSuccess(aBoolean);
+                    emitter.onComplete();
+                }
+            }));
+        } catch (ConfigurationException e) {
+            // no cache
+            return Maybe.empty();
+        }
+    }
+
 }

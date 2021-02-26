@@ -28,6 +28,15 @@ example, to access the configuration of the cache 'book-cache':
 $ curl http://localhost:8080/caches/book-cache
 ----
 
+To invalidate a specific cache entry within a single cache, send a DELETE request to the named cache URL with the desired key.
+
+NOTE: This only works for caches which have keys of type `String`.
+
+[source,bash]
+----
+$ curl -X DELETE http://localhost:8080/caches/book-cache/key
+----
+
 To invalidate all cached values within a single cache, send a DELETE request to the named cache URL.
 
 [source,bash]
