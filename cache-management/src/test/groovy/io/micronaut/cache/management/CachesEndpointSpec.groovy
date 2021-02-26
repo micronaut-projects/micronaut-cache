@@ -213,6 +213,18 @@ class CachesEndpointSpec extends Specification {
         caches["bar-cache"].caffeine.estimatedSize == 1
         caches["foo-cache"].caffeine.estimatedSize == 2
 
+        when:
+        rxClient.exchange(HttpRequest.DELETE("/caches/foo-cache/foo2")).blockingFirst()
+        response = rxClient.exchange("/caches", Map).blockingFirst()
+        result = response.body()
+        caches = result.caches
+
+        then:
+        response.code() == HttpStatus.OK.code
+        caches.size() == 2
+        caches["bar-cache"].caffeine.estimatedSize == 1
+        caches["foo-cache"].caffeine.estimatedSize == 1
+
         cleanup:
         rxClient.close()
         embeddedServer?.close()
