@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -194,6 +194,13 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>io.reactivex.Maybe&lt;java.lang.Boolean&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/management/CachesEndpoint.html#invalidateCacheKey-java.lang.String-java.lang.String-">invalidateCacheKey</a></span>(@NotBlank java.lang.String&nbsp;name,
+                  @NotBlank java.lang.String&nbsp;key)</code>
+<div class="block">Invalidates a key within the provided cache.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>io.reactivex.Maybe&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/management/CachesEndpoint.html#invalidateCaches--">invalidateCaches</a></span>()</code>
 <div class="block">Invalidates all the caches.</div>
 </td>
@@ -314,7 +321,7 @@ public&nbsp;io.reactivex.Maybe&lt;java.lang.Boolean&gt;&nbsp;invalidateCaches()<
 <a name="invalidateCache-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>invalidateCache</h4>
 <pre>@Delete
@@ -324,6 +331,27 @@ public&nbsp;io.reactivex.Maybe&lt;java.lang.Boolean&gt;&nbsp;invalidateCache(@No
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>name</code> - The name of the cache to invalidate</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A maybe that emits a boolean if the operation was successful</dd>
+</dl>
+</li>
+</ul>
+<a name="invalidateCacheKey-java.lang.String-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>invalidateCacheKey</h4>
+<pre>@Delete
+public&nbsp;io.reactivex.Maybe&lt;java.lang.Boolean&gt;&nbsp;invalidateCacheKey(@NotBlank @Selector
+                                                                        @NotBlank java.lang.String&nbsp;name,
+                                                                        @NotBlank @Selector
+                                                                        @NotBlank java.lang.String&nbsp;key)</pre>
+<div class="block">Invalidates a key within the provided cache.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - The name of the cache</dd>
+<dd><code>key</code> - the key within the cache to invalidate</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A maybe that emits a boolean if the operation was successful</dd>
 </dl>

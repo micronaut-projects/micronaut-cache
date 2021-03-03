@@ -1184,6 +1184,26 @@ example, to access the configuration of the cache 'book-cache':</p>
 </div>
 </div>
 <div class="paragraph">
+<p>To invalidate a specific cache entry within a single cache, send a DELETE request to the named cache URL with the desired key.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This only works for caches which have keys of type <code>String</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl -X DELETE http://localhost:8080/caches/book-cache/key</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>To invalidate all cached values within a single cache, send a DELETE request to the named cache URL.</p>
 </div>
 <div class="listingblock">
