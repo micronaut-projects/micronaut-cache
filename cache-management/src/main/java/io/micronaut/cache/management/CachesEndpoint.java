@@ -15,11 +15,10 @@
  */
 package io.micronaut.cache.management;
 
-import io.micronaut.cache.Cache;
+import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.CacheManager;
 import io.micronaut.cache.SyncCache;
-import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.management.endpoint.annotation.Delete;
 import io.micronaut.management.endpoint.annotation.Endpoint;
@@ -28,6 +27,7 @@ import io.micronaut.management.endpoint.annotation.Selector;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import org.reactivestreams.Publisher;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Collections;
@@ -66,13 +66,15 @@ public class CachesEndpoint {
     @Read
     public Single<Map<String, Object>> getCaches() {
         return Flowable.fromIterable(cacheManager.getCacheNames())
-                       .flatMapMaybe(n -> Flowable.fromPublisher(cacheManager.getCache(n).getCacheInfo()).firstElement())
-                       .reduce(new HashMap<>(), (seed, info) -> {
-                           seed.put(info.getName(), info.get());
-                           return seed;
-                       }).map(objectObjectHashMap -> Collections.singletonMap(
-                           NAME, objectObjectHashMap
-                       ));
+               .map(cacheManager::getCache)
+               .map(SyncCache::getCacheInfo)
+               .map(Flowable::fromPublisher)
+               .flatMapMaybe(Flowable::firstElement)
+               .reduce(new HashMap<>(), (seed, info) -> {
+                   seed.put(info.getName(), info.get());
+                   return seed;
+               })
+               .map(objectObjectHashMap -> Collections.singletonMap(NAME, objectObjectHashMap));
     }
 
     /**
@@ -83,15 +85,12 @@ public class CachesEndpoint {
      */
     @Read
     public Maybe<Map<String, Object>> getCache(@NotBlank @Selector String name) {
-        try {
-            final Cache<Object> cache = cacheManager.getCache(name);
-            return Flowable.fromPublisher(cache.getCacheInfo())
-                           .map(CacheInfo::get)
-                           .singleElement();
-        } catch (ConfigurationException e) {
-            // no cache exists
-            return Maybe.empty();
-        }
+        return Maybe.just(name)
+                .map(cacheManager::getCache)
+                .flatMapPublisher(SyncCache::getCacheInfo)
+                .map(CacheInfo::get)
+                .firstElement()
+                .onErrorResumeNext((Throwable e) -> Maybe.empty());
     }
 
     /**
@@ -102,10 +101,12 @@ public class CachesEndpoint {
     @Delete
     public Maybe<Boolean> invalidateCaches() {
         return Flowable.fromIterable(cacheManager.getCacheNames())
-                .map(cacheManager::getCache)
-                .flatMap(c ->
-                        Publishers.fromCompletableFuture(() -> c.async().invalidateAll())
-                ).reduce((aBoolean, aBoolean2) -> aBoolean && aBoolean2);
+               .map(cacheManager::getCache)
+               .map(SyncCache::async)
+               .map(AsyncCache::invalidateAll)
+               .flatMap(Publishers::fromCompletableFuture)
+               .reduce((aBoolean, aBoolean2) -> aBoolean && aBoolean2)
+               .onErrorReturnItem(false);
     }
 
     /**
@@ -116,20 +117,29 @@ public class CachesEndpoint {
      */
     @Delete
     public Maybe<Boolean> invalidateCache(@NotBlank @Selector String name) {
-        try {
-            final SyncCache<Object> cache = cacheManager.getCache(name);
-            return Maybe.create(emitter -> cache.async().invalidateAll().whenComplete((aBoolean, throwable) -> {
-                if (throwable != null) {
-                    emitter.onError(throwable);
-                } else {
-                    emitter.onSuccess(aBoolean);
-                    emitter.onComplete();
-                }
-            }));
-        } catch (ConfigurationException e) {
-            // no cache
-            return Maybe.empty();
-        }
+        return Maybe.just(name)
+                .map(cacheManager::getCache)
+                .map(SyncCache::async)
+                .map(AsyncCache::invalidateAll)
+                .flatMap(Maybe::fromFuture)
+                .onErrorReturnItem(false);
+    }
+
+    /**
+     * Invalidates a key within the provided cache.
+     *
+     * @param name The name of the cache
+     * @param key the key within the cache to invalidate
+     * @return A maybe that emits a boolean if the operation was successful
+     */
+    @Delete
+    public Maybe<Boolean> invalidateCacheKey(@NotBlank @Selector String name, @NotBlank @Selector String key) {
+        return Maybe.just(name)
+                .map(cacheManager::getCache)
+                .map(SyncCache::async)
+                .map(asyncCache -> asyncCache.invalidate(key))
+                .flatMap(Maybe::fromFuture)
+                .onErrorReturnItem(false);
     }
 
 }
