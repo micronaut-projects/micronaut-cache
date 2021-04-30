@@ -15,10 +15,10 @@
  */
 package io.micronaut.cache;
 
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.async.annotation.SingleResult;
 import io.micronaut.core.naming.Named;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Map;
 
 /**

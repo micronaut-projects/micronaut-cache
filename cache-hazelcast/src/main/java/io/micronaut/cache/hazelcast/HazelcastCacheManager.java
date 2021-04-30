@@ -19,10 +19,10 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import io.micronaut.cache.DynamicCacheManager;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.scheduling.TaskExecutors;
 
-import javax.annotation.Nonnull;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
@@ -56,7 +56,7 @@ public class HazelcastCacheManager implements DynamicCacheManager<IMap<Object, O
     }
 
     @SuppressWarnings("unchecked")
-    @Nonnull
+    @NonNull
     @Override
     public SyncCache<IMap<Object, Object>> getCache(String name) {
         IMap<Object, Object> nativeCache = hazelcastInstance.getMap(name);

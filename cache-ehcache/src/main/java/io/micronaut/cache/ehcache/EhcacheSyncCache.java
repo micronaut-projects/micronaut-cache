@@ -18,6 +18,7 @@ package io.micronaut.cache.ehcache;
 import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.cache.ehcache.configuration.EhcacheConfiguration;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -29,7 +30,6 @@ import org.ehcache.core.spi.service.StatisticsService;
 import org.ehcache.core.statistics.CacheStatistics;
 import org.reactivestreams.Publisher;
 
-import javax.annotation.Nonnull;
 import javax.inject.Named;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -76,9 +76,9 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     }
 
     @SuppressWarnings("unchecked")
-    @Nonnull
+    @NonNull
     @Override
-    public <T> Optional<T> get(@Nonnull Object key, @Nonnull Argument<T> requiredType) {
+    public <T> Optional<T> get(@NonNull Object key, @NonNull Argument<T> requiredType) {
         ArgumentUtils.requireNonNull("key", key);
         Object value = nativeCache.get(key);
         if (value != null) {
@@ -88,7 +88,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     }
 
     @Override
-    public <T> T get(@Nonnull Object key, @Nonnull Argument<T> requiredType, @Nonnull Supplier<T> supplier) {
+    public <T> T get(@NonNull Object key, @NonNull Argument<T> requiredType, @NonNull Supplier<T> supplier) {
         ArgumentUtils.requireNonNull("key", key);
         Optional<T> existingValue = get(key, requiredType);
         if (existingValue.isPresent()) {
@@ -101,9 +101,9 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     }
 
     @SuppressWarnings("unchecked")
-    @Nonnull
+    @NonNull
     @Override
-    public <T> Optional<T> putIfAbsent(@Nonnull Object key, @Nonnull T value) {
+    public <T> Optional<T> putIfAbsent(@NonNull Object key, @NonNull T value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
         final T v = (T) nativeCache.putIfAbsent(key, value);
@@ -113,7 +113,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void put(@Nonnull Object key, @Nonnull Object value) {
+    public void put(@NonNull Object key, @NonNull Object value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
         nativeCache.put(key, value);
@@ -121,7 +121,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void invalidate(@Nonnull Object key) {
+    public void invalidate(@NonNull Object key) {
         ArgumentUtils.requireNonNull("key", key);
         nativeCache.remove(key);
     }
@@ -144,7 +144,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
     @Override
     public Publisher<CacheInfo> getCacheInfo() {
         CacheInfo cacheInfo = new CacheInfo() {
-            @Nonnull
+            @NonNull
             @Override
             public Map<String, Object> get() {
                 Map<String, Object> data = new LinkedHashMap<>(2);
@@ -153,7 +153,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
                 return data;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public String getName() {
                 return configuration.getName();

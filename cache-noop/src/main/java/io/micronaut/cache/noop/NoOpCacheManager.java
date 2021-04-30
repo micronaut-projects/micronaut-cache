@@ -19,10 +19,10 @@ import io.micronaut.cache.DefaultCacheManager;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
-
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.util.StringUtils;
-import javax.annotation.Nonnull;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,13 +49,13 @@ public class NoOpCacheManager implements io.micronaut.cache.CacheManager<Object>
         this.cacheMap = new ConcurrentHashMap<>();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Set<String> getCacheNames() {
         return cacheMap.keySet();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public SyncCache<Object> getCache(String name) {
         NoOpSyncCache syncCache = this.cacheMap.get(name);

@@ -17,9 +17,8 @@ package io.micronaut.cache.ehcache.configuration;
 
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.naming.Named;
-
-import javax.annotation.Nonnull;
 
 /**
  * Resource pool configurations.
@@ -38,7 +37,7 @@ public class EhcacheClusterResourcePoolConfiguration extends AbstractResourcePoo
         this.name = name;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return name;

@@ -15,12 +15,12 @@
  */
 package io.micronaut.cache;
 
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
