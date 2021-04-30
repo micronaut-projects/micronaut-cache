@@ -16,11 +16,12 @@
 package io.micronaut.cache.jcache;
 
 import io.micronaut.cache.SyncCache;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+
 import javax.cache.Cache;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;

@@ -19,6 +19,7 @@ import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.format.ReadableBytes;
 import io.micronaut.core.naming.Named;
 import org.ehcache.clustered.client.config.builders.ClusteredResourcePoolBuilder;
@@ -28,7 +29,6 @@ import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.impl.config.store.disk.OffHeapDiskStoreConfiguration;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 import static io.micronaut.cache.ehcache.configuration.EhcacheConfiguration.PREFIX;
@@ -146,7 +146,7 @@ public class EhcacheConfiguration implements Named {
         this.builder = builder;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return name;

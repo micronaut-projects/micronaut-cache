@@ -17,6 +17,7 @@ package io.micronaut.cache.infinispan;
 
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.CacheInfo;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -25,7 +26,6 @@ import io.micronaut.core.util.ArgumentUtils;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.reactivestreams.Publisher;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -51,15 +51,15 @@ public class InfinispanAsyncCache implements AsyncCache<RemoteCache<Object, Obje
         this.conversionService = conversionService;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public <T> CompletableFuture<Optional<T>> get(@Nonnull Object key, @Nonnull Argument<T> requiredType) {
+    public <T> CompletableFuture<Optional<T>> get(@NonNull Object key, @NonNull Argument<T> requiredType) {
         ArgumentUtils.requireNonNull("key", key);
         return nativeCache.getAsync(key).thenApply(value -> conversionService.convert(value, ConversionContext.of(requiredType)));
     }
 
     @Override
-    public <T> CompletableFuture<T> get(@Nonnull Object key, @Nonnull Argument<T> requiredType, @Nonnull Supplier<T> supplier) {
+    public <T> CompletableFuture<T> get(@NonNull Object key, @NonNull Argument<T> requiredType, @NonNull Supplier<T> supplier) {
         ArgumentUtils.requireNonNull("key", key);
         CompletableFuture<Optional<T>> optionalCompletableFuture = get(key, requiredType);
         return optionalCompletableFuture.thenApply(existingValue -> {
@@ -74,9 +74,9 @@ public class InfinispanAsyncCache implements AsyncCache<RemoteCache<Object, Obje
     }
 
     @SuppressWarnings("unchecked")
-    @Nonnull
+    @NonNull
     @Override
-    public <T> CompletableFuture<Optional<T>> putIfAbsent(@Nonnull Object key, @Nonnull T value) {
+    public <T> CompletableFuture<Optional<T>> putIfAbsent(@NonNull Object key, @NonNull T value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
         return nativeCache.putIfAbsentAsync(key, value).thenApply(val -> {
@@ -87,7 +87,7 @@ public class InfinispanAsyncCache implements AsyncCache<RemoteCache<Object, Obje
     }
 
     @Override
-    public CompletableFuture<Boolean> put(@Nonnull Object key, @Nonnull Object value) {
+    public CompletableFuture<Boolean> put(@NonNull Object key, @NonNull Object value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
         return nativeCache
@@ -96,7 +96,7 @@ public class InfinispanAsyncCache implements AsyncCache<RemoteCache<Object, Obje
     }
 
     @Override
-    public CompletableFuture<Boolean> invalidate(@Nonnull Object key) {
+    public CompletableFuture<Boolean> invalidate(@NonNull Object key) {
         ArgumentUtils.requireNonNull("key", key);
         return nativeCache
                 .removeAsync(key)

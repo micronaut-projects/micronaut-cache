@@ -18,10 +18,10 @@ package io.micronaut.cache.hazelcast;
 import com.hazelcast.map.IMap;
 import io.micronaut.cache.AbstractMapBasedSyncCache;
 import io.micronaut.cache.AsyncCache;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.util.ArgumentUtils;
 
-import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -48,7 +48,7 @@ public class HazelcastSyncCache extends AbstractMapBasedSyncCache<IMap<Object, O
 
     @SuppressWarnings("unchecked")
     @Override
-    public void put(@Nonnull Object key, @Nonnull Object value) {
+    public void put(@NonNull Object key, @NonNull Object value) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("value", value);
         getNativeCache().set(key, value);
