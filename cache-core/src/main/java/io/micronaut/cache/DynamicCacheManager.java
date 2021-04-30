@@ -15,7 +15,7 @@
  */
 package io.micronaut.cache;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import io.micronaut.core.annotation.NonNull;
 
 /**
  * <p>A contract for a cache manager that does not have pre-defined caches.</p>

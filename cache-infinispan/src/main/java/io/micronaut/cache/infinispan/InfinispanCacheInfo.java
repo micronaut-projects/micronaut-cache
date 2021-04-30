@@ -16,11 +16,11 @@
 package io.micronaut.cache.infinispan;
 
 import io.micronaut.cache.CacheInfo;
+import io.micronaut.core.annotation.NonNull;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.jmx.RemoteCacheClientStatisticsMXBean;
 
-import javax.annotation.Nonnull;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -43,7 +43,7 @@ public class InfinispanCacheInfo implements CacheInfo {
         this.nativeCache = nativeCache;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Map<String, Object> get() {
         Map<String, Object> cacheManager = getCacheManagerStatistics();
@@ -88,7 +88,7 @@ public class InfinispanCacheInfo implements CacheInfo {
         return clientStatistics;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return nativeCache.getName();
