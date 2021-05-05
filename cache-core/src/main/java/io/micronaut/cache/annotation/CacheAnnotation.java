@@ -20,7 +20,11 @@ import io.micronaut.cache.interceptor.CacheInterceptor;
 import io.micronaut.context.annotation.Type;
 import io.micronaut.core.annotation.Internal;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Meta annotation to mark cache operations.

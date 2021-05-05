@@ -27,7 +27,6 @@ import io.micronaut.management.endpoint.annotation.Selector;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import org.reactivestreams.Publisher;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Collections;
