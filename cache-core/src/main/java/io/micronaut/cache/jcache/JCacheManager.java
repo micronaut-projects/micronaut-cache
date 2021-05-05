@@ -26,7 +26,6 @@ import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.scheduling.TaskExecutors;
 
-
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.inject.Named;

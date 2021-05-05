@@ -15,7 +15,13 @@
  */
 package io.micronaut.cache.tck
 
-import io.micronaut.cache.annotation.*
+
+import io.micronaut.cache.annotation.CacheConfig
+import io.micronaut.cache.annotation.CacheInvalidate
+import io.micronaut.cache.annotation.CachePut
+import io.micronaut.cache.annotation.Cacheable
+import io.micronaut.cache.annotation.InvalidateOperations
+import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.core.async.annotation.SingleResult
 import io.reactivex.Flowable
 import io.reactivex.Single
