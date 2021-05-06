@@ -1,9 +1,10 @@
 buildscript {
     repositories {
-        maven { url "https://repo.grails.org/grails/core" }
+        mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
-        classpath "io.micronaut.build.internal:micronaut-gradle-plugins:3.0.4"
+        classpath "io.micronaut.build.internal:micronaut-gradle-plugins:4.0.0.RC5"
     }
 }
 
@@ -36,4 +37,3 @@ subprojects { Project subproject ->
 
 apply plugin: "io.micronaut.build.internal.docs"
 apply plugin: "io.micronaut.build.internal.dependency-updates"
-
