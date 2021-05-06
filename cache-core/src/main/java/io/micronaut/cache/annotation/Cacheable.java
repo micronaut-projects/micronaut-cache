@@ -28,7 +28,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.function.Supplier;
 
 /**
  * <p>An annotation that can be applied at the type or method level to indicate that the return value of the method
@@ -83,7 +82,7 @@ public @interface Cacheable {
 
     /**
      * <p>Whether an atomic operation should be attempted to retrieve the cache value. This will call
-     * {@link io.micronaut.cache.SyncCache#get(Object, Class, Supplier)} if set to <tt>true</tt> otherwise
+     * {@link io.micronaut.cache.SyncCache#get(Object, Class, java.util.function.Supplier)} if set to <tt>true</tt> otherwise
      * {@link io.micronaut.cache.SyncCache#get(Object, Class)} will be called which is non-atomic</p>
      * <p>
      * <p>Note that atomic operations will pick the first cache name specified and ignore the remaining.</p>
