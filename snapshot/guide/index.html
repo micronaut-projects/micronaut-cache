@@ -233,7 +233,7 @@ The configuration implementations in this module require at least Micronaut vers
 <p>By using one of the annotations the <a href="../api/io/micronaut/cache/interceptor/CacheInterceptor.html">CacheInterceptor</a> is activated which in the case of <code>@Cacheable</code> will cache the return result of the method.</p>
 </div>
 <div class="paragraph">
-<p>If the return type of the method is a non-blocking type (either <a href="{jdkapi}/java/util/concurrent/CompletableFuture.html">CompletableFuture</a> or an instance of <a href="https://docs.oracle.com/javase/8/docs/api/org/reactivestreams/Publisher.html">Publisher</a> the emitted result will be cached.</p>
+<p>If the return type of the method is a non-blocking type (either <a href="{jdkapi}/java/util/concurrent/CompletableFuture.html">CompletableFuture</a> or an instance of <a href="https://www.reactive-streams.org/reactive-streams-1.0.3-javadoc/org/reactivestreams/Publisher.html">Publisher</a> the emitted result will be cached.</p>
 </div>
 <div class="paragraph">
 <p>In addition if the underlying Cache implementation supports non-blocking cache operations then cache values will be read from the cache without blocking, resulting in the ability to implement completely non-blocking cache operations.</p>
