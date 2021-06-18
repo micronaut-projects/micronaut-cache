@@ -26,11 +26,11 @@ import io.micronaut.cache.tck.AsyncCounterService
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
+import jakarta.inject.Singleton
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-import javax.inject.Singleton
 import java.util.function.Supplier
 
 /**

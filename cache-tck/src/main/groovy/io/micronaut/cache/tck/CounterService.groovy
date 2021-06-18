@@ -24,8 +24,8 @@ import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.core.async.annotation.SingleResult
 import io.reactivex.Flowable
 import io.reactivex.Single
+import jakarta.inject.Singleton
 
-import javax.inject.Singleton
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 

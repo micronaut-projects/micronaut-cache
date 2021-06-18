@@ -23,11 +23,11 @@ import io.micronaut.core.async.annotation.SingleResult
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
+import jakarta.inject.Singleton
 import org.reactivestreams.Publisher
 import spock.lang.Issue
 import spock.lang.Specification
 
-import javax.inject.Singleton
 import java.util.concurrent.atomic.AtomicInteger
 
 class CachePublisherSpec extends Specification {

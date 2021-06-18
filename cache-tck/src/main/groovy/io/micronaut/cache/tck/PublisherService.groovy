@@ -20,8 +20,8 @@ import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.core.async.annotation.SingleResult
 import io.reactivex.Flowable
 import io.reactivex.Single
+import jakarta.inject.Singleton
 
-import javax.inject.Singleton
 import java.util.concurrent.atomic.AtomicInteger
 
 @Singleton

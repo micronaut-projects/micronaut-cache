@@ -22,18 +22,17 @@ import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.cache.annotation.InvalidateOperations
 import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.async.annotation.SingleResult
 import io.reactivex.Flowable
 import io.reactivex.Single
+import jakarta.inject.Singleton
 import spock.lang.Specification
 
 import javax.cache.CacheManager
 import javax.cache.Caching
 import javax.cache.configuration.MutableConfiguration
-import javax.inject.Singleton
 import java.util.concurrent.CompletableFuture
 
 class JCacheSyncCacheSpec extends Specification {

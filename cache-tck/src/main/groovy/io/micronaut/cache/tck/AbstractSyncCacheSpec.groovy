@@ -24,11 +24,11 @@ import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
+import jakarta.inject.Singleton
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-import javax.inject.Singleton
 import java.util.function.Supplier
 
 /**

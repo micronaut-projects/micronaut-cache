@@ -25,12 +25,12 @@ import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
 import io.micronaut.scheduling.TaskExecutors;
+import jakarta.inject.Named;
 import org.ehcache.Cache;
 import org.ehcache.core.spi.service.StatisticsService;
 import org.ehcache.core.statistics.CacheStatistics;
 import org.reactivestreams.Publisher;
 
-import javax.inject.Named;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;

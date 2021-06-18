@@ -6,6 +6,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
 import io.reactivex.Flowable
+import jakarta.inject.Singleton
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
@@ -13,7 +14,6 @@ import spock.lang.Specification
 import javax.cache.CacheManager
 import javax.cache.Caching
 import javax.cache.configuration.MutableConfiguration
-import javax.inject.Singleton
 
 class CacheConfigWithoutCacheableSpec extends Specification {
 

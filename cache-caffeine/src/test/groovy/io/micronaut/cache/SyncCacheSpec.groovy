@@ -27,11 +27,11 @@ import io.micronaut.cache.annotation.InvalidateOperations
 import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.context.ApplicationContext
 import io.micronaut.inject.qualifiers.Qualifiers
+import jakarta.inject.Singleton
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-import javax.inject.Singleton
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.atomic.AtomicInteger

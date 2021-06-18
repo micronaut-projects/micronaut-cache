@@ -16,8 +16,7 @@
 package io.micronaut.cache;
 
 import io.micronaut.context.annotation.Primary;
-
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * Default implementation of {@link CacheErrorHandler}.
