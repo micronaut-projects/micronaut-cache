@@ -15,7 +15,6 @@
  */
 package io.micronaut.cache.tck
 
-
 import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.CacheInvalidate
 import io.micronaut.cache.annotation.CachePut
@@ -23,9 +22,9 @@ import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.cache.annotation.InvalidateOperations
 import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.core.async.annotation.SingleResult
-import io.reactivex.Flowable
-import io.reactivex.Single
 import jakarta.inject.Singleton
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
@@ -72,13 +71,13 @@ class AsyncCounterService {
 
     @Cacheable
     @SingleResult
-    Flowable<Integer> flowableValue(String name) {
-        return Flowable.just(counters.computeIfAbsent(name, { 0 }))
+    Flux<Integer> fluxValue(String name) {
+        return Flux.just(counters.computeIfAbsent(name, { 0 }))
     }
 
     @Cacheable
-    Single<Integer> singleValue(String name) {
-        return Single.just(counters.computeIfAbsent(name, { 0 }))
+    Mono<Integer> monoValue(String name) {
+        return Mono.just(counters.computeIfAbsent(name, { 0 }))
     }
 
     @CachePut(async = true)

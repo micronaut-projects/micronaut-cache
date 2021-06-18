@@ -19,10 +19,10 @@ import io.micronaut.cache.CacheInfo
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.type.Argument
-import io.reactivex.Flowable
 import org.infinispan.client.hotrod.RemoteCache
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.spock.Testcontainers
+import reactor.core.publisher.Flux
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -56,7 +56,7 @@ class InfinispanCacheInfoSpec extends Specification {
         configuration.statistics.create().enabled()
 
         when:
-        CacheInfo cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
+        CacheInfo cacheInfo = Flux.from(cache.cacheInfo).blockFirst()
 
         then:
         cacheInfo.get()['implementationClass'] == 'org.infinispan.client.hotrod.impl.RemoteCacheImpl'
@@ -70,7 +70,7 @@ class InfinispanCacheInfoSpec extends Specification {
         cache.get("foo", Argument.of(String)).get() == "bar"
 
         when:
-        cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
+        cacheInfo = Flux.from(cache.cacheInfo).blockFirst()
 
         then:
         cacheInfo.get()['infinispan']['clientStatistics']['remoteStores'] == 1

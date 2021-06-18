@@ -17,8 +17,6 @@ package io.micronaut.cache
 
 import io.micronaut.context.exceptions.ConfigurationException
 import io.micronaut.core.async.annotation.SingleResult
-import io.reactivex.Flowable
-import io.reactivex.Single
 import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.CacheInvalidate
 import io.micronaut.cache.annotation.CachePut
@@ -28,6 +26,8 @@ import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.context.ApplicationContext
 import io.micronaut.inject.qualifiers.Qualifiers
 import jakarta.inject.Singleton
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
@@ -58,8 +58,8 @@ class SyncCacheSpec extends Specification {
         CounterService counterService = applicationContext.getBean(CounterService)
 
         then:
-        counterService.flowableValue("test").blockingFirst() == 0
-        counterService.singleValue("test").blockingGet() == 0
+        counterService.fluxValue("test").blockFirst() == 0
+        counterService.monoValue("test").block() == 0
 
         when:
         counterService.reset()
@@ -67,10 +67,10 @@ class SyncCacheSpec extends Specification {
 
         then:
         result == 1
-        counterService.flowableValue("test").blockingFirst() == 1
+        counterService.fluxValue("test").blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.singleValue("test").blockingGet() == 1
+        counterService.monoValue("test").block() == 1
         counterService.getValue("test") == 1
 
         when:
@@ -78,10 +78,10 @@ class SyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.flowableValue("test").blockingFirst() == 1
+        counterService.fluxValue("test").blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.singleValue("test").blockingGet() == 1
+        counterService.monoValue("test").block() == 1
         counterService.getValue("test") == 1
 
         when:
@@ -162,25 +162,25 @@ class SyncCacheSpec extends Specification {
         publisherService.callCount.get() == 0
 
         when:
-        publisherService.flowableValue("abc").blockingFirst()
+        publisherService.fluxValue("abc").blockFirst()
 
         then:
         publisherService.callCount.get() == 1
 
         when:
-        publisherService.flowableValue("abc").blockingFirst()
+        publisherService.fluxValue("abc").blockFirst()
 
         then:
         publisherService.callCount.get() == 1
 
         when:
-        publisherService.singleValue("abcd").blockingGet()
+        publisherService.monoValue("abcd").block()
 
         then:
         publisherService.callCount.get() == 2
 
         when:
-        publisherService.singleValue("abcd").blockingGet()
+        publisherService.monoValue("abcd").block()
 
         then:
         publisherService.callCount.get() == 2
@@ -291,15 +291,15 @@ class SyncCacheSpec extends Specification {
 
         @Cacheable
         @SingleResult
-        Flowable<Integer> flowableValue(String name) {
+        Flux<Integer> fluxValue(String name) {
             callCount.incrementAndGet()
-            return Flowable.just(0)
+            return Flux.just(0)
         }
 
         @Cacheable
-        Single<Integer> singleValue(String name) {
+        Mono<Integer> monoValue(String name) {
             callCount.incrementAndGet()
-            return Single.just(0)
+            return Mono.just(0)
         }
 
     }
@@ -346,13 +346,13 @@ class SyncCacheSpec extends Specification {
 
         @Cacheable
         @SingleResult
-        Flowable<Integer> flowableValue(String name) {
-            return Flowable.just(counters.computeIfAbsent(name, { 0 }))
+        Flux<Integer> fluxValue(String name) {
+            return Flux.just(counters.computeIfAbsent(name, { 0 }))
         }
 
         @Cacheable
-        Single<Integer> singleValue(String name) {
-            return Single.just(counters.computeIfAbsent(name, { 0 }))
+        Mono<Integer> monoValue(String name) {
+            return Mono.just(counters.computeIfAbsent(name, { 0 }))
         }
 
         @CachePut

@@ -40,11 +40,11 @@ import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.scheduling.TaskExecutors;
-import io.reactivex.Flowable;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,8 +130,8 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                         return interceptedMethod.handleResult(completionStage);
                     case PUBLISHER:
                         Supplier<CompletionStage<?>> supplier = () -> {
-                            Flowable<Object> flowable = Publishers.convertPublisher(context.proceed(), Flowable.class);
-                            return toCompletableFuture(flowable);
+                            Flux<Object> flux = Publishers.convertPublisher(context.proceed(), Flux.class);
+                            return toCompletableFuture(flux);
                         };
                         CompletionStage<?> result = interceptAsCompletableFuture(context, supplier, returnType, returnTypeValue);
                         Object publisherResult = Publishers.convertPublisher(result, returnType.getType());
@@ -149,9 +149,9 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         }
     }
 
-    private CompletableFuture<Object> toCompletableFuture(Flowable<Object> flowable) {
+    private CompletableFuture<Object> toCompletableFuture(Flux<Object> flux) {
         CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-        flowable.firstElement().subscribe(completableFuture::complete, completableFuture::completeExceptionally, () -> completableFuture.complete(null));
+        flux.take(1).subscribe(completableFuture::complete, completableFuture::completeExceptionally, () -> completableFuture.complete(null));
         return completableFuture;
     }
 

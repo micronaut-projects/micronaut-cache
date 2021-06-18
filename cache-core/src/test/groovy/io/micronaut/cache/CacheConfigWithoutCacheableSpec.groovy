@@ -5,8 +5,8 @@ import io.micronaut.cache.jcache.JCacheManager
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
-import io.reactivex.Flowable
 import jakarta.inject.Singleton
+import reactor.core.publisher.Flux
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
@@ -29,7 +29,7 @@ class CacheConfigWithoutCacheableSpec extends Specification {
         MyService myService = context.getBean(MyService)
 
         when:
-        def things = myService.things().blockingIterable()
+        def things = myService.things().toIterable()
 
         then:
         things.size() == 3
@@ -43,8 +43,8 @@ class CacheConfigWithoutCacheableSpec extends Specification {
 
         private String[] things = ['one', 'two', 'three'].toArray()
 
-        Flowable<String> things() {
-            Flowable.fromArray(things)
+        Flux<String> things() {
+            Flux.fromArray(things)
         }
 
     }

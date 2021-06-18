@@ -20,6 +20,8 @@ subprojects { Project subproject ->
                 annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:${micronautDocsVersion}"
             }
 
+            api "io.micronaut.reactor:micronaut-reactor"
+
             // TODO: Remove where micronaut-micrometer is upgraded to Micronaut 3
             api "javax.inject:javax.inject:1"
 
