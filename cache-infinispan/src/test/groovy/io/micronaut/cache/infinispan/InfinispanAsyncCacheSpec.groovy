@@ -29,7 +29,7 @@ import spock.lang.Shared
 class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
-    GenericContainer infinispan = new GenericContainer("infinispan/server")
+    GenericContainer infinispan = new GenericContainer("infinispan/server:12.0.2.Final-1")
             .withExposedPorts(11222)
             .withEnv('USER', 'user')
             .withEnv('PASS', 'pass')
