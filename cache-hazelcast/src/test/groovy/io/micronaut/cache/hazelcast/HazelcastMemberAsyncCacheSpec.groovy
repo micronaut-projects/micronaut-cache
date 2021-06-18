@@ -26,6 +26,7 @@ import io.micronaut.cache.tck.AsyncCounterService
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
+import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
@@ -55,6 +56,7 @@ class HazelcastMemberAsyncCacheSpec extends Specification {
         return ApplicationContext.run()
     }
 
+    @Retry
     void "test async cacheable annotations"() {
         given:
         ApplicationContext applicationContext = createApplicationContext()
