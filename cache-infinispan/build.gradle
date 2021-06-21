@@ -9,3 +9,7 @@ dependencies {
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
     testImplementation "org.testcontainers:spock:1.15.3"
 }
+
+tasks.withType(Test) {
+    systemProperty("infinispanVersion", infinispanVersion)
+}
