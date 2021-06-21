@@ -30,7 +30,7 @@ import spock.lang.Specification
 class InfinispanCacheInfoSpec extends Specification {
 
     @Shared
-    GenericContainer infinispan = new GenericContainer("infinispan/server:12.0.2.Final-1")
+    GenericContainer infinispan = new GenericContainer("infinispan/server:${System.getProperty('infinispanVersion')}")
             .withExposedPorts(11222)
             .withEnv('USER', 'user')
             .withEnv('PASS', 'pass')
