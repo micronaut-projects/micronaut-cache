@@ -19,14 +19,15 @@ import io.micronaut.cache.tck.AbstractSyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.spock.Testcontainers
+import spock.lang.Retry
 import spock.lang.Shared
 
 @Testcontainers
-@spock.lang.Retry
+@Retry
 class InfinispanSyncCacheSpec extends AbstractSyncCacheSpec {
 
     @Shared
-    GenericContainer infinispan = new GenericContainer("infinispan/server")
+    GenericContainer infinispan = new GenericContainer("infinispan/server:${System.getProperty('infinispanVersion')}")
             .withExposedPorts(11222)
             .withEnv('USER', 'user')
             .withEnv('PASS', 'pass')

@@ -24,7 +24,11 @@ import io.micronaut.cache.AsyncCacheErrorHandler;
 import io.micronaut.cache.CacheErrorHandler;
 import io.micronaut.cache.CacheManager;
 import io.micronaut.cache.SyncCache;
-import io.micronaut.cache.annotation.*;
+import io.micronaut.cache.annotation.CacheAnnotation;
+import io.micronaut.cache.annotation.CacheConfig;
+import io.micronaut.cache.annotation.CacheInvalidate;
+import io.micronaut.cache.annotation.CachePut;
+import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.AnnotationValueResolver;
@@ -480,6 +484,10 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         return cacheNames;
     }
 
+    /**
+     * @param context the method invocation context
+     * @return the proceed result
+     */
     protected Object doContextProceed(MethodInvocationContext context) {
         return context.proceed();
     }
@@ -738,7 +746,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     /**
      * The value wrapper.
      */
-    private class ValueWrapper {
+    private static class ValueWrapper {
         Object value;
         boolean optional;
     }
