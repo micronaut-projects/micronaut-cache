@@ -42,7 +42,6 @@ import java.lang.annotation.Target;
 @Documented
 @CacheConfig
 @CacheAnnotation
-@Type(CacheInterceptor.class)
 @Repeatable(InvalidateOperations.class)
 public @interface CacheInvalidate {
     /**

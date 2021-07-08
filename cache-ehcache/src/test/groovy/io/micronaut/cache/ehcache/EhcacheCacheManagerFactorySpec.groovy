@@ -18,8 +18,8 @@ package io.micronaut.cache.ehcache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.CacheManager
 import org.ehcache.Status
+import org.ehcache.core.internal.statistics.DefaultStatisticsService
 import org.ehcache.core.spi.service.StatisticsService
-import org.ehcache.core.statistics.DefaultStatisticsService
 import spock.lang.Specification
 
 class EhcacheCacheManagerFactorySpec extends Specification {

@@ -43,7 +43,6 @@ import java.lang.annotation.Target;
 @Documented
 @CacheConfig
 @CacheAnnotation
-@Type(CacheInterceptor.class)
 @Repeatable(PutOperations.class)
 public @interface CachePut {
 

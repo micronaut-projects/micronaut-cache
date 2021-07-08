@@ -17,6 +17,7 @@ package io.micronaut.cache.interceptor;
 
 import io.micronaut.aop.InterceptPhase;
 import io.micronaut.aop.InterceptedMethod;
+import io.micronaut.aop.InterceptorBean;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
 import io.micronaut.cache.AsyncCache;
@@ -41,10 +42,10 @@ import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.scheduling.TaskExecutors;
 import jakarta.inject.Named;
-import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -65,7 +67,7 @@ import java.util.function.Supplier;
  * @author Graeme Rocher
  * @since 1.0
  */
-@Singleton
+@InterceptorBean(CacheAnnotation.class)
 public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     /**
      * The position on the interceptor in the chain.
@@ -129,13 +131,16 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                                 returnTypeValue);
                         return interceptedMethod.handleResult(completionStage);
                     case PUBLISHER:
-                        Supplier<CompletionStage<?>> supplier = () -> {
-                            Flux<Object> flux = Publishers.convertPublisher(context.proceed(), Flux.class);
-                            return toCompletableFuture(flux);
-                        };
-                        CompletionStage<?> result = interceptAsCompletableFuture(context, supplier, returnType, returnTypeValue);
-                        Object publisherResult = Publishers.convertPublisher(result, returnType.getType());
-                        return interceptedMethod.handleResult(publisherResult);
+                        CacheOperation cacheOperation = getCacheOperation(context, returnType.isVoid() || returnTypeValue.equalsType(Argument.VOID_OBJECT));
+                        if (cacheOperation.cacheable) {
+                            if (returnType.isSingleResult()) {
+                                return interceptSingle(context, interceptedMethod, returnType, returnTypeValue, cacheOperation);
+                            } else {
+                                return interceptMulti(context, interceptedMethod, returnType, returnTypeValue, cacheOperation);
+                            }
+                        } else {
+                            return interceptedMethod.handleResult(interceptedMethod.interceptResultAsPublisher());
+                        }
                     case SYNCHRONOUS:
                         return interceptSync(context, returnType);
                     default:
@@ -149,10 +154,154 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         }
     }
 
-    private CompletableFuture<Object> toCompletableFuture(Flux<Object> flux) {
-        CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-        flux.take(1).subscribe(completableFuture::complete, completableFuture::completeExceptionally, () -> completableFuture.complete(null));
-        return completableFuture;
+    private Object interceptSingle(MethodInvocationContext<Object, Object> context,
+                             InterceptedMethod interceptedMethod,
+                             ReturnType<?> returnType,
+                             Argument<?> returnTypeValue,
+                             CacheOperation cacheOperation) {
+        AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
+        Object key = getCacheableKey(context, cacheOperation);
+        Mono<Object> cachingMono = Mono.defer(() ->
+              Mono.fromCompletionStage(asyncCacheGet(asyncCache, key, returnTypeValue, errorHandler))
+        ).flatMap((result) -> {
+            if (result.isPresent()) {
+                // cache hit, return result
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Value found in cache [" + cacheOperation.cacheableCacheName + "] for "
+                                      + "invocation: " + context);
+                }
+                return Mono.just(result.get());
+            } else {
+                return Mono.from(interceptedMethod.interceptResultAsPublisher())
+                        .flatMap((object) -> {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}", asyncCache.getName(), key,
+                                          context, object);
+                            }
+                            return Mono.fromCompletionStage(asyncCachePut(asyncCache, key, object, errorHandler))
+                                        .thenReturn(object);
+
+                        }).switchIfEmpty(Mono.defer(() -> {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null", key, asyncCache.getName(),
+                                          context);
+                            }
+                            return Mono.fromCompletionStage(asyncCacheInvalidate(asyncCache, key, errorHandler))
+                                    .then(Mono.empty());
+                        }));
+            }
+        });
+        if (cacheOperation.hasWriteOperations()) {
+            List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
+            if (CollectionUtils.isNotEmpty(putOperations)) {
+                for (AnnotationValue<CachePut> putOperation : putOperations) {
+                    String[] cacheNames = cacheOperation.getCachePutNames(putOperation);
+                    if (ArrayUtils.isNotEmpty(cacheNames)) {
+                        boolean isAsync = putOperation.isTrue(MEMBER_ASYNC);
+                        if (isAsync) {
+                            cachingMono = cachingMono.doOnNext((result) -> Mono.fromCompletionStage(
+                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                            ));
+                        } else {
+                            cachingMono = cachingMono.map(result -> Mono.fromCompletionStage(
+                                putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                            ).thenReturn(result));
+                        }
+                    }
+                }
+            }
+            List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
+            if (CollectionUtils.isNotEmpty(invalidateOperations)) {
+                for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
+                    String[] cacheNames = cacheOperation.getCacheInvalidateNames(invalidateOperation);
+                    if (ArrayUtils.isNotEmpty(cacheNames)) {
+                        boolean isAsync = invalidateOperation.isTrue(MEMBER_ASYNC);
+                        if (isAsync) {
+                            cachingMono = cachingMono.doOnNext((result) -> Mono.fromCompletionStage(
+                                invalidateAsync(context, cacheOperation, invalidateOperation, cacheNames, asyncCacheErrorHandler)
+                            ));
+                        } else {
+                            cachingMono = cachingMono.flatMap(result -> Mono.fromCompletionStage(
+                                invalidateAsync(context, cacheOperation, invalidateOperation, cacheNames, asyncCacheErrorHandler)
+                            ).thenReturn(result));
+                        }
+                    }
+                }
+            }
+        }
+        Object publisherResult = Publishers.convertPublisher(cachingMono, returnType.getType());
+        return interceptedMethod.handleResult(publisherResult);
+    }
+
+    private Object interceptMulti(MethodInvocationContext<Object, Object> context,
+                                   InterceptedMethod interceptedMethod,
+                                   ReturnType<?> returnType,
+                                   Argument<?> returnTypeValue,
+                                   CacheOperation cacheOperation) {
+        AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
+        Object key = getCacheableKey(context, cacheOperation);
+        Flux<Object> cachingFlux = Mono.defer(() ->
+              Mono.fromCompletionStage(asyncCacheGet(asyncCache, key, returnTypeValue, errorHandler))
+        ).flatMapMany((result) -> {
+            if (result.isPresent()) {
+                // cache hit, return result
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Value found in cache [" + cacheOperation.cacheableCacheName + "] for "
+                                      + "invocation: " + context);
+                }
+                return Mono.just(result.get());
+            } else {
+                return Flux.from(interceptedMethod.interceptResultAsPublisher())
+                        .collectList()
+                        .flatMap((object) -> {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}", asyncCache.getName(), key,
+                                          context, object);
+                            }
+                            return Mono.fromCompletionStage(asyncCachePut(asyncCache, key, object, errorHandler))
+                                    .thenReturn(object);
+
+                        }).switchIfEmpty(Mono.defer(() -> {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null", key, asyncCache.getName(),
+                                          context);
+                            }
+                            return Mono.fromCompletionStage(asyncCacheInvalidate(asyncCache, key, errorHandler))
+                                    .then(Mono.empty());
+                        }));
+            }
+        });
+        if (cacheOperation.hasWriteOperations()) {
+            List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
+            if (CollectionUtils.isNotEmpty(putOperations)) {
+                for (AnnotationValue<CachePut> putOperation : putOperations) {
+                    String[] cacheNames = cacheOperation.getCachePutNames(putOperation);
+                    if (ArrayUtils.isNotEmpty(cacheNames)) {
+                        boolean isAsync = putOperation.isTrue(MEMBER_ASYNC);
+                        if (isAsync) {
+                            cachingFlux = cachingFlux.collectList().doOnNext((result) -> Mono.fromCompletionStage(
+                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                            )).flatMapIterable(objects -> objects);
+                        } else {
+                            cachingFlux = cachingFlux.collectList().flatMap(result -> Mono.fromCompletionStage(
+                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                            ).thenReturn(result)).flatMapIterable(objects -> objects);
+                        }
+                    }
+                }
+            }
+            List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
+            if (CollectionUtils.isNotEmpty(invalidateOperations)) {
+                for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
+                    String[] cacheNames = cacheOperation.getCacheInvalidateNames(invalidateOperation);
+                    cachingFlux = cachingFlux.doOnComplete(() -> Mono.fromCompletionStage(
+                            invalidateAsync(context, cacheOperation, invalidateOperation, cacheNames, asyncCacheErrorHandler)
+                    ));
+                }
+            }
+        }
+        Object publisherResult = Publishers.convertPublisher(cachingFlux, returnType.getType());
+        return interceptedMethod.handleResult(publisherResult);
     }
 
     /**

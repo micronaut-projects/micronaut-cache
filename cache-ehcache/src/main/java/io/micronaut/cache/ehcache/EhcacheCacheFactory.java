@@ -23,14 +23,14 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.scheduling.TaskExecutors;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.core.spi.ServiceLocator;
 import org.ehcache.core.spi.service.StatisticsService;
-import org.ehcache.core.statistics.DefaultStatisticsService;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -53,15 +53,21 @@ public class EhcacheCacheFactory {
 
     /**
      * @param statisticsService the Ehcache statistics service
+     * @return The {@link CacheManagerBuilder}
+     */
+    @Singleton
+    CacheManagerBuilder<CacheManager> cacheManagerBuilder(StatisticsService statisticsService) {
+        return configuration.getBuilder().using(statisticsService);
+    }
+
+    /**
+     * @param builder The {@link org.ehcache.config.builders.CacheManagerBuilder}
      * @return The {@link CacheManager}
      */
     @Singleton
     @Bean(preDestroy = "close")
-    CacheManager cacheManager(StatisticsService statisticsService) {
-        CacheManagerBuilder builder = configuration.getBuilder();
-        return builder
-                .using(statisticsService)
-                .build(true);
+    CacheManager cacheManager(CacheManagerBuilder<CacheManager> builder) {
+        return builder.build(true);
     }
 
     /**
@@ -70,9 +76,9 @@ public class EhcacheCacheFactory {
     @Singleton
     @Bean(preDestroy = "stop")
     StatisticsService statisticsService() {
-        return new DefaultStatisticsService();
+        return ServiceLocator.dependencySet().with(StatisticsService.class)
+                .build().getService(StatisticsService.class);
     }
-
 
     /**
      * Creates a cache instance based on configuration.

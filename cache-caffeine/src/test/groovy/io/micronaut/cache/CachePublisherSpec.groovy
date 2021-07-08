@@ -65,7 +65,7 @@ class CachePublisherSpec extends Specification {
         @Cacheable("num-cache")
         @SingleResult
         Publisher<String> calculateValue(Integer num) {
-            return Flux.from({ ->
+            return Mono.fromCallable({ ->
                 def n = invocations.incrementAndGet()
                 println("Calculating value for $num")
                 return "Hello $n: $num".toString()
