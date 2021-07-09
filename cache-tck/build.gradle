@@ -4,7 +4,7 @@ dependencies {
     runtimeOnly "org.objenesis:objenesis:3.2"
 
     api project(":cache-core")
-
+    api "io.micronaut.reactor:micronaut-reactor"
     api("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'
     }
