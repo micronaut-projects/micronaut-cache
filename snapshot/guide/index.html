@@ -246,6 +246,18 @@ The configuration implementations in this module require at least Micronaut vers
 <div class="paragraph">
 <p>To cache using <a href="https://github.com/ben-manes/caffeine">Caffeine</a> add the following dependency to your application:</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This module is built and tested with Caffeine 2.9.1
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
@@ -366,11 +378,23 @@ JCache needs to be disabled:</p>
 <div class="paragraph">
 <p>To use <a href="https://www.ehcache.org/">Ehcache</a> as the caching implementation, add it as a dependency to your application:</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This module is built and tested with Ehcache 3.8.1
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-ehcache:2.4.1-SNAPSHOT")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-ehcache:3.0.0-SNAPSHOT")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -378,7 +402,7 @@ JCache needs to be disabled:</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-ehcache&lt;/artifactId&gt;
-    &lt;version&gt;2.4.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -542,6 +566,18 @@ options.</p>
 <p><a href="https://hazelcast.org/">Hazelcast</a> caching is supported. Micronaut will create a Hazelcast client instance to connect to
 an existing Hazelcast server cluster or create an standalone embedded Hazelcast member instance.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This module is built and tested with Hazelcast 4.2.1
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>Add the Micronaut Hazelcast module as a dependency:</p>
 </div>
@@ -549,7 +585,7 @@ an existing Hazelcast server cluster or create an standalone embedded Hazelcast 
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-hazelcast:2.4.1-SNAPSHOT")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-hazelcast:3.0.0-SNAPSHOT")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -557,7 +593,7 @@ an existing Hazelcast server cluster or create an standalone embedded Hazelcast 
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-hazelcast&lt;/artifactId&gt;
-    &lt;version&gt;2.4.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -746,6 +782,18 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;
 <p><a href="https://infinispan.org/">Infinispan</a> caching is supported. Micronaut will create an Infinispan client instance to connect to
 an existing Infinispan server using the HotRod protocol.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This module is built and tested with Infinispan 12.1.6.Final
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>To get started, add the Micronaut Infinispan module as a dependency:</p>
 </div>
@@ -753,7 +801,7 @@ an existing Infinispan server using the HotRod protocol.</p>
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-infinispan:2.4.1-SNAPSHOT")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-infinispan:3.0.0-SNAPSHOT")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -761,7 +809,7 @@ an existing Infinispan server using the HotRod protocol.</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-infinispan&lt;/artifactId&gt;
-    &lt;version&gt;2.4.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1090,7 +1138,7 @@ In such situations a no operation cache manager can be used that will simply acc
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-noop:2.4.1-SNAPSHOT")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-noop:3.0.0-SNAPSHOT")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1098,7 +1146,7 @@ In such situations a no operation cache manager can be used that will simply acc
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-noop&lt;/artifactId&gt;
-    &lt;version&gt;2.4.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
