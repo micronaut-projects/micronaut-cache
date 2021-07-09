@@ -17,9 +17,8 @@ package io.micronaut.cache.infinispan;
 
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
+import jakarta.inject.Singleton;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-
-import javax.inject.Singleton;
 
 /**
  * Factory class that creates an Infinispan {@link RemoteCacheManager}.

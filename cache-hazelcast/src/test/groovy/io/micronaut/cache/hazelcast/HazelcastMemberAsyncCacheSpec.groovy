@@ -26,11 +26,11 @@ import io.micronaut.cache.tck.AsyncCounterService
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
+import jakarta.inject.Singleton
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-import javax.inject.Singleton
 import java.util.function.Supplier
 
 /**
@@ -66,8 +66,8 @@ class HazelcastMemberAsyncCacheSpec extends Specification {
         AsyncCounterService counterService = applicationContext.getBean(AsyncCounterService)
 
         then:
-        counterService.flowableValue("test").blockingFirst() == 0
-        counterService.singleValue("test").blockingGet() == 0
+        counterService.fluxValue("test").blockFirst() == 0
+        counterService.monoValue("test").block() == 0
 
         when:
         counterService.reset()
@@ -76,10 +76,10 @@ class HazelcastMemberAsyncCacheSpec extends Specification {
         then:
         conditions.eventually {
             result == 1
-            counterService.flowableValue("test").blockingFirst() == 1
+            counterService.fluxValue("test").blockFirst() == 1
             counterService.futureValue("test").get() == 1
             counterService.stageValue("test").toCompletableFuture().get() == 1
-            counterService.singleValue("test").blockingGet() == 1
+            counterService.monoValue("test").block() == 1
             counterService.getValue("test") == 1
         }
 
@@ -88,10 +88,10 @@ class HazelcastMemberAsyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.flowableValue("test").blockingFirst() == 1
+        counterService.fluxValue("test").blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.singleValue("test").blockingGet() == 1
+        counterService.monoValue("test").block() == 1
         counterService.getValue("test") == 1
 
         when:

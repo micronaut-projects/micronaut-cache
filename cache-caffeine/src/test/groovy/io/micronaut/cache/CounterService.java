@@ -19,8 +19,8 @@ import io.micronaut.cache.annotation.CacheConfig;
 import io.micronaut.cache.annotation.CacheInvalidate;
 import io.micronaut.cache.annotation.CachePut;
 import io.micronaut.cache.annotation.Cacheable;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

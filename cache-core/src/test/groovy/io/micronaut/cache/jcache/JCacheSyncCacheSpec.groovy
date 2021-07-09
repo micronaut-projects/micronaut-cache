@@ -22,18 +22,17 @@ import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.cache.annotation.InvalidateOperations
 import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.async.annotation.SingleResult
-import io.reactivex.Flowable
-import io.reactivex.Single
+import jakarta.inject.Singleton
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import spock.lang.Specification
 
 import javax.cache.CacheManager
 import javax.cache.Caching
 import javax.cache.configuration.MutableConfiguration
-import javax.inject.Singleton
 import java.util.concurrent.CompletableFuture
 
 class JCacheSyncCacheSpec extends Specification {
@@ -48,8 +47,8 @@ class JCacheSyncCacheSpec extends Specification {
         CounterService counterService = applicationContext.getBean(CounterService)
 
         then:
-        counterService.flowableValue("test").blockingFirst() == 0
-        counterService.singleValue("test").blockingGet() == 0
+        counterService.fluxValue("test").blockFirst() == 0
+        counterService.monoValue("test").block() == 0
 
         when:
         counterService.reset()
@@ -57,9 +56,9 @@ class JCacheSyncCacheSpec extends Specification {
 
         then:
         result == 1
-        counterService.flowableValue("test").blockingFirst() == 1
+        counterService.fluxValue("test").blockFirst() == 1
         counterService.futureValue("test").get() == 1
-        counterService.singleValue("test").blockingGet() == 1
+        counterService.monoValue("test").block() == 1
         counterService.getValue("test") == 1
         counterService.getValue("test") == 1
 
@@ -68,7 +67,7 @@ class JCacheSyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.flowableValue("test").blockingFirst() == 1
+        counterService.fluxValue("test").blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.getValue("test") == 1
 
@@ -187,13 +186,13 @@ class JCacheSyncCacheSpec extends Specification {
 
         @Cacheable
         @SingleResult
-        Flowable<Integer> flowableValue(String name) {
-            return Flowable.just(counters.computeIfAbsent(name, { 0 }))
+        Flux<Integer> fluxValue(String name) {
+            return Flux.just(counters.computeIfAbsent(name, { 0 }))
         }
 
         @Cacheable
-        Single<Integer> singleValue(String name) {
-            return Single.just(counters.computeIfAbsent(name, { 0 }))
+        Mono<Integer> monoValue(String name) {
+            return Mono.just(counters.computeIfAbsent(name, { 0 }))
         }
 
         @CachePut

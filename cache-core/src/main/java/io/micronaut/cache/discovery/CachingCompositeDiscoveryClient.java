@@ -46,12 +46,14 @@ public class CachingCompositeDiscoveryClient extends CompositeDiscoveryClient {
         super(discoveryClients);
     }
 
+    //TODO: This depends on RxJava2 -> Reactor change is done in Core
     @Override
     @Cacheable(DiscoveryClientCacheConfiguration.CACHE_NAME)
     public Flowable<List<ServiceInstance>> getInstances(String serviceId) {
         return super.getInstances(serviceId);
     }
 
+    //TODO: This depends on RxJava2 -> Reactor change is done in Core
     @Override
     @Cacheable(DiscoveryClientCacheConfiguration.CACHE_NAME)
     public Flowable<List<String>> getServiceIds() {

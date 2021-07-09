@@ -6,13 +6,13 @@ import io.micronaut.cache.jcache.JCacheManager
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
+import jakarta.inject.Singleton
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
 import javax.cache.Caching
 import javax.cache.configuration.MutableConfiguration
-import javax.inject.Singleton
 
 class CacheAnnotationsInheritanceSpec extends Specification {
 

@@ -16,10 +16,10 @@
 package io.micronaut.cache.infinispan;
 
 import io.micronaut.scheduling.TaskExecutors;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import org.infinispan.commons.executors.ExecutorFactory;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 

@@ -17,6 +17,7 @@ package io.micronaut.cache.interceptor;
 
 import io.micronaut.aop.InterceptPhase;
 import io.micronaut.aop.InterceptedMethod;
+import io.micronaut.aop.InterceptorBean;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
 import io.micronaut.cache.AsyncCache;
@@ -32,7 +33,6 @@ import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.AnnotationValueResolver;
-import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.type.ReturnType;
@@ -40,12 +40,13 @@ import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.scheduling.TaskExecutors;
-import io.reactivex.Flowable;
+import jakarta.inject.Named;
+import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ import java.util.function.Supplier;
  * @author Graeme Rocher
  * @since 1.0
  */
-@Singleton
+@InterceptorBean(CacheAnnotation.class)
 public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     /**
      * The position on the interceptor in the chain.
@@ -122,24 +123,39 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                 ReturnType<?> returnType = context.getReturnType();
                 Argument<?> returnTypeValue = interceptedMethod.returnTypeValue();
                 switch (interceptedMethod.resultType()) {
-                    case COMPLETION_STAGE:
-                        CompletionStage<?> completionStage = interceptAsCompletableFuture(context,
-                                interceptedMethod::interceptResultAsCompletionStage,
-                                returnType,
-                                returnTypeValue);
-                        return interceptedMethod.handleResult(completionStage);
-                    case PUBLISHER:
-                        Supplier<CompletionStage<?>> supplier = () -> {
-                            Flowable<Object> flowable = Publishers.convertPublisher(context.proceed(), Flowable.class);
-                            return toCompletableFuture(flowable);
-                        };
-                        CompletionStage<?> result = interceptAsCompletableFuture(context, supplier, returnType, returnTypeValue);
-                        Object publisherResult = Publishers.convertPublisher(result, returnType.getType());
-                        return interceptedMethod.handleResult(publisherResult);
-                    case SYNCHRONOUS:
-                        return interceptSync(context, returnType);
-                    default:
-                        return interceptedMethod.unsupported();
+                case COMPLETION_STAGE:
+                    CompletionStage<?> completionStage = interceptAsCompletableFuture(context,
+                                                                                      interceptedMethod::interceptResultAsCompletionStage,
+                                                                                      returnType,
+                                                                                      returnTypeValue);
+                    return interceptedMethod.handleResult(completionStage);
+                case PUBLISHER:
+                    CacheOperation cacheOperation = getCacheOperation(context,
+                                                                      returnType.isVoid() || returnTypeValue
+                                                                              .equalsType(Argument.VOID_OBJECT));
+                    if (cacheOperation.cacheable) {
+                        if (returnType.isSingleResult()) {
+                            return interceptSingle(context, interceptedMethod, returnTypeValue, cacheOperation);
+                        } else {
+                            return interceptMulti(context, interceptedMethod, returnTypeValue, cacheOperation);
+                        }
+                    } else if (cacheOperation.hasWriteOperations()) {
+                        Publisher<Object> cachingPublisher;
+                        if (returnType.isSingleResult()) {
+                            Mono<Object> cachingMono = Mono.from(interceptedMethod.interceptResultAsPublisher());
+                            cachingPublisher = handleSingleWriteOperations(context, cacheOperation, cachingMono);
+                        } else {
+                            Flux<Object> cachingMono = Flux.from(interceptedMethod.interceptResultAsPublisher());
+                            cachingPublisher = handleMultiWriteOperations(context, cacheOperation, cachingMono);
+                        }
+                        return interceptedMethod.handleResult(cachingPublisher);
+                    } else {
+                        return interceptedMethod.handleResult(interceptedMethod.interceptResultAsPublisher());
+                    }
+                case SYNCHRONOUS:
+                    return interceptSync(context, returnType);
+                default:
+                    return interceptedMethod.unsupported();
                 }
             } catch (Exception e) {
                 return interceptedMethod.handleException(e);
@@ -149,10 +165,192 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         }
     }
 
-    private CompletableFuture<Object> toCompletableFuture(Flowable<Object> flowable) {
-        CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-        flowable.firstElement().subscribe(completableFuture::complete, completableFuture::completeExceptionally, () -> completableFuture.complete(null));
-        return completableFuture;
+    private Object interceptSingle(MethodInvocationContext<Object, Object> context,
+                                   InterceptedMethod interceptedMethod,
+                                   Argument<?> returnTypeValue,
+                                   CacheOperation cacheOperation) {
+        AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
+        Object key = getCacheableKey(context, cacheOperation);
+        Mono<Object> cachingMono = Mono.defer(() ->
+                                                      Mono.fromCompletionStage(asyncCacheGet(asyncCache,
+                                                                                             key,
+                                                                                             returnTypeValue,
+                                                                                             errorHandler))
+        ).flatMap((result) -> {
+            if (result.isPresent()) {
+                // cache hit, return result
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Value found in cache [" + cacheOperation.cacheableCacheName + "] for "
+                                      + "invocation: " + context);
+                }
+                return Mono.just(result.get());
+            } else {
+                return Mono.from(interceptedMethod.interceptResultAsPublisher())
+                        .flatMap((object) -> {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}",
+                                          asyncCache.getName(),
+                                          key,
+                                          context,
+                                          object);
+                            }
+                            return Mono.fromCompletionStage(asyncCachePut(asyncCache, key, object, errorHandler))
+                                    .thenReturn(object);
+
+                        }).switchIfEmpty(Mono.defer(() -> {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace(
+                                        "Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was "
+                                                + "null",
+                                        key,
+                                        asyncCache.getName(),
+                                        context);
+                            }
+                            return Mono.fromCompletionStage(asyncCacheInvalidate(asyncCache, key, errorHandler))
+                                    .then(Mono.empty());
+                        }));
+            }
+        });
+        cachingMono = handleSingleWriteOperations(context, cacheOperation, cachingMono);
+        return interceptedMethod.handleResult(cachingMono);
+    }
+
+    private Mono<Object> handleSingleWriteOperations(MethodInvocationContext<Object, Object> context,
+                                                     CacheOperation cacheOperation,
+                                                     Mono<Object> cachingMono) {
+        if (cacheOperation.hasWriteOperations()) {
+            List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
+            if (CollectionUtils.isNotEmpty(putOperations)) {
+                for (AnnotationValue<CachePut> putOperation : putOperations) {
+                    String[] cacheNames = cacheOperation.getCachePutNames(putOperation);
+                    if (ArrayUtils.isNotEmpty(cacheNames)) {
+                        boolean isAsync = putOperation.isTrue(MEMBER_ASYNC);
+                        if (isAsync) {
+                            cachingMono = cachingMono.doOnNext((result) -> Mono.fromCompletionStage(
+                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                            ));
+                        } else {
+                            cachingMono = cachingMono.flatMap(result -> Mono.fromCompletionStage(
+                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                            ).thenReturn(result));
+                        }
+                    }
+                }
+            }
+            List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
+            if (CollectionUtils.isNotEmpty(invalidateOperations)) {
+                for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
+                    String[] cacheNames = cacheOperation.getCacheInvalidateNames(invalidateOperation);
+                    if (ArrayUtils.isNotEmpty(cacheNames)) {
+                        boolean isAsync = invalidateOperation.isTrue(MEMBER_ASYNC);
+                        if (isAsync) {
+                            cachingMono = cachingMono.doOnNext((result) -> Mono.fromCompletionStage(
+                                    invalidateAsync(context,
+                                                    cacheOperation,
+                                                    invalidateOperation,
+                                                    cacheNames,
+                                                    asyncCacheErrorHandler)
+                            ));
+                        } else {
+                            cachingMono = cachingMono.flatMap(result -> Mono.fromCompletionStage(
+                                    invalidateAsync(context,
+                                                    cacheOperation,
+                                                    invalidateOperation,
+                                                    cacheNames,
+                                                    asyncCacheErrorHandler)
+                            ).thenReturn(result));
+                        }
+                    }
+                }
+            }
+        }
+        return cachingMono;
+    }
+
+    private Object interceptMulti(MethodInvocationContext<Object, Object> context,
+                                  InterceptedMethod interceptedMethod,
+                                  Argument<?> returnTypeValue,
+                                  CacheOperation cacheOperation) {
+        AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
+        Object key = getCacheableKey(context, cacheOperation);
+        Flux<Object> cachingFlux = Mono.defer(() ->
+              Mono.fromCompletionStage(asyncCacheGet(asyncCache,
+                                                     key,
+                                                     returnTypeValue,
+                                                     errorHandler))
+        ).flatMapMany((result) -> {
+            if (result.isPresent()) {
+                // cache hit, return result
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Value found in cache [" + cacheOperation.cacheableCacheName + "] for "
+                                      + "invocation: " + context);
+                }
+                return Mono.just(result.get());
+            } else {
+                return Flux.from(interceptedMethod.interceptResultAsPublisher())
+                        .collectList()
+                        .flatMap((object) -> {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}",
+                                          asyncCache.getName(),
+                                          key,
+                                          context,
+                                          object);
+                            }
+                            return Mono.fromCompletionStage(asyncCachePut(asyncCache, key, object, errorHandler))
+                                    .thenReturn(object);
+
+                        }).switchIfEmpty(Mono.defer(() -> {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace(
+                                        "Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was "
+                                                + "null",
+                                        key,
+                                        asyncCache.getName(),
+                                        context);
+                            }
+                            return Mono.fromCompletionStage(asyncCacheInvalidate(asyncCache, key, errorHandler))
+                                    .then(Mono.empty());
+                        }));
+            }
+        });
+        cachingFlux = handleMultiWriteOperations(context, cacheOperation, cachingFlux);
+        return interceptedMethod.handleResult(cachingFlux);
+    }
+
+    private Flux<Object> handleMultiWriteOperations(MethodInvocationContext<Object, Object> context,
+                                                    CacheOperation cacheOperation,
+                                                    Flux<Object> cachingFlux) {
+        if (cacheOperation.hasWriteOperations()) {
+            List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
+            if (CollectionUtils.isNotEmpty(putOperations)) {
+                for (AnnotationValue<CachePut> putOperation : putOperations) {
+                    String[] cacheNames = cacheOperation.getCachePutNames(putOperation);
+                    if (ArrayUtils.isNotEmpty(cacheNames)) {
+                        boolean isAsync = putOperation.isTrue(MEMBER_ASYNC);
+                        if (isAsync) {
+                            cachingFlux = cachingFlux.collectList().doOnNext((result) -> Mono.fromCompletionStage(
+                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                            )).flatMapIterable(objects -> objects);
+                        } else {
+                            cachingFlux = cachingFlux.collectList().flatMap(result -> Mono.fromCompletionStage(
+                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                            ).thenReturn(result)).flatMapIterable(objects -> objects);
+                        }
+                    }
+                }
+            }
+            List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
+            if (CollectionUtils.isNotEmpty(invalidateOperations)) {
+                for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
+                    String[] cacheNames = cacheOperation.getCacheInvalidateNames(invalidateOperation);
+                    cachingFlux = cachingFlux.doOnComplete(() -> Mono.fromCompletionStage(
+                            invalidateAsync(context, cacheOperation, invalidateOperation, cacheNames, asyncCacheErrorHandler)
+                    ));
+                }
+            }
+        }
+        return cachingFlux;
     }
 
     /**
@@ -253,8 +451,13 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      * @param requiredType     The return type class
      * @return The value from the cache
      */
-    protected CompletionStage<?> interceptAsCompletableFuture(MethodInvocationContext<Object, Object> context, Supplier<CompletionStage<?>> intercept, ReturnType<?> returnTypeObject, Argument<?> requiredType) {
-        CacheOperation cacheOperation = getCacheOperation(context, returnTypeObject.isVoid() || requiredType.equalsType(Argument.VOID_OBJECT));
+    protected CompletionStage<?> interceptAsCompletableFuture(MethodInvocationContext<Object, Object> context,
+                                                              Supplier<CompletionStage<?>> intercept,
+                                                              ReturnType<?> returnTypeObject,
+                                                              Argument<?> requiredType) {
+        CacheOperation cacheOperation = getCacheOperation(context,
+                                                          returnTypeObject.isVoid() || requiredType
+                                                                  .equalsType(Argument.VOID_OBJECT));
         CompletionStage<?> returnFuture;
         if (cacheOperation.cacheable) {
             AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
@@ -276,12 +479,21 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                             return completableFuture.thenCompose(o1 -> {
                                 if (o1 == null) {
                                     if (LOG.isTraceEnabled()) {
-                                        LOG.trace("Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null", key, asyncCache.getName(), context);
+                                        LOG.trace(
+                                                "Invalidating the key [{}] of the cache [{}] since the result of invocation "
+                                                        + "[{}] was null",
+                                                key,
+                                                asyncCache.getName(),
+                                                context);
                                     }
                                     return asyncCacheInvalidate(asyncCache, key, errorHandler).thenApply(ignore -> null);
                                 } else {
                                     if (LOG.isTraceEnabled()) {
-                                        LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}", asyncCache.getName(), key, context, o1);
+                                        LOG.trace("Storing in the cache [{}] with key [{}] the result of invocation [{}]: {}",
+                                                  asyncCache.getName(),
+                                                  key,
+                                                  context,
+                                                  o1);
                                     }
                                     return asyncCachePut(asyncCache, key, o1, errorHandler).thenApply(ignore -> o1);
                                 }
@@ -344,7 +556,12 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                             }
                         }, ioExecutor);
                     } else {
-                        return value.thenCompose(result -> putAsync(context, cacheOperation, putOperation, cacheNames, result, errorHandler));
+                        return value.thenCompose(result -> putAsync(context,
+                                                                    cacheOperation,
+                                                                    putOperation,
+                                                                    cacheNames,
+                                                                    result,
+                                                                    errorHandler));
                     }
                 }
             }
@@ -368,7 +585,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                             }
                         }, ioExecutor);
                     } else {
-                        return value.thenCompose(result -> invalidateAsync(context, cacheOperation, invalidateOperation, cacheNames, errorHandler)
+                        return value.thenCompose(result -> invalidateAsync(context,
+                                                                           cacheOperation,
+                                                                           invalidateOperation,
+                                                                           cacheNames,
+                                                                           errorHandler)
                                 .thenApply(ignore -> result));
                     }
                 }
@@ -406,12 +627,16 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     }
 
     private Object getCacheableKey(MethodInvocationContext context, CacheOperation cacheOperation) {
-        CacheKeyGenerator keyGenerator = resolveKeyGenerator(cacheOperation.defaultKeyGenerator, context.classValue(Cacheable.class, MEMBER_KEY_GENERATOR).orElse(null));
+        CacheKeyGenerator keyGenerator = resolveKeyGenerator(cacheOperation.defaultKeyGenerator,
+                                                             context.classValue(Cacheable.class, MEMBER_KEY_GENERATOR)
+                                                                     .orElse(null));
         Object[] parameterValues = resolveParams(context, context.stringValues(Cacheable.class, MEMBER_PARAMETERS));
         return keyGenerator.generateKey(context, parameterValues);
     }
 
-    private Object getOperationKey(MethodInvocationContext context, AnnotationValueResolver annotationValueResolver, CacheKeyGenerator keyGenerator) {
+    private Object getOperationKey(MethodInvocationContext context,
+                                   AnnotationValueResolver annotationValueResolver,
+                                   CacheKeyGenerator keyGenerator) {
         String[] parameterNames = annotationValueResolver.stringValues(MEMBER_PARAMETERS);
         Object[] parameterValues = resolveParams(context, parameterNames);
         return keyGenerator.generateKey(context, parameterValues);
@@ -436,7 +661,10 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         });
     }
 
-    private CompletableFuture<Boolean> buildPutFutures(String[] cacheNames, Object key, Object value, CacheErrorHandler errorHandler) {
+    private CompletableFuture<Boolean> buildPutFutures(String[] cacheNames,
+                                                       Object key,
+                                                       Object value,
+                                                       CacheErrorHandler errorHandler) {
         List<CompletableFuture<Boolean>> futures = new ArrayList<>();
         for (String cacheName : cacheNames) {
             AsyncCache<?> asyncCache = cacheManager.getCache(cacheName).async();
@@ -466,7 +694,9 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     private CacheKeyGenerator resolveKeyGenerator(CacheKeyGenerator defaultKeyGenerator, Class type) {
         CacheKeyGenerator keyGenerator = defaultKeyGenerator;
         @SuppressWarnings("unchecked")
-        Class<? extends CacheKeyGenerator> alternateKeyGen = type != null && CacheKeyGenerator.class.isAssignableFrom(type) ? type : null;
+        Class<? extends CacheKeyGenerator> alternateKeyGen = type != null && CacheKeyGenerator.class.isAssignableFrom(type)
+                ? type
+                : null;
         if (alternateKeyGen != null && keyGenerator.getClass() != alternateKeyGen) {
             keyGenerator = resolveKeyGenerator(alternateKeyGen);
         }
@@ -505,7 +735,10 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         }
     }
 
-    private void processCachePut(MethodInvocationContext<?, ?> context, ValueWrapper wrapper, AnnotationValue<CachePut> cacheConfig, CacheOperation cacheOperation) {
+    private void processCachePut(MethodInvocationContext<?, ?> context,
+                                 ValueWrapper wrapper,
+                                 AnnotationValue<CachePut> cacheConfig,
+                                 CacheOperation cacheOperation) {
         String[] cacheNames = cacheOperation.getCachePutNames(cacheConfig);
         if (!ArrayUtils.isEmpty(cacheNames)) {
             boolean isAsync = cacheConfig.isTrue(MEMBER_ASYNC);
@@ -552,14 +785,21 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         if (!ArrayUtils.isEmpty(cacheNames)) {
             boolean isAsync = cacheInvalidate.isTrue(MEMBER_ASYNC);
             if (isAsync) {
-                ioExecutor.submit(() -> invalidateAsync(context, cacheOperation, cacheInvalidate, cacheNames, asyncCacheErrorHandler));
+                ioExecutor.submit(() -> invalidateAsync(context,
+                                                        cacheOperation,
+                                                        cacheInvalidate,
+                                                        cacheNames,
+                                                        asyncCacheErrorHandler));
             } else {
                 invalidateSync(context, cacheOperation, cacheInvalidate, cacheNames);
             }
         }
     }
 
-    private void invalidateSync(MethodInvocationContext context, CacheOperation cacheOperation, AnnotationValue<CacheInvalidate> cacheConfig, String[] cacheNames) {
+    private void invalidateSync(MethodInvocationContext context,
+                                CacheOperation cacheOperation,
+                                AnnotationValue<CacheInvalidate> cacheConfig,
+                                String[] cacheNames) {
         boolean invalidateAll = cacheConfig.isTrue(MEMBER_ALL);
         for (String cacheName : cacheNames) {
             SyncCache syncCache = cacheManager.getCache(cacheName);
@@ -591,29 +831,52 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         }
     }
 
-    private CompletableFuture<? extends Optional<?>> asyncCacheGet(AsyncCache<?> asyncCache, Object key, Argument<?> requiredType, CacheErrorHandler errorHandler) {
+    private CompletableFuture<? extends Optional<?>> asyncCacheGet(AsyncCache<?> asyncCache,
+                                                                   Object key,
+                                                                   Argument<?> requiredType,
+                                                                   CacheErrorHandler errorHandler) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Getting the value for the key [{}] of the cache [{}]", key, asyncCache.getName());
         }
         return asyncCache.get(key, requiredType)
                 .exceptionally(throwable ->
-                        exceptionallyAsync(throwable, () -> errorHandler.handleLoadError(asyncCache, key, asRuntimeException(throwable)), null));
+                                       exceptionallyAsync(throwable,
+                                                          () -> errorHandler.handleLoadError(asyncCache,
+                                                                                             key,
+                                                                                             asRuntimeException(throwable)),
+                                                          null));
     }
 
-    private CompletableFuture<Boolean> asyncCachePut(AsyncCache<?> asyncCache, Object key, Object value, CacheErrorHandler errorHandler) {
+    private CompletableFuture<Boolean> asyncCachePut(AsyncCache<?> asyncCache,
+                                                     Object key,
+                                                     Object value,
+                                                     CacheErrorHandler errorHandler) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Putting the value [{}] for the key [{}] of the cache [{}]", value, key, asyncCache.getName());
         }
         return asyncCache.put(key, value).exceptionally(throwable ->
-                exceptionallyAsync(throwable, () -> errorHandler.handlePutError(asyncCache, key, value, asRuntimeException(throwable)), true));
+                                                                exceptionallyAsync(throwable,
+                                                                                   () -> errorHandler.handlePutError(asyncCache,
+                                                                                                                     key,
+                                                                                                                     value,
+                                                                                                                     asRuntimeException(
+                                                                                                                             throwable)),
+                                                                                   true));
     }
 
-    private CompletableFuture<Boolean> asyncCacheInvalidate(AsyncCache<?> asyncCache, Object key, CacheErrorHandler errorHandler) {
+    private CompletableFuture<Boolean> asyncCacheInvalidate(AsyncCache<?> asyncCache,
+                                                            Object key,
+                                                            CacheErrorHandler errorHandler) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Invalidating the key [{}] of the cache [{}]", key, asyncCache.getName());
         }
         return asyncCache.invalidate(key).exceptionally(throwable ->
-                exceptionallyAsync(throwable, () -> errorHandler.handleInvalidateError(asyncCache, key, asRuntimeException(throwable)), true));
+                                                                exceptionallyAsync(throwable,
+                                                                                   () -> errorHandler.handleInvalidateError(
+                                                                                           asyncCache,
+                                                                                           key,
+                                                                                           asRuntimeException(throwable)),
+                                                                                   true));
     }
 
     private CompletableFuture<Boolean> asyncCacheInvalidateAll(AsyncCache<?> asyncCache, CacheErrorHandler errorHandler) {
@@ -621,7 +884,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
             LOG.trace("Invalidating all the entries of the cache [{}]", asyncCache.getName());
         }
         return asyncCache.invalidateAll().exceptionally(throwable ->
-                exceptionallyAsync(throwable, () -> errorHandler.handleInvalidateError(asyncCache, asRuntimeException(throwable)), true));
+                                                                exceptionallyAsync(throwable,
+                                                                                   () -> errorHandler.handleInvalidateError(
+                                                                                           asyncCache,
+                                                                                           asRuntimeException(throwable)),
+                                                                                   true));
     }
 
     private <T> T exceptionallyAsync(Throwable throwable, Supplier<Boolean> handleInvalidateErrorSupplier, T def) {
@@ -715,13 +982,19 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
 
         CacheKeyGenerator getCacheInvalidateKeyGenerator(AnnotationValue<CacheInvalidate> cacheConfig) {
             return cacheConfig.get(MEMBER_KEY_GENERATOR, CacheKeyGenerator.class).orElseGet(() ->
-                    getKeyGenerator(cacheConfig.classValue(MEMBER_KEY_GENERATOR).orElse(null))
+                                                                                                    getKeyGenerator(cacheConfig
+                                                                                                                            .classValue(
+                                                                                                                                    MEMBER_KEY_GENERATOR)
+                                                                                                                            .orElse(null))
             );
         }
 
         CacheKeyGenerator getCachePutKeyGenerator(AnnotationValue<CachePut> cacheConfig) {
             return cacheConfig.get(MEMBER_KEY_GENERATOR, CacheKeyGenerator.class).orElseGet(() ->
-                    getKeyGenerator(cacheConfig.classValue(MEMBER_KEY_GENERATOR).orElse(null))
+                                                                                                    getKeyGenerator(cacheConfig
+                                                                                                                            .classValue(
+                                                                                                                                    MEMBER_KEY_GENERATOR)
+                                                                                                                            .orElse(null))
             );
         }
 
@@ -735,7 +1008,8 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
 
         private CacheKeyGenerator getKeyGenerator(Class<?> alternateKeyGen) {
             CacheKeyGenerator keyGenerator = defaultKeyGenerator;
-            if (alternateKeyGen != null && defaultKeyGenerator.getClass() != alternateKeyGen && CacheKeyGenerator.class.isAssignableFrom(alternateKeyGen)) {
+            if (alternateKeyGen != null && defaultKeyGenerator.getClass() != alternateKeyGen && CacheKeyGenerator.class
+                    .isAssignableFrom(alternateKeyGen)) {
                 //noinspection unchecked
                 keyGenerator = resolveKeyGenerator((Class<? extends CacheKeyGenerator>) alternateKeyGen);
             }

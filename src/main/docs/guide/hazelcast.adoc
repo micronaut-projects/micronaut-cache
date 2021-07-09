@@ -1,6 +1,8 @@
 https://hazelcast.org/[Hazelcast] caching is supported. Micronaut will create a Hazelcast client instance to connect to
 an existing Hazelcast server cluster or create an standalone embedded Hazelcast member instance.
 
+NOTE: This module is built and tested with Hazelcast {hazelcastVersion}
+
 Add the Micronaut Hazelcast module as a dependency:
 
 dependency:io.micronaut.cache:micronaut-cache-hazelcast:{version}[]

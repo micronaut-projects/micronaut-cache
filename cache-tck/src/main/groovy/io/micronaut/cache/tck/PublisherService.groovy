@@ -18,10 +18,10 @@ package io.micronaut.cache.tck
 import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.core.async.annotation.SingleResult
-import io.reactivex.Flowable
-import io.reactivex.Single
+import jakarta.inject.Singleton
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
-import javax.inject.Singleton
 import java.util.concurrent.atomic.AtomicInteger
 
 @Singleton
@@ -32,15 +32,15 @@ class PublisherService {
 
     @Cacheable
     @SingleResult
-    Flowable<Integer> flowableValue(String name) {
+    Flux<Integer> fluxValue(String name) {
         callCount.incrementAndGet()
-        return Flowable.just(0)
+        return Flux.just(0)
     }
 
     @Cacheable
-    Single<Integer> singleValue(String name) {
+    Mono<Integer> monoValue(String name) {
         callCount.incrementAndGet()
-        return Single.just(0)
+        return Mono.just(0)
     }
 
 }

@@ -17,9 +17,8 @@ package io.micronaut.cache
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
+import jakarta.inject.Singleton
 import spock.lang.Specification
-
-import javax.inject.Singleton
 
 class DynamicCacheSpec extends Specification {
 

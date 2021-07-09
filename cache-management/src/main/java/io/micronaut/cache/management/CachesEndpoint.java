@@ -16,6 +16,7 @@
 package io.micronaut.cache.management;
 
 import io.micronaut.cache.AsyncCache;
+import io.micronaut.cache.Cache;
 import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.CacheManager;
 import io.micronaut.cache.SyncCache;
@@ -24,9 +25,8 @@ import io.micronaut.management.endpoint.annotation.Delete;
 import io.micronaut.management.endpoint.annotation.Endpoint;
 import io.micronaut.management.endpoint.annotation.Read;
 import io.micronaut.management.endpoint.annotation.Selector;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Collections;
@@ -58,17 +58,17 @@ public class CachesEndpoint {
     }
 
     /**
-     * Returns the caches as a {@link Single}.
+     * Returns the caches as a {@link Mono}.
      *
-     * @return The caches as a {@link Single}
+     * @return The caches as a {@link Mono}
      */
     @Read
-    public Single<Map<String, Object>> getCaches() {
-        return Flowable.fromIterable(cacheManager.getCacheNames())
+    public Mono<Map<String, Object>> getCaches() {
+        return Flux.fromIterable(cacheManager.getCacheNames())
                .map(cacheManager::getCache)
                .map(SyncCache::getCacheInfo)
-               .map(Flowable::fromPublisher)
-               .flatMapMaybe(Flowable::firstElement)
+               .map(Flux::from)
+               .flatMap(cacheInfoFlux -> cacheInfoFlux.take(1))
                .reduce(new HashMap<>(), (seed, info) -> {
                    seed.put(info.getName(), info.get());
                    return seed;
@@ -77,19 +77,20 @@ public class CachesEndpoint {
     }
 
     /**
-     * Returns the cache as a {@link Maybe}.
+     * Returns the cache as a {@link Mono}.
      *
      * @param name The name of the cache to retrieve
-     * @return The cache as a {@link Single}
+     * @return The cache as a {@link Mono}
      */
     @Read
-    public Maybe<Map<String, Object>> getCache(@NotBlank @Selector String name) {
-        return Maybe.just(name)
+    public Mono<Map<String, Object>> getCache(@NotBlank @Selector String name) {
+        return Mono.just(name)
                 .map(cacheManager::getCache)
-                .flatMapPublisher(SyncCache::getCacheInfo)
+                .flux()
+                .flatMap(Cache::getCacheInfo)
                 .map(CacheInfo::get)
-                .firstElement()
-                .onErrorResumeNext((Throwable e) -> Maybe.empty());
+                .elementAt(0)
+                .onErrorResume((Throwable e) -> Mono.empty());
     }
 
     /**
@@ -98,14 +99,14 @@ public class CachesEndpoint {
      * @return A maybe that emits a boolean.
      */
     @Delete
-    public Maybe<Boolean> invalidateCaches() {
-        return Flowable.fromIterable(cacheManager.getCacheNames())
+    public Mono<Boolean> invalidateCaches() {
+        return Flux.fromIterable(cacheManager.getCacheNames())
                .map(cacheManager::getCache)
                .map(SyncCache::async)
                .map(AsyncCache::invalidateAll)
                .flatMap(Publishers::fromCompletableFuture)
                .reduce((aBoolean, aBoolean2) -> aBoolean && aBoolean2)
-               .onErrorReturnItem(false);
+               .onErrorReturn(false);
     }
 
     /**
@@ -115,13 +116,13 @@ public class CachesEndpoint {
      * @return A maybe that emits a boolean if the operation was successful
      */
     @Delete
-    public Maybe<Boolean> invalidateCache(@NotBlank @Selector String name) {
-        return Maybe.just(name)
+    public Mono<Boolean> invalidateCache(@NotBlank @Selector String name) {
+        return Mono.just(name)
                 .map(cacheManager::getCache)
                 .map(SyncCache::async)
                 .map(AsyncCache::invalidateAll)
-                .flatMap(Maybe::fromFuture)
-                .onErrorReturnItem(false);
+                .flatMap(Mono::fromFuture)
+                .onErrorReturn(false);
     }
 
     /**
@@ -132,13 +133,13 @@ public class CachesEndpoint {
      * @return A maybe that emits a boolean if the operation was successful
      */
     @Delete
-    public Maybe<Boolean> invalidateCacheKey(@NotBlank @Selector String name, @NotBlank @Selector String key) {
-        return Maybe.just(name)
+    public Mono<Boolean> invalidateCacheKey(@NotBlank @Selector String name, @NotBlank @Selector String key) {
+        return Mono.just(name)
                 .map(cacheManager::getCache)
                 .map(SyncCache::async)
                 .map(asyncCache -> asyncCache.invalidate(key))
-                .flatMap(Maybe::fromFuture)
-                .onErrorReturnItem(false);
+                .flatMap(Mono::fromFuture)
+                .onErrorReturn(false);
     }
 
 }
