@@ -28,7 +28,7 @@ import jakarta.inject.Singleton;
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheManagerBuilder;
-import org.ehcache.core.spi.ServiceLocator;
+import org.ehcache.core.internal.statistics.DefaultStatisticsService;
 import org.ehcache.core.spi.service.StatisticsService;
 
 import java.util.concurrent.ExecutorService;
@@ -76,8 +76,7 @@ public class EhcacheCacheFactory {
     @Singleton
     @Bean(preDestroy = "stop")
     StatisticsService statisticsService() {
-        return ServiceLocator.dependencySet().with(StatisticsService.class)
-                .build().getService(StatisticsService.class);
+        return new DefaultStatisticsService();
     }
 
     /**

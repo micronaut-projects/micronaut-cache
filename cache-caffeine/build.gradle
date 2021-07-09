@@ -9,8 +9,9 @@ dependencies {
 
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
     testImplementation "io.micronaut:micronaut-inject-groovy"
-    testImplementation "io.micronaut:micronaut-http-client"
+    testImplementation 'io.micronaut.reactor:micronaut-reactor-http-client:1.2.0'
     testImplementation "io.micronaut:micronaut-management"
+    testImplementation "io.micronaut.reactor:micronaut-reactor-http-client"
     testImplementation "io.micronaut:micronaut-http-server-netty"
 
     testImplementation "io.micronaut.micrometer:micronaut-micrometer-core"

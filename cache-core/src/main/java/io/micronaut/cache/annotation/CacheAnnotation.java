@@ -16,8 +16,6 @@
 package io.micronaut.cache.annotation;
 
 import io.micronaut.aop.Around;
-import io.micronaut.cache.interceptor.CacheInterceptor;
-import io.micronaut.context.annotation.Type;
 import io.micronaut.core.annotation.Internal;
 
 import java.lang.annotation.Documented;

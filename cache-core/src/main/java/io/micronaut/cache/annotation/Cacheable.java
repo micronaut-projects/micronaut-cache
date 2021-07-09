@@ -15,11 +15,9 @@
  */
 package io.micronaut.cache.annotation;
 
-import io.micronaut.cache.interceptor.CacheInterceptor;
 import io.micronaut.cache.interceptor.CacheKeyGenerator;
 import io.micronaut.cache.interceptor.DefaultCacheKeyGenerator;
 import io.micronaut.context.annotation.AliasFor;
-import io.micronaut.context.annotation.Type;
 import io.micronaut.core.annotation.InstantiatedMember;
 
 import java.lang.annotation.Documented;
