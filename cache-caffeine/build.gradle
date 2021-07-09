@@ -1,7 +1,7 @@
 dependencies {
     api project(":cache-core")
     api "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
-
+    implementation "io.micronaut.reactor:micronaut-reactor"
     compileOnly "ch.qos.logback:logback-classic:1.2.3"
     compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
 
