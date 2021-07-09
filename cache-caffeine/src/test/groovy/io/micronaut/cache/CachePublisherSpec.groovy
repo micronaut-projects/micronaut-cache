@@ -53,6 +53,13 @@ class CachePublisherSpec extends Specification {
         single.block() == 4
         invalidate.block() == 4
 
+        when:
+        helloService.error().block()
+
+        then:
+        def e = thrown(RuntimeException)
+        e.message == 'Bad things'
+
         cleanup:
         ctx.close()
     }
@@ -84,6 +91,11 @@ class CachePublisherSpec extends Specification {
             Mono.<Integer> create({ MonoSink<Integer> monoSink ->
                 monoSink.success(num * 2)
             })
+        }
+
+        @Cacheable("error-cache")
+        Mono<String> error() {
+            return Mono.error(new RuntimeException("Bad things"))
         }
     }
 }
