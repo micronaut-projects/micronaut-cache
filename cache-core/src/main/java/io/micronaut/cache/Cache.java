@@ -15,8 +15,8 @@
  */
 package io.micronaut.cache;
 
-import io.reactivex.Flowable;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
 /**
  * <p>Base cache interface implemented by both {@link SyncCache} and {@link AsyncCache}.</p>
@@ -42,6 +42,6 @@ public interface Cache<C> {
      * @return The cache information.
      */
     default Publisher<CacheInfo> getCacheInfo() {
-        return Flowable.empty();
+        return Flux.empty();
     }
 }

@@ -38,8 +38,8 @@ abstract class AbstractAsyncCacheSpec extends Specification {
         AsyncCounterService counterService = applicationContext.getBean(AsyncCounterService)
 
         then:
-        counterService.flowableValue("test").blockingFirst() == 0
-        counterService.singleValue("test").blockingGet() == 0
+        counterService.fluxValue("test").blockFirst() == 0
+        counterService.monoValue("test").block() == 0
 
         when:
         counterService.reset()
@@ -48,10 +48,10 @@ abstract class AbstractAsyncCacheSpec extends Specification {
         then:
         conditions.eventually {
             result == 1
-            counterService.flowableValue("test").blockingFirst() == 1
+            counterService.fluxValue("test").blockFirst() == 1
             counterService.futureValue("test").get() == 1
             counterService.stageValue("test").toCompletableFuture().get() == 1
-            counterService.singleValue("test").blockingGet() == 1
+            counterService.monoValue("test").block() == 1
             counterService.getValue("test") == 1
         }
 
@@ -60,10 +60,10 @@ abstract class AbstractAsyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.flowableValue("test").blockingFirst() == 1
+        counterService.fluxValue("test").blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.singleValue("test").blockingGet() == 1
+        counterService.monoValue("test").block() == 1
         counterService.getValue("test") == 1
 
         when:

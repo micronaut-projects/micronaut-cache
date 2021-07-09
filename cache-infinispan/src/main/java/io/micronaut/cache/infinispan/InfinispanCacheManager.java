@@ -19,12 +19,11 @@ import io.micronaut.cache.DynamicCacheManager;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.ConversionService;
+import jakarta.inject.Singleton;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.commons.configuration.BasicConfiguration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
-
-import javax.inject.Singleton;
 
 /**
  * A {@link DynamicCacheManager} that creates Infinispan caches on demand.

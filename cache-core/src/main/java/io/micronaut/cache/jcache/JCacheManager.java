@@ -25,10 +25,10 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.scheduling.TaskExecutors;
+import jakarta.inject.Named;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
-import javax.inject.Named;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 

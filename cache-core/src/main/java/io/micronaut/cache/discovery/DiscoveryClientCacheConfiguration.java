@@ -21,8 +21,8 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.core.util.Toggleable;
 import io.micronaut.runtime.ApplicationConfiguration;
+import jakarta.inject.Named;
 
-import javax.inject.Named;
 import java.time.Duration;
 
 /**

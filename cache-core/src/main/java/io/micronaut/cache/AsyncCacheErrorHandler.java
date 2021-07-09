@@ -16,11 +16,10 @@
 package io.micronaut.cache;
 
 import io.micronaut.cache.interceptor.CacheInterceptor;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * Async error handler that simply logs errors.

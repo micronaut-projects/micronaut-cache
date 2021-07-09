@@ -24,8 +24,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.runtime.ApplicationConfiguration;
-
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * Default {@link DynamicCacheManager} implementation that creates {@link DefaultSyncCache}s with default values.

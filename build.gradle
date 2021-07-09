@@ -9,6 +9,9 @@ buildscript {
 }
 
 subprojects { Project subproject ->
+    repositories {
+        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    }
     group "io.micronaut.cache"
 
     if (subproject.name != 'cache-bom') {
@@ -19,7 +22,7 @@ subprojects { Project subproject ->
             if (subproject.name != 'cache-tck') {
                 annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:${micronautDocsVersion}"
             }
-
+            implementation 'jakarta.inject:jakarta.inject-api:2.0.0'
             testAnnotationProcessor "io.micronaut:micronaut-inject-java"
             testImplementation("org.spockframework:spock-core:${spockVersion}") {
                 exclude module: 'groovy-all'

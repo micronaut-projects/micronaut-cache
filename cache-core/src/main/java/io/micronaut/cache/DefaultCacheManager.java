@@ -15,15 +15,15 @@
  */
 package io.micronaut.cache;
 
+import io.micronaut.context.BeanProvider;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.CollectionUtils;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,7 +49,7 @@ public class DefaultCacheManager<C> implements CacheManager<C> {
      * actually needed. Caches requested that already exist can proceed
      * without the bean being initialized.
      */
-    private final Provider<DynamicCacheManager<C>> dynamicCacheManager;
+    private final BeanProvider<DynamicCacheManager<C>> dynamicCacheManager;
 
     /**
      * Create default cache manager for the given caches.
@@ -57,7 +57,8 @@ public class DefaultCacheManager<C> implements CacheManager<C> {
      * @param caches List of synchronous cache implementations
      * @param dynamicCacheManager The dynamic cache manager
      */
-    @Inject public DefaultCacheManager(List<SyncCache<C>> caches, @Nullable Provider<DynamicCacheManager<C>> dynamicCacheManager) {
+    @Inject
+    public DefaultCacheManager(List<SyncCache<C>> caches, @Nullable BeanProvider<DynamicCacheManager<C>> dynamicCacheManager) {
         this.dynamicCacheManager = dynamicCacheManager;
         if (CollectionUtils.isEmpty(caches)) {
             this.cacheMap = new LinkedHashMap<>();

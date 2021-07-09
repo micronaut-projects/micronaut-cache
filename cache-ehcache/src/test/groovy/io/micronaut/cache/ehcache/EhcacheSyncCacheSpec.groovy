@@ -15,7 +15,6 @@
  */
 package io.micronaut.cache.ehcache
 
-import io.micronaut.cache.SyncCache
 import io.micronaut.cache.tck.AbstractSyncCacheSpec
 import io.micronaut.context.ApplicationContext
 

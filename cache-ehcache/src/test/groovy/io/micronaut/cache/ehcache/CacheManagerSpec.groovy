@@ -17,12 +17,11 @@ package io.micronaut.cache.ehcache
 
 import io.micronaut.cache.CacheInfo
 import io.micronaut.cache.CacheManager
-import io.reactivex.Flowable
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.config.units.EntryUnit
 import org.ehcache.config.units.MemoryUnit
-import org.ehcache.core.spi.service.StatisticsService
+import reactor.core.publisher.Flux
 import spock.lang.Specification
 
 import static org.ehcache.config.ResourceType.Core.*
@@ -213,7 +212,7 @@ class CacheManagerSpec extends Specification {
         ])
         CacheManager cacheManager = ctx.getBean(CacheManager)
         SyncCache cache = cacheManager.getCache('foo')
-        CacheInfo cacheInfo = Flowable.fromPublisher(cache.cacheInfo).blockingFirst()
+        CacheInfo cacheInfo = Flux.from(cache.cacheInfo).blockFirst()
 
         expect:
         cacheInfo.get()['implementationClass'] == 'org.ehcache.core.Ehcache'

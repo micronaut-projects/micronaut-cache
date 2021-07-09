@@ -13,5 +13,7 @@
     </root>
 
     <logger name="io.micronaut.cache" level="TRACE" />
+<!--    <logger name="io.micronaut.web.router" level="TRACE" />-->
+    <logger name="io.micronaut.http.client" level="TRACE" />
     <logger name="com.github.benmanes.caffeine" level="TRACE" />
 </configuration>

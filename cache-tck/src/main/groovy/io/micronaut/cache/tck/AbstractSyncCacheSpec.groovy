@@ -24,11 +24,11 @@ import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
+import jakarta.inject.Singleton
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-import javax.inject.Singleton
 import java.util.function.Supplier
 
 /**
@@ -48,8 +48,8 @@ abstract class AbstractSyncCacheSpec extends Specification {
         CounterService counterService = applicationContext.getBean(CounterService)
 
         then:
-        counterService.flowableValue("test").blockingFirst() == 0
-        counterService.singleValue("test").blockingGet() == 0
+        counterService.fluxValue("test").blockFirst() == 0
+        counterService.monoValue("test").block() == 0
 
         when:
         counterService.reset()
@@ -57,10 +57,10 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         then:
         result == 1
-        counterService.flowableValue("test").blockingFirst() == 1
+        counterService.fluxValue("test").blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.singleValue("test").blockingGet() == 1
+        counterService.monoValue("test").block() == 1
         counterService.getValue("test") == 1
 
         when:
@@ -68,10 +68,10 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.flowableValue("test").blockingFirst() == 1
+        counterService.fluxValue("test").blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.singleValue("test").blockingGet() == 1
+        counterService.monoValue("test").block() == 1
         counterService.getValue("test") == 1
 
         when:
@@ -150,25 +150,25 @@ abstract class AbstractSyncCacheSpec extends Specification {
         publisherService.callCount.get() == 0
 
         when:
-        publisherService.flowableValue("abc").blockingFirst()
+        publisherService.fluxValue("abc").blockFirst()
 
         then:
         publisherService.callCount.get() == 1
 
         when:
-        publisherService.flowableValue("abc").blockingFirst()
+        publisherService.fluxValue("abc").blockFirst()
 
         then:
         publisherService.callCount.get() == 1
 
         when:
-        publisherService.singleValue("abcd").blockingGet()
+        publisherService.monoValue("abcd").block()
 
         then:
         publisherService.callCount.get() == 2
 
         when:
-        publisherService.singleValue("abcd").blockingGet()
+        publisherService.monoValue("abcd").block()
 
         then:
         publisherService.callCount.get() == 2

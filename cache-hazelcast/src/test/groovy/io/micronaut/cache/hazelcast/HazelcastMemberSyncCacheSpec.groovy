@@ -23,8 +23,7 @@ import io.micronaut.cache.tck.AbstractSyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
-
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 /**
  * @since 1.0

@@ -28,19 +28,17 @@ import io.micronaut.http.annotation.Patch
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.runtime.server.EmbeddedServer
-import io.reactivex.Maybe
-import io.reactivex.MaybeEmitter
-import io.reactivex.MaybeOnSubscribe
-import io.reactivex.Single
-import io.reactivex.annotations.NonNull
+import reactor.core.publisher.Mono
+import reactor.core.publisher.MonoSink
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
+import java.util.function.Consumer
 
-class CachingRxJavaCrudSpec extends Specification {
+class CachingReactorCrudSpec extends Specification {
 
     @Shared
     @AutoCleanup
@@ -50,24 +48,24 @@ class CachingRxJavaCrudSpec extends Specification {
     )
 
     @Shared
+    @AutoCleanup
     EmbeddedServer embeddedServer = context.getBean(EmbeddedServer).start()
 
-    void "test it is possible to implement CRUD operations with RxJava"() {
+    void "test it is possible to implement CRUD operations with Reactor"() {
         given:
         BookClient client = context.getBean(BookClient)
         BookController bookController = context.getBean(BookController)
 
         when:
-        Book book = client.get(99)
-                .blockingGet()
-        List<Book> books = client.list().blockingGet()
+        Book book = client.get(99).block()
+        List<Book> books = client.list().block()
 
         then:
         book == null
         books.size() == 0
 
         when:
-        book = client.save("The Stand").blockingGet()
+        book = client.save("The Stand").block()
 
         then:
         book != null
@@ -75,7 +73,7 @@ class CachingRxJavaCrudSpec extends Specification {
         book.id == 1
 
         when:
-        book = client.get(book.id).blockingGet()
+        book = client.get(book.id).block()
 
         then:
         book != null
@@ -85,7 +83,7 @@ class CachingRxJavaCrudSpec extends Specification {
 
 
         when:
-        book = client.get(book.id).blockingGet()
+        book = client.get(book.id).block()
 
         then:
         book != null
@@ -94,14 +92,14 @@ class CachingRxJavaCrudSpec extends Specification {
         bookController.getInvocationCount.get() == 2
 
         when:'the full response is resolved'
-        HttpResponse<Book> bookAndResponse = client.getResponse(book.id).blockingGet()
+        HttpResponse<Book> bookAndResponse = client.getResponse(book.id).block()
 
         then:"The response is valid"
         bookAndResponse.status() == HttpStatus.OK
         bookAndResponse.body().title == "The Stand"
 
         when:
-        book = client.update(book.id, "The Shining").blockingGet()
+        book = client.update(book.id, "The Shining").block()
 
         then:
         book != null
@@ -109,7 +107,7 @@ class CachingRxJavaCrudSpec extends Specification {
         book.id == 1
 
         when:
-        book = client.get(book.id).blockingGet()
+        book = client.get(book.id).block()
 
         then:
         book != null
@@ -118,24 +116,24 @@ class CachingRxJavaCrudSpec extends Specification {
         bookController.getInvocationCount.get() == 3
 
         when:
-        book = client.delete(book.id).blockingGet()
+        book = client.delete(book.id).block()
 
         then:
         book != null
 
         when:
-        book = client.get(book.id)
-                .blockingGet()
+        book = client.get(book.id).block()
+
         then:
         book == null
     }
 
 
-    @Client('/rxjava/caching/books')
+    @Client('/reactor/caching/books')
     static interface BookClient extends BookApi {
     }
 
-    @Controller("/rxjava/caching/books")
+    @Controller("/reactor/caching/books")
     static class BookController implements BookApi {
 
         Map<Long, Book> books = new LinkedHashMap<>()
@@ -143,60 +141,60 @@ class CachingRxJavaCrudSpec extends Specification {
         AtomicInteger getInvocationCount = new AtomicInteger()
 
         @Override
-        Maybe<Book> get(Long id) {
-            Maybe.create(new MaybeOnSubscribe<Book>() {
+        Mono<Book> get(Long id) {
+            Mono.create(new Consumer<MonoSink<Book>>() {
                 @Override
-                void subscribe(@NonNull MaybeEmitter<Book> emitter) throws Exception {
+                void accept(MonoSink<Book> monoSink) {
                     getInvocationCount.incrementAndGet()
                     Book book = books.get(id)
                     if(book) {
-                        emitter.onSuccess(book)
+                        monoSink.success(book)
                     } else {
-                        emitter.onComplete()
+                        monoSink.success()
                     }
                 }
             })
         }
 
         @Override
-        Single<HttpResponse<Book>> getResponse(Long id) {
+        Mono<HttpResponse<Book>> getResponse(Long id) {
             Book book = books.get(id)
             if(book) {
-                return Single.just(HttpResponse.ok(book))
+                return Mono.just(HttpResponse.ok(book))
             }
-            return Single.just(HttpResponse.notFound())
+            return Mono.just(HttpResponse.notFound())
         }
 
         @Override
-        Single<List<Book>> list() {
-            return Single.just(books.values().toList())
+        Mono<List<Book>> list() {
+            return Mono.just(books.values().toList())
         }
 
         @Override
-        Maybe<Book> delete(Long id) {
+        Mono<Book> delete(Long id) {
             Book book = books.remove(id)
             if(book) {
-                return Maybe.just(book)
+                return Mono.just(book)
             }
-            return Maybe.empty()
+            return Mono.empty()
         }
 
         @Override
-        Single<Book> save(String title) {
+        Mono<Book> save(String title) {
             Book book = new Book(title: title, id:currentId.incrementAndGet())
             books[book.id] = book
-            return Single.just(book)
+            return Mono.just(book)
         }
 
         @Override
-        Maybe<Book> update(Long id, String title) {
+        Mono<Book> update(Long id, String title) {
             Book book = books[id]
             if(book != null) {
                 book.title = title
-                return Maybe.just(book)
+                return Mono.just(book)
             }
             else {
-                return Maybe.empty()
+                return Mono.empty()
             }
         }
     }
@@ -205,27 +203,27 @@ class CachingRxJavaCrudSpec extends Specification {
 
         @Get("/{id}")
         @Cacheable("books")
-        Maybe<Book> get(Long id)
+        Mono<Book> get(Long id)
 
         @Get("/res/{id}")
         @Cacheable("books")
-        Single<HttpResponse<Book>> getResponse(Long id)
+        Mono<HttpResponse<Book>> getResponse(Long id)
 
         @Get
         @Cacheable("book-list")
-        Single<List<Book>> list()
+        Mono<List<Book>> list()
 
         @Delete("/{id}")
         @CacheInvalidate("books")
-        Maybe<Book> delete(Long id)
+        Mono<Book> delete(Long id)
 
         @Post
         @CachePut("books")
-        Single<Book> save(String title)
+        Mono<Book> save(String title)
 
         @Patch("/{id}")
         @CacheInvalidate("books")
-        Maybe<Book> update(Long id, String title)
+        Mono<Book> update(Long id, String title)
     }
 
 

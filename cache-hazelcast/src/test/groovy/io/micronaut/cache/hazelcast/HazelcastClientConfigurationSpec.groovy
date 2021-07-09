@@ -20,9 +20,8 @@ import com.hazelcast.config.ListenerConfig
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
+import jakarta.inject.Singleton
 import spock.lang.Specification
-
-import javax.inject.Singleton
 
 class HazelcastClientConfigurationSpec extends Specification {
 

@@ -31,10 +31,10 @@ import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.inject.qualifiers.Qualifiers;
-import io.reactivex.Flowable;
+import jakarta.inject.Inject;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
-import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -92,7 +92,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
 
     @Override
     public Publisher<CacheInfo> getCacheInfo() {
-        return Flowable.just(new CacheInfo() {
+        return Flux.just(new CacheInfo() {
             @NonNull
             @Override
             public String getName() {
