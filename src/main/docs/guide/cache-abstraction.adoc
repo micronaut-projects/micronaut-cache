@@ -24,6 +24,7 @@ In addition if the underlying Cache implementation supports non-blocking cache o
 
 To cache using https://github.com/ben-manes/caffeine[Caffeine] add the following dependency to your application:
 
+NOTE: This module is built and tested with Caffeine {caffeineVersion}
 
 dependency:io.micronaut.cache:micronaut-cache-caffeine[]
 

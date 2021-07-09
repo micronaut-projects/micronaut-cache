@@ -1,6 +1,8 @@
 https://infinispan.org/[Infinispan] caching is supported. Micronaut will create an Infinispan client instance to connect to
 an existing Infinispan server using the HotRod protocol.
 
+NOTE: This module is built and tested with Infinispan {infinispanVersion}
+
 To get started, add the Micronaut Infinispan module as a dependency:
 
 dependency:io.micronaut.cache:micronaut-cache-infinispan:{version}[]

@@ -1,5 +1,7 @@
 To use https://www.ehcache.org/[Ehcache] as the caching implementation, add it as a dependency to your application:
 
+NOTE: This module is built and tested with Ehcache {ehcacheVersion}
+
 dependency:io.micronaut.cache:micronaut-cache-ehcache:{version}[]
 
 To have Micronaut create a cache, the minimum configuration is:
