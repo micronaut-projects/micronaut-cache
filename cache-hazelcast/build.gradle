@@ -13,6 +13,8 @@ dependencies {
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
     testImplementation "org.testcontainers:spock:1.15.3"
+    testImplementation "io.projectreactor:reactor-core"
+    testImplementation "io.micronaut:micronaut-http-client"
 }
 
 tasks.withType(Test) {

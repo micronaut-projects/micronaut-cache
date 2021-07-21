@@ -81,8 +81,6 @@ class JCacheSyncCacheSpec extends Specification {
         then:
         counterService.futureValue("test").get() == 0
 
-
-
         when:
         counterService.set("test", 3)
 
@@ -129,8 +127,6 @@ class JCacheSyncCacheSpec extends Specification {
         then:
         counterService.getValue("test") == 1
         counterService.getValue2("test") == 1
-
-
     }
 
     @Factory
