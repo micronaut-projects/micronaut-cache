@@ -18,6 +18,8 @@ package io.micronaut.cache.tck
 import io.micronaut.cache.AsyncCache
 import io.micronaut.cache.CacheManager
 import io.micronaut.context.ApplicationContext
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
@@ -38,8 +40,8 @@ abstract class AbstractAsyncCacheSpec extends Specification {
         AsyncCounterService counterService = applicationContext.getBean(AsyncCounterService)
 
         then:
-        counterService.fluxValue("test").blockFirst() == 0
-        counterService.monoValue("test").block() == 0
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 0
+        Mono.from(counterService.monoValue("test")).block() == 0
 
         when:
         counterService.reset()
@@ -48,10 +50,10 @@ abstract class AbstractAsyncCacheSpec extends Specification {
         then:
         conditions.eventually {
             result == 1
-            counterService.fluxValue("test").blockFirst() == 1
+            Flux.from(counterService.fluxValue("test")).blockFirst() == 1
             counterService.futureValue("test").get() == 1
             counterService.stageValue("test").toCompletableFuture().get() == 1
-            counterService.monoValue("test").block() == 1
+            Mono.from(counterService.monoValue("test")).block() == 1
             counterService.getValue("test") == 1
         }
 
@@ -60,10 +62,10 @@ abstract class AbstractAsyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.fluxValue("test").blockFirst() == 1
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.monoValue("test").block() == 1
+        Mono.from(counterService.monoValue("test")).block() == 1
         counterService.getValue("test") == 1
 
         when:

@@ -25,6 +25,8 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
 import jakarta.inject.Singleton
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import spock.lang.Retry
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
@@ -48,8 +50,8 @@ abstract class AbstractSyncCacheSpec extends Specification {
         CounterService counterService = applicationContext.getBean(CounterService)
 
         then:
-        counterService.fluxValue("test").blockFirst() == 0
-        counterService.monoValue("test").block() == 0
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 0
+        Mono.from(counterService.monoValue("test")).block() == 0
 
         when:
         counterService.reset()
@@ -57,10 +59,10 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         then:
         result == 1
-        counterService.fluxValue("test").blockFirst() == 1
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.monoValue("test").block() == 1
+        Mono.from(counterService.monoValue("test")).block() == 1
         counterService.getValue("test") == 1
 
         when:
@@ -68,10 +70,10 @@ abstract class AbstractSyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.fluxValue("test").blockFirst() == 1
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.monoValue("test").block() == 1
+        Mono.from(counterService.monoValue("test")).block() == 1
         counterService.getValue("test") == 1
 
         when:
@@ -150,25 +152,25 @@ abstract class AbstractSyncCacheSpec extends Specification {
         publisherService.callCount.get() == 0
 
         when:
-        publisherService.fluxValue("abc").blockFirst()
+        Flux.from(publisherService.fluxValue("abc")).blockFirst()
 
         then:
         publisherService.callCount.get() == 1
 
         when:
-        publisherService.fluxValue("abc").blockFirst()
+        Flux.from(publisherService.fluxValue("abc")).blockFirst()
 
         then:
         publisherService.callCount.get() == 1
 
         when:
-        publisherService.monoValue("abcd").block()
+        Mono.from(publisherService.monoValue("abcd")).block()
 
         then:
         publisherService.callCount.get() == 2
 
         when:
-        publisherService.monoValue("abcd").block()
+        Mono.from(publisherService.monoValue("abcd")).block()
 
         then:
         publisherService.callCount.get() == 2

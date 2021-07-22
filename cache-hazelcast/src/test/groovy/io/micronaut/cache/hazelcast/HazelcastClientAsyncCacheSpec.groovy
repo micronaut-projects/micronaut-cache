@@ -22,6 +22,8 @@ import io.micronaut.cache.tck.AsyncCounterService
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.spock.Testcontainers
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import spock.lang.Shared
 import spock.util.concurrent.PollingConditions
 
@@ -46,8 +48,8 @@ class HazelcastClientAsyncCacheSpec implements HazelcastClientSupport {
         AsyncCounterService counterService = applicationContext.getBean(AsyncCounterService)
 
         then:
-        counterService.fluxValue("test").blockFirst() == 0
-        counterService.monoValue("test").block() == 0
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 0
+        Mono.from(counterService.monoValue("test")).block() == 0
 
         when:
         counterService.reset()
@@ -56,10 +58,10 @@ class HazelcastClientAsyncCacheSpec implements HazelcastClientSupport {
         then:
         conditions.eventually {
             result == 1
-            counterService.fluxValue("test").blockFirst() == 1
+            Flux.from(counterService.fluxValue("test")).blockFirst() == 1
             counterService.futureValue("test").get() == 1
             counterService.stageValue("test").toCompletableFuture().get() == 1
-            counterService.monoValue("test").block() == 1
+            Mono.from(counterService.monoValue("test")).block() == 1
             counterService.getValue("test") == 1
         }
 
@@ -69,10 +71,10 @@ class HazelcastClientAsyncCacheSpec implements HazelcastClientSupport {
         then:
         conditions.eventually {
             result == 2
-            counterService.fluxValue("test").blockFirst() == 1
+            Flux.from(counterService.fluxValue("test")).blockFirst() == 1
             counterService.futureValue("test").get() == 1
             counterService.stageValue("test").toCompletableFuture().get() == 1
-            counterService.monoValue("test").block() == 1
+            Mono.from(counterService.monoValue("test")).block() == 1
             counterService.getValue("test") == 1
         }
 

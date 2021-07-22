@@ -26,6 +26,7 @@ import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.context.ApplicationContext
 import io.micronaut.inject.qualifiers.Qualifiers
 import jakarta.inject.Singleton
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import spock.lang.Retry
@@ -58,8 +59,8 @@ class SyncCacheSpec extends Specification {
         CounterService counterService = applicationContext.getBean(CounterService)
 
         then:
-        counterService.fluxValue("test").blockFirst() == 0
-        counterService.monoValue("test").block() == 0
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 0
+        Mono.from(counterService.monoValue("test")).block() == 0
 
         when:
         counterService.reset()
@@ -67,10 +68,10 @@ class SyncCacheSpec extends Specification {
 
         then:
         result == 1
-        counterService.fluxValue("test").blockFirst() == 1
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.monoValue("test").block() == 1
+        Mono.from(counterService.monoValue("test")).block() == 1
         counterService.getValue("test") == 1
 
         when:
@@ -78,10 +79,10 @@ class SyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.fluxValue("test").blockFirst() == 1
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.stageValue("test").toCompletableFuture().get() == 1
-        counterService.monoValue("test").block() == 1
+        Mono.from(counterService.monoValue("test")).block() == 1
         counterService.getValue("test") == 1
 
         when:
@@ -162,25 +163,25 @@ class SyncCacheSpec extends Specification {
         publisherService.callCount.get() == 0
 
         when:
-        publisherService.fluxValue("abc").blockFirst()
+        Flux.from(publisherService.fluxValue("abc")).blockFirst()
 
         then:
         publisherService.callCount.get() == 1
 
         when:
-        publisherService.fluxValue("abc").blockFirst()
+        Flux.from(publisherService.fluxValue("abc")).blockFirst()
 
         then:
         publisherService.callCount.get() == 1
 
         when:
-        publisherService.monoValue("abcd").block()
+        Mono.from(publisherService.monoValue("abcd")).block()
 
         then:
         publisherService.callCount.get() == 2
 
         when:
-        publisherService.monoValue("abcd").block()
+        Mono.from(publisherService.monoValue("abcd")).block()
 
         then:
         publisherService.callCount.get() == 2
@@ -291,13 +292,13 @@ class SyncCacheSpec extends Specification {
 
         @Cacheable
         @SingleResult
-        Flux<Integer> fluxValue(String name) {
+        Publisher<Integer> fluxValue(String name) {
             callCount.incrementAndGet()
             return Flux.just(0)
         }
 
         @Cacheable
-        Mono<Integer> monoValue(String name) {
+        Publisher<Integer> monoValue(String name) {
             callCount.incrementAndGet()
             return Mono.just(0)
         }
@@ -346,12 +347,13 @@ class SyncCacheSpec extends Specification {
 
         @Cacheable
         @SingleResult
-        Flux<Integer> fluxValue(String name) {
+        Publisher<Integer> fluxValue(String name) {
             return Flux.just(counters.computeIfAbsent(name, { 0 }))
         }
 
         @Cacheable
-        Mono<Integer> monoValue(String name) {
+        @SingleResult
+        Publisher<Integer> monoValue(String name) {
             return Mono.just(counters.computeIfAbsent(name, { 0 }))
         }
 

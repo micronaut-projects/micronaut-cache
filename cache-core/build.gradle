@@ -3,14 +3,14 @@ dependencies {
     api "io.micronaut:micronaut-inject"
     api "io.micronaut:micronaut-aop"
     api "io.micronaut:micronaut-runtime"
-    implementation "io.micronaut.reactor:micronaut-reactor"
+    implementation "io.projectreactor:reactor-core"
     compileOnly "javax.cache:cache-api"
     compileOnly "io.micronaut:micronaut-management"
-    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
+    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion"
 
     compileOnly "ch.qos.logback:logback-classic:1.2.3"
     testImplementation "ch.qos.logback:logback-classic:1.2.3"
-
+    testImplementation "io.micronaut:micronaut-http-client"
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
     testImplementation "javax.cache:cache-api"
     testImplementation "io.micronaut:micronaut-inject-groovy"
