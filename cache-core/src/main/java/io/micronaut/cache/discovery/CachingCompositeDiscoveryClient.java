@@ -23,7 +23,7 @@ import io.micronaut.discovery.CompositeDiscoveryClient;
 import io.micronaut.discovery.DefaultCompositeDiscoveryClient;
 import io.micronaut.discovery.DiscoveryClient;
 import io.micronaut.discovery.ServiceInstance;
-import io.reactivex.Flowable;
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 
@@ -46,17 +46,15 @@ public class CachingCompositeDiscoveryClient extends CompositeDiscoveryClient {
         super(discoveryClients);
     }
 
-    //TODO: This depends on RxJava2 -> Reactor change is done in Core
     @Override
     @Cacheable(DiscoveryClientCacheConfiguration.CACHE_NAME)
-    public Flowable<List<ServiceInstance>> getInstances(String serviceId) {
+    public Publisher<List<ServiceInstance>> getInstances(String serviceId) {
         return super.getInstances(serviceId);
     }
 
-    //TODO: This depends on RxJava2 -> Reactor change is done in Core
     @Override
     @Cacheable(DiscoveryClientCacheConfiguration.CACHE_NAME)
-    public Flowable<List<String>> getServiceIds() {
+    public Publisher<List<String>> getServiceIds() {
         return super.getServiceIds();
     }
 }

@@ -21,7 +21,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
-import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.HttpClient
 import io.micronaut.runtime.server.EmbeddedServer
 import spock.lang.Specification
 
@@ -37,10 +37,10 @@ class CachesEndpointSpec extends Specification {
                 "endpoints.caches.enabled": true,
                 "endpoints.caches.sensitive": false
         ], Environment.TEST)
-        RxHttpClient rxClient = embeddedServer.applicationContext.createBean(RxHttpClient, embeddedServer.getURL())
+        HttpClient client = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
 
         when:
-        def response = rxClient.exchange("/caches", Map).blockingFirst()
+        def response = client.toBlocking().exchange("/caches", Map)
         Map result = response.body()
 
         then:
@@ -48,7 +48,7 @@ class CachesEndpointSpec extends Specification {
         result == [:]
 
         cleanup:
-        rxClient.close()
+        client.close()
         embeddedServer?.close()
     }
 
@@ -62,7 +62,7 @@ class CachesEndpointSpec extends Specification {
                         "micronaut.caches.foo-cache.recordStats": true,
                         "micronaut.caches.bar-cache.maximumWeight": 20
                 ], Environment.TEST)
-        RxHttpClient rxClient = embeddedServer.applicationContext.createBean(RxHttpClient, embeddedServer.getURL())
+        HttpClient client = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
         CacheManager cacheManager = embeddedServer.applicationContext.getBean(CacheManager)
 
         SyncCache fooCache = cacheManager.getCache("foo-cache")
@@ -74,7 +74,7 @@ class CachesEndpointSpec extends Specification {
         fooCache.get("foo3", Object)
 
         when:
-        def response = rxClient.exchange("/caches", Map).blockingFirst()
+        def response = client.toBlocking().exchange("/caches", Map)
         Map result = response.body()
         Map<String, Map<String, Object>> caches = result.caches
 
@@ -99,7 +99,7 @@ class CachesEndpointSpec extends Specification {
         caches["foo-cache"].caffeine.stats.evictionWeight == 0
 
         when:
-        response = rxClient.exchange("/caches/foo-cache", Map).blockingFirst()
+        response = client.toBlocking().exchange("/caches/foo-cache", Map)
         result = response.body()
 
         then:
@@ -118,7 +118,7 @@ class CachesEndpointSpec extends Specification {
         result.caffeine.stats.evictionWeight == 0
 
         cleanup:
-        rxClient.close()
+        client.close()
         embeddedServer?.close()
     }
 
@@ -131,7 +131,7 @@ class CachesEndpointSpec extends Specification {
                         "micronaut.caches.foo-cache.maximumSize": 10,
                         "micronaut.caches.bar-cache.maximumSize": 10
                 ], Environment.TEST)
-        RxHttpClient rxClient = embeddedServer.applicationContext.createBean(RxHttpClient, embeddedServer.getURL())
+        HttpClient client = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
         CacheManager cacheManager = embeddedServer.applicationContext.getBean(CacheManager)
 
         SyncCache fooCache = cacheManager.getCache("foo-cache")
@@ -143,7 +143,7 @@ class CachesEndpointSpec extends Specification {
         barCache.put("bar2", "value2")
 
         when:
-        def response = rxClient.exchange("/caches", Map).blockingFirst()
+        def response = client.toBlocking().exchange("/caches", Map)
         Map result = response.body()
         Map<String, Map<String, Object>> caches = result.caches
 
@@ -154,8 +154,8 @@ class CachesEndpointSpec extends Specification {
         caches["foo-cache"].caffeine.estimatedSize == 2
 
         when:
-        rxClient.exchange(HttpRequest.DELETE("/caches/foo-cache")).blockingFirst()
-        response = rxClient.exchange("/caches", Map).blockingFirst()
+        client.toBlocking().exchange(HttpRequest.DELETE("/caches/foo-cache"))
+        response = client.toBlocking().exchange("/caches", Map)
         result = response.body()
         caches = result.caches
 
@@ -166,7 +166,7 @@ class CachesEndpointSpec extends Specification {
         caches["foo-cache"].caffeine.estimatedSize == 0
 
         cleanup:
-        rxClient.close()
+        client.close()
         embeddedServer?.close()
     }
 
@@ -179,7 +179,7 @@ class CachesEndpointSpec extends Specification {
                         "micronaut.caches.foo-cache.maximumSize": 10,
                         "micronaut.caches.bar-cache.maximumSize": 10
                 ], Environment.TEST)
-        RxHttpClient rxClient = embeddedServer.applicationContext.createBean(RxHttpClient, embeddedServer.getURL())
+        HttpClient client = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
         CacheManager cacheManager = embeddedServer.applicationContext.getBean(CacheManager)
 
         SyncCache fooCache = cacheManager.getCache("foo-cache")
@@ -191,7 +191,7 @@ class CachesEndpointSpec extends Specification {
         barCache.put("bar2", "value2")
 
         when:
-        def response = rxClient.exchange("/caches", Map).blockingFirst()
+        def response = client.toBlocking().exchange("/caches", Map)
         Map result = response.body()
         Map<String, Map<String, Object>> caches = result.caches
 
@@ -202,8 +202,8 @@ class CachesEndpointSpec extends Specification {
         caches["foo-cache"].caffeine.estimatedSize == 2
 
         when:
-        rxClient.exchange(HttpRequest.DELETE("/caches/bar-cache/bar1")).blockingFirst()
-        response = rxClient.exchange("/caches", Map).blockingFirst()
+        client.toBlocking().exchange(HttpRequest.DELETE("/caches/bar-cache/bar1"))
+        response = client.toBlocking().exchange("/caches", Map)
         result = response.body()
         caches = result.caches
 
@@ -214,8 +214,8 @@ class CachesEndpointSpec extends Specification {
         caches["foo-cache"].caffeine.estimatedSize == 2
 
         when:
-        rxClient.exchange(HttpRequest.DELETE("/caches/foo-cache/foo2")).blockingFirst()
-        response = rxClient.exchange("/caches", Map).blockingFirst()
+        client.toBlocking().exchange(HttpRequest.DELETE("/caches/foo-cache/foo2"))
+        response = client.toBlocking().exchange("/caches", Map)
         result = response.body()
         caches = result.caches
 
@@ -226,7 +226,7 @@ class CachesEndpointSpec extends Specification {
         caches["foo-cache"].caffeine.estimatedSize == 1
 
         cleanup:
-        rxClient.close()
+        client.close()
         embeddedServer?.close()
     }
 
@@ -239,7 +239,7 @@ class CachesEndpointSpec extends Specification {
                         "micronaut.caches.foo-cache.maximumSize": 10,
                         "micronaut.caches.bar-cache.maximumSize": 10
                 ], Environment.TEST)
-        RxHttpClient rxClient = embeddedServer.applicationContext.createBean(RxHttpClient, embeddedServer.getURL())
+        HttpClient client = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
         CacheManager cacheManager = embeddedServer.applicationContext.getBean(CacheManager)
 
         SyncCache fooCache = cacheManager.getCache("foo-cache")
@@ -251,7 +251,7 @@ class CachesEndpointSpec extends Specification {
         barCache.put("bar2", "value2")
 
         when:
-        def response = rxClient.exchange("/caches", Map).blockingFirst()
+        def response = client.toBlocking().exchange("/caches", Map)
         Map result = response.body()
         Map<String, Map<String, Object>> caches = result.caches
 
@@ -262,8 +262,8 @@ class CachesEndpointSpec extends Specification {
         caches["foo-cache"].caffeine.estimatedSize == 2
 
         when:
-        rxClient.exchange(HttpRequest.DELETE("/caches")).blockingFirst()
-        response = rxClient.exchange("/caches", Map).blockingFirst()
+        client.toBlocking().exchange(HttpRequest.DELETE("/caches"))
+        response = client.toBlocking().exchange("/caches", Map)
         result = response.body()
         caches = result.caches
 
@@ -274,7 +274,7 @@ class CachesEndpointSpec extends Specification {
         caches["foo-cache"].caffeine.estimatedSize == 0
 
         cleanup:
-        rxClient.close()
+        client.close()
         embeddedServer?.close()
     }
 
@@ -286,10 +286,10 @@ class CachesEndpointSpec extends Specification {
                         "endpoints.caches.sensitive": false,
                         "micronaut.caches.foo-cache.initialCapacity": 100,
                 ], Environment.TEST)
-        RxHttpClient rxClient = embeddedServer.applicationContext.createBean(RxHttpClient, embeddedServer.getURL())
+        HttpClient client = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
 
         when:
-        def response = rxClient.exchange("/caches", Map).blockingFirst()
+        def response = client.toBlocking().exchange("/caches", Map)
         Map result = response.body()
         Map<String, Map<String, Object>> caches = result.caches
 

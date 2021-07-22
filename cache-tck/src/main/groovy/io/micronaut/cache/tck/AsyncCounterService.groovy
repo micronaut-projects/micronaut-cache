@@ -23,6 +23,7 @@ import io.micronaut.cache.annotation.InvalidateOperations
 import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.core.async.annotation.SingleResult
 import jakarta.inject.Singleton
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -71,12 +72,13 @@ class AsyncCounterService {
 
     @Cacheable
     @SingleResult
-    Flux<Integer> fluxValue(String name) {
+    Publisher<Integer> fluxValue(String name) {
         return Flux.just(counters.computeIfAbsent(name, { 0 }))
     }
 
     @Cacheable
-    Mono<Integer> monoValue(String name) {
+    @SingleResult
+    Publisher<Integer> monoValue(String name) {
         return Mono.just(counters.computeIfAbsent(name, { 0 }))
     }
 

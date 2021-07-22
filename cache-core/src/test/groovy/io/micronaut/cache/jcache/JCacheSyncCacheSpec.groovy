@@ -26,6 +26,7 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.async.annotation.SingleResult
 import jakarta.inject.Singleton
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import spock.lang.Specification
@@ -47,8 +48,8 @@ class JCacheSyncCacheSpec extends Specification {
         CounterService counterService = applicationContext.getBean(CounterService)
 
         then:
-        counterService.fluxValue("test").blockFirst() == 0
-        counterService.monoValue("test").block() == 0
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 0
+        Mono.from(counterService.monoValue("test")).block() == 0
 
         when:
         counterService.reset()
@@ -56,9 +57,9 @@ class JCacheSyncCacheSpec extends Specification {
 
         then:
         result == 1
-        counterService.fluxValue("test").blockFirst() == 1
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 1
         counterService.futureValue("test").get() == 1
-        counterService.monoValue("test").block() == 1
+        Mono.from(counterService.monoValue("test")).block() == 1
         counterService.getValue("test") == 1
         counterService.getValue("test") == 1
 
@@ -67,7 +68,7 @@ class JCacheSyncCacheSpec extends Specification {
 
         then:
         result == 2
-        counterService.fluxValue("test").blockFirst() == 1
+        Flux.from(counterService.fluxValue("test")).blockFirst() == 1
         counterService.futureValue("test").get() == 1
         counterService.getValue("test") == 1
 
@@ -80,8 +81,6 @@ class JCacheSyncCacheSpec extends Specification {
         counterService.reset("test")
         then:
         counterService.futureValue("test").get() == 0
-
-
 
         when:
         counterService.set("test", 3)
@@ -129,8 +128,6 @@ class JCacheSyncCacheSpec extends Specification {
         then:
         counterService.getValue("test") == 1
         counterService.getValue2("test") == 1
-
-
     }
 
     @Factory
@@ -186,12 +183,13 @@ class JCacheSyncCacheSpec extends Specification {
 
         @Cacheable
         @SingleResult
-        Flux<Integer> fluxValue(String name) {
+        Publisher<Integer> fluxValue(String name) {
             return Flux.just(counters.computeIfAbsent(name, { 0 }))
         }
 
         @Cacheable
-        Mono<Integer> monoValue(String name) {
+        @SingleResult
+        Publisher<Integer> monoValue(String name) {
             return Mono.just(counters.computeIfAbsent(name, { 0 }))
         }
 

@@ -1,18 +1,16 @@
 dependencies {
     api project(":cache-core")
     api "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
-    implementation "io.micronaut.reactor:micronaut-reactor"
     compileOnly "ch.qos.logback:logback-classic:1.2.3"
-    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
+    implementation "io.projectreactor:reactor-core"
+    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion"
 
     testImplementation "ch.qos.logback:logback-classic:1.2.3"
 
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
     testImplementation "io.micronaut:micronaut-inject-groovy"
-    testImplementation 'io.micronaut.reactor:micronaut-reactor-http-client:1.2.0'
     testImplementation "io.micronaut:micronaut-management"
-    testImplementation "io.micronaut.reactor:micronaut-reactor-http-client"
+    testImplementation "io.micronaut:micronaut-http-client"
     testImplementation "io.micronaut:micronaut-http-server-netty"
-
-    testImplementation "io.micronaut.micrometer:micronaut-micrometer-core"
+    testImplementation "io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion"
 }
