@@ -6,7 +6,7 @@ dependencies {
     implementation "io.micronaut.reactor:micronaut-reactor"
     compileOnly "javax.cache:cache-api"
     compileOnly "io.micronaut:micronaut-management"
-    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
+    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion"
 
     compileOnly "ch.qos.logback:logback-classic:1.2.3"
     testImplementation "ch.qos.logback:logback-classic:1.2.3"

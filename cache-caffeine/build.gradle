@@ -3,7 +3,7 @@ dependencies {
     api "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
     compileOnly "ch.qos.logback:logback-classic:1.2.3"
     implementation "io.projectreactor:reactor-core"
-    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
+    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion"
 
     testImplementation "ch.qos.logback:logback-classic:1.2.3"
 
@@ -12,5 +12,5 @@ dependencies {
     testImplementation "io.micronaut:micronaut-management"
     testImplementation "io.micronaut:micronaut-http-client"
     testImplementation "io.micronaut:micronaut-http-server-netty"
-    testImplementation "io.micronaut.micrometer:micronaut-micrometer-core"
+    testImplementation "io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion"
 }
