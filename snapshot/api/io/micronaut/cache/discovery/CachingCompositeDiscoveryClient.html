@@ -165,11 +165,11 @@ extends io.micronaut.discovery.CompositeDiscoveryClient</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>io.reactivex.Flowable&lt;java.util.List&lt;io.micronaut.discovery.ServiceInstance&gt;&gt;</code></td>
+<td class="colFirst"><code>org.reactivestreams.Publisher&lt;java.util.List&lt;io.micronaut.discovery.ServiceInstance&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/discovery/CachingCompositeDiscoveryClient.html#getInstances-java.lang.String-">getInstances</a></span>(java.lang.String&nbsp;serviceId)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>io.reactivex.Flowable&lt;java.util.List&lt;java.lang.String&gt;&gt;</code></td>
+<td class="colFirst"><code>org.reactivestreams.Publisher&lt;java.util.List&lt;java.lang.String&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/cache/discovery/CachingCompositeDiscoveryClient.html#getServiceIds--">getServiceIds</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
@@ -186,6 +186,13 @@ extends io.micronaut.discovery.CompositeDiscoveryClient</pre>
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.io.micronaut.core.naming.Described">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;io.micronaut.core.naming.Described</h3>
+<code>getDescription</code></li>
 </ul>
 </li>
 </ul>
@@ -229,7 +236,7 @@ extends io.micronaut.discovery.CompositeDiscoveryClient</pre>
 <li class="blockList">
 <h4>getInstances</h4>
 <pre><a href="../../../../io/micronaut/cache/annotation/Cacheable.html" title="annotation in io.micronaut.cache.annotation">@Cacheable</a>(<a href="../../../../io/micronaut/cache/annotation/Cacheable.html#value--">value</a>="discovery-client")
-public&nbsp;io.reactivex.Flowable&lt;java.util.List&lt;io.micronaut.discovery.ServiceInstance&gt;&gt;&nbsp;getInstances(java.lang.String&nbsp;serviceId)</pre>
+public&nbsp;org.reactivestreams.Publisher&lt;java.util.List&lt;io.micronaut.discovery.ServiceInstance&gt;&gt;&nbsp;getInstances(java.lang.String&nbsp;serviceId)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>getInstances</code>&nbsp;in interface&nbsp;<code>io.micronaut.discovery.DiscoveryClient</code></dd>
@@ -245,7 +252,7 @@ public&nbsp;io.reactivex.Flowable&lt;java.util.List&lt;io.micronaut.discovery.Se
 <li class="blockList">
 <h4>getServiceIds</h4>
 <pre><a href="../../../../io/micronaut/cache/annotation/Cacheable.html" title="annotation in io.micronaut.cache.annotation">@Cacheable</a>(<a href="../../../../io/micronaut/cache/annotation/Cacheable.html#value--">value</a>="discovery-client")
-public&nbsp;io.reactivex.Flowable&lt;java.util.List&lt;java.lang.String&gt;&gt;&nbsp;getServiceIds()</pre>
+public&nbsp;org.reactivestreams.Publisher&lt;java.util.List&lt;java.lang.String&gt;&gt;&nbsp;getServiceIds()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>getServiceIds</code>&nbsp;in interface&nbsp;<code>io.micronaut.discovery.DiscoveryClient</code></dd>
