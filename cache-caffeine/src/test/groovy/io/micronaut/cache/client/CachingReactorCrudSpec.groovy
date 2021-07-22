@@ -19,6 +19,7 @@ import io.micronaut.cache.annotation.CacheInvalidate
 import io.micronaut.cache.annotation.CachePut
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.context.ApplicationContext
+import io.micronaut.core.async.annotation.SingleResult
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.Controller
@@ -28,6 +29,7 @@ import io.micronaut.http.annotation.Patch
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.runtime.server.EmbeddedServer
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Mono
 import reactor.core.publisher.MonoSink
 import spock.lang.AutoCleanup
@@ -55,17 +57,19 @@ class CachingReactorCrudSpec extends Specification {
         given:
         BookClient client = context.getBean(BookClient)
         BookController bookController = context.getBean(BookController)
-
+        
         when:
-        Book book = client.get(99).block()
-        List<Book> books = client.list().block()
+        Optional<Book> bookOptional = Mono.from(client.get(99))
+                .onErrorResume(t -> Mono.empty())
+                .blockOptional()
+        List<Book> books = Mono.from(client.list()).block()
 
         then:
-        book == null
+        !bookOptional.isPresent()
         books.size() == 0
 
         when:
-        book = client.save("The Stand").block()
+        Book book = Mono.from(client.save("The Stand")).block()
 
         then:
         book != null
@@ -73,7 +77,7 @@ class CachingReactorCrudSpec extends Specification {
         book.id == 1
 
         when:
-        book = client.get(book.id).block()
+        book = Mono.from(client.get(book.id)).block()
 
         then:
         book != null
@@ -83,7 +87,7 @@ class CachingReactorCrudSpec extends Specification {
 
 
         when:
-        book = client.get(book.id).block()
+        book = Mono.from(client.get(book.id)).block()
 
         then:
         book != null
@@ -92,14 +96,14 @@ class CachingReactorCrudSpec extends Specification {
         bookController.getInvocationCount.get() == 2
 
         when:'the full response is resolved'
-        HttpResponse<Book> bookAndResponse = client.getResponse(book.id).block()
+        HttpResponse<Book> bookAndResponse = Mono.from(client.getResponse(book.id)).block()
 
         then:"The response is valid"
         bookAndResponse.status() == HttpStatus.OK
         bookAndResponse.body().title == "The Stand"
 
         when:
-        book = client.update(book.id, "The Shining").block()
+        book = Mono.from(client.update(book.id, "The Shining")).block()
 
         then:
         book != null
@@ -107,7 +111,7 @@ class CachingReactorCrudSpec extends Specification {
         book.id == 1
 
         when:
-        book = client.get(book.id).block()
+        book = Mono.from(client.get(book.id)).block()
 
         then:
         book != null
@@ -116,16 +120,16 @@ class CachingReactorCrudSpec extends Specification {
         bookController.getInvocationCount.get() == 3
 
         when:
-        book = client.delete(book.id).block()
+        book = Mono.from(client.delete(book.id)).block()
 
         then:
         book != null
 
         when:
-        book = client.get(book.id).block()
+        bookOptional = Mono.from(client.get(book.id)).onErrorResume(t -> Mono.empty()).blockOptional()
 
         then:
-        book == null
+        !bookOptional.isPresent()
     }
 
 
@@ -141,23 +145,17 @@ class CachingReactorCrudSpec extends Specification {
         AtomicInteger getInvocationCount = new AtomicInteger()
 
         @Override
-        Mono<Book> get(Long id) {
-            Mono.create(new Consumer<MonoSink<Book>>() {
-                @Override
-                void accept(MonoSink<Book> monoSink) {
-                    getInvocationCount.incrementAndGet()
-                    Book book = books.get(id)
-                    if(book) {
-                        monoSink.success(book)
-                    } else {
-                        monoSink.success()
-                    }
-                }
-            })
+        @SingleResult
+        Publisher<Book> get(Long id) {
+            getInvocationCount.incrementAndGet()
+            Book book = books.get(id)
+            Mono<Book> mono = book != null ? Mono.just(book) : Mono.empty()
+            return mono
         }
 
         @Override
-        Mono<HttpResponse<Book>> getResponse(Long id) {
+        @SingleResult
+        Publisher<HttpResponse<Book>> getResponse(Long id) {
             Book book = books.get(id)
             if(book) {
                 return Mono.just(HttpResponse.ok(book))
@@ -166,12 +164,14 @@ class CachingReactorCrudSpec extends Specification {
         }
 
         @Override
-        Mono<List<Book>> list() {
+        @SingleResult
+        Publisher<List<Book>> list() {
             return Mono.just(books.values().toList())
         }
 
         @Override
-        Mono<Book> delete(Long id) {
+        @SingleResult
+        Publisher<Book> delete(Long id) {
             Book book = books.remove(id)
             if(book) {
                 return Mono.just(book)
@@ -180,14 +180,16 @@ class CachingReactorCrudSpec extends Specification {
         }
 
         @Override
-        Mono<Book> save(String title) {
+        @SingleResult
+        Publisher<Book> save(String title) {
             Book book = new Book(title: title, id:currentId.incrementAndGet())
             books[book.id] = book
             return Mono.just(book)
         }
 
         @Override
-        Mono<Book> update(Long id, String title) {
+        @SingleResult
+        Publisher<Book> update(Long id, String title) {
             Book book = books[id]
             if(book != null) {
                 book.title = title
@@ -203,27 +205,33 @@ class CachingReactorCrudSpec extends Specification {
 
         @Get("/{id}")
         @Cacheable("books")
-        Mono<Book> get(Long id)
+        @SingleResult
+        Publisher<Book> get(Long id)
 
         @Get("/res/{id}")
         @Cacheable("books")
-        Mono<HttpResponse<Book>> getResponse(Long id)
+        @SingleResult
+        Publisher<HttpResponse<Book>> getResponse(Long id)
 
         @Get
         @Cacheable("book-list")
-        Mono<List<Book>> list()
+        @SingleResult
+        Publisher<List<Book>> list()
 
         @Delete("/{id}")
         @CacheInvalidate("books")
-        Mono<Book> delete(Long id)
+        @SingleResult
+        Publisher<Book> delete(Long id)
 
         @Post
         @CachePut("books")
-        Mono<Book> save(String title)
+        @SingleResult
+        Publisher<Book> save(String title)
 
         @Patch("/{id}")
         @CacheInvalidate("books")
-        Mono<Book> update(Long id, String title)
+        @SingleResult
+        Publisher<Book> update(Long id, String title)
     }
 
 

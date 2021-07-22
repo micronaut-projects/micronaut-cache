@@ -19,6 +19,7 @@ import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.core.async.annotation.SingleResult
 import jakarta.inject.Singleton
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -32,13 +33,14 @@ class PublisherService {
 
     @Cacheable
     @SingleResult
-    Flux<Integer> fluxValue(String name) {
+    Publisher<Integer> fluxValue(String name) {
         callCount.incrementAndGet()
         return Flux.just(0)
     }
 
     @Cacheable
-    Mono<Integer> monoValue(String name) {
+    @SingleResult
+    Publisher<Integer> monoValue(String name) {
         callCount.incrementAndGet()
         return Mono.just(0)
     }
