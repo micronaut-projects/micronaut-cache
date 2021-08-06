@@ -79,5 +79,5 @@ data about an individual cache.
 To override the default behavior for either of the helper classes, either extend the default implementations
 (link:{api}/io/micronaut/management/endpoint/caches/impl/RxJavaCacheDataCollector.html[RxJavaRouteDataCollector], link:{api}/io/micronaut/management/endpoint/caches/impl/DefaultCacheData.html[DefaultRouteData]),
 or implement the relevant interface directly.
-To ensure your implementation is used instead of the default, add the link:{api}/io/micronaut/context/annotation/Replaces.html[@Replaces]
+To ensure your implementation is used instead of the default, add the https://micronaut-projects.github.io/micronaut-core/latest/api/io/micronaut/context/annotation/Replaces.html[@Replaces]
 annotation to your class with the value being the default implementation.
