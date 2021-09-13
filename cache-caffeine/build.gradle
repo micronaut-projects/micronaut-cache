@@ -1,11 +1,11 @@
 dependencies {
     api project(":cache-core")
     api "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
-    compileOnly "ch.qos.logback:logback-classic:1.2.5"
+    compileOnly "ch.qos.logback:logback-classic:1.2.6"
     implementation "io.projectreactor:reactor-core"
     compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
 
-    testImplementation "ch.qos.logback:logback-classic:1.2.3"
+    testImplementation "ch.qos.logback:logback-classic:1.2.6"
 
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
     testImplementation "io.micronaut:micronaut-inject-groovy"
