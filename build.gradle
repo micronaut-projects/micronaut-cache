@@ -19,7 +19,7 @@ subprojects { Project subproject ->
             if (subproject.name != 'cache-tck') {
                 annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:${micronautDocsVersion}"
             }
-            implementation 'jakarta.inject:jakarta.inject-api:2.0.0'
+            implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
             testAnnotationProcessor "io.micronaut:micronaut-inject-java"
             testImplementation("org.spockframework:spock-core:${spockVersion}") {
                 exclude module: 'groovy-all'
