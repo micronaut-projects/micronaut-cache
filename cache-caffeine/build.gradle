@@ -1,12 +1,17 @@
+plugins {
+    id 'io.micronaut.build.internal.cache-module'
+}
+
 dependencies {
     api project(":cache-core")
     api "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
-    compileOnly "ch.qos.logback:logback-classic:1.2.7"
+
     implementation "io.projectreactor:reactor-core"
+
+    compileOnly "ch.qos.logback:logback-classic"
     compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
 
-    testImplementation "ch.qos.logback:logback-classic:1.2.6"
-
+    testImplementation "ch.qos.logback:logback-classic"
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
     testImplementation "io.micronaut:micronaut-inject-groovy"
     testImplementation "io.micronaut:micronaut-management"
