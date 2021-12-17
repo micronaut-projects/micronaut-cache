@@ -1,13 +1,27 @@
+plugins {
+    id 'groovy'
+}
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compileOnly "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     runtimeOnly "cglib:cglib-nodep:3.3.0"
     runtimeOnly "org.objenesis:objenesis:3.2"
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation "io.projectreactor:reactor-core"
 
-    api project(":cache-core")
-    api("org.spockframework:spock-core:${spockVersion}") {
+    implementation project(":cache-core")
+    implementation("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'
     }
 
-    api "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+    implementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+}
+
+java {
+    sourceCompatibility = JavaVersion.toVersion('1.8')
+    targetCompatibility = JavaVersion.toVersion('1.8')
 }
