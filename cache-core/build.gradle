@@ -12,7 +12,6 @@ dependencies {
     compileOnly "io.micronaut:micronaut-management"
     compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
 
-    compileOnly "ch.qos.logback:logback-classic"
     testImplementation "ch.qos.logback:logback-classic"
     testImplementation "io.micronaut:micronaut-http-client"
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
