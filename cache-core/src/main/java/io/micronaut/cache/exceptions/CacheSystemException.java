@@ -32,7 +32,7 @@ public class CacheSystemException extends RuntimeException {
      * @param message The detail message (which is saved for later retrieval
      *                by the {@link #getMessage()} method).
      * @param cause   The cause (which is saved for later retrieval by the
-     *                {@link #getCause()} method).  (A <tt>null</tt> value is
+     *                {@link #getCause()} method).  (A {@code null} value is
      *                permitted, and indicates that the cause is nonexistent or
      *                unknown.)
      */

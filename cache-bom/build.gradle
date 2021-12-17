@@ -1,19 +1,13 @@
-javaPlatform {
-    allowDependencies()
+plugins {
+    id "io.micronaut.build.internal.bom"
 }
 
 dependencies {
     constraints {
-        for (Project p : rootProject.subprojects) {
-            if (p.name == "cache-bom") continue
-            api "$p.group:micronaut-$p.name:$p.version"
-        }
-
         api "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
         api "org.ehcache:ehcache-clustered:$ehcacheVersion"
         api "com.hazelcast:hazelcast:$hazelcastVersion"
         api "org.infinispan:infinispan-core:$infinispanVersion"
         api "org.infinispan:infinispan-client-hotrod:$infinispanVersion"
-
     }
 }

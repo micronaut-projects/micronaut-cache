@@ -82,7 +82,7 @@ public @interface CacheInvalidate {
 
     /**
      * Whether the cache operation should be performed asynchronously and not block the returning value. Note that
-     * when set to <tt>true</tt> then any cache errors will not be propagated back to the client and will simply be
+     * when set to {@code true} then any cache errors will not be propagated back to the client and will simply be
      * logged by default unless the return value itself is a non-blocking type such as
      * {@link java.util.concurrent.CompletableFuture}.
      *

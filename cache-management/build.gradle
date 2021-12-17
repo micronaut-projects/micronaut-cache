@@ -1,3 +1,7 @@
+plugins {
+    id 'io.micronaut.build.internal.cache-module'
+}
+
 dependencies {
     api project(":cache-core")
     api "io.micronaut:micronaut-management"

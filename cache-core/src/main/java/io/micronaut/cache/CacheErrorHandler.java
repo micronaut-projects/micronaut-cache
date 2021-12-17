@@ -25,7 +25,7 @@ public interface CacheErrorHandler {
 
     /**
      * Handles a cache {@link io.micronaut.cache.annotation.CacheInvalidate} error. Defaults to simply rethrowing the error.
-     * By returning <tt>false</tt> cache invalidate errors will instead to be swallowed and ignored.
+     * By returning {@code  false} cache invalidate errors will instead to be swallowed and ignored.
      *
      * @param cache The cache
      * @param key   The key
@@ -38,7 +38,7 @@ public interface CacheErrorHandler {
 
     /**
      * Handles a cache {@link io.micronaut.cache.annotation.CacheInvalidate} error. Defaults to simply rethrowing the error.
-     * By returning <tt>false</tt> cache invalidate errors will instead to be swallowed and ignored.
+     * By returning {@code  false} cache invalidate errors will instead to be swallowed and ignored.
      *
      * @param cache The cache
      * @param e     The error
@@ -50,7 +50,7 @@ public interface CacheErrorHandler {
 
     /**
      * Handles a cache {@link io.micronaut.cache.annotation.CachePut} error. Defaults to simply rethrowing the error.
-     * By returning <tt>false</tt> cache write errors will instead to be swallowed and ignored.
+     * By returning {@code  false} cache write errors will instead to be swallowed and ignored.
      *
      * @param cache The cache
      * @param key The key name
@@ -64,7 +64,7 @@ public interface CacheErrorHandler {
 
     /**
      * Handles an error loading a value from the cache via {@link io.micronaut.cache.annotation.Cacheable}. Note that
-     * by returning <tt>false</tt> the behaviour can be customized such that cache related exceptions are ignored and
+     * by returning {@code  false} the behaviour can be customized such that cache related exceptions are ignored and
      * the original method invoked.
      *
      * @param cache The cache

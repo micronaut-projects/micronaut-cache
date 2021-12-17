@@ -79,7 +79,7 @@ public @interface Cacheable {
 
     /**
      * <p>Whether an atomic operation should be attempted to retrieve the cache value. This will call
-     * {@link io.micronaut.cache.SyncCache#get(Object, Class, java.util.function.Supplier)} if set to <tt>true</tt> otherwise
+     * {@link io.micronaut.cache.SyncCache#get(Object, Class, java.util.function.Supplier)} if set to {@code true} otherwise
      * {@link io.micronaut.cache.SyncCache#get(Object, Class)} will be called which is non-atomic</p>
      * <p>
      * <p>Note that atomic operations will pick the first cache name specified and ignore the remaining.</p>

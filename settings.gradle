@@ -1,11 +1,22 @@
-rootProject.name = 'micronaut-cache'
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
 
-include 'cache-core'
-include 'cache-management'
+plugins {
+    id 'io.micronaut.build.shared.settings' version '5.1.0'
+}
+
+rootProject.name = 'cache-parent'
+
+include 'cache-bom'
 include 'cache-caffeine'
+include 'cache-core'
 include 'cache-ehcache'
 include 'cache-hazelcast'
 include 'cache-infinispan'
+include 'cache-management'
 include 'cache-noop'
 include 'cache-tck'
-include 'cache-bom'
