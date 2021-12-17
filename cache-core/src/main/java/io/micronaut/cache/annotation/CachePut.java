@@ -80,16 +80,16 @@ public @interface CachePut {
     /**
      * <p>Whether the {@link CachePut} operation should be performed asynchronously and not block the returning value</p>
      * <p>
-     * <p>The value if <tt>async</tt> impacts behaviour in the following ways:</p>
+     * <p>The value if {@code async} impacts behaviour in the following ways:</p>
      * <p>
      * <ul>
-     * <li>For blocking return types when the value is <tt>false</tt> the method will not return until the value
+     * <li>For blocking return types when the value is {@code  false} the method will not return until the value
      * has been written and any cache write errors will be propagated back to the client.</li>
-     * <li>For blocking return types when the value is <tt>true</tt> the method will return prior to cache writes
+     * <li>For blocking return types when the value is {@code true} the method will return prior to cache writes
      * occurring and errors will be logged via the {@link io.micronaut.cache.AsyncCacheErrorHandler}.</li>
-     * <li>When the return type is a {@link java.util.concurrent.CompletableFuture} and the value is <tt>false</tt>
+     * <li>When the return type is a {@link java.util.concurrent.CompletableFuture} and the value is {@code  false}
      * the future will not complete until the {@link CachePut} operation is complete.</li>
-     * <li>When the return type is a {@link java.util.concurrent.CompletableFuture} and the value is <tt>true</tt>
+     * <li>When the return type is a {@link java.util.concurrent.CompletableFuture} and the value is {@code true}
      * the future will complete prior to any {@link CachePut} operations completing and the operations will be
      * executing asynchronously with errors logged by {@link io.micronaut.cache.AsyncCacheErrorHandler}.</li>
      * </ul>

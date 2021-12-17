@@ -7,7 +7,7 @@ dependencies {
     api "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
 
     implementation "io.projectreactor:reactor-core"
-    
+
     compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
 
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
