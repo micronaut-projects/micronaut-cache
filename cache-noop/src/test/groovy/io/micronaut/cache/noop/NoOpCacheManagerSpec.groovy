@@ -17,6 +17,7 @@ package io.micronaut.cache.noop
 
 import io.micronaut.cache.SyncCache
 import io.micronaut.context.ApplicationContext
+import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -26,15 +27,14 @@ import spock.lang.Specification
  */
 class NoOpCacheManagerSpec extends Specification {
 
+    @AutoCleanup
     @Shared
-    NoOpCacheManager cacheManager
+    ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+            "noop-cache.enabled": true
+    ])
 
-    def setupSpec() {
-        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
-                "noop-cache.enabled": true
-        ])
-        this.cacheManager = ctx.getBean(NoOpCacheManager)
-    }
+    @Shared
+    NoOpCacheManager cacheManager = ctx.getBean(NoOpCacheManager)
 
     void "test get cache"() {
         setup:
