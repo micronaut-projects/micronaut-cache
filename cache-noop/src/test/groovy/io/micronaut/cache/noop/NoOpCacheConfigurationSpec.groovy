@@ -34,6 +34,9 @@ class NoOpCacheConfigurationSpec extends Specification {
 
         then:
         !(cacheManager instanceof NoOpCacheManager)
+
+        cleanup:
+        ctx.close()
     }
 
     void "test no operation cache manager is not created when noop-cache.enabled = false"() {
@@ -47,6 +50,9 @@ class NoOpCacheConfigurationSpec extends Specification {
 
         then:
         !(cacheManager instanceof NoOpCacheManager)
+
+        cleanup:
+        ctx.close()
     }
 
     void "test no operation cache manager is created when noop-cache.enabled = true"() {
@@ -60,5 +66,8 @@ class NoOpCacheConfigurationSpec extends Specification {
 
         then:
         cacheManager instanceof NoOpCacheManager
+
+        cleanup:
+        ctx.close()
     }
 }
