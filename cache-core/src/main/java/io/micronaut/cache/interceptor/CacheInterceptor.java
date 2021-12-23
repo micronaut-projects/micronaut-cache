@@ -950,7 +950,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
 
         CacheOperation(ExecutableMethod<?, ?> method, boolean isVoid) {
             this.defaultKeyGenerator = resolveKeyGenerator(
-                    method.classValue(CacheConfig.class, MEMBER_KEY_GENERATOR).orElse(null)
+                    method.classValue(CacheConfig.class, MEMBER_KEY_GENERATOR).orElse(getDefaultKeyGenerator(method))
             );
             this.putOperations = isVoid ? null : putOperations(method);
             this.invalidateOperations = invalidateOperations(method);
@@ -965,6 +965,15 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                         LOG.warn("No cache names defined for invocation [{}]. Skipping cache read operations.", method);
                     }
                 }
+            }
+        }
+
+        private Class<? extends CacheKeyGenerator> getDefaultKeyGenerator(ExecutableMethod<?, ?> method) {
+            if (method.isSuspend()) {
+                return KotlinSuspendFunCacheKeyGenerator.class;
+            }
+            else {
+                return DefaultCacheKeyGenerator.class;
             }
         }
 
