@@ -18,7 +18,6 @@ package io.micronaut.cache.interceptor;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Introspected;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -33,9 +32,9 @@ public class KotlinSuspendFunCacheKeyGenerator extends DefaultCacheKeyGenerator 
 
     @Override
     public Object generateKey(AnnotationMetadata annotationMetadata, Object... params) {
-        if (params == null || params.length == 0)
+        if (params == null || params.length == 0) {
             return super.generateKey(annotationMetadata, params);
-        else {
+        } else {
             Object[] usableParams = Arrays.copyOfRange(params, 0, params.length - 1);
             return super.generateKey(annotationMetadata, usableParams);
         }

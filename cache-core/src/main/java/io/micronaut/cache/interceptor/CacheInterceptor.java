@@ -971,8 +971,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         private Class<? extends CacheKeyGenerator> getDefaultKeyGenerator(ExecutableMethod<?, ?> method) {
             if (method.isSuspend()) {
                 return KotlinSuspendFunCacheKeyGenerator.class;
-            }
-            else {
+            } else {
                 return DefaultCacheKeyGenerator.class;
             }
         }
