@@ -13,7 +13,7 @@ dependencies {
     testImplementation "com.hazelcast:hazelcast:$hazelcastVersion"
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation "org.testcontainers:spock:1.16.2"
+    testImplementation "org.testcontainers:spock:1.16.3"
     testImplementation "io.projectreactor:reactor-core"
     testImplementation "io.micronaut:micronaut-http-client"
 }
