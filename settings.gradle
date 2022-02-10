@@ -9,7 +9,7 @@ plugins {
     id 'io.micronaut.build.shared.settings' version '5.1.2'
 }
 
-rootProject.name = 'cache-parent'
+rootProject.name = 'micronaut-cache'
 
 include 'cache-bom'
 include 'cache-caffeine'
@@ -20,3 +20,5 @@ include 'cache-infinispan'
 include 'cache-management'
 include 'cache-noop'
 include 'cache-tck'
+
+enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
