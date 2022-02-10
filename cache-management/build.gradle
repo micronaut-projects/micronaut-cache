@@ -3,11 +3,13 @@ plugins {
 }
 
 dependencies {
-    api project(":cache-core")
-    api "io.micronaut:micronaut-management"
-    implementation "io.projectreactor:reactor-core"
-    testImplementation "io.micronaut:micronaut-http-client"
-    testImplementation "io.micronaut:micronaut-management"
-    testImplementation "io.micronaut:micronaut-http-server-netty"
-    testImplementation project(":cache-caffeine")
+    api projects.cacheCore
+    api 'io.micronaut:micronaut-management'
+
+    implementation 'io.projectreactor:reactor-core'
+
+    testImplementation projects.cacheCaffeine
+    testImplementation 'io.micronaut:micronaut-http-client'
+    testImplementation 'io.micronaut:micronaut-http-server-netty'
+    testImplementation 'io.micronaut:micronaut-management'
 }

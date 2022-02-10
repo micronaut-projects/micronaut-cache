@@ -1,3 +1,7 @@
 plugins {
-    id "io.micronaut.build.internal.module"
+    id 'io.micronaut.build.internal.module'
+}
+
+dependencies {
+    compileOnly 'com.google.code.findbugs:jsr305' // for "warning: unknown enum constant When.MAYBE"
 }

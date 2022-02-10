@@ -3,20 +3,22 @@ plugins {
 }
 
 dependencies {
-    api "io.micronaut:micronaut-http"
-    api "io.micronaut:micronaut-inject"
-    api "io.micronaut:micronaut-aop"
-    api "io.micronaut:micronaut-runtime"
-    implementation "io.projectreactor:reactor-core"
-    compileOnly "javax.cache:cache-api"
-    compileOnly "io.micronaut:micronaut-management"
-    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
+    api 'io.micronaut:micronaut-aop'
+    api 'io.micronaut:micronaut-http'
+    api 'io.micronaut:micronaut-inject'
+    api 'io.micronaut:micronaut-runtime'
 
-    testImplementation "ch.qos.logback:logback-classic"
-    testImplementation "io.micronaut:micronaut-http-client"
+    compileOnly 'io.micronaut.micrometer:micronaut-micrometer-core'
+    compileOnly 'io.micronaut:micronaut-management'
+    compileOnly 'javax.cache:cache-api'
+
+    implementation 'io.projectreactor:reactor-core'
+
+    testImplementation 'ch.qos.logback:logback-classic'
+    testImplementation 'io.micronaut:micronaut-http-client'
+    testImplementation 'io.micronaut:micronaut-inject-groovy'
+    testImplementation 'javax.cache:cache-api'
     testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
-    testImplementation "javax.cache:cache-api"
-    testImplementation "io.micronaut:micronaut-inject-groovy"
 }
 
 //compileJava.options.fork = true
