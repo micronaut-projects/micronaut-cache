@@ -3,19 +3,19 @@ plugins {
 }
 
 dependencies {
-    api project(":cache-core")
+    api projects.cacheCore
 
     api "org.infinispan:infinispan-core:$infinispanVersion"
     api "org.infinispan:infinispan-client-hotrod:$infinispanVersion"
 
-    testImplementation project(":cache-tck")
-    testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
+    testImplementation projects.cacheTck
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation "org.testcontainers:spock:1.16.3"
-    testImplementation "io.micronaut:micronaut-http-client"
-    testImplementation "io.projectreactor:reactor-core"
+    testImplementation 'io.micronaut:micronaut-http-client'
+    testImplementation 'io.micronaut:micronaut-inject-groovy'
+    testImplementation 'io.projectreactor:reactor-core'
+    testImplementation 'org.testcontainers:spock:1.16.3'
 }
 
 tasks.withType(Test) {
-    systemProperty("infinispanVersion", infinispanVersion)
+    systemProperty('infinispanVersion', infinispanVersion)
 }
