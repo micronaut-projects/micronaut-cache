@@ -42,6 +42,31 @@ micronaut:
 
 The above example will configure a cache called "my-cache" with a maximum size of 20.
 
+----
+micronaut:
+    caches:
+        my-cache:
+            listen-to-removals: true
+            listen-to-evictions: true
+----
+
+This example is a cache with the removal/eviction listeners. To be able to use them just implement the RemovalListener interface as shown in the example.
+
+[source,java]
+----
+@Singleton
+public class RemovalListenerImpl implements RemovalListener<K, V> {
+
+    @Override
+    public void onRemoval(
+            @Nullable K key,
+            @Nullable V value,
+            @NonNull RemovalCause cause
+    ) {
+    }
+}
+----
+
 [NOTE]
 .Naming Caches
 ====
