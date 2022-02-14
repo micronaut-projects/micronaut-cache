@@ -50,7 +50,7 @@ micronaut:
             listen-to-evictions: true
 ----
 
-This example is a cache with the removal/eviction listeners. To be able to use them just implement the RemovalListener interface as shown in the example.
+This example is a cache with the removal/eviction listeners. To be able to use them just implement the `com.github.benmanes.caffeine.cache.RemovalListener` interface as shown in the example.
 
 [source,java]
 ----
