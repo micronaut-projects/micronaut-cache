@@ -17,9 +17,10 @@ package io.micronaut.cache.caffeine;
 
 import com.github.benmanes.caffeine.cache.*;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import io.micronaut.cache.CacheConfiguration;
 import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.cache.caffeine.configuration.CaffeineCacheConfiguration;
+import io.micronaut.cache.caffeine.configuration.DefaultCacheConfiguration;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.core.annotation.NonNull;
@@ -47,13 +48,14 @@ import java.util.function.Supplier;
  * @author Graeme Rocher
  * @since 1.0
  */
-@EachBean(CacheConfiguration.class)
+@EachBean(CaffeineCacheConfiguration.class)
 public class DefaultSyncCache implements SyncCache<Cache> {
 
-    private final CacheConfiguration cacheConfiguration;
+    private final CaffeineCacheConfiguration cacheConfiguration;
     private final com.github.benmanes.caffeine.cache.Cache cache;
     private final ApplicationContext applicationContext;
     private final ConversionService<?> conversionService;
+
 
     /**
      * Construct a sync cache implementation with given configurations.
@@ -66,7 +68,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
             DefaultCacheConfiguration cacheConfiguration,
             ApplicationContext applicationContext,
             ConversionService<?> conversionService) {
-        this((CacheConfiguration) cacheConfiguration, applicationContext, conversionService);
+        this((CaffeineCacheConfiguration) cacheConfiguration, applicationContext, conversionService);
     }
 
     /**
@@ -78,7 +80,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
      */
     @Inject
     public DefaultSyncCache(
-            CacheConfiguration cacheConfiguration,
+            CaffeineCacheConfiguration cacheConfiguration,
             ApplicationContext applicationContext,
             ConversionService<?> conversionService) {
         this.cacheConfiguration = cacheConfiguration;
@@ -186,7 +188,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
      * @param cacheConfiguration The cache configurations
      * @return cache
      */
-    protected com.github.benmanes.caffeine.cache.Cache buildCache(CacheConfiguration cacheConfiguration) {
+    protected com.github.benmanes.caffeine.cache.Cache buildCache(CaffeineCacheConfiguration cacheConfiguration) {
         Caffeine<Object, Object> builder = Caffeine.newBuilder();
         cacheConfiguration.getExpireAfterAccess().ifPresent(duration -> builder.expireAfterAccess(duration.toMillis(), TimeUnit.MILLISECONDS));
         cacheConfiguration.getExpireAfterWrite().ifPresent(duration -> builder.expireAfterWrite(duration.toMillis(), TimeUnit.MILLISECONDS));

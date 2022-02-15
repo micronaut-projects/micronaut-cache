@@ -56,8 +56,6 @@ public class CacheConfiguration {
     private Long maximumWeight;
     private Duration expireAfterWrite;
     private Duration expireAfterAccess;
-    private boolean listenToRemovals;
-    private boolean listenToEvictions;
     private boolean recordStats = DEFAULT_RECORD_STATS;
     private boolean testMode = DEFAULT_TESTMODE;
     private final String cacheName;
@@ -117,24 +115,6 @@ public class CacheConfiguration {
      */
     public Optional<Duration> getExpireAfterAccess() {
         return Optional.ofNullable(expireAfterAccess);
-    }
-
-    /**
-     * If a removal listener is defined and this property is true then caffeine will send removal events to that listener.
-     *
-     * @return True if listen to removals is enabled
-     */
-    public boolean isListenToRemovals() {
-        return listenToRemovals;
-    }
-
-    /**
-     * If a removal listener is defined and this property is true then caffeine will send eviction events to that listener.
-     *
-     * @return True if listen to evictions is enabled
-     */
-    public boolean isListenToEvictions() {
-        return listenToEvictions;
     }
 
     /**

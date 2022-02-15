@@ -18,6 +18,7 @@ package io.micronaut.cache.caffeine;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.micronaut.cache.DynamicCacheManager;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.cache.caffeine.configuration.DefaultCacheConfiguration;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.NonNull;
