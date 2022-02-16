@@ -16,7 +16,6 @@
 package io.micronaut.cache.caffeine.configuration;
 
 import io.micronaut.cache.CacheConfiguration;
-import io.micronaut.cache.caffeine.DefaultSyncCache;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.runtime.ApplicationConfiguration;
 
@@ -57,7 +56,6 @@ public class CaffeineCacheConfiguration extends CacheConfiguration {
     public void setListenToRemovals(boolean listenToRemovals) {
         this.listenToRemovals = listenToRemovals;
     }
-
 
     /**
      * If a removal listener is defined and this property is true then caffeine will send eviction events to that listener.

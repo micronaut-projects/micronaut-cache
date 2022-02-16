@@ -56,7 +56,6 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     private final ApplicationContext applicationContext;
     private final ConversionService<?> conversionService;
 
-
     /**
      * Construct a sync cache implementation with given configurations.
      *
