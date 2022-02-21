@@ -284,6 +284,33 @@ class SyncCacheSpec extends Specification {
         applicationContext.stop()
     }
 
+    void "test removal/eviction listener"() {
+        given:
+        ApplicationContext applicationContext = ApplicationContext.run(
+                'micronaut.caches.test.test-mode': true,
+                'micronaut.caches.test.expire-after-write': '1s',
+                'micronaut.caches.test.expire-after-access': '1s',
+                'micronaut.caches.test.listen-to-removals': true,
+                'micronaut.caches.test.listen-to-evictions': true
+        )
+
+        when:
+        SyncCache syncCache = applicationContext.getBean(SyncCache, Qualifiers.byName('test'))
+
+        then:
+        syncCache.name == 'test'
+
+        when:
+        syncCache.put("one", 1)
+        PollingConditions conditions = new PollingConditions(delay: 1.1)
+
+        then:
+        conditions.eventually {
+            !syncCache.get("one", Integer).isPresent()
+            applicationContext.getBean(RemovalListenerImpl.class).isRemoved()
+        }
+    }
+
     @Singleton
     @CacheConfig('counter')
     static class PublisherService {
