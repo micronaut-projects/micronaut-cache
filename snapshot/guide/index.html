@@ -290,6 +290,33 @@ This module is built and tested with Caffeine 2.9.1
 <div class="paragraph">
 <p>The above example will configure a cache called "my-cache" with a maximum size of 20.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>micronaut:
+    caches:
+        my-cache:
+            listen-to-removals: true
+            listen-to-evictions: true</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example is a cache with the removal/eviction listeners. To be able to use them just implement the <code>com.github.benmanes.caffeine.cache.RemovalListener</code> interface as shown in the example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Singleton
+public class RemovalListenerImpl implements RemovalListener&lt;K, V&gt; {
+
+    @Override
+    public void onRemoval(
+            @Nullable K key,
+            @Nullable V value,
+            @NonNull RemovalCause cause
+    ) {
+    }
+}</code></pre>
+</div>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
