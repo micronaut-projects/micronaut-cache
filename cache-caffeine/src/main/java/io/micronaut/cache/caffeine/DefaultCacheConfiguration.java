@@ -16,6 +16,7 @@
 package io.micronaut.cache.caffeine;
 
 import io.micronaut.cache.CacheConfiguration;
+import io.micronaut.cache.caffeine.configuration.CaffeineCacheConfiguration;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.runtime.ApplicationConfiguration;
@@ -27,7 +28,8 @@ import io.micronaut.runtime.ApplicationConfiguration;
  * @since 1.0.2
  */
 @EachProperty(CacheConfiguration.PREFIX)
-public class DefaultCacheConfiguration extends CacheConfiguration {
+public class DefaultCacheConfiguration extends CaffeineCacheConfiguration {
+
     /**
      * Creates a new cache with the given name.
      *

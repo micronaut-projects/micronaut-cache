@@ -15,14 +15,12 @@
  */
 package io.micronaut.cache.caffeine;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.Policy;
-import com.github.benmanes.caffeine.cache.Weigher;
+import com.github.benmanes.caffeine.cache.*;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import io.micronaut.cache.CacheConfiguration;
 import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.SyncCache;
+import io.micronaut.cache.caffeine.configuration.CaffeineCacheConfiguration;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.core.annotation.NonNull;
@@ -199,6 +197,18 @@ public class DefaultSyncCache implements SyncCache<Cache> {
             builder.maximumWeight(weight);
             builder.weigher(findWeigher());
         });
+        CaffeineCacheConfiguration caffeineCacheConfiguration = cacheConfiguration instanceof CaffeineCacheConfiguration ? (CaffeineCacheConfiguration) cacheConfiguration : null;
+        if (caffeineCacheConfiguration != null) {
+            RemovalListener removalListener = findRemovalListener();
+            if (removalListener != null) {
+                if (caffeineCacheConfiguration.isListenToRemovals()) {
+                    builder.removalListener((key, value, cause) -> removalListener.onRemoval(key, value, cause));
+                }
+                if (caffeineCacheConfiguration.isListenToEvictions()) {
+                    builder.evictionListener((key, value, cause) -> removalListener.onRemoval(key, value, cause));
+                }
+            }
+        }
         if (cacheConfiguration.isRecordStats()) {
             builder.recordStats();
         }
@@ -214,6 +224,13 @@ public class DefaultSyncCache implements SyncCache<Cache> {
         return applicationContext.findBean(Weigher.class, Qualifiers.byName(cacheConfiguration.getCacheName()))
                 .orElseGet(() -> applicationContext.findBean(Weigher.class)
                         .orElse(Weigher.singletonWeigher()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private RemovalListener<Object, Object> findRemovalListener() {
+         return applicationContext.findBean(RemovalListener.class, Qualifiers.byName(cacheConfiguration.getCacheName()))
+                .orElseGet(() -> applicationContext.findBean(RemovalListener.class)
+                        .orElse(null));
     }
 
     private Map<String, Object> getCaffeineCacheData(Cache caffeineCache) {
