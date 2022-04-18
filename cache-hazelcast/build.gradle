@@ -15,7 +15,7 @@ dependencies {
     testImplementation 'io.micronaut:micronaut-http-client'
     testImplementation 'io.micronaut:micronaut-inject-groovy'
     testImplementation 'io.projectreactor:reactor-core'
-    testImplementation 'org.testcontainers:spock:1.16.3'
+    testImplementation 'org.testcontainers:spock:1.17.1'
 }
 
 tasks.withType(Test) {
