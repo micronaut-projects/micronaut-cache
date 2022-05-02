@@ -17,5 +17,5 @@ dependencies {
 }
 
 tasks.withType(Test) {
-    systemProperty('infinispanVersion', infinispanVersion)
+    systemProperty('infinispanVersion', libs.versions.infinispan)
 }

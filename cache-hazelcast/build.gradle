@@ -19,7 +19,7 @@ dependencies {
 }
 
 tasks.withType(Test) {
-    systemProperty('hazelcastVersion', hazelcastVersion)
+    systemProperty('hazelcastVersion', libs.versions.hazelcast)
     retry {
         maxRetries = 5
         maxFailures = 20
