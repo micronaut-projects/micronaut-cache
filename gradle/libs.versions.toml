@@ -1,0 +1,38 @@
+[versions]
+cache-ri-impl = "1.1.1"
+caffeine = "2.9.1"
+ehcache = "3.8.1"
+hazelcast = "4.2.1"
+infinispan = "12.1.6.Final"
+spock = "1.17.1"
+
+# Micronaut
+micronaut = "3.3.4"
+micronaut-test = "3.0.5"
+
+
+[libraries]
+# Micronaut
+micronaut-aop = { module = "io.micronaut:micronaut-aop" }
+micronaut-http = { module = "io.micronaut:micronaut-http" }
+micronaut-http-client = { module = "io.micronaut:micronaut-http-client" }
+micronaut-http-server-netty = { module = "io.micronaut:micronaut-http-server-netty" }
+micronaut-inject = { module = "io.micronaut:micronaut-inject" }
+micronaut-inject-groovy = { module = "io.micronaut:micronaut-inject-groovy", version.ref = "micronaut" }
+micronaut-inject-java = { module = "io.micronaut:micronaut-inject-java" }
+micronaut-management = { module = "io.micronaut:micronaut-management" }
+micronaut-micrometer-core = { module = "io.micronaut.micrometer:micronaut-micrometer-core" }
+micronaut-runtime = { module = "io.micronaut:micronaut-runtime" }
+micronaut-test-spock = { module = "io.micronaut.test:micronaut-test-spock", version.ref = "micronaut-test" }
+
+cache-api = { module = "javax.cache:cache-api" }
+cache-ri-impl = { module = "org.jsr107.ri:cache-ri-impl", version.ref = "cache-ri-impl" }
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
+ehcache-clustered = { module = "org.ehcache:ehcache-clustered", version.ref = "ehcache" }
+hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "hazelcast" }
+infinispan-client-hotrod = { module = "org.infinispan:infinispan-client-hotrod", version.ref = "infinispan" }
+infinispan-core = { module = "org.infinispan:infinispan-core", version.ref = "infinispan" }
+logback-classic = { module = "ch.qos.logback:logback-classic" }
+reactor-core = { module = "io.projectreactor:reactor-core" }
+spock = { module = "org.testcontainers:spock", version.ref = "spock" }
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
