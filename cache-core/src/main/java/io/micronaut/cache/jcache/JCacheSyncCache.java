@@ -16,6 +16,7 @@
 package io.micronaut.cache.jcache;
 
 import io.micronaut.cache.SyncCache;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
@@ -32,7 +33,8 @@ import java.util.function.Supplier;
  * @author graemerocher
  * @since 1.1.0
  */
-class JCacheSyncCache implements SyncCache<Cache> {
+@Internal
+public class JCacheSyncCache implements SyncCache<Cache> {
 
     private final Cache nativeCache;
     private final ConversionService<?> conversionService;
