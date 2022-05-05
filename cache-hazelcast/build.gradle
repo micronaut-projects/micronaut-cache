@@ -13,10 +13,11 @@ dependencies {
     testImplementation(libs.micronaut.http.client)
     testImplementation(libs.micronaut.inject.groovy)
     testImplementation(libs.reactor.core)
+    testImplementation(libs.testcontainers.spock)
 }
 
 tasks.withType(Test) {
-    systemProperty('hazelcastVersion', libs.versions.managed.hazelcast)
+    systemProperty('hazelcastVersion', libs.versions.managed.hazelcast.get())
     retry {
         maxRetries = 5
         maxFailures = 20
