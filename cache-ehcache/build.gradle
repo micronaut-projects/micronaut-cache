@@ -4,14 +4,13 @@ plugins {
 
 dependencies {
     api projects.cacheCore
-    api "org.ehcache:ehcache-clustered:$ehcacheVersion"
+    api(libs.managed.ehcache.clustered)
 
     testImplementation projects.cacheTck
-    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation 'io.micronaut:micronaut-http-client'
-    testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
-    testImplementation 'io.projectreactor:reactor-core'
-    testImplementation 'org.testcontainers:spock:1.17.1'
+    testImplementation(libs.micronaut.http.client)
+    testImplementation(libs.micronaut.inject.groovy)
+    testImplementation(libs.reactor.core)
+    testImplementation(libs.testcontainers.spock)
 }
 
 micronautBuild {

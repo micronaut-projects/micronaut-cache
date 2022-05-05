@@ -5,21 +5,19 @@ plugins {
 
 dependencies {
     api projects.cacheCore
-    api "com.hazelcast:hazelcast:$hazelcastVersion"
+    api(libs.managed.hazelcast)
 
-    testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
+    testAnnotationProcessor(libs.micronaut.inject.java)
 
-    testImplementation projects.cacheTck
-    testImplementation "com.hazelcast:hazelcast:$hazelcastVersion"
-    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation 'io.micronaut:micronaut-http-client'
-    testImplementation 'io.micronaut:micronaut-inject-groovy'
-    testImplementation 'io.projectreactor:reactor-core'
-    testImplementation 'org.testcontainers:spock:1.17.1'
+    testImplementation(projects.cacheTck)
+    testImplementation(libs.micronaut.http.client)
+    testImplementation(libs.micronaut.inject.groovy)
+    testImplementation(libs.reactor.core)
+    testImplementation(libs.testcontainers.spock)
 }
 
 tasks.withType(Test) {
-    systemProperty('hazelcastVersion', hazelcastVersion)
+    systemProperty('hazelcastVersion', libs.versions.managed.hazelcast.get())
     retry {
         maxRetries = 5
         maxFailures = 20
