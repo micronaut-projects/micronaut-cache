@@ -4,18 +4,18 @@ plugins {
 
 dependencies {
     api projects.cacheCore
-    api "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+    api(libs.managed.caffeine)
 
-    compileOnly 'io.micronaut.micrometer:micronaut-micrometer-core'
+    compileOnly(libs.micronaut.micrometer.core)
 
-    implementation 'io.projectreactor:reactor-core'
+    implementation(libs.reactor.core)
 
-    testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
+    testAnnotationProcessor(libs.micronaut.inject.java)
 
-    testImplementation 'ch.qos.logback:logback-classic'
-    testImplementation 'org.jsr107.ri:cache-ri-impl:1.1.1'
-    testImplementation 'io.micronaut:micronaut-management'
-    testImplementation 'io.micronaut:micronaut-http-client'
-    testImplementation 'io.micronaut:micronaut-http-server-netty'
-    testImplementation 'io.micronaut.micrometer:micronaut-micrometer-core'
+    testImplementation(libs.logback.classic)
+    testImplementation(libs.cache.ri.impl)
+    testImplementation(libs.micronaut.management)
+    testImplementation(libs.micronaut.http.client)
+    testImplementation(libs.micronaut.http.server.netty)
+    testImplementation(libs.micronaut.micrometer.core)
 }

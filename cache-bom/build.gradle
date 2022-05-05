@@ -1,13 +1,3 @@
 plugins {
     id 'io.micronaut.build.internal.bom'
 }
-
-dependencies {
-    constraints {
-        api "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
-        api "com.hazelcast:hazelcast:$hazelcastVersion"
-        api "org.ehcache:ehcache-clustered:$ehcacheVersion"
-        api "org.infinispan:infinispan-client-hotrod:$infinispanVersion"
-        api "org.infinispan:infinispan-core:$infinispanVersion"
-    }
-}

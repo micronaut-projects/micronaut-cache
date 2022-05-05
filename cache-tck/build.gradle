@@ -8,16 +8,16 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'io.micronaut:micronaut-inject-groovy'
+    compileOnly(libs.micronaut.inject.groovy)
 
     runtimeOnly 'cglib:cglib-nodep:3.3.0'
     runtimeOnly 'org.objenesis:objenesis:3.2'
 
     implementation projects.cacheCore
-    implementation 'io.projectreactor:reactor-core'
-    implementation "org.spockframework:spock-core:$spockVersion"
+    implementation(libs.reactor.core)
+    implementation(libs.spock.core)
 
-    implementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+    implementation(libs.micronaut.test.spock)
 }
 
 java {
