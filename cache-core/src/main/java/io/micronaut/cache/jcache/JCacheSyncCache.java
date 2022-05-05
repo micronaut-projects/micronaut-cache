@@ -73,17 +73,24 @@ public class JCacheSyncCache implements SyncCache<Cache> {
     }
 
     @Override
-    public <T> T get(Object key, Argument<T> requiredType, Supplier<T> supplier) {
+    public <T> T get(@NonNull Object key, @NonNull Argument<T> requiredType, @NonNull Supplier<T> supplier) {
         ArgumentUtils.requireNonNull("key", key);
-        return get(key, requiredType).orElseGet(supplier);
+        Optional<T> t = get(key, requiredType);
+        if (t.isPresent()) {
+            return t.get();
+        } else {
+            T v = supplier.get();
+            put(key, v);
+            return v;
+        }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Optional<T> putIfAbsent(Object key, T value) {
-        ArgumentUtils.requireNonNull("key", key);
-        ArgumentUtils.requireNonNull("value", value);
-        final T v = (T) nativeCache.getAndReplace(key, value);
+    @NonNull
+    public <T> Optional<T> putIfAbsent(@NonNull Object key, @NonNull T value) {
+        final T v = (T) nativeCache.get(key);
+        nativeCache.putIfAbsent(key, value);
         final Class<T> aClass = (Class<T>) value.getClass();
         return conversionService.convert(v, aClass);
     }
