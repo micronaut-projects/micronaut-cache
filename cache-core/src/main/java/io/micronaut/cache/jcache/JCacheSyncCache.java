@@ -47,7 +47,7 @@ public class JCacheSyncCache implements SyncCache<Cache> {
      * @param conversionService The conversion service
      * @param ioExecutor The IO executor
      */
-    JCacheSyncCache(
+    protected JCacheSyncCache(
             @NonNull Cache<?, ?> nativeCache,
             ConversionService<?> conversionService,
             ExecutorService ioExecutor) {
