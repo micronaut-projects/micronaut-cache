@@ -2,9 +2,9 @@ package io.micronaut.cache;
 
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
+import io.micronaut.core.annotation.Nullable;
 import jakarta.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton
 public class RemovalListenerImpl implements RemovalListener<String, Integer> {
