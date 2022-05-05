@@ -6,5 +6,4 @@ dependencies {
     api projects.cacheCore
 
     testImplementation(libs.micronaut.inject.groovy)
-    testImplementation(libs.micronaut.test.spock)
 }

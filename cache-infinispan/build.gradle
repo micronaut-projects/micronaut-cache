@@ -5,17 +5,15 @@ plugins {
 dependencies {
     api projects.cacheCore
 
-    api(libs.infinispan.core)
-    api(libs.infinispan.client.hotrod)
+    api(libs.managed.infinispan.core)
+    api(libs.managed.infinispan.client.hotrod)
 
     testImplementation projects.cacheTck
-    testImplementation(libs.micronaut.test.spock)
     testImplementation(libs.micronaut.http.client)
     testImplementation(libs.micronaut.inject.groovy)
     testImplementation(libs.reactor.core)
-    testImplementation(libs.spock)
 }
 
 tasks.withType(Test) {
-    systemProperty('infinispanVersion', libs.versions.infinispan)
+    systemProperty('infinispanVersion', libs.versions.managed.infinispan)
 }
