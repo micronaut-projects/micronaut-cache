@@ -324,8 +324,11 @@ implements <a href="../../../../io/micronaut/cache/SyncCache.html" title="interf
 <ul class="blockList">
 <li class="blockList">
 <h4>get</h4>
-<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;get(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;key,
+<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;get(@NonNull
+                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;key,
+                 @NonNull
                  io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType,
+                 @NonNull
                  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;&nbsp;supplier)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../io/micronaut/cache/SyncCache.html#get-java.lang.Object-io.micronaut.core.type.Argument-java.util.function.Supplier-">SyncCache</a></code></span></div>
 <div class="block">Resolve the given value for the given key. If the value is not found the specified <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function"><code>Supplier</code></a> will
@@ -352,8 +355,11 @@ implements <a href="../../../../io/micronaut/cache/SyncCache.html" title="interf
 <ul class="blockList">
 <li class="blockList">
 <h4>putIfAbsent</h4>
-<pre>public&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util">Optional</a>&lt;T&gt;&nbsp;putIfAbsent(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;key,
-                                   T&nbsp;value)</pre>
+<pre>@NonNull
+public&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util">Optional</a>&lt;T&gt;&nbsp;putIfAbsent(@NonNull
+                                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;key,
+                                            @NonNull
+                                            T&nbsp;value)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../io/micronaut/cache/SyncCache.html#putIfAbsent-java.lang.Object-T-">SyncCache</a></code></span></div>
 <div class="block"><p>Cache the specified value using the specified key if it is not already present.</p></div>
 <dl>
