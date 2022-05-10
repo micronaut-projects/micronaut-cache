@@ -2,7 +2,7 @@
 cache-ri-impl = "1.1.1"
 managed-caffeine = "2.9.1"
 managed-ehcache = "3.8.1"
-managed-hazelcast = "4.2.1"
+managed-hazelcast = "4.2.5"
 managed-infinispan = "12.1.11.Final"
 
 [libraries]
