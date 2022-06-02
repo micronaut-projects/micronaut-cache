@@ -6,6 +6,7 @@ redis: Redis Support
 ehcache: Ehcache Support
 hazelcast: Hazelcast Support
 infinispan: Infinispan Support
+microstream: MicroStream Support
 noop: No Operation Cache Support
 endpoint: Endpoint
 repository: Repository

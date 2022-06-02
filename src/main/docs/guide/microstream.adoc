@@ -1,0 +1,1 @@
+To use https://microstream.one/[MicroStream] as the caching implementation, https://micronaut-projects.github.io/micronaut-microstream/snapshot/guide/#cache[set up the Micronaut MicroStream module].
