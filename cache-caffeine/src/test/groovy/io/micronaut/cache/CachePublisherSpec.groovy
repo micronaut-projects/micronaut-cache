@@ -18,6 +18,7 @@ package io.micronaut.cache
 import io.micronaut.cache.annotation.CacheInvalidate
 import io.micronaut.cache.annotation.CachePut
 import io.micronaut.cache.annotation.Cacheable
+import io.micronaut.cache.annotation.InvalidateOperations
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.async.annotation.SingleResult
 import jakarta.inject.Singleton
@@ -64,6 +65,36 @@ class CachePublisherSpec extends Specification {
         ctx.close()
     }
 
+    @Issue(["https://github.com/micronaut-projects/micronaut-cache/issues/363"])
+    void "test cache invalidation"() {
+        given:
+        def ctx = ApplicationContext.run(
+            'micronaut.caches.num-cache.maximum-size': 10,
+            'micronaut.caches.mult-cache.maximum-size': 10
+        )
+        HelloService helloService = ctx.getBean(HelloService)
+
+        when:
+        def publisher = Mono.from(helloService.calculateValue(10))
+
+        then:
+        publisher.block() == "Hello 1: 10"
+        publisher.block() == "Hello 1: 10"
+
+        when:
+        Mono.from(helloService.invalidateCache(10)).block()
+
+        then:
+        publisher.block() == "Hello 2: 10"
+        publisher.block() == "Hello 2: 10"
+
+        when:
+        Mono.from(helloService.invalidateCacheAsync(10)).block()
+
+        then:
+        publisher.block() == "Hello 3: 10"
+    }
+
     @Singleton
     static class HelloService {
 
@@ -77,6 +108,16 @@ class CachePublisherSpec extends Specification {
                 println("Calculating value for $num")
                 return "Hello $n: $num".toString()
             })
+        }
+
+        @CacheInvalidate("num-cache")
+        Mono<Void> invalidateCache(Integer num) {
+            return Mono.empty();
+        }
+
+        @CacheInvalidate(value = "num-cache", async = true)
+        Mono<Void> invalidateCacheAsync(Integer num) {
+            return Mono.empty();
         }
 
         @CachePut("mult-cache")
