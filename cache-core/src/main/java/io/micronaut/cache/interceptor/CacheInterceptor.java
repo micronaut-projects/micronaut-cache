@@ -250,7 +250,14 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                                                     invalidateOperation,
                                                     cacheNames,
                                                     asyncCacheErrorHandler)
-                            ));
+                            )).switchIfEmpty(Mono.defer(() -> {
+                                return Mono.fromCompletionStage(
+                                        invalidateAsync(context,
+                                                cacheOperation,
+                                                invalidateOperation,
+                                                cacheNames,
+                                                asyncCacheErrorHandler));
+                            }));
                         } else {
                             cachingMono = cachingMono.flatMap(result -> Mono.fromCompletionStage(
                                     invalidateAsync(context,
@@ -258,7 +265,14 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                                                     invalidateOperation,
                                                     cacheNames,
                                                     asyncCacheErrorHandler)
-                            ).thenReturn(result));
+                            ).thenReturn(result)).switchIfEmpty(Mono.defer(() -> {
+                                return Mono.fromCompletionStage(
+                                        invalidateAsync(context,
+                                                cacheOperation,
+                                                invalidateOperation,
+                                                cacheNames,
+                                                asyncCacheErrorHandler));
+                            }));
                         }
                     }
                 }
