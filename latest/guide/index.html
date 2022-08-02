@@ -59,11 +59,13 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#infinispan"><strong>8</strong><span>Infinispan Support</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#noop"><strong>9</strong><span>No Operation Cache Support</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#microstream"><strong>9</strong><span>MicroStream Support</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#endpoint"><strong>10</strong><span>Endpoint</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#noop"><strong>10</strong><span>No Operation Cache Support</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>11</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#endpoint"><strong>11</strong><span>Endpoint</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>12</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -110,11 +112,13 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-infinispan"><a href="#infinispan"><strong>8</strong><span>Infinispan Support</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-noop"><a href="#noop"><strong>9</strong><span>No Operation Cache Support</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-microstream"><a href="#microstream"><strong>9</strong><span>MicroStream Support</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-endpoint"><a href="#endpoint"><strong>10</strong><span>Endpoint</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-noop"><a href="#noop"><strong>10</strong><span>No Operation Cache Support</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>11</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-endpoint"><a href="#endpoint"><strong>11</strong><span>Endpoint</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>12</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -124,7 +128,7 @@
         <h1>Micronaut Cache</h1>
         <p></p>
         <p>Cache support for Micronaut</p>
-        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option value='https://micronaut-projects.github.io/micronaut-cache/snapshot/guide/index.html'>SNAPSHOT</option><option selected='selected' value='https://micronaut-projects.github.io/micronaut-cache/3.4.1/guide/index.html'>3.4.1</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.4.0/guide/index.html'>3.4.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.3.0/guide/index.html'>3.3.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.2.0/guide/index.html'>3.2.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.1.1/guide/index.html'>3.1.1</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.1.0/guide/index.html'>3.1.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.0.0/guide/index.html'>3.0.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.0.0-RC2/guide/index.html'>3.0.0-RC2</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.0.0.RC1/guide/index.html'>3.0.0.RC1</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.4.0/guide/index.html'>2.4.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.3.0/guide/index.html'>2.3.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.2.0/guide/index.html'>2.2.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.1.0/guide/index.html'>2.1.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.0.0/guide/index.html'>2.0.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.0.0.RC1/guide/index.html'>2.0.0.RC1</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.0.0.M2/guide/index.html'>2.0.0.M2</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.0.0.M1/guide/index.html'>2.0.0.M1</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.1.0/guide/index.html'>1.1.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0/guide/index.html'>1.0.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0.RC1/guide/index.html'>1.0.0.RC1</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0.M2/guide/index.html'>1.0.0.M2</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0.M1/guide/index.html'>1.0.0.M1</option></select> </p>
+        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option value='https://micronaut-projects.github.io/micronaut-cache/snapshot/guide/index.html'>SNAPSHOT</option><option selected='selected' value='https://micronaut-projects.github.io/micronaut-cache/3.4.2/guide/index.html'>3.4.2</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.4.1/guide/index.html'>3.4.1</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.4.0/guide/index.html'>3.4.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.3.0/guide/index.html'>3.3.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.2.0/guide/index.html'>3.2.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.1.1/guide/index.html'>3.1.1</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.1.0/guide/index.html'>3.1.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.0.0/guide/index.html'>3.0.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.0.0-RC2/guide/index.html'>3.0.0-RC2</option><option value='https://micronaut-projects.github.io/micronaut-cache/3.0.0.RC1/guide/index.html'>3.0.0.RC1</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.4.0/guide/index.html'>2.4.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.3.0/guide/index.html'>2.3.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.2.0/guide/index.html'>2.2.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.1.0/guide/index.html'>2.1.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.0.0/guide/index.html'>2.0.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.0.0.RC1/guide/index.html'>2.0.0.RC1</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.0.0.M2/guide/index.html'>2.0.0.M2</option><option value='https://micronaut-projects.github.io/micronaut-cache/2.0.0.M1/guide/index.html'>2.0.0.M1</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.1.0/guide/index.html'>1.1.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0/guide/index.html'>1.0.0</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0.RC1/guide/index.html'>1.0.0.RC1</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0.M2/guide/index.html'>1.0.0.M2</option><option value='https://micronaut-projects.github.io/micronaut-cache/1.0.0.M1/guide/index.html'>1.0.0.M1</option></select> </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
@@ -419,7 +423,7 @@ This module is built and tested with Ehcache {ehcacheVersion}
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-ehcache:3.4.1")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-ehcache:3.4.2")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -427,7 +431,7 @@ This module is built and tested with Ehcache {ehcacheVersion}
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-ehcache&lt;/artifactId&gt;
-    &lt;version&gt;3.4.1&lt;/version&gt;
+    &lt;version&gt;3.4.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -609,7 +613,7 @@ This module is built and tested with Hazelcast {hazelcastVersion}
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-hazelcast:3.4.1")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-hazelcast:3.4.2")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -617,7 +621,7 @@ This module is built and tested with Hazelcast {hazelcastVersion}
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-hazelcast&lt;/artifactId&gt;
-    &lt;version&gt;3.4.1&lt;/version&gt;
+    &lt;version&gt;3.4.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -824,7 +828,7 @@ This module is built and tested with Infinispan {infinispanVersion}
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-infinispan:3.4.1")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-infinispan:3.4.2")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -832,7 +836,7 @@ This module is built and tested with Infinispan {infinispanVersion}
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-infinispan&lt;/artifactId&gt;
-    &lt;version&gt;3.4.1&lt;/version&gt;
+    &lt;version&gt;3.4.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -1140,7 +1144,20 @@ complement/override values from the former.
 </div>
 </div>
 
-<h1 id="noop"><a class="anchor" href="#noop"></a>9 No Operation Cache Support</h1>
+<h1 id="microstream"><a class="anchor" href="#microstream"></a>9 MicroStream Support</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/microstream.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To use <a href="https://microstream.one/">MicroStream</a> as the caching implementation, <a href="https://micronaut-projects.github.io/micronaut-microstream/snapshot/guide/#cache">set up the Micronaut MicroStream module</a>.</p>
+</div>
+
+<h1 id="noop"><a class="anchor" href="#noop"></a>10 No Operation Cache Support</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/noop.adoc"'>
@@ -1160,7 +1177,7 @@ In such situations a no operation cache manager can be used that will simply acc
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-noop:3.4.1")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-noop:3.4.2")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1168,7 +1185,7 @@ In such situations a no operation cache manager can be used that will simply acc
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-noop&lt;/artifactId&gt;
-    &lt;version&gt;3.4.1&lt;/version&gt;
+    &lt;version&gt;3.4.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -1182,7 +1199,7 @@ In such situations a no operation cache manager can be used that will simply acc
 </div>
 </div>
 
-<h1 id="endpoint"><a class="anchor" href="#endpoint"></a>10 Endpoint</h1>
+<h1 id="endpoint"><a class="anchor" href="#endpoint"></a>11 Endpoint</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/endpoint.adoc"'>
@@ -1327,7 +1344,7 @@ annotation to your class with the value being the default implementation.</p>
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>11 Repository</h1>
+<h1 id="repository"><a class="anchor" href="#repository"></a>12 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/repository.adoc"'>
