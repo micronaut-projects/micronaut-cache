@@ -11,7 +11,7 @@ dependencies {
     compileOnly(libs.micronaut.inject.groovy)
 
     runtimeOnly 'cglib:cglib-nodep:3.3.0'
-    runtimeOnly 'org.objenesis:objenesis:3.2'
+    runtimeOnly 'org.objenesis:objenesis:3.3'
 
     implementation projects.cacheCore
     implementation(libs.reactor.core)
