@@ -6,7 +6,7 @@ dependencies {
     api projects.cacheCore
     api(libs.managed.caffeine)
 
-    compileOnly(libs.micronaut.micrometer.core)
+    compileOnly("io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion")
 
     implementation(libs.reactor.core)
 
@@ -17,5 +17,5 @@ dependencies {
     testImplementation(libs.micronaut.management)
     testImplementation(libs.micronaut.http.client)
     testImplementation(libs.micronaut.http.server.netty)
-    testImplementation(libs.micronaut.micrometer.core)
+    testImplementation("io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion")
 }

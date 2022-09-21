@@ -20,7 +20,7 @@ import io.micronaut.context.annotation.Parameter;
 import io.micronaut.runtime.ApplicationConfiguration;
 
 /**
- * Default cache configuration implementation used to configure instances of {@link DefaultSyncCache}.
+ * Default cache configuration implementation used to configure instances of {@link io.micronaut.cache.caffeine.DefaultSyncCache}.
  *
  * @author graemerocher
  * @since 1.0.2

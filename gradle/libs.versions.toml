@@ -3,7 +3,7 @@ cache-ri-impl = "1.1.1"
 managed-caffeine = "3.1.1"
 managed-ehcache = "3.8.1"
 managed-hazelcast = "4.2.5"
-managed-infinispan = "12.1.11.Final"
+managed-infinispan = "12.1.12.Final"
 
 [libraries]
 # Managed
@@ -22,7 +22,6 @@ micronaut-inject = { module = "io.micronaut:micronaut-inject" }
 micronaut-inject-groovy = { module = "io.micronaut:micronaut-inject-groovy" }
 micronaut-inject-java = { module = "io.micronaut:micronaut-inject-java" }
 micronaut-management = { module = "io.micronaut:micronaut-management" }
-micronaut-micrometer-core = { module = "io.micronaut.micrometer:micronaut-micrometer-core" }
 micronaut-runtime = { module = "io.micronaut:micronaut-runtime" }
 micronaut-test-spock = { module = "io.micronaut.test:micronaut-test-spock" }
 
