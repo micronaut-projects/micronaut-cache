@@ -8,7 +8,7 @@ dependencies {
     api(libs.micronaut.inject)
     api(libs.micronaut.runtime)
 
-    compileOnly(libs.micronaut.micrometer.core)
+    compileOnly("io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion")
     compileOnly(libs.micronaut.management)
     compileOnly(libs.cache.api)
 
