@@ -13,18 +13,6 @@ managed-ehcache-clustered = { module = "org.ehcache:ehcache-clustered", version.
 managed-infinispan-client-hotrod = { module = "org.infinispan:infinispan-client-hotrod", version.ref = "managed-infinispan" }
 managed-infinispan-core = { module = "org.infinispan:infinispan-core", version.ref = "managed-infinispan" }
 
-# Micronaut
-micronaut-aop = { module = "io.micronaut:micronaut-aop" }
-micronaut-http = { module = "io.micronaut:micronaut-http" }
-micronaut-http-client = { module = "io.micronaut:micronaut-http-client" }
-micronaut-http-server-netty = { module = "io.micronaut:micronaut-http-server-netty" }
-micronaut-inject = { module = "io.micronaut:micronaut-inject" }
-micronaut-inject-groovy = { module = "io.micronaut:micronaut-inject-groovy" }
-micronaut-inject-java = { module = "io.micronaut:micronaut-inject-java" }
-micronaut-management = { module = "io.micronaut:micronaut-management" }
-micronaut-runtime = { module = "io.micronaut:micronaut-runtime" }
-micronaut-test-spock = { module = "io.micronaut.test:micronaut-test-spock" }
-
 cache-api = { module = "javax.cache:cache-api" }
 cache-ri-impl = { module = "org.jsr107.ri:cache-ri-impl", version.ref = "cache-ri-impl" }
 logback-classic = { module = "ch.qos.logback:logback-classic" }

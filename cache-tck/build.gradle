@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.micronaut.inject.groovy)
+    compileOnly(mn.micronaut.inject.groovy)
 
     runtimeOnly 'cglib:cglib-nodep:3.3.0'
     runtimeOnly 'org.objenesis:objenesis:3.3'
@@ -17,5 +17,5 @@ dependencies {
     implementation(libs.reactor.core)
     implementation(libs.spock.core)
 
-    implementation(libs.micronaut.test.spock)
+    implementation(mn.micronaut.test.spock)
 }

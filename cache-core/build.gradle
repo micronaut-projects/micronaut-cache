@@ -3,20 +3,20 @@ plugins {
 }
 
 dependencies {
-    api(libs.micronaut.aop)
-    api(libs.micronaut.http)
-    api(libs.micronaut.inject)
-    api(libs.micronaut.runtime)
+    api(mn.micronaut.aop)
+    api(mn.micronaut.http)
+    api(mn.micronaut.inject)
+    api(mn.micronaut.runtime)
 
     compileOnly("io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion")
-    compileOnly(libs.micronaut.management)
+    compileOnly(mn.micronaut.management)
     compileOnly(libs.cache.api)
 
     implementation(libs.reactor.core)
 
     testImplementation(libs.logback.classic)
-    testImplementation(libs.micronaut.http.client)
-    testImplementation(libs.micronaut.inject.groovy)
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.inject.groovy)
     testImplementation(libs.cache.api)
     testImplementation(libs.cache.ri.impl)
 }
