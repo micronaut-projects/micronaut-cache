@@ -13,6 +13,10 @@ repositories {
     maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
 }
 
+def graal = ["jvmci.Compiler", "java.vendor.version", "java.vendor"].any {
+    System.getProperty(it)?.toLowerCase(Locale.ENGLISH)?.contains("graal")
+}
+
 dependencies {
     testAnnotationProcessor(mn.micronaut.inject.java)
     testImplementation project(":cache-caffeine")
@@ -23,6 +27,9 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    if (graal) {
+        predictiveSelection.enabled = false
+    }
 }
 
 configurations {
@@ -33,9 +40,6 @@ configurations {
 }
 
 tasks.named("check") { task ->
-    def graal = ["jvmci.Compiler", "java.vendor.version", "java.vendor"].any {
-        System.getProperty(it)?.toLowerCase(Locale.ENGLISH)?.contains("graal")
-    }
     if (graal) {
         task.dependsOn("nativeTest")
     }
