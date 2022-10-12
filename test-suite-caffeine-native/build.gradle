@@ -1,0 +1,60 @@
+plugins {
+    id "io.micronaut.build.internal.common"
+    id 'org.graalvm.buildtools.native'
+}
+
+micronautBuild {
+    enableBom = false
+    enableProcessing = false
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+    testAnnotationProcessor(mn.micronaut.inject.java)
+    testImplementation project(":cache-caffeine")
+    testImplementation(mn.micronaut.http.server.netty)
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.test.junit5)
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+configurations {
+    // Exclude Groovy from the nativeTestCompilation classpath
+    nativeImageTestClasspath {
+        exclude module: 'groovy-test'
+    }
+}
+
+tasks.named("check") { task ->
+    def graal = ["jvmci.Compiler", "java.vendor.version", "java.vendor"].any {
+        System.getProperty(it)?.toLowerCase(Locale.ENGLISH)?.contains("graal")
+    }
+    if (graal) {
+        task.dependsOn("nativeTest")
+    }
+}
+
+def openGraalModules = [
+        "org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk",
+        "org.graalvm.nativeimage.builder/com.oracle.svm.core.configure",
+        "org.graalvm.sdk/org.graalvm.nativeimage.impl"
+]
+
+graalvmNative {
+    toolchainDetection = false
+    binaries {
+        all {
+            buildArgs.add("-H:-UseServiceLoaderFeature")
+            openGraalModules.each { module ->
+                jvmArgs.add("--add-exports=" + module + "=ALL-UNNAMED")
+            }
+        }
+    }
+}
