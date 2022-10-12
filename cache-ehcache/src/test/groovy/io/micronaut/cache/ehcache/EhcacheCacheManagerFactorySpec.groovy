@@ -18,8 +18,8 @@ package io.micronaut.cache.ehcache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.CacheManager
 import org.ehcache.Status
-import org.ehcache.core.internal.statistics.DefaultStatisticsService
 import org.ehcache.core.spi.service.StatisticsService
+import org.ehcache.core.statistics.DefaultStatisticsService
 import spock.lang.Specification
 
 class EhcacheCacheManagerFactorySpec extends Specification {
@@ -43,18 +43,13 @@ class EhcacheCacheManagerFactorySpec extends Specification {
         ApplicationContext ctx = ApplicationContext.run(["ehcache.caches.foo.enabled": true])
 
         when:
-        def statisticsService = ctx.getBean(StatisticsService)
+        DefaultStatisticsService statisticsService = (DefaultStatisticsService) ctx.getBean(StatisticsService)
         ctx.getBean(io.micronaut.cache.CacheManager) //Triggering CacheManager initialisation
 
-        then:
-        statisticsService.getCacheStatistics("foo")
-
-        when:
-        statisticsService.getCacheStatistics("not-foo")
 
         then:
-        def ex = thrown(IllegalArgumentException)
-        ex.message == "Unknown cache: not-foo"
+        statisticsService
+        statisticsService.started
 
         cleanup:
         ctx.close()
