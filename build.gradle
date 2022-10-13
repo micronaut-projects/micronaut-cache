@@ -8,3 +8,7 @@ repositories {
     mavenCentral()
     maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
 }
+
+publishGuide {
+    properties.put("ehcacheVersion", libs.versions.managed.ehcache.get())
+}
