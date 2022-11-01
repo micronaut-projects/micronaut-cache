@@ -54,7 +54,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     private final CacheConfiguration cacheConfiguration;
     private final com.github.benmanes.caffeine.cache.Cache cache;
     private final ApplicationContext applicationContext;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
 
     /**
      * Construct a sync cache implementation with given configurations.
@@ -66,7 +66,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     public DefaultSyncCache(
             DefaultCacheConfiguration cacheConfiguration,
             ApplicationContext applicationContext,
-            ConversionService<?> conversionService) {
+            ConversionService conversionService) {
         this((CacheConfiguration) cacheConfiguration, applicationContext, conversionService);
     }
 
@@ -81,7 +81,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     public DefaultSyncCache(
             CacheConfiguration cacheConfiguration,
             ApplicationContext applicationContext,
-            ConversionService<?> conversionService) {
+            ConversionService conversionService) {
         this.cacheConfiguration = cacheConfiguration;
         this.applicationContext = applicationContext;
         this.conversionService = conversionService;
