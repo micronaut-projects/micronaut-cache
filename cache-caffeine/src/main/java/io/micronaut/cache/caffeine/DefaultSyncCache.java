@@ -193,7 +193,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
         cacheConfiguration.getExpireAfterWrite().ifPresent(duration -> builder.expireAfterWrite(duration.toMillis(), TimeUnit.MILLISECONDS));
         cacheConfiguration.getInitialCapacity().ifPresent(builder::initialCapacity);
         cacheConfiguration.getMaximumSize().ifPresent(builder::maximumSize);
-        cacheConfiguration.getMaximumWeight().ifPresent((long weight) -> {
+        cacheConfiguration.getMaximumWeight().ifPresent(weight -> {
             builder.maximumWeight(weight);
             builder.weigher(findWeigher());
         });
