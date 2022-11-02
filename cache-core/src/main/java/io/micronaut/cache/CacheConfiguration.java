@@ -21,6 +21,8 @@ import io.micronaut.runtime.ApplicationConfiguration;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 /**
  * <p>A base configuration class for configuring caches.</p>
@@ -79,22 +81,22 @@ public class CacheConfiguration {
     /**
      * @return The initial capacity of the cache
      */
-    public Optional<Integer> getInitialCapacity() {
-        return initialCapacity == null ? Optional.empty() : Optional.of(initialCapacity);
+    public OptionalInt getInitialCapacity() {
+        return initialCapacity == null ? OptionalInt.empty() : OptionalInt.of(initialCapacity);
     }
 
     /**
      * @return The maximum size of the cache
      */
-    public Optional<Long> getMaximumSize() {
-        return maximumSize == null ? Optional.empty() : Optional.of(maximumSize);
+    public OptionalLong getMaximumSize() {
+        return maximumSize == null ? OptionalLong.empty() : OptionalLong.of(maximumSize);
     }
 
     /**
      * @return The maximum weight of cache entries
      */
-    public Optional<Long> getMaximumWeight() {
-        return maximumWeight == null ? Optional.empty() : Optional.of(maximumWeight);
+    public OptionalLong getMaximumWeight() {
+        return maximumWeight == null ? OptionalLong.empty() : OptionalLong.of(maximumWeight);
     }
 
     /**
