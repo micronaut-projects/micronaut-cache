@@ -45,7 +45,7 @@ import java.util.function.Supplier;
  */
 public class EhcacheSyncCache implements SyncCache<Cache> {
 
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final EhcacheConfiguration configuration;
     private final Cache nativeCache;
     private final ExecutorService executorService;
@@ -58,7 +58,7 @@ public class EhcacheSyncCache implements SyncCache<Cache> {
      * @param executorService the executor service to offload synchronous operations
      * @param statisticsService th Ehcache statistics service
      */
-    public EhcacheSyncCache(ConversionService<?> conversionService,
+    public EhcacheSyncCache(ConversionService conversionService,
                             EhcacheConfiguration configuration,
                             Cache nativeCache,
                             @Named(TaskExecutors.IO) ExecutorService executorService,
