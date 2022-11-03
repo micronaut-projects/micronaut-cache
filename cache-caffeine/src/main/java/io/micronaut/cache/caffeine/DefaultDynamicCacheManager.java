@@ -38,7 +38,7 @@ import jakarta.inject.Singleton;
 public class DefaultDynamicCacheManager implements DynamicCacheManager<com.github.benmanes.caffeine.cache.Cache> {
 
     private final ApplicationContext applicationContext;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final ApplicationConfiguration applicationConfiguration;
 
     /**
@@ -47,7 +47,7 @@ public class DefaultDynamicCacheManager implements DynamicCacheManager<com.githu
      * @param conversionService the conversion service
      * @param applicationConfiguration the application configuration
      */
-    public DefaultDynamicCacheManager(ApplicationContext applicationContext, ConversionService<?> conversionService, ApplicationConfiguration applicationConfiguration) {
+    public DefaultDynamicCacheManager(ApplicationContext applicationContext, ConversionService conversionService, ApplicationConfiguration applicationConfiguration) {
         this.applicationContext = applicationContext;
         this.conversionService = conversionService;
         this.applicationConfiguration = applicationConfiguration;

@@ -50,7 +50,7 @@ public class JCacheManager implements io.micronaut.cache.CacheManager<Cache> {
     public static final String JCACHE_ENABLED = "micronaut.jcache.enabled";
 
     private final CacheManager cacheManager;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final ExecutorService executorService;
 
     /**
@@ -63,7 +63,7 @@ public class JCacheManager implements io.micronaut.cache.CacheManager<Cache> {
     protected JCacheManager(
             @NonNull CacheManager cacheManager,
             @NonNull @Named(TaskExecutors.IO) ExecutorService executorService,
-            @NonNull ConversionService<?> conversionService) {
+            @NonNull ConversionService conversionService) {
         this.cacheManager = cacheManager;
         this.conversionService = conversionService;
         this.executorService = executorService;
