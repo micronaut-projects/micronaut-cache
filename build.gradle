@@ -11,4 +11,7 @@ repositories {
 
 publishGuide {
     properties.put("ehcacheVersion", libs.versions.managed.ehcache.get())
+    properties.put("caffeineVersion", libs.versions.managed.caffeine.get())
+    properties.put("hazelcastVersion", libs.versions.managed.hazelcast.get())
+    properties.put("infinispanVersion", libs.versions.managed.infinispan.get())
 }
