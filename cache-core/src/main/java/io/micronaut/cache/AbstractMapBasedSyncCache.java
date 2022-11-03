@@ -34,14 +34,14 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractMapBasedSyncCache<C extends Map<Object, Object>> implements SyncCache<C> {
 
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final C nativeCache;
 
     /**
      * @param conversionService the conversion service
      * @param nativeCache the native cache
      */
-    public AbstractMapBasedSyncCache(ConversionService<?> conversionService, C nativeCache) {
+    public AbstractMapBasedSyncCache(ConversionService conversionService, C nativeCache) {
         this.conversionService = conversionService;
         this.nativeCache = nativeCache;
     }
@@ -49,7 +49,7 @@ public abstract class AbstractMapBasedSyncCache<C extends Map<Object, Object>> i
     /**
      * @return The conversion service
      */
-    public ConversionService<?> getConversionService() {
+    public ConversionService getConversionService() {
         return conversionService;
     }
 

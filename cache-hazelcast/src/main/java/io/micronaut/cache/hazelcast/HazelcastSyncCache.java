@@ -39,7 +39,7 @@ public class HazelcastSyncCache extends AbstractMapBasedSyncCache<IMap<Object, O
      * @param nativeCache the native cache
      * @param executorService managers the pool of executors
      */
-    public HazelcastSyncCache(ConversionService<?> conversionService,
+    public HazelcastSyncCache(ConversionService conversionService,
                               IMap<Object, Object> nativeCache,
                               ExecutorService executorService) {
         super(conversionService, nativeCache);

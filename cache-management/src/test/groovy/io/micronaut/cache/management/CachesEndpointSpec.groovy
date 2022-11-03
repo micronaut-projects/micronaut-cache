@@ -45,7 +45,7 @@ class CachesEndpointSpec extends Specification {
 
         then:
         response.code() == HttpStatus.OK.code
-        result == [:]
+        result == [caches:[:]]
 
         cleanup:
         client.close()

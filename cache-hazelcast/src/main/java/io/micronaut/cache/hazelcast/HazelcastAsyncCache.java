@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
 
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final IMap<Object, Object> nativeCache;
     private final ExecutorService executorService;
 
@@ -45,7 +45,7 @@ public class HazelcastAsyncCache implements AsyncCache<IMap<Object, Object>> {
      * @param nativeCache the native cache
      * @param executorService managers the pool of executors
      */
-    public HazelcastAsyncCache(ConversionService<?> conversionService,
+    public HazelcastAsyncCache(ConversionService conversionService,
                                IMap<Object, Object> nativeCache,
                                ExecutorService executorService) {
         this.conversionService = conversionService;

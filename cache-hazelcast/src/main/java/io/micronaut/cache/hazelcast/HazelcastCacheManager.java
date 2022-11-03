@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutorService;
 @Singleton
 public class HazelcastCacheManager implements DynamicCacheManager<IMap<Object, Object>> {
 
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final ExecutorService executorService;
     private final HazelcastInstance hazelcastInstance;
 
@@ -47,7 +47,7 @@ public class HazelcastCacheManager implements DynamicCacheManager<IMap<Object, O
      * @param hazelcastInstance the client instance of hazelcast client
      * @param executorService managers the pool of executors
      */
-    public HazelcastCacheManager(ConversionService<?> conversionService,
+    public HazelcastCacheManager(ConversionService conversionService,
                                  HazelcastInstance hazelcastInstance,
                                  @Named(TaskExecutors.IO) ExecutorService executorService) {
         this.conversionService = conversionService;

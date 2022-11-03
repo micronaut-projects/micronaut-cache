@@ -35,7 +35,7 @@ import java.util.Optional;
  * @since 1.0
  */
 public class DefaultStringKeySerializer implements ObjectSerializer {
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final String cacheName;
     private final Charset charset;
 
@@ -46,7 +46,7 @@ public class DefaultStringKeySerializer implements ObjectSerializer {
      * @param charset           The charset used for serialization and de-serializing instance from the to/from cache
      * @param conversionService To convert value/object from the cache to String
      */
-    public DefaultStringKeySerializer(String cacheName, Charset charset, ConversionService<?> conversionService) {
+    public DefaultStringKeySerializer(String cacheName, Charset charset, ConversionService conversionService) {
         this.cacheName = cacheName;
         this.charset = charset;
         this.conversionService = conversionService;
