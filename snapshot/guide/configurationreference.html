@@ -110,14 +110,12 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.*.listen-to-removals</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If a removal listener is defined and this property is true then caffeine will send removal events to that listener.</p>
-<p class="tableblock"> @return True if listen to removals is enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If a removal listener is defined and this property is true then caffeine will send removal events to that listener.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.*.listen-to-evictions</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If a removal listener is defined and this property is true then caffeine will send eviction events to that listener.</p>
-<p class="tableblock"> @return True if listen to evictions is enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If a removal listener is defined and this property is true then caffeine will send eviction events to that listener.</p></td>
 </tr>
 </tbody>
 </table>
@@ -144,54 +142,50 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.initial-capacity</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The initial capacity of the cache</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.maximum-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum size of the cache</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.maximum-weight</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum weight of cache entries</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.expire-after-write</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The expiry to use after the value is written</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.expire-after-access</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Specifies that each entry should be automatically removed from the cache once a fixed duration
  has elapsed after the entry&#8217;s creation, the most recent replacement of its value, or its last
- read.</p>
-<p class="tableblock"> @return The {@link Duration}</p></td>
+ read.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.record-stats</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Some caches support recording statistics. For example to record hit and miss ratio&#8217;s fine tune the cache characteristics.</p>
-<p class="tableblock"> @return True if record stats is enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Some caches support recording statistics. For example to record hit and miss ratio&#8217;s fine tune the cache characteristics.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.charset</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.nio.charset.Charset</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The charset used to serialize and deserialize values</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.test-mode</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Some caches have a test mode. For example to to enable the eager execution of cleanup operations making it
- easier to test.</p>
-<p class="tableblock"> @return True if it test mode is enabled</p></td>
+ easier to test.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.caches.discovery-client.enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value (true).
- @return Whether the discovery client is enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value ().</p></td>
 </tr>
 </tbody>
 </table>
@@ -199,9 +193,9 @@
 </div>
 <div class="sect2">
 <h3 id="_cache_ehcache_config_properties">Cache Ehcache Config Properties</h3>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredSharedResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredSharedResourcePoolConfiguration">&#128279;</a>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredSharedResourcePoolConfiguration.html">EhcacheConfiguration$ClusteredSharedResourcePoolConfiguration</a></caption>
+<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration.html">EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -216,9 +210,14 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-shared.server-resource</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-dedicated.max-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-dedicated.server-resource</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return the server resource</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
@@ -242,24 +241,24 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.heap.max-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum size of the cache, in bytes</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.heap.max-entries</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum number of entries</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.heap.size-of-max-object-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum size of a single object</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$OffheapTieredCacheConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$OffheapTieredCacheConfiguration">&#128279;</a>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration$EhcacheClusterConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration$EhcacheClusterConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.OffheapTieredCacheConfiguration.html">EhcacheConfiguration$OffheapTieredCacheConfiguration</a></caption>
+<caption class="title">Table 5. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.EhcacheClusterConfiguration.html">EhcacheCacheManagerConfiguration$EhcacheClusterConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -274,128 +273,21 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.offheap.max-size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum size of the cache, in bytes</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheClusterResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheClusterResourcePoolConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheClusterResourcePoolConfiguration.html">EhcacheClusterResourcePoolConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.resource-pools.*.max-size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum size of the cache, in bytes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.resource-pools.*.server-resource</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return the server resource</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredDedicatedResourcePoolConfiguration.html">EhcacheConfiguration$ClusteredDedicatedResourcePoolConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-dedicated.max-size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum size of the cache, in bytes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-dedicated.server-resource</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return the server resource</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.html">EhcacheCacheManagerConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-size-of-max-object-graph</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-write-behind-thread-pool</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.uri</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-disk-store-thread-pool</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.default-server-resource</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-event-listeners-thread-pool</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.class-loader</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.ClassLoader</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-size-of-max-object-size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return the default maximum size of the largest object in the cache</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.storage-path</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return the storage path in the file system</p></td>
 </tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
 <a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.html">EhcacheConfiguration</a></caption>
+<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.html">EhcacheConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -527,19 +419,19 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.key-type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Class</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The type of the keys in the cache</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.value-type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Class</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The type of the values in the cache</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration$EhcacheClusterConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration$EhcacheClusterConfiguration">&#128279;</a>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheCacheManagerConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.EhcacheClusterConfiguration.html">EhcacheCacheManagerConfiguration$EhcacheClusterConfiguration</a></caption>
+<caption class="title">Table 7. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheCacheManagerConfiguration.html">EhcacheCacheManagerConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -554,21 +446,70 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.uri</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return cluster URI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-size-of-max-object-graph</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.default-server-resource</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-write-behind-thread-pool</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return the default server resource</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-disk-store-thread-pool</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-event-listeners-thread-pool</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.class-loader</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.ClassLoader</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.default-size-of-max-object-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.storage-path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$OffheapTieredCacheConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$OffheapTieredCacheConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.OffheapTieredCacheConfiguration.html">EhcacheConfiguration$OffheapTieredCacheConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.offheap.max-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
 <a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$DiskTieredCacheConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$DiskTieredCacheConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.DiskTieredCacheConfiguration.html">EhcacheConfiguration$DiskTieredCacheConfiguration</a></caption>
+<caption class="title">Table 9. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.DiskTieredCacheConfiguration.html">EhcacheConfiguration$DiskTieredCacheConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -585,22 +526,19 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.disk.max-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The maximum size of the cache, in bytes</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.disk.segments</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return The disk segments used</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-</div>
-<div class="sect2">
-<h3 id="_cache_hazelcast_config_properties">Cache Hazelcast Config Properties</h3>
-<a id="io.micronaut.cache.hazelcast.HazelcastMemberConfiguration" href="#io.micronaut.cache.hazelcast.HazelcastMemberConfiguration">&#128279;</a>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredSharedResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheConfiguration$ClusteredSharedResourcePoolConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Configuration Properties for <a href="../api/io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html">HazelcastMemberConfiguration</a></caption>
+<caption class="title">Table 10. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheConfiguration.ClusteredSharedResourcePoolConfiguration.html">EhcacheConfiguration$ClusteredSharedResourcePoolConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -615,31 +553,48 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.properties</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Properties</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.instance-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.cluster-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.license-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.caches.*.clustered-shared.server-resource</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
+<a id="io.micronaut.cache.ehcache.configuration.EhcacheClusterResourcePoolConfiguration" href="#io.micronaut.cache.ehcache.configuration.EhcacheClusterResourcePoolConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. Configuration Properties for <a href="../api/io/micronaut/cache/ehcache/configuration/EhcacheClusterResourcePoolConfiguration.html">EhcacheClusterResourcePoolConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.resource-pools.*.max-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ehcache.cluster.resource-pools.*.server-resource</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+</div>
+<div class="sect2">
+<h3 id="_cache_hazelcast_config_properties">Cache Hazelcast Config Properties</h3>
 <a id="io.micronaut.cache.hazelcast.HazelcastClientConfiguration" href="#io.micronaut.cache.hazelcast.HazelcastClientConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Configuration Properties for <a href="../api/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html">HazelcastClientConfiguration</a></caption>
+<caption class="title">Table 12. Configuration Properties for <a href="../api/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html">HazelcastClientConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -741,6 +696,45 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.socket.buffer-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.cache.hazelcast.HazelcastMemberConfiguration" href="#io.micronaut.cache.hazelcast.HazelcastMemberConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. Configuration Properties for <a href="../api/io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html">HazelcastMemberConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Properties</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.instance-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.cluster-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.license-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -908,7 +902,7 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.config-file</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@return the configuration file location</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-cluster</code></p></td>
