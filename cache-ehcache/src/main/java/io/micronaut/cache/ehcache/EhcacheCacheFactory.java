@@ -92,7 +92,7 @@ public class EhcacheCacheFactory {
     @EachBean(EhcacheConfiguration.class)
     EhcacheSyncCache syncCache(@Parameter EhcacheConfiguration configuration,
                                CacheManager cacheManager,
-                               ConversionService<?> conversionService,
+                               ConversionService conversionService,
                                @Named(TaskExecutors.IO) ExecutorService executorService,
                                StatisticsService statisticsService) {
         Cache<?, ?> nativeCache = cacheManager.createCache(configuration.getName(), configuration.getBuilder());

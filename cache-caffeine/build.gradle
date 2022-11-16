@@ -10,12 +10,13 @@ dependencies {
 
     implementation(libs.reactor.core)
 
-    testAnnotationProcessor(libs.micronaut.inject.java)
+    testAnnotationProcessor(mn.micronaut.inject.java)
 
+    testImplementation(mn.micronaut.serde.jackson)
     testImplementation(libs.logback.classic)
     testImplementation(libs.cache.ri.impl)
-    testImplementation(libs.micronaut.management)
-    testImplementation(libs.micronaut.http.client)
-    testImplementation(libs.micronaut.http.server.netty)
+    testImplementation(mn.micronaut.management)
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.http.server.netty)
     testImplementation("io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion")
 }

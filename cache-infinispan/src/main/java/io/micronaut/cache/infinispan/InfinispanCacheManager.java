@@ -36,13 +36,13 @@ import org.infinispan.configuration.cache.ConfigurationBuilder;
 public class InfinispanCacheManager implements DynamicCacheManager<RemoteCache<Object, Object>> {
 
     private final RemoteCacheManager remoteCacheManager;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
 
     /**
      * @param remoteCacheManager the Infinispan remote cache manager
      * @param conversionService the conversion service
      */
-    public InfinispanCacheManager(RemoteCacheManager remoteCacheManager, ConversionService<?> conversionService) {
+    public InfinispanCacheManager(RemoteCacheManager remoteCacheManager, ConversionService conversionService) {
         this.remoteCacheManager = remoteCacheManager;
         this.conversionService = conversionService;
     }

@@ -6,7 +6,7 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.micronaut.build.shared.settings' version '6.0.0'
+    id 'io.micronaut.build.shared.settings' version '6.0.2'
 }
 
 rootProject.name = 'cache-parent'
@@ -22,3 +22,13 @@ include 'cache-noop'
 include 'cache-tck'
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    }
+}
+micronautBuild {
+    importMicronautCatalog()
+}

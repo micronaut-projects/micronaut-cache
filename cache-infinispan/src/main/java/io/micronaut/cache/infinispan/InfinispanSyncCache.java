@@ -36,7 +36,7 @@ public class InfinispanSyncCache extends AbstractMapBasedSyncCache<RemoteCache<O
      * @param conversionService the conversion service
      * @param nativeCache       the native cache
      */
-    public InfinispanSyncCache(ConversionService<?> conversionService, RemoteCache<Object, Object> nativeCache) {
+    public InfinispanSyncCache(ConversionService conversionService, RemoteCache<Object, Object> nativeCache) {
         super(conversionService, nativeCache);
     }
 

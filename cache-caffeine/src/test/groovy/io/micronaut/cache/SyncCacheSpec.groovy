@@ -191,7 +191,7 @@ class SyncCacheSpec extends Specification {
         given:
         ApplicationContext applicationContext = ApplicationContext.run(
                 'micronaut.caches.test.initialCapacity':1,
-                'micronaut.caches.test.maximumSize':3,
+                'micronaut.caches.test.maximum-size':3,
                 'micronaut.caches.test.test-mode':true,
         )
 
