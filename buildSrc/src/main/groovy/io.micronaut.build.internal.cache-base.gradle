@@ -4,5 +4,5 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.google.code.findbugs:jsr305' // for "warning: unknown enum constant When.MAYBE"
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2' // for "warning: unknown enum constant When.MAYBE"
 }
