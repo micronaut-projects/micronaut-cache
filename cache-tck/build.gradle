@@ -17,5 +17,5 @@ dependencies {
     implementation(libs.reactor.core)
     implementation(libs.spock.core)
 
-    implementation(mn.micronaut.test.spock)
+    implementation(mnTest.micronaut.test.spock)
 }
