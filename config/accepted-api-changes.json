@@ -1,0 +1,62 @@
+[
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastClientConfigCondition$IntrospectionRef",
+    "member": "Field $ANNOTATION_METADATA",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastClientConfigCondition$IntrospectionRef",
+    "member": "Constructor io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastClientConfigCondition$IntrospectionRef()",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastClientConfigCondition$IntrospectionRef",
+    "member": "Implemented interface io.micronaut.core.annotation.AnnotationSource",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastClientConfigCondition$IntrospectionRef",
+    "member": "Implemented interface io.micronaut.core.annotation.AnnotationMetadataProvider",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastClientConfigCondition$IntrospectionRef",
+    "member": "Implemented interface io.micronaut.core.naming.Named",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastClientConfigCondition$IntrospectionRef",
+    "member": "Implemented interface io.micronaut.core.beans.BeanIntrospectionReference",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastInstanceConfigCondition$IntrospectionRef",
+    "member": "Field $ANNOTATION_METADATA",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastInstanceConfigCondition$IntrospectionRef",
+    "member": "Constructor io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastInstanceConfigCondition$IntrospectionRef()",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastInstanceConfigCondition$IntrospectionRef",
+    "member": "Implemented interface io.micronaut.core.annotation.AnnotationSource",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastInstanceConfigCondition$IntrospectionRef",
+    "member": "Implemented interface io.micronaut.core.annotation.AnnotationMetadataProvider",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastInstanceConfigCondition$IntrospectionRef",
+    "member": "Implemented interface io.micronaut.core.naming.Named",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  },
+  {
+    "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastInstanceConfigCondition$IntrospectionRef",
+    "member": "Implemented interface io.micronaut.core.beans.BeanIntrospectionReference",
+    "reason": "Internal static class definitions are no longer created for Micronaut 4"
+  }
+]
