@@ -237,8 +237,9 @@ public class DefaultSyncCache implements SyncCache<Cache> {
 
         Policy policy = caffeineCache.policy();
         Optional<Policy.Eviction> eviction = policy.eviction();
-        Policy.Expiration expireAfterAccess = (Policy.Expiration) policy.expireAfterAccess().orElse(null);
-        Policy.Expiration expireAfterWrite = (Policy.Expiration) policy.expireAfterWrite().orElse(null);
+        Optional<Policy.FixedExpiration> expireAfterAccess = policy.expireAfterAccess();
+        Optional<Policy.FixedExpiration> expireAfterWrite = policy.expireAfterWrite();
+
         Long maximumSize = eviction.filter(e -> !e.isWeighted()).map(e -> e.getMaximum()).orElse(null);
         Long maximumWeight = eviction.filter(e -> e.isWeighted()).map(e -> e.getMaximum()).orElse(null);
         Long weightedSize = eviction.flatMap(e -> e.weightedSize().isPresent() ? Optional.of(e.weightedSize().getAsLong()) : Optional.empty()).orElse(null);
@@ -261,8 +262,8 @@ public class DefaultSyncCache implements SyncCache<Cache> {
         return values;
     }
 
-    private Long getExpiresAfter(Policy.Expiration expiration) {
-        return expiration != null ? expiration.getExpiresAfter(TimeUnit.MILLISECONDS) : null;
+    private Long getExpiresAfter(Optional<Policy.FixedExpiration> expiration) {
+        return expiration.map(e -> e.getExpiresAfter(TimeUnit.MILLISECONDS)).orElse(null);
     }
 
     private Map<String, Object> getStatsData(CacheStats stats) {

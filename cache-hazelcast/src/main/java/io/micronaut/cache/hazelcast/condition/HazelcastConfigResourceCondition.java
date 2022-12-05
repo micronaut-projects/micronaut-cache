@@ -87,7 +87,7 @@ public class HazelcastConfigResourceCondition implements Condition {
     }
 
     /**
-     * Condition that matches if any instance config file exitsts.
+     * Condition that matches if any instance config file exists.
      */
     public static class HazelcastInstanceConfigCondition extends HazelcastConfigResourceCondition {
         @Override

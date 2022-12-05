@@ -15,6 +15,6 @@ dependencies {
 
 micronautBuild {
     resolutionStrategy {
-        force "org.ehcache:ehcache-clustered:$ehcacheVersion"
+        force "org.ehcache:ehcache-clustered:${libs.versions.managed.ehcache.get()}"
     }
 }
