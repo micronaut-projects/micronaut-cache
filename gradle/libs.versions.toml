@@ -3,7 +3,7 @@ cache-ri-impl = "1.1.1"
 managed-caffeine = "3.1.1"
 managed-ehcache = "3.8.1"
 managed-hazelcast = "5.2.1"
-managed-infinispan = "14.0.2.Final"
+managed-infinispan = "14.0.3.Final"
 
 micronaut-serde = "2.0.0-SNAPSHOT"
 testcontainers = "1.17.6"
