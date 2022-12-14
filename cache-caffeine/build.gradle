@@ -7,7 +7,7 @@ dependencies {
     api(libs.managed.caffeine)
 
     compileOnly("io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion")
-    compileOnly(mn.graal)
+    compileOnly(libs.graal.svm)
 
     implementation(libs.reactor.core)
 

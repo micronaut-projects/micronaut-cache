@@ -18,7 +18,7 @@ dependencies {
     testImplementation project(":cache-caffeine")
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
-    testImplementation(mn.micronaut.test.junit5)
+    testImplementation(mnTest.micronaut.test.junit5)
 }
 
 tasks.withType(Test).configureEach {
