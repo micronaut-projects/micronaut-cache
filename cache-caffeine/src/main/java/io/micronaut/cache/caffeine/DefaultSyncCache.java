@@ -54,7 +54,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     private final CacheConfiguration cacheConfiguration;
     private final com.github.benmanes.caffeine.cache.Cache cache;
     private final ApplicationContext applicationContext;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
 
     /**
      * Construct a sync cache implementation with given configurations.
@@ -66,7 +66,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     public DefaultSyncCache(
             DefaultCacheConfiguration cacheConfiguration,
             ApplicationContext applicationContext,
-            ConversionService<?> conversionService) {
+            ConversionService conversionService) {
         this((CacheConfiguration) cacheConfiguration, applicationContext, conversionService);
     }
 
@@ -81,7 +81,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
     public DefaultSyncCache(
             CacheConfiguration cacheConfiguration,
             ApplicationContext applicationContext,
-            ConversionService<?> conversionService) {
+            ConversionService conversionService) {
         this.cacheConfiguration = cacheConfiguration;
         this.applicationContext = applicationContext;
         this.conversionService = conversionService;
@@ -193,7 +193,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
         cacheConfiguration.getExpireAfterWrite().ifPresent(duration -> builder.expireAfterWrite(duration.toMillis(), TimeUnit.MILLISECONDS));
         cacheConfiguration.getInitialCapacity().ifPresent(builder::initialCapacity);
         cacheConfiguration.getMaximumSize().ifPresent(builder::maximumSize);
-        cacheConfiguration.getMaximumWeight().ifPresent((long weight) -> {
+        cacheConfiguration.getMaximumWeight().ifPresent(weight -> {
             builder.maximumWeight(weight);
             builder.weigher(findWeigher());
         });
@@ -237,8 +237,9 @@ public class DefaultSyncCache implements SyncCache<Cache> {
 
         Policy policy = caffeineCache.policy();
         Optional<Policy.Eviction> eviction = policy.eviction();
-        Policy.Expiration expireAfterAccess = (Policy.Expiration) policy.expireAfterAccess().orElse(null);
-        Policy.Expiration expireAfterWrite = (Policy.Expiration) policy.expireAfterWrite().orElse(null);
+        Optional<Policy.FixedExpiration> expireAfterAccess = policy.expireAfterAccess();
+        Optional<Policy.FixedExpiration> expireAfterWrite = policy.expireAfterWrite();
+
         Long maximumSize = eviction.filter(e -> !e.isWeighted()).map(e -> e.getMaximum()).orElse(null);
         Long maximumWeight = eviction.filter(e -> e.isWeighted()).map(e -> e.getMaximum()).orElse(null);
         Long weightedSize = eviction.flatMap(e -> e.weightedSize().isPresent() ? Optional.of(e.weightedSize().getAsLong()) : Optional.empty()).orElse(null);
@@ -261,8 +262,8 @@ public class DefaultSyncCache implements SyncCache<Cache> {
         return values;
     }
 
-    private Long getExpiresAfter(Policy.Expiration expiration) {
-        return expiration != null ? expiration.getExpiresAfter(TimeUnit.MILLISECONDS) : null;
+    private Long getExpiresAfter(Optional<Policy.FixedExpiration> expiration) {
+        return expiration.map(e -> e.getExpiresAfter(TimeUnit.MILLISECONDS)).orElse(null);
     }
 
     private Map<String, Object> getStatsData(CacheStats stats) {

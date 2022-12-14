@@ -40,13 +40,13 @@ import java.util.function.Supplier;
 public class InfinispanAsyncCache implements AsyncCache<RemoteCache<Object, Object>> {
 
     private final RemoteCache<Object, Object> nativeCache;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
 
     /**
      * @param nativeCache the Infinispan remote cache
      * @param conversionService the conversion service
      */
-    public InfinispanAsyncCache(RemoteCache<Object, Object> nativeCache, ConversionService<?> conversionService) {
+    public InfinispanAsyncCache(RemoteCache<Object, Object> nativeCache, ConversionService conversionService) {
         this.nativeCache = nativeCache;
         this.conversionService = conversionService;
     }
