@@ -7,6 +7,7 @@ import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -28,6 +29,7 @@ class NativeCaffeineTest {
     @Inject
     BeanContext ctx;
 
+    @Disabled("Hangs under GraalVM")
     @Test
     void simpleTest() {
         BlockingHttpClient client = httpClient.toBlocking();
