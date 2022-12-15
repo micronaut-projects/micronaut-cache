@@ -2,6 +2,7 @@ io.micronaut.cache
 io.micronaut.cache.annotation
 io.micronaut.cache.caffeine
 io.micronaut.cache.caffeine.configuration
+io.micronaut.cache.caffeine.graal
 io.micronaut.cache.caffeine.metrics
 io.micronaut.cache.discovery
 io.micronaut.cache.ehcache

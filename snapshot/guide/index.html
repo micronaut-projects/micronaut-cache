@@ -338,6 +338,22 @@ public class RemovalListenerImpl implements RemovalListener&lt;K, V&gt; {
 <div class="paragraph">
 <p>To configure a weigher to be used with the <code>maximumWeight</code> configuration, create a bean that implements <code>com.github.benmanes.caffeine.cache.Weigher</code>. To associate a given weigher with only a specific cache, annotate the bean with <code>@Named(&lt;cache name&gt;)</code>. Weighers without a named qualifier will apply to all caches that don&#8217;t have a named weigher. If no beans are found, a default implementation will be used.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Native compilation</div>
+<div class="paragraph">
+<p>When using Caffeine with Native Compilation, the most commonly used caches will be automatically registered.
+If you require additional caches, you will need to register them with Graal yourself <a href="https://docs.micronaut.io/latest/guide/#_adding_additional_classes_for_reflective_access">as shown in the guide</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 
