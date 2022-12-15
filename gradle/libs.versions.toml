@@ -7,6 +7,7 @@ managed-infinispan = "14.0.3.Final"
 
 micronaut-serde = "2.0.0-SNAPSHOT"
 testcontainers = "1.17.6"
+graal-svm = "22.0.0.2"
 
 [libraries]
 # Managed
@@ -24,3 +25,4 @@ logback-classic = { module = "ch.qos.logback:logback-classic" }
 reactor-core = { module = "io.projectreactor:reactor-core" }
 testcontainers-spock = { module = "org.testcontainers:spock", version.ref = "testcontainers" }
 spock-core = { module = "org.spockframework:spock-core" }
+graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
