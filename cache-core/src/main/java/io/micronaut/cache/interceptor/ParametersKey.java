@@ -15,7 +15,6 @@
  */
 package io.micronaut.cache.interceptor;
 
-import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.util.ArrayUtils;
 
 import java.io.Serializable;
