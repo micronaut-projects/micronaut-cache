@@ -40,7 +40,7 @@ public class ParametersKey implements Serializable {
     public ParametersKey(Object... params) {
         if (ArrayUtils.isEmpty(params)) {
             this.params = ArrayUtils.EMPTY_OBJECT_ARRAY;
-            this.hashCode = ClassUtils.EMPTY_OBJECT_ARRAY_HASH_CODE;
+            this.hashCode = Arrays.hashCode(params);
         } else {
             this.params = new Object[params.length];
             System.arraycopy(params, 0, this.params, 0, params.length);

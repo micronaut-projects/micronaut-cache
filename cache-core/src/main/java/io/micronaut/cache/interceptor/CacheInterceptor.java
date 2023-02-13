@@ -33,6 +33,7 @@ import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.AnnotationValueResolver;
+import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.type.ReturnType;
@@ -88,6 +89,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     private final ExecutorService ioExecutor;
     private final CacheErrorHandler errorHandler;
     private final AsyncCacheErrorHandler asyncCacheErrorHandler;
+    private final ConversionService conversionService;
 
     /**
      * Create Cache Interceptor with given arguments.
@@ -97,17 +99,19 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      * @param asyncCacheErrorHandler Async cache error handlers
      * @param ioExecutor             The executor to create tasks
      * @param beanContext            The bean context to allow DI
+     * @param conversionService
      */
     public CacheInterceptor(CacheManager cacheManager,
                             CacheErrorHandler errorHandler,
                             AsyncCacheErrorHandler asyncCacheErrorHandler,
                             @Named(TaskExecutors.IO) ExecutorService ioExecutor,
-                            BeanContext beanContext) {
+                            BeanContext beanContext, ConversionService conversionService) {
         this.cacheManager = cacheManager;
         this.errorHandler = errorHandler;
         this.asyncCacheErrorHandler = asyncCacheErrorHandler;
         this.beanContext = beanContext;
         this.ioExecutor = ioExecutor;
+        this.conversionService = conversionService;
     }
 
     @Override
@@ -118,7 +122,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     @Override
     public Object intercept(MethodInvocationContext<Object, Object> context) {
         if (context.hasStereotype(CacheAnnotation.class)) {
-            InterceptedMethod interceptedMethod = InterceptedMethod.of(context);
+            InterceptedMethod interceptedMethod = InterceptedMethod.of(context, conversionService);
             try {
                 ReturnType<?> returnType = context.getReturnType();
                 Argument<?> returnTypeValue = interceptedMethod.returnTypeValue();
