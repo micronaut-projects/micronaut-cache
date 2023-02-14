@@ -29,6 +29,7 @@ import java.util.Arrays;
 public class ParametersKey implements Serializable {
 
     public static final ParametersKey ZERO_ARG_KEY = new ParametersKey();
+    public static final int EMPTY_OBJECT_ARRAY_HASH_CODE = Arrays.hashCode(ArrayUtils.EMPTY_OBJECT_ARRAY);
 
     private final Object[] params;
     private final int hashCode;
@@ -39,7 +40,7 @@ public class ParametersKey implements Serializable {
     public ParametersKey(Object... params) {
         if (ArrayUtils.isEmpty(params)) {
             this.params = ArrayUtils.EMPTY_OBJECT_ARRAY;
-            this.hashCode = Arrays.hashCode(params);
+            this.hashCode = EMPTY_OBJECT_ARRAY_HASH_CODE;
         } else {
             this.params = new Object[params.length];
             System.arraycopy(params, 0, this.params, 0, params.length);
