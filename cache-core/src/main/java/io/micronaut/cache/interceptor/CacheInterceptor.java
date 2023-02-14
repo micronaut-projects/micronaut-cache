@@ -97,7 +97,6 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
      * @param asyncCacheErrorHandler Async cache error handlers
      * @param ioExecutor             The executor to create tasks
      * @param beanContext            The bean context to allow DI
-     * @param conversionService
      */
     public CacheInterceptor(CacheManager cacheManager,
                             CacheErrorHandler errorHandler,
