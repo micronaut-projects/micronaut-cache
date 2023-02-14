@@ -33,7 +33,6 @@ import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.AnnotationValueResolver;
-import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.type.ReturnType;
@@ -89,7 +88,6 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     private final ExecutorService ioExecutor;
     private final CacheErrorHandler errorHandler;
     private final AsyncCacheErrorHandler asyncCacheErrorHandler;
-    private final ConversionService conversionService;
 
     /**
      * Create Cache Interceptor with given arguments.
@@ -105,13 +103,12 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                             CacheErrorHandler errorHandler,
                             AsyncCacheErrorHandler asyncCacheErrorHandler,
                             @Named(TaskExecutors.IO) ExecutorService ioExecutor,
-                            BeanContext beanContext, ConversionService conversionService) {
+                            BeanContext beanContext) {
         this.cacheManager = cacheManager;
         this.errorHandler = errorHandler;
         this.asyncCacheErrorHandler = asyncCacheErrorHandler;
         this.beanContext = beanContext;
         this.ioExecutor = ioExecutor;
-        this.conversionService = conversionService;
     }
 
     @Override
@@ -122,7 +119,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     @Override
     public Object intercept(MethodInvocationContext<Object, Object> context) {
         if (context.hasStereotype(CacheAnnotation.class)) {
-            InterceptedMethod interceptedMethod = InterceptedMethod.of(context, conversionService);
+            InterceptedMethod interceptedMethod = InterceptedMethod.of(context, beanContext.getConversionService());
             try {
                 ReturnType<?> returnType = context.getReturnType();
                 Argument<?> returnTypeValue = interceptedMethod.returnTypeValue();

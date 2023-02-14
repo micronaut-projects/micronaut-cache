@@ -58,9 +58,5 @@
     "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastInstanceConfigCondition$IntrospectionRef",
     "member": "Implemented interface io.micronaut.core.beans.BeanIntrospectionReference",
     "reason": "Internal static class definitions are no longer created for Micronaut 4"
-  },
-  {
-    "type": "io.micronaut.cache.interceptor.CacheInterceptor",
-    "member": "Constructor io.micronaut.cache.interceptor.CacheInterceptor(io.micronaut.cache.CacheManager,io.micronaut.cache.CacheErrorHandler,io.micronaut.cache.AsyncCacheErrorHandler,java.util.concurrent.ExecutorService,io.micronaut.context.BeanContext)",
-    "reason": "Changed constructor for Micronaut 4 to resolve deprecation in core module."
-  }]
+  }
+]
