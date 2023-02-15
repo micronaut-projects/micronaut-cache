@@ -118,7 +118,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     @Override
     public Object intercept(MethodInvocationContext<Object, Object> context) {
         if (context.hasStereotype(CacheAnnotation.class)) {
-            InterceptedMethod interceptedMethod = InterceptedMethod.of(context);
+            InterceptedMethod interceptedMethod = InterceptedMethod.of(context, beanContext.getConversionService());
             try {
                 ReturnType<?> returnType = context.getReturnType();
                 Argument<?> returnTypeValue = interceptedMethod.returnTypeValue();
