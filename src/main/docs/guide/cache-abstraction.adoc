@@ -29,10 +29,9 @@ NOTE: This module is built and tested with Caffeine {caffeineVersion}
 dependency:io.micronaut.cache:micronaut-cache-caffeine[]
 
 
-Then configure one or many caches. For example with `application.yml`:
+Then configure one or many caches. For example with the application configuration:
 
-.Cache Configuration Example
-[source,yaml]
+[configuration, title = 'Cache Configuration Example']
 ----
 micronaut:
     caches:

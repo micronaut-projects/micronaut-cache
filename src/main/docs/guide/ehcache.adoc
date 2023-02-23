@@ -6,7 +6,7 @@ dependency:io.micronaut.cache:micronaut-cache-ehcache:{version}[]
 
 To have Micronaut create a cache, the minimum configuration is:
 
-[source,yaml]
+[configuration]
 ----
 ehcache:
   caches:
@@ -29,7 +29,7 @@ If no tier is explicitly configured, the cache will be configured with a heap ti
 
 It can be sized by number of entries:
 
-[source,yaml]
+[configuration]
 ----
 ehcache:
   caches:
@@ -40,7 +40,7 @@ ehcache:
 
 Or by size:
 
-[source,yaml]
+[configuration]
 ----
 ehcache:
   caches:
@@ -51,7 +51,7 @@ ehcache:
 
 === Off-heap tier
 
-[source,yaml]
+[configuration]
 ----
 ehcache:
   caches:
@@ -65,7 +65,7 @@ intend to use.
 
 === Disk tier
 
-[source,yaml]
+[configuration]
 ----
 ehcache:
   storage-path: /var/caches
@@ -81,7 +81,7 @@ Ehcache supports distributed caching with http://www.terracotta.org[Terracotta]
 
 This is a complete example configuration:
 
-[source,yaml]
+[configuration]
 ----
 ehcache:
   cluster:
@@ -114,7 +114,7 @@ options.
 
 For example, to configure a heap + offheap + disk cache:
 
-[source,yaml]
+[configuration]
 ----
 ehcache:
   storage-path: /var/caches

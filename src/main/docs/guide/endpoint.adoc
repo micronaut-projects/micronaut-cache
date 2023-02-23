@@ -55,8 +55,7 @@ $ curl -X DELETE http://localhost:8080/caches
 
 To configure the caches endpoint, supply configuration through `endpoints.caches`.
 
-.Caches Endpoint Configuration Example
-[source,yaml]
+[configuration, title ='Caches Endpoint Configuration Example']
 ----
 endpoints:
   caches:
