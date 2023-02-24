@@ -21,8 +21,9 @@ Hazelcast cluster (example below).
 [configuration]
 ----
 hazelcast:
-  network:
-    addresses: ['121.0.0.1:5701']
+  client:
+    network:
+      addresses: ['121.0.0.1:5701']
 ----
 
 If you provide a Hazelcast configuration file (ex.: `hazelcast.xml`, `hazelcast.yml`, `hazelcast-client.xml`, or `hazelcast-client.yml`) in the working directory or classpath, Micronaut will use this configuration file to configure Hazelcast instance.
