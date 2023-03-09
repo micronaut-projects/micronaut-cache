@@ -3,12 +3,14 @@ plugins {
 }
 
 dependencies {
-    api projects.cacheCore
+    annotationProcessor(mnValidation.micronaut.validation.processor)
+    api projects.micronautCacheCore
     api(mn.micronaut.management)
 
-    implementation(libs.reactor.core)
+    implementation(mn.reactor)
+    implementation(mnValidation.micronaut.validation)
 
-    testImplementation projects.cacheCaffeine
+    testImplementation projects.micronautCacheCaffeine
     testImplementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.management)

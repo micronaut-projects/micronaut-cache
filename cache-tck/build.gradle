@@ -13,9 +13,9 @@ dependencies {
     runtimeOnly 'cglib:cglib-nodep:3.3.0'
     runtimeOnly 'org.objenesis:objenesis:3.3'
 
-    implementation projects.cacheCore
-    implementation(libs.reactor.core)
-    implementation(libs.spock.core)
+    implementation projects.micronautCacheCore
+    implementation(mn.reactor)
+    implementation(mnTest.micronaut.test.spock)
 
     implementation(mnTest.micronaut.test.spock)
 }

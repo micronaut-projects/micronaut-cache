@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api projects.cacheCore
+    api projects.micronautCacheCore
 
     testImplementation(mn.micronaut.inject.groovy)
 }
