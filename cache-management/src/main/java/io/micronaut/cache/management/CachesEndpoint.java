@@ -28,7 +28,7 @@ import io.micronaut.management.endpoint.annotation.Selector;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
