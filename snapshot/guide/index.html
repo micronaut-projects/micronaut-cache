@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Micronaut Cache</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
     <link rel="stylesheet" href="../css/custom.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
@@ -134,7 +135,7 @@
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -182,7 +183,7 @@ The configuration implementations in this module require at least Micronaut vers
 <h1 id="releaseHistory"><a class="anchor" href="#releaseHistory"></a>2 Release History</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/releaseHistory.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/releaseHistory.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -198,7 +199,7 @@ The configuration implementations in this module require at least Micronaut vers
 <h1 id="cache-abstraction"><a class="anchor" href="#cache-abstraction"></a>3 Cache Abstraction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/cache-abstraction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/cache-abstraction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -256,7 +257,7 @@ The configuration implementations in this module require at least Micronaut vers
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Caffeine {caffeineVersion}
+This module is built and tested with Caffeine 3.1.1
 </td>
 </tr>
 </table>
@@ -278,69 +279,15 @@ This module is built and tested with Caffeine {caffeineVersion}
 </div></p>
 </div>
 <div class="paragraph">
-<p>Then configure one or many caches. For example with the application configuration:</p>
+<p>Then configure one or many caches. For example with <code>application.yml</code>:</p>
 </div>
-<div class="openblock">
+<div class="listingblock">
 <div class="title">Cache Configuration Example</div>
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.caches.my-cache.maximumSize=20</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
     caches:
         my-cache:
             maximumSize: 20</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
-  [micronaut.caches]
-    [micronaut.caches.my-cache]
-      maximumSize=20</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
-  caches {
-    myCache {
-      maximumSize = 20
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  micronaut {
-    caches {
-      my-cache {
-        maximumSize = 20
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "micronaut": {
-    "caches": {
-      "my-cache": {
-        "maximumSize": 20
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 <div class="paragraph">
@@ -391,13 +338,29 @@ public class RemovalListenerImpl implements RemovalListener&lt;K, V&gt; {
 <div class="paragraph">
 <p>To configure a weigher to be used with the <code>maximumWeight</code> configuration, create a bean that implements <code>com.github.benmanes.caffeine.cache.Weigher</code>. To associate a given weigher with only a specific cache, annotate the bean with <code>@Named(&lt;cache name&gt;)</code>. Weighers without a named qualifier will apply to all caches that don&#8217;t have a named weigher. If no beans are found, a default implementation will be used.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Native compilation</div>
+<div class="paragraph">
+<p>When using Caffeine with Native Compilation, the most commonly used caches will be automatically registered.
+If you require additional caches, you will need to register them with Graal yourself <a href="https://docs.micronaut.io/latest/guide/#_adding_additional_classes_for_reflective_access">as shown in the guide</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 
 <h1 id="jcache"><a class="anchor" href="#jcache"></a>4 JCache API support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/jcache.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/jcache.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -408,65 +371,18 @@ public class RemovalListenerImpl implements RemovalListener&lt;K, V&gt; {
 abstraction will use the JCache API internally by default. If you want Micronaut to use the concrete implementation API,
 JCache needs to be disabled:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.jcache.enabled=false</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
   jcache:
     enabled: false</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
-  [micronaut.jcache]
-    enabled=false</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
-  jcache {
-    enabled = false
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  micronaut {
-    jcache {
-      enabled = false
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "micronaut": {
-    "jcache": {
-      "enabled": false
-    }
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
 
 <h1 id="redis"><a class="anchor" href="#redis"></a>5 Redis Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/redis.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/redis.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -499,7 +415,7 @@ JCache needs to be disabled:</p>
 <h1 id="ehcache"><a class="anchor" href="#ehcache"></a>6 Ehcache Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/ehcache.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/ehcache.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -515,7 +431,7 @@ JCache needs to be disabled:</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Ehcache {ehcacheVersion}
+This module is built and tested with Ehcache 3.8.1
 </td>
 </tr>
 </table>
@@ -524,7 +440,7 @@ This module is built and tested with Ehcache {ehcacheVersion}
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-ehcache:3.5.1-SNAPSHOT")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-ehcache:4.0.0-SNAPSHOT")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -532,7 +448,7 @@ This module is built and tested with Ehcache {ehcacheVersion}
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-ehcache&lt;/artifactId&gt;
-    &lt;version&gt;3.5.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;4.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -540,66 +456,12 @@ This module is built and tested with Ehcache {ehcacheVersion}
 <div class="paragraph">
 <p>To have Micronaut create a cache, the minimum configuration is:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">ehcache.caches.my-cache.enabled=true</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
   caches:
     my-cache:
       enabled: true</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
-  [ehcache.caches]
-    [ehcache.caches.my-cache]
-      enabled=true</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">ehcache {
-  caches {
-    myCache {
-      enabled = true
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  ehcache {
-    caches {
-      my-cache {
-        enabled = true
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "ehcache": {
-    "caches": {
-      "my-cache": {
-        "enabled": true
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 <div class="paragraph">
@@ -623,14 +485,7 @@ allows you to configure tiering caching options on a per-cache basis.</p>
 <div class="paragraph">
 <p>It can be sized by number of entries:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">ehcache.caches.my-cache.heap.max-entries=5000</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
   caches:
@@ -639,71 +494,10 @@ allows you to configure tiering caching options on a per-cache basis.</p>
         max-entries: 5000</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
-  [ehcache.caches]
-    [ehcache.caches.my-cache]
-      [ehcache.caches.my-cache.heap]
-        max-entries=5000</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">ehcache {
-  caches {
-    myCache {
-      heap {
-        maxEntries = 5000
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  ehcache {
-    caches {
-      my-cache {
-        heap {
-          max-entries = 5000
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "ehcache": {
-    "caches": {
-      "my-cache": {
-        "heap": {
-          "max-entries": 5000
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
 <div class="paragraph">
 <p>Or by size:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">ehcache.caches.my-cache.heap.max-size=200Mb</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
   caches:
@@ -712,131 +506,16 @@ allows you to configure tiering caching options on a per-cache basis.</p>
         max-size: 200Mb</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
-  [ehcache.caches]
-    [ehcache.caches.my-cache]
-      [ehcache.caches.my-cache.heap]
-        max-size="200Mb"</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">ehcache {
-  caches {
-    myCache {
-      heap {
-        maxSize = "200Mb"
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  ehcache {
-    caches {
-      my-cache {
-        heap {
-          max-size = "200Mb"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "ehcache": {
-    "caches": {
-      "my-cache": {
-        "heap": {
-          "max-size": "200Mb"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_off_heap_tier">Off-heap tier</h3>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">ehcache.caches.my-cache.offheap.max-size=1Gb</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
   caches:
     my-cache:
       offheap:
         max-size: 1Gb</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
-  [ehcache.caches]
-    [ehcache.caches.my-cache]
-      [ehcache.caches.my-cache.offheap]
-        max-size="1Gb"</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">ehcache {
-  caches {
-    myCache {
-      offheap {
-        maxSize = "1Gb"
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  ehcache {
-    caches {
-      my-cache {
-        offheap {
-          max-size = "1Gb"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "ehcache": {
-    "caches": {
-      "my-cache": {
-        "offheap": {
-          "max-size": "1Gb"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 <div class="paragraph">
@@ -846,15 +525,7 @@ intend to use.</p>
 </div>
 <div class="sect2">
 <h3 id="_disk_tier">Disk tier</h3>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">ehcache.storage-path=/var/caches
-ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
   storage-path: /var/caches
@@ -862,64 +533,6 @@ ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
     my-cache:
       disk:
         max-size: 10Gb</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
-  storage-path="/var/caches"
-  [ehcache.caches]
-    [ehcache.caches.my-cache]
-      [ehcache.caches.my-cache.disk]
-        max-size="10Gb"</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">ehcache {
-  storagePath = "/var/caches"
-  caches {
-    myCache {
-      disk {
-        maxSize = "10Gb"
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  ehcache {
-    storage-path = "/var/caches"
-    caches {
-      my-cache {
-        disk {
-          max-size = "10Gb"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "ehcache": {
-    "storage-path": "/var/caches",
-    "caches": {
-      "my-cache": {
-        "disk": {
-          "max-size": "10Gb"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -931,22 +544,7 @@ ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
 <div class="paragraph">
 <p>This is a complete example configuration:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">ehcache.cluster.uri=terracotta://localhost/my-application
-ehcache.cluster.default-server-resource=offheap-1
-ehcache.cluster.resource-pools.resource-pool-a.max-size=8Mb
-ehcache.cluster.resource-pools.resource-pool-a.server-resource=offheap-2
-ehcache.cluster.resource-pools.resource-pool-b.max-size=10Mb
-ehcache.caches.clustered-cache.clustered-dedicated.server-resource=offheap-1
-ehcache.caches.clustered-cache.clustered-dedicated.max-size=8Mb
-ehcache.caches.shared-cache-1.clustered-shared.server-resource=resource-pool-a
-ehcache.caches.shared-cache-3.clustered-shared.server-resource=resource-pool-b</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
   cluster:
@@ -971,148 +569,6 @@ ehcache.caches.shared-cache-3.clustered-shared.server-resource=resource-pool-b</
         server-resource: resource-pool-b</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
-  [ehcache.cluster]
-    uri="terracotta://localhost/my-application"
-    default-server-resource="offheap-1"
-    [ehcache.cluster.resource-pools]
-      [ehcache.cluster.resource-pools.resource-pool-a]
-        max-size="8Mb"
-        server-resource="offheap-2"
-      [ehcache.cluster.resource-pools.resource-pool-b]
-        max-size="10Mb"
-  [ehcache.caches]
-    [ehcache.caches.clustered-cache]
-      [ehcache.caches.clustered-cache.clustered-dedicated]
-        server-resource="offheap-1"
-        max-size="8Mb"
-    [ehcache.caches.shared-cache-1]
-      [ehcache.caches.shared-cache-1.clustered-shared]
-        server-resource="resource-pool-a"
-    [ehcache.caches.shared-cache-3]
-      [ehcache.caches.shared-cache-3.clustered-shared]
-        server-resource="resource-pool-b"</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">ehcache {
-  cluster {
-    uri = "terracotta://localhost/my-application"
-    defaultServerResource = "offheap-1"
-    resourcePools {
-      resourcePoolA {
-        maxSize = "8Mb"
-        serverResource = "offheap-2"
-      }
-      resourcePoolB {
-        maxSize = "10Mb"
-      }
-    }
-  }
-  caches {
-    clusteredCache {
-      clusteredDedicated {
-        serverResource = "offheap-1"
-        maxSize = "8Mb"
-      }
-    }
-    sharedCache1 {
-      clusteredShared {
-        serverResource = "resource-pool-a"
-      }
-    }
-    sharedCache3 {
-      clusteredShared {
-        serverResource = "resource-pool-b"
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  ehcache {
-    cluster {
-      uri = "terracotta://localhost/my-application"
-      default-server-resource = "offheap-1"
-      resource-pools {
-        resource-pool-a {
-          max-size = "8Mb"
-          server-resource = "offheap-2"
-        }
-        resource-pool-b {
-          max-size = "10Mb"
-        }
-      }
-    }
-    caches {
-      clustered-cache {
-        clustered-dedicated {
-          server-resource = "offheap-1"
-          max-size = "8Mb"
-        }
-      }
-      shared-cache-1 {
-        clustered-shared {
-          server-resource = "resource-pool-a"
-        }
-      }
-      shared-cache-3 {
-        clustered-shared {
-          server-resource = "resource-pool-b"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "ehcache": {
-    "cluster": {
-      "uri": "terracotta://localhost/my-application",
-      "default-server-resource": "offheap-1",
-      "resource-pools": {
-        "resource-pool-a": {
-          "max-size": "8Mb",
-          "server-resource": "offheap-2"
-        },
-        "resource-pool-b": {
-          "max-size": "10Mb"
-        }
-      }
-    },
-    "caches": {
-      "clustered-cache": {
-        "clustered-dedicated": {
-          "server-resource": "offheap-1",
-          "max-size": "8Mb"
-        }
-      },
-      "shared-cache-1": {
-        "clustered-shared": {
-          "server-resource": "resource-pool-a"
-        }
-      },
-      "shared-cache-3": {
-        "clustered-shared": {
-          "server-resource": "resource-pool-b"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_multiple_tier_setup">Multiple tier setup</h3>
@@ -1124,17 +580,7 @@ options.</p>
 <div class="paragraph">
 <p>For example, to configure a heap + offheap + disk cache:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">ehcache.storage-path=/var/caches
-ehcache.caches.my-cache.heap.max-size=200Mb
-ehcache.caches.my-cache.offheap.max-size=1Gb
-ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ehcache:
   storage-path: /var/caches
@@ -1148,86 +594,6 @@ ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
         max-size: 10Gb</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
-  storage-path="/var/caches"
-  [ehcache.caches]
-    [ehcache.caches.my-cache]
-      [ehcache.caches.my-cache.heap]
-        max-size="200Mb"
-      [ehcache.caches.my-cache.offheap]
-        max-size="1Gb"
-      [ehcache.caches.my-cache.disk]
-        max-size="10Gb"</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">ehcache {
-  storagePath = "/var/caches"
-  caches {
-    myCache {
-      heap {
-        maxSize = "200Mb"
-      }
-      offheap {
-        maxSize = "1Gb"
-      }
-      disk {
-        maxSize = "10Gb"
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  ehcache {
-    storage-path = "/var/caches"
-    caches {
-      my-cache {
-        heap {
-          max-size = "200Mb"
-        }
-        offheap {
-          max-size = "1Gb"
-        }
-        disk {
-          max-size = "10Gb"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "ehcache": {
-    "storage-path": "/var/caches",
-    "caches": {
-      "my-cache": {
-        "heap": {
-          "max-size": "200Mb"
-        },
-        "offheap": {
-          "max-size": "1Gb"
-        },
-        "disk": {
-          "max-size": "10Gb"
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -1235,7 +601,7 @@ ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
 <h1 id="hazelcast"><a class="anchor" href="#hazelcast"></a>7 Hazelcast Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/hazelcast.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/hazelcast.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1252,7 +618,7 @@ an existing Hazelcast server cluster or create an standalone embedded Hazelcast 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Hazelcast {hazelcastVersion}
+This module is built and tested with Hazelcast 5.2.2
 </td>
 </tr>
 </table>
@@ -1264,7 +630,7 @@ This module is built and tested with Hazelcast {hazelcastVersion}
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-hazelcast:3.5.1-SNAPSHOT")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-hazelcast:4.0.0-SNAPSHOT")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1272,7 +638,7 @@ This module is built and tested with Hazelcast {hazelcastVersion}
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-hazelcast&lt;/artifactId&gt;
-    &lt;version&gt;3.5.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;4.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -1290,60 +656,11 @@ This module is built and tested with Hazelcast {hazelcastVersion}
 <p>The minimal configuration to use Hazelcast is to simply declare <code>hazelcast:</code> with a network configuration for addresses of the
 Hazelcast cluster (example below).</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">hazelcast.network.addresses[0]=121.0.0.1:5701</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">hazelcast:
   network:
     addresses: ['121.0.0.1:5701']</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[hazelcast]
-  [hazelcast.network]
-    addresses=[
-      "121.0.0.1:5701"
-    ]</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">hazelcast {
-  network {
-    addresses = ["121.0.0.1:5701"]
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  hazelcast {
-    network {
-      addresses = ["121.0.0.1:5701"]
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "hazelcast": {
-    "network": {
-      "addresses": ["121.0.0.1:5701"]
-    }
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 <div class="paragraph">
@@ -1379,26 +696,6 @@ on the server.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.instance-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.cluster-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.labels</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.user-context</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ConcurrentMap</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.smart-routing</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1426,6 +723,26 @@ on the server.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.outbound-ports</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Collection</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.instance-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.cluster-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.labels</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.user-context</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ConcurrentMap</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -1489,57 +806,17 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;
 <div class="paragraph">
 <p>To disable Hazelcast:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">hazelcast.enabled=false</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">hazelcast:
   enabled: false</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[hazelcast]
-  enabled=false</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">hazelcast {
-  enabled = false
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  hazelcast {
-    enabled = false
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "hazelcast": {
-    "enabled": false
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 
 <h1 id="infinispan"><a class="anchor" href="#infinispan"></a>8 Infinispan Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/infinispan.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/infinispan.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1556,7 +833,7 @@ an existing Infinispan server using the HotRod protocol.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Infinispan {infinispanVersion}
+This module is built and tested with Infinispan 14.0.5.Final
 </td>
 </tr>
 </table>
@@ -1568,7 +845,7 @@ This module is built and tested with Infinispan {infinispanVersion}
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-infinispan:3.5.1-SNAPSHOT")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-infinispan:4.0.0-SNAPSHOT")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1576,7 +853,7 @@ This module is built and tested with Infinispan {infinispanVersion}
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-infinispan&lt;/artifactId&gt;
-    &lt;version&gt;3.5.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;4.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -1586,15 +863,7 @@ This module is built and tested with Infinispan {infinispanVersion}
 <a href="https://docs.jboss.org/infinispan/10.0/apidocs/org/infinispan/client/hotrod/RemoteCacheManager.html"><code>RemoteCacheManager</code></a>
 over <code>127.0.0.1:11222</code>. To define custom addresses:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">infinispan.client.hotrod.server.host=infinispan.example.com
-infinispan.client.hotrod.server.port=10222</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">infinispan:
   client:
@@ -1602,64 +871,6 @@ infinispan.client.hotrod.server.port=10222</code></pre>
       server:
         host: infinispan.example.com
         port: 10222</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[infinispan]
-  [infinispan.client]
-    [infinispan.client.hotrod]
-      [infinispan.client.hotrod.server]
-        host="infinispan.example.com"
-        port=10222</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">infinispan {
-  client {
-    hotrod {
-      server {
-        host = "infinispan.example.com"
-        port = 10222
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  infinispan {
-    client {
-      hotrod {
-        server {
-          host = "infinispan.example.com"
-          port = 10222
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "infinispan": {
-    "client": {
-      "hotrod": {
-        "server": {
-          "host": "infinispan.example.com",
-          "port": 10222
-        }
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 <div class="paragraph">
@@ -1693,66 +904,12 @@ minIdle = 1</code></pre>
 <div class="paragraph">
 <p>To read this file from a different classpath location:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">infinispan.client.hotrod.config-file=classpath:my-infinispan.properties</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">infinispan:
   client:
     hotrod:
       config-file: classpath:my-infinispan.properties</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[infinispan]
-  [infinispan.client]
-    [infinispan.client.hotrod]
-      config-file="classpath:my-infinispan.properties"</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">infinispan {
-  client {
-    hotrod {
-      configFile = "classpath:my-infinispan.properties"
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  infinispan {
-    client {
-      hotrod {
-        config-file = "classpath:my-infinispan.properties"
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "infinispan": {
-    "client": {
-      "hotrod": {
-        "config-file": "classpath:my-infinispan.properties"
-      }
-    }
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1787,66 +944,6 @@ complement/override values from the former.
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-cluster</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-servers</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.balancing-strategy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.connection-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.force-return-values</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.marshaller</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-context-initializer</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.socket-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.tcp-no-delay</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.tcp-keep-alive</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.max-retries</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.batch-size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.server.host</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
@@ -1990,64 +1087,84 @@ complement/override values from the former.
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.config-file</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the configuration file location</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-cluster</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-servers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.balancing-strategy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.connection-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.force-return-values</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.marshaller</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-context-initializer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.socket-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.tcp-no-delay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.tcp-keep-alive</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.max-retries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.batch-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>To disable Infinispan:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">infinispan.enabled=false</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">infinispan:
   enabled: false</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[infinispan]
-  enabled=false</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">infinispan {
-  enabled = false
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  infinispan {
-    enabled = false
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "infinispan": {
-    "enabled": false
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 
 <h1 id="microstream"><a class="anchor" href="#microstream"></a>9 MicroStream Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/microstream.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/microstream.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2060,7 +1177,7 @@ complement/override values from the former.
 <h1 id="noop"><a class="anchor" href="#noop"></a>10 No Operation Cache Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/noop.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/noop.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2077,7 +1194,7 @@ In such situations a no operation cache manager can be used that will simply acc
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-noop:3.5.1-SNAPSHOT")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.cache:micronaut-cache-noop:4.0.0-SNAPSHOT")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2085,7 +1202,7 @@ In such situations a no operation cache manager can be used that will simply acc
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-noop&lt;/artifactId&gt;
-    &lt;version&gt;3.5.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;4.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -2093,49 +1210,16 @@ In such situations a no operation cache manager can be used that will simply acc
 <div class="paragraph">
 <p>The no operation cache manager needs to be enabled explicitly:</p>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">noop-cache.enabled=true</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
+<div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">noop-cache.enabled: true</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">"noop-cache.enabled"=true</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">noopCache.enabled = true</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  "noop-cache.enabled" = true
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "noop-cache.enabled": true
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 
 <h1 id="endpoint"><a class="anchor" href="#endpoint"></a>11 Endpoint</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/endpoint.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/endpoint.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2233,65 +1317,13 @@ This only works for caches which have keys of type <code>String</code>.
 <div class="paragraph">
 <p>To configure the caches endpoint, supply configuration through <code>endpoints.caches</code>.</p>
 </div>
-<div class="openblock">
+<div class="listingblock">
 <div class="title">Caches Endpoint Configuration Example</div>
-<div class="content">
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">endpoints.caches.enabled=Boolean
-endpoints.caches.sensitive=Boolean</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">endpoints:
   caches:
     enabled: Boolean
     sensitive: Boolean</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[endpoints]
-  [endpoints.caches]
-    enabled="Boolean"
-    sensitive="Boolean"</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">endpoints {
-  caches {
-    enabled = "Boolean"
-    sensitive = "Boolean"
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  endpoints {
-    caches {
-      enabled = "Boolean"
-      sensitive = "Boolean"
-    }
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
-  "endpoints": {
-    "caches": {
-      "enabled": "Boolean",
-      "sensitive": "Boolean"
-    }
-  }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -2332,7 +1364,7 @@ annotation to your class with the value being the default implementation.</p>
 <h1 id="repository"><a class="anchor" href="#repository"></a>12 Repository</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/3.5.x/src/main/docs/guide/repository.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/master/src/main/docs/guide/repository.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
