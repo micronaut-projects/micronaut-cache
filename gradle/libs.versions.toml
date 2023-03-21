@@ -1,6 +1,6 @@
 [versions]
 micronaut-docs = "2.0.0"
-micronaut = "4.0.0-SNAPSHOT"
+micronaut = "4.0.0-M1"
 micronaut-test = "4.0.0-SNAPSHOT"
 
 groovy = "4.0.9"
@@ -13,8 +13,8 @@ managed-hazelcast = "5.2.2"
 managed-infinispan = "14.0.5.Final"
 
 micronaut-micrometer = "5.0.0-SNAPSHOT"
-micronaut-serde = "2.0.0-SNAPSHOT"
-micronaut-validation = "4.0.0-SNAPSHOT"
+micronaut-serde = "2.0.0-M1"
+micronaut-validation = "4.0.0-M1"
 
 testcontainers = "1.17.6"
 graal-svm = "22.3.1"
@@ -35,3 +35,4 @@ cache-api = { module = "javax.cache:cache-api", version.ref = "cache-ri-impl" }
 cache-ri-impl = { module = "org.jsr107.ri:cache-ri-impl", version.ref = "cache-ri-impl" }
 testcontainers-spock = { module = "org.testcontainers:spock", version.ref = "testcontainers" }
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
