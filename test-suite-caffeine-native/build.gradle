@@ -50,6 +50,9 @@ def openGraalModules = [
 
 graalvmNative {
     toolchainDetection = false
+    metadataRepository {
+        enabled = true
+    }
     binaries {
         all {
             buildArgs.add("-H:-UseServiceLoaderFeature")
