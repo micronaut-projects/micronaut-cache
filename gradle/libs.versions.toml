@@ -35,3 +35,4 @@ cache-api = { module = "javax.cache:cache-api", version.ref = "cache-ri-impl" }
 cache-ri-impl = { module = "org.jsr107.ri:cache-ri-impl", version.ref = "cache-ri-impl" }
 testcontainers-spock = { module = "org.testcontainers:spock", version.ref = "testcontainers" }
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }

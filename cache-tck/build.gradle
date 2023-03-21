@@ -15,7 +15,5 @@ dependencies {
 
     implementation projects.micronautCacheCore
     implementation(mn.reactor)
-    implementation(mnTest.micronaut.test.spock)
-
-    implementation(mnTest.micronaut.test.spock)
+    implementation(libs.spock.core)
 }
