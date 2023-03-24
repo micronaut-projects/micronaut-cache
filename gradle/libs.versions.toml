@@ -9,7 +9,7 @@ spock = "2.3-groovy-4.0"
 cache-ri-impl = "1.1.1"
 managed-caffeine = "3.1.1"
 managed-ehcache = "3.8.1"
-managed-hazelcast = "5.2.2"
+managed-hazelcast = "5.2.3"
 managed-infinispan = "14.0.5.Final"
 
 micronaut-micrometer = "5.0.0-SNAPSHOT"
