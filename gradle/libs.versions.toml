@@ -11,6 +11,7 @@ managed-caffeine = "3.1.1"
 managed-ehcache = "3.8.1"
 managed-hazelcast = "5.2.3"
 managed-infinispan = "14.0.7.Final"
+managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.0.0-SNAPSHOT"
 micronaut-serde = "2.0.0-M1"
@@ -26,6 +27,7 @@ managed-hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "managed
 managed-ehcache-clustered = { module = "org.ehcache:ehcache-clustered", version.ref = "managed-ehcache" }
 managed-infinispan-client-hotrod = { module = "org.infinispan:infinispan-client-hotrod", version.ref = "managed-infinispan" }
 managed-infinispan-core = { module = "org.infinispan:infinispan-core", version.ref = "managed-infinispan" }
+managed-jcache = { module = "javax.cache:cache-api", version.ref = "managed-jcache" }
 
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
