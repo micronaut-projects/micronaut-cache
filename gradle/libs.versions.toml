@@ -1,9 +1,9 @@
 [versions]
 micronaut-docs = "2.0.0"
-micronaut = "4.0.0-M1"
-micronaut-test = "4.0.0-SNAPSHOT"
+micronaut = "4.0.0-M2"
+micronaut-test = "4.0.0-M2"
 
-groovy = "4.0.9"
+groovy = "4.0.11"
 spock = "2.3-groovy-4.0"
 
 cache-ri-impl = "1.1.1"
@@ -13,9 +13,9 @@ managed-hazelcast = "5.2.3"
 managed-infinispan = "14.0.8.Final"
 managed-jcache = "1.1.1"
 
-micronaut-micrometer = "5.0.0-SNAPSHOT"
-micronaut-serde = "2.0.0-M1"
-micronaut-validation = "4.0.0-M1"
+micronaut-micrometer = "5.0.0-M1"
+micronaut-serde = "2.0.0-M3"
+micronaut-validation = "4.0.0-M4"
 
 testcontainers = "1.18.0"
 graal-svm = "22.3.2"
