@@ -17,7 +17,7 @@ micronaut-micrometer = "5.0.0-M1"
 micronaut-serde = "2.0.0-M3"
 micronaut-validation = "4.0.0-M4"
 
-testcontainers = "1.18.0"
+testcontainers = "1.18.1"
 graal-svm = "22.3.2"
 
 [libraries]
