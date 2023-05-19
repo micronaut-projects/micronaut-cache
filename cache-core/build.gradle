@@ -6,7 +6,6 @@ dependencies {
     api(mn.micronaut.aop)
     api(mn.micronaut.http)
     api(mn.micronaut.inject)
-    api(mn.micronaut.runtime)
 
     compileOnly(mnMicrometer.micronaut.micrometer.core)
     compileOnly(mn.micronaut.management)
@@ -14,7 +13,7 @@ dependencies {
 
     implementation(mn.reactor)
 
-    testImplementation(mn.logback.classic)
+    testImplementation(mnLogging.logback.classic)
     testImplementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(libs.cache.api)
