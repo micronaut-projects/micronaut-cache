@@ -1,7 +1,7 @@
 [versions]
 micronaut-docs = "2.0.0"
-micronaut = "4.0.0-M2"
-micronaut-test = "4.0.0-M2"
+micronaut = "4.0.0-M4"
+micronaut-test = "4.0.0-M3"
 
 groovy = "4.0.11"
 spock = "2.3-groovy-4.0"
@@ -14,13 +14,15 @@ managed-infinispan = "14.0.9.Final"
 managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.0.0-M1"
-micronaut-serde = "2.0.0-M3"
-micronaut-validation = "4.0.0-M4"
+micronaut-serde = "2.0.0-M7"
+micronaut-validation = "4.0.0-M7"
 
 testcontainers = "1.18.1"
 graal-svm = "22.3.2"
 
+micronaut-logging = "1.0.0-M2"
 [libraries]
+micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 # Managed
 managed-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "managed-caffeine" }
 managed-hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "managed-hazelcast" }
