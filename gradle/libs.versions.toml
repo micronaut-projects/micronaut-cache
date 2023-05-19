@@ -14,8 +14,8 @@ managed-infinispan = "14.0.8.Final"
 managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.0.0-M1"
-micronaut-validation = "4.0.0-M4"
 micronaut-serde = "2.0.0-M7"
+micronaut-validation = "4.0.0-M7"
 
 testcontainers = "1.18.0"
 graal-svm = "22.3.2"
