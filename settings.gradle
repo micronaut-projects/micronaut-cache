@@ -26,6 +26,7 @@ include 'test-suite-caffeine-native'
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
 micronautBuild {
+    importMicronautCatalog("micronaut-logging")
     useStandardizedProjectNames = true
     importMicronautCatalog()
     importMicronautCatalog("micronaut-micrometer")

@@ -20,7 +20,9 @@ micronaut-validation = "4.0.0-M7"
 testcontainers = "1.18.1"
 graal-svm = "22.3.2"
 
+micronaut-logging = "1.0.0-M2"
 [libraries]
+micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 # Managed
 managed-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "managed-caffeine" }
 managed-hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "managed-hazelcast" }

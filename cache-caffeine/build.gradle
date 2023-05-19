@@ -14,7 +14,7 @@ dependencies {
     testAnnotationProcessor(mn.micronaut.inject.java)
 
     testImplementation(mnSerde.micronaut.serde.jackson)
-    testImplementation(mn.logback.classic)
+    testImplementation(mnLogging.logback.classic)
     testImplementation(libs.cache.ri.impl)
     testImplementation(mn.micronaut.management)
     testImplementation(mn.micronaut.http.client)
