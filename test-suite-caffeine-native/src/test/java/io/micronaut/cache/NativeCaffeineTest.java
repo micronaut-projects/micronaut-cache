@@ -29,7 +29,6 @@ class NativeCaffeineTest {
     @Inject
     BeanContext ctx;
 
-    @Disabled("Hangs under GraalVM")
     @Test
     void simpleTest() {
         BlockingHttpClient client = httpClient.toBlocking();

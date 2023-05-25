@@ -45,7 +45,6 @@ graalvmNative {
     }
     binaries {
         all {
-            buildArgs.add("-H:-UseServiceLoaderFeature")
             openGraalModules.each { module ->
                 jvmArgs.add("--add-exports=" + module + "=ALL-UNNAMED")
             }
