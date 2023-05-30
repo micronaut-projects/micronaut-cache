@@ -15,7 +15,7 @@ The following cache annotations are supported:
 
 By using one of the annotations the api:cache.interceptor.CacheInterceptor[] is activated which in the case of `@Cacheable` will cache the return result of the method.
 
-If the return type of the method is a non-blocking type (either link:{jdkapi}/java/util/concurrent/CompletableFuture.html[CompletableFuture] or an instance of rs:Publisher[] the emitted result will be cached.
+If the return type of the method is a non-blocking type (either link:{jdkapi}/java.base/java/util/concurrent/CompletableFuture.html[CompletableFuture] or an instance of rs:Publisher[] the emitted result will be cached.
 
 In addition if the underlying Cache implementation supports non-blocking cache operations then cache values will be read from the cache without blocking, resulting in the ability to implement completely non-blocking cache operations.
 
