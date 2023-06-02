@@ -3,20 +3,21 @@ plugins {
 }
 
 dependencies {
-    api projects.cacheCore
+    api projects.micronautCacheCore
     api(libs.managed.caffeine)
 
-    compileOnly("io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion")
+    compileOnly(mnMicrometer.micronaut.micrometer.core)
+    compileOnly(libs.graal.svm)
 
-    implementation(libs.reactor.core)
+    implementation(mn.reactor)
 
     testAnnotationProcessor(mn.micronaut.inject.java)
 
     testImplementation(mnSerde.micronaut.serde.jackson)
-    testImplementation(libs.logback.classic)
+    testImplementation(mnLogging.logback.classic)
     testImplementation(libs.cache.ri.impl)
     testImplementation(mn.micronaut.management)
     testImplementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.http.server.netty)
-    testImplementation("io.micronaut.micrometer:micronaut-micrometer-core:$micronautMicrometerVersion")
+    testImplementation(mnMicrometer.micronaut.micrometer.core)
 }

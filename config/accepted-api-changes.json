@@ -1,5 +1,25 @@
 [
   {
+    "type": "io.micronaut.cache.discovery.CachingCompositeDiscoveryClient",
+    "member": "Implemented interface java.io.Closeable",
+    "reason": "Changed in Micronaut Framework 4"
+  },
+  {
+    "type": "io.micronaut.cache.discovery.CachingCompositeDiscoveryClient",
+    "member": "Implemented interface io.micronaut.core.naming.Described",
+    "reason": "Changed in Micronaut Framework 4"
+  },
+  {
+    "type": "io.micronaut.cache.discovery.CachingCompositeDiscoveryClient",
+    "member": "Implemented interface java.lang.AutoCloseable",
+    "reason": "Changed in Micronaut Framework 4"
+  },
+  {
+    "type": "io.micronaut.cache.discovery.CachingCompositeDiscoveryClient",
+    "member": "Implemented interface io.micronaut.discovery.DiscoveryClient",
+    "reason": "Changed in Micronaut Framework 4"
+  },
+  {
     "type": "io.micronaut.cache.hazelcast.condition.$HazelcastConfigResourceCondition$HazelcastClientConfigCondition$IntrospectionRef",
     "member": "Field $ANNOTATION_METADATA",
     "reason": "Internal static class definitions are no longer created for Micronaut 4"

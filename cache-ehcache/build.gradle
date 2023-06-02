@@ -3,13 +3,13 @@ plugins {
 }
 
 dependencies {
-    api projects.cacheCore
+    api projects.micronautCacheCore
     api(libs.managed.ehcache.clustered)
     api(libs.managed.ehcache)
 
-    testImplementation projects.cacheTck
+    testImplementation projects.micronautCacheTck
     testImplementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.inject.groovy)
-    testImplementation(libs.reactor.core)
+    testImplementation(mn.reactor)
     testImplementation(libs.testcontainers.spock)
 }

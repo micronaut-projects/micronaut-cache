@@ -1,25 +1,20 @@
 plugins {
     id 'io.micronaut.build.internal.cache-module'
-    id 'org.gradle.test-retry'
 }
 
 dependencies {
-    api projects.cacheCore
+    api projects.micronautCacheCore
     api(libs.managed.hazelcast)
 
     testAnnotationProcessor(mn.micronaut.inject.java)
 
-    testImplementation(projects.cacheTck)
+    testImplementation(projects.micronautCacheTck)
     testImplementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.inject.groovy)
-    testImplementation(libs.reactor.core)
+    testImplementation(mn.reactor)
     testImplementation(libs.testcontainers.spock)
 }
 
 tasks.withType(Test) {
     systemProperty('hazelcastVersion', libs.versions.managed.hazelcast.get())
-    retry {
-        maxRetries = 5
-        maxFailures = 20
-    }
 }

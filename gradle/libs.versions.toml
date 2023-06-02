@@ -1,14 +1,31 @@
 [versions]
+micronaut-docs = "2.0.0"
+micronaut = "4.0.0-M5"
+micronaut-test = "4.0.0-M4"
+
+groovy = "4.0.11"
+spock = "2.3-groovy-4.0"
+
 cache-ri-impl = "1.1.1"
 managed-caffeine = "3.1.1"
 managed-ehcache = "3.10.8"
-managed-hazelcast = "5.2.1"
-managed-infinispan = "14.0.2.Final"
+managed-hazelcast = "5.3.0"
+managed-infinispan = "14.0.9.Final"
+managed-jcache = "1.1.1"
 
-micronaut-serde = "2.0.0-SNAPSHOT"
-testcontainers = "1.17.6"
+micronaut-micrometer = "5.0.0-M2"
+micronaut-serde = "2.0.0-M8"
+micronaut-validation = "4.0.0-M8"
 
+testcontainers = "1.18.1"
+graal-svm = "22.3.2"
+
+micronaut-logging = "1.0.0-M2"
 [libraries]
+# Core
+micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
+
+micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 # Managed
 managed-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "managed-caffeine" }
 managed-hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "managed-hazelcast" }
@@ -16,12 +33,14 @@ managed-ehcache-clustered = { module = "org.ehcache:ehcache-clustered", version.
 managed-ehcache = { module = "org.ehcache:ehcache", version.ref = "managed-ehcache" }
 managed-infinispan-client-hotrod = { module = "org.infinispan:infinispan-client-hotrod", version.ref = "managed-infinispan" }
 managed-infinispan-core = { module = "org.infinispan:infinispan-core", version.ref = "managed-infinispan" }
+managed-jcache = { module = "javax.cache:cache-api", version.ref = "managed-jcache" }
 
+micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
+micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-bom", version.ref = "micronaut-validation" }
 
 cache-api = { module = "javax.cache:cache-api", version.ref = "cache-ri-impl" }
 cache-ri-impl = { module = "org.jsr107.ri:cache-ri-impl", version.ref = "cache-ri-impl" }
-logback-classic = { module = "ch.qos.logback:logback-classic" }
-reactor-core = { module = "io.projectreactor:reactor-core" }
 testcontainers-spock = { module = "org.testcontainers:spock", version.ref = "testcontainers" }
-spock-core = { module = "org.spockframework:spock-core" }
+graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }

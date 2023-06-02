@@ -15,7 +15,7 @@ The following cache annotations are supported:
 
 By using one of the annotations the api:cache.interceptor.CacheInterceptor[] is activated which in the case of `@Cacheable` will cache the return result of the method.
 
-If the return type of the method is a non-blocking type (either link:{jdkapi}/java/util/concurrent/CompletableFuture.html[CompletableFuture] or an instance of rs:Publisher[] the emitted result will be cached.
+If the return type of the method is a non-blocking type (either link:{jdkapi}/java.base/java/util/concurrent/CompletableFuture.html[CompletableFuture] or an instance of rs:Publisher[] the emitted result will be cached.
 
 In addition if the underlying Cache implementation supports non-blocking cache operations then cache values will be read from the cache without blocking, resulting in the ability to implement completely non-blocking cache operations.
 
@@ -74,3 +74,10 @@ Names of caches under `micronaut.caches` should be defined in kebab case (lowerc
 ====
 
 To configure a weigher to be used with the `maximumWeight` configuration, create a bean that implements `com.github.benmanes.caffeine.cache.Weigher`. To associate a given weigher with only a specific cache, annotate the bean with `@Named(<cache name>)`. Weighers without a named qualifier will apply to all caches that don't have a named weigher. If no beans are found, a default implementation will be used.
+
+[NOTE]
+.Native compilation
+====
+When using Caffeine with Native Compilation, the most commonly used caches will be automatically registered.
+If you require additional caches, you will need to register them with Graal yourself https://docs.micronaut.io/latest/guide/#_adding_additional_classes_for_reflective_access[as shown in the guide].
+====

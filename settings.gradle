@@ -6,7 +6,7 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.micronaut.build.shared.settings' version '6.1.1'
+    id 'io.micronaut.build.shared.settings' version '6.5.0'
 }
 
 rootProject.name = 'cache-parent'
@@ -21,10 +21,15 @@ include 'cache-management'
 include 'cache-noop'
 include 'cache-tck'
 
+include 'test-suite-caffeine-native'
+
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
 micronautBuild {
-    addSnapshotRepository()
+    importMicronautCatalog("micronaut-logging")
+    useStandardizedProjectNames = true
     importMicronautCatalog()
+    importMicronautCatalog("micronaut-micrometer")
     importMicronautCatalog("micronaut-serde")
+    importMicronautCatalog("micronaut-validation")
 }
