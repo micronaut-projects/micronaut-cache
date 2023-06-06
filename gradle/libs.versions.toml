@@ -7,7 +7,7 @@ groovy = "4.0.11"
 spock = "2.3-groovy-4.0"
 
 cache-ri-impl = "1.1.1"
-managed-caffeine = "3.1.1"
+managed-caffeine = "3.1.6"
 managed-ehcache = "3.8.1"
 managed-hazelcast = "5.3.0"
 managed-infinispan = "14.0.9.Final"
