@@ -37,7 +37,7 @@ Then configure one or many caches. For example with `application.yml`:
 micronaut:
     caches:
         my-cache:
-            maximumSize: 20
+            maximum-size: 20
 ----
 
 The above example will configure a cache called "my-cache" with a maximum size of 20.
