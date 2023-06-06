@@ -25,7 +25,6 @@ micronaut-logging = "1.0.0-M3"
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
 
-micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 # Managed
 managed-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "managed-caffeine" }
 managed-hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "managed-hazelcast" }
