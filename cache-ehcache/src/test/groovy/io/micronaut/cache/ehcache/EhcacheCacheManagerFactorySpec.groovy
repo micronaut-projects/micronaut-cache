@@ -18,8 +18,8 @@ package io.micronaut.cache.ehcache
 import io.micronaut.context.ApplicationContext
 import org.ehcache.CacheManager
 import org.ehcache.Status
+import org.ehcache.core.internal.statistics.DefaultStatisticsService
 import org.ehcache.core.spi.service.StatisticsService
-import org.ehcache.core.statistics.DefaultStatisticsService
 import spock.lang.Specification
 
 class EhcacheCacheManagerFactorySpec extends Specification {
@@ -44,12 +44,11 @@ class EhcacheCacheManagerFactorySpec extends Specification {
 
         when:
         DefaultStatisticsService statisticsService = (DefaultStatisticsService) ctx.getBean(StatisticsService)
-        ctx.getBean(io.micronaut.cache.CacheManager) //Triggering CacheManager initialisation
-
+        def manager = ctx.getBean(io.micronaut.cache.CacheManager) //Triggering CacheManager initialisation
+        manager.getCache("foo").put("cheese", "cheddar")
 
         then:
-        statisticsService
-        statisticsService.started
+        statisticsService.getCacheStatistics("foo").cachePuts == 1
 
         cleanup:
         ctx.close()
