@@ -3,18 +3,18 @@ micronaut-docs = "2.0.0"
 micronaut = "4.0.0-M6"
 micronaut-test = "4.0.0-M6"
 
-groovy = "4.0.11"
+groovy = "4.0.12"
 spock = "2.3-groovy-4.0"
 
 cache-ri-impl = "1.1.1"
 managed-caffeine = "3.1.6"
-managed-ehcache = "3.8.1"
+managed-ehcache = "3.10.8"
 managed-hazelcast = "5.3.0"
 managed-infinispan = "14.0.9.Final"
 managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.0.0-M3"
-micronaut-serde = "2.0.0-M8"
+micronaut-serde = "2.0.0-M9"
 micronaut-validation = "4.0.0-M9"
 
 testcontainers = "1.18.1"
@@ -25,11 +25,11 @@ micronaut-logging = "1.0.0-M3"
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
 
-micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 # Managed
 managed-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "managed-caffeine" }
 managed-hazelcast = { module = "com.hazelcast:hazelcast", version.ref = "managed-hazelcast" }
 managed-ehcache-clustered = { module = "org.ehcache:ehcache-clustered", version.ref = "managed-ehcache" }
+managed-ehcache = { module = "org.ehcache:ehcache", version.ref = "managed-ehcache" }
 managed-infinispan-client-hotrod = { module = "org.infinispan:infinispan-client-hotrod", version.ref = "managed-infinispan" }
 managed-infinispan-core = { module = "org.infinispan:infinispan-core", version.ref = "managed-infinispan" }
 managed-jcache = { module = "javax.cache:cache-api", version.ref = "managed-jcache" }

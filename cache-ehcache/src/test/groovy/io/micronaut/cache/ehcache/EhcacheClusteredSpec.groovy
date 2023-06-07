@@ -20,21 +20,38 @@ import io.micronaut.context.ApplicationContext
 import org.ehcache.CacheManager
 import org.ehcache.clustered.client.config.ClusteringServiceConfiguration
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.Network
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 import org.testcontainers.spock.Testcontainers
 import spock.lang.Specification
 
-import static org.ehcache.clustered.client.config.ClusteredResourceType.Types.*
+import static org.ehcache.clustered.client.config.ClusteredResourceType.Types.DEDICATED
+import static org.ehcache.clustered.client.config.ClusteredResourceType.Types.SHARED
 
 @Testcontainers
 class EhcacheClusteredSpec extends Specification {
 
-    public GenericContainer terracotta = new GenericContainer("terracotta/terracotta-server-oss:5.6.4")
+    public Network network = Network.newNetwork()
+
+    public GenericContainer terracotta = new GenericContainer("terracotta/ehcache-terracotta-server:3.10.8")
+            .withNetwork(network)
+            .withNetworkAliases("terracotta")
             .withExposedPorts(9410)
+
+    def setup() {
+        terracotta.start()
+        new GenericContainer("terracotta/ehcache-terracotta-config-tool:3.10.8")
+        .withNetworkAliases()
+                .withCommand("activate","-n", "MyCluster", "-s", "terracotta")
+                .withNetwork(network)
+                .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Command successful!.*"))
+                .start()
+    }
 
     void "it can create a clustered cache"() {
         given:
         ApplicationContext ctx = ApplicationContext.run([
-                "ehcache.cluster.uri": "terracotta://localhost:${terracotta.firstMappedPort}/my-application",
+                "ehcache.cluster.uri": "terracotta://localhost:${terracotta.getMappedPort(9410)}/my-application",
                 "ehcache.cluster.default-server-resource": "offheap-1",
                 "ehcache.cluster.resource-pools.resource-pool-a.max-size": "8Mb",
                 "ehcache.cluster.resource-pools.resource-pool-a.server-resource": "offheap-2",
