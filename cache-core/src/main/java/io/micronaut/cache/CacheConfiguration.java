@@ -55,6 +55,7 @@ public class CacheConfiguration {
     private Long maximumSize;
     private Long maximumWeight;
     private Duration expireAfterWrite;
+    private Duration refreshAfterWrite;
     private Duration expireAfterAccess;
     private boolean recordStats = DEFAULT_RECORD_STATS;
     private boolean testMode = DEFAULT_TESTMODE;
@@ -104,6 +105,13 @@ public class CacheConfiguration {
      */
     public Optional<Duration> getExpireAfterWrite() {
         return Optional.ofNullable(expireAfterWrite);
+    }
+
+    /**
+     * @return The duration after an entry is eligible for refresh
+     */
+    public Optional<Duration> getRefreshAfterWrite() {
+        return Optional.ofNullable(refreshAfterWrite);
     }
 
     /**
@@ -163,6 +171,14 @@ public class CacheConfiguration {
      */
     public void setExpireAfterWrite(Duration expireAfterWrite) {
         this.expireAfterWrite = expireAfterWrite;
+    }
+
+    /**
+     *
+     * @param refreshAfterWrite The duration after an entry is eligible for refresh.
+     */
+    public void setRefreshAfterWrite(Duration refreshAfterWrite) {
+        this.refreshAfterWrite = refreshAfterWrite;
     }
 
     /**

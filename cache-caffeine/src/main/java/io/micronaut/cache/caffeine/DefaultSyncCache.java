@@ -191,6 +191,7 @@ public class DefaultSyncCache implements SyncCache<Cache> {
         Caffeine<Object, Object> builder = Caffeine.newBuilder();
         cacheConfiguration.getExpireAfterAccess().ifPresent(duration -> builder.expireAfterAccess(duration.toMillis(), TimeUnit.MILLISECONDS));
         cacheConfiguration.getExpireAfterWrite().ifPresent(duration -> builder.expireAfterWrite(duration.toMillis(), TimeUnit.MILLISECONDS));
+        cacheConfiguration.getRefreshAfterWrite().ifPresent(duration -> builder.refreshAfterWrite(duration.toMillis(), TimeUnit.MILLISECONDS));
         cacheConfiguration.getInitialCapacity().ifPresent(builder::initialCapacity);
         cacheConfiguration.getMaximumSize().ifPresent(builder::maximumSize);
         cacheConfiguration.getMaximumWeight().ifPresent(weight -> {
