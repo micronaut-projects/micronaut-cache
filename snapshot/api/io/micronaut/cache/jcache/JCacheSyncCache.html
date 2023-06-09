@@ -103,7 +103,7 @@ implements <a href="../SyncCache.html" title="interface in io.micronaut.cache">S
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(javax.cache.Cache,io.micronaut.core.convert.ConversionService,java.util.concurrent.ExecutorService)" class="member-name-link">JCacheSyncCache</a><wbr>(javax.cache.Cache&lt;?,<wbr>?&gt;&nbsp;nativeCache,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(javax.cache.Cache,io.micronaut.core.convert.ConversionService,java.util.concurrent.ExecutorService)" class="member-name-link">JCacheSyncCache</a><wbr>(@NonNull javax.cache.Cache&lt;?,<wbr>?&gt;&nbsp;nativeCache,
  io.micronaut.core.convert.ConversionService&nbsp;conversionService,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ExecutorService</a>&nbsp;ioExecutor)</code></div>
 <div class="col-last even-row-color">
@@ -123,16 +123,16 @@ implements <a href="../SyncCache.html" title="interface in io.micronaut.cache">S
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;T&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#get(java.lang.Object,io.micronaut.core.type.Argument)" class="member-name-link">get</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
- io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#get(java.lang.Object,io.micronaut.core.type.Argument,java.util.function.Supplier)" class="member-name-link">get</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
+ @NonNull io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType,
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;&nbsp;supplier)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Resolve the given value for the given key.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#get(java.lang.Object,io.micronaut.core.type.Argument,java.util.function.Supplier)" class="member-name-link">get</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
- io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;&nbsp;supplier)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;T&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#get(java.lang.Object,io.micronaut.core.type.Argument)" class="member-name-link">get</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
+ io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Resolve the given value for the given key.</div>
 </div>
@@ -161,8 +161,8 @@ implements <a href="../SyncCache.html" title="interface in io.micronaut.cache">S
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Cache the specified value using the specified key.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;T&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putIfAbsent(java.lang.Object,T)" class="member-name-link">putIfAbsent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putIfAbsent(java.lang.Object,T)" class="member-name-link">putIfAbsent</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
  T&nbsp;value)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Cache the specified value using the specified key if it is not already present.</div>
@@ -194,7 +194,7 @@ implements <a href="../SyncCache.html" title="interface in io.micronaut.cache">S
 <section class="detail" id="&lt;init&gt;(javax.cache.Cache,io.micronaut.core.convert.ConversionService,java.util.concurrent.ExecutorService)">
 <h3>JCacheSyncCache</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">JCacheSyncCache</span><wbr><span class="parameters">(@NonNull
- javax.cache.Cache&lt;?,<wbr>?&gt;&nbsp;nativeCache,
+ @NonNull javax.cache.Cache&lt;?,<wbr>?&gt;&nbsp;nativeCache,
  io.micronaut.core.convert.ConversionService&nbsp;conversionService,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ExecutorService</a>&nbsp;ioExecutor)</span></div>
 <div class="block">Default constructor.</div>
@@ -251,11 +251,11 @@ implements <a href="../SyncCache.html" title="interface in io.micronaut.cache">S
 <section class="detail" id="get(java.lang.Object,io.micronaut.core.type.Argument,java.util.function.Supplier)">
 <h3>get</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">T</span>&nbsp;<span class="element-name">get</span><wbr><span class="parameters">(@NonNull
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
  @NonNull
- io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType,
+ @NonNull io.micronaut.core.type.Argument&lt;T&gt;&nbsp;requiredType,
  @NonNull
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;&nbsp;supplier)</span></div>
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;&nbsp;supplier)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../SyncCache.html#get(java.lang.Object,io.micronaut.core.type.Argument,java.util.function.Supplier)">SyncCache</a></code></span></div>
 <div class="block">Resolve the given value for the given key. If the value is not found the specified <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link"><code>Supplier</code></a> will
  be invoked and the return value cached.</div>
@@ -277,8 +277,8 @@ implements <a href="../SyncCache.html" title="interface in io.micronaut.cache">S
 <section class="detail" id="putIfAbsent(java.lang.Object,T)">
 <h3 id="putIfAbsent(java.lang.Object,java.lang.Object)">putIfAbsent</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;T&gt;</span>&nbsp;<span class="element-name">putIfAbsent</span><wbr><span class="parameters">(@NonNull
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
+</span><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;T&gt;</span>&nbsp;<span class="element-name">putIfAbsent</span><wbr><span class="parameters">(@NonNull
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;key,
  @NonNull
  T&nbsp;value)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../SyncCache.html#putIfAbsent(java.lang.Object,T)">SyncCache</a></code></span></div>

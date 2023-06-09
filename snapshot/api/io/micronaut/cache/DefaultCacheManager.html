@@ -111,7 +111,7 @@ implements <a href="CacheManager.html" title="interface in io.micronaut.cache">C
 <div class="block">Create default cache manager for the given caches.</div>
 </div>
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.util.List,io.micronaut.context.BeanProvider)" class="member-name-link">DefaultCacheManager</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;&gt;&nbsp;caches,
- io.micronaut.context.BeanProvider&lt;<a href="DynamicCacheManager.html" title="interface in io.micronaut.cache">DynamicCacheManager</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;&gt;&nbsp;dynamicCacheManager)</code></div>
+ @Nullable io.micronaut.context.BeanProvider&lt;<a href="DynamicCacheManager.html" title="interface in io.micronaut.cache">DynamicCacheManager</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;&gt;&nbsp;dynamicCacheManager)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Create default cache manager for the given caches.</div>
 </div>
@@ -129,12 +129,12 @@ implements <a href="CacheManager.html" title="interface in io.micronaut.cache">C
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NonNull <a href="SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCache(java.lang.String)" class="member-name-link">getCache</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Retrieve a cache for the given name.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCacheNames()" class="member-name-link">getCacheNames</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
@@ -160,7 +160,7 @@ implements <a href="CacheManager.html" title="interface in io.micronaut.cache">C
 <div class="member-signature"><span class="annotations">@Inject
 </span><span class="modifiers">public</span>&nbsp;<span class="element-name">DefaultCacheManager</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;&gt;&nbsp;caches,
  @Nullable
- io.micronaut.context.BeanProvider&lt;<a href="DynamicCacheManager.html" title="interface in io.micronaut.cache">DynamicCacheManager</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;&gt;&nbsp;dynamicCacheManager)</span></div>
+ @Nullable io.micronaut.context.BeanProvider&lt;<a href="DynamicCacheManager.html" title="interface in io.micronaut.cache">DynamicCacheManager</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;&gt;&nbsp;dynamicCacheManager)</span></div>
 <div class="block">Create default cache manager for the given caches.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -192,7 +192,7 @@ implements <a href="CacheManager.html" title="interface in io.micronaut.cache">C
 <section class="detail" id="getCacheNames()">
 <h3>getCacheNames</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">getCacheNames</span>()</div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">getCacheNames</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="CacheManager.html#getCacheNames()">getCacheNames</a></code>&nbsp;in interface&nbsp;<code><a href="CacheManager.html" title="interface in io.micronaut.cache">CacheManager</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;</code></dd>
@@ -205,7 +205,7 @@ implements <a href="CacheManager.html" title="interface in io.micronaut.cache">C
 <section class="detail" id="getCache(java.lang.String)">
 <h3>getCache</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;</span>&nbsp;<span class="element-name">getCache</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NonNull <a href="SyncCache.html" title="interface in io.micronaut.cache">SyncCache</a>&lt;<a href="DefaultCacheManager.html" title="type parameter in DefaultCacheManager">C</a>&gt;</span>&nbsp;<span class="element-name">getCache</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="CacheManager.html#getCache(java.lang.String)">CacheManager</a></code></span></div>
 <div class="block">Retrieve a cache for the given name.</div>
 <dl class="notes">
