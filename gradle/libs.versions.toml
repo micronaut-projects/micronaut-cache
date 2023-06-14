@@ -18,7 +18,7 @@ micronaut-serde = "2.0.0-M9"
 micronaut-validation = "4.0.0-M9"
 
 testcontainers = "1.18.3"
-graal-svm = "22.3.2"
+graal-svm = "23.0.0"
 
 micronaut-logging = "1.0.0-M3"
 [libraries]
