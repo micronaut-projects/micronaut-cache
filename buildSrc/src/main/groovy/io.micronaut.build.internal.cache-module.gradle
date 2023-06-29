@@ -2,3 +2,10 @@ plugins {
     id 'io.micronaut.build.internal.module'
     id 'io.micronaut.build.internal.cache-base'
 }
+
+micronautBuild {
+    binaryCompatibility {
+        baselineVersion = "4.0.0-M5"
+        enabled = true
+    }
+}
