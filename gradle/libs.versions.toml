@@ -1,7 +1,7 @@
 [versions]
 micronaut-docs = "2.0.0"
 micronaut = "4.0.0"
-micronaut-test = "4.0.0-M9"
+micronaut-test = "4.0.0"
 
 groovy = "4.0.12"
 spock = "2.3-groovy-4.0"
@@ -15,11 +15,11 @@ managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.0.0"
 micronaut-serde = "2.0.0-M13"
-micronaut-validation = "4.0.0-M12"
+micronaut-validation = "4.0.0"
 testcontainers = "1.18.3"
 graal-svm = "23.0.0"
 
-micronaut-logging = "1.0.0-M5"
+micronaut-logging = "1.0.0"
 [libraries]
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
