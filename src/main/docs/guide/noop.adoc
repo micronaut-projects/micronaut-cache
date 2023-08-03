@@ -3,7 +3,7 @@ In such situations a no operation cache manager can be used that will simply acc
 
 Add the Micronaut no operation cache module as a dependency:
 
-dependency:io.micronaut.cache:micronaut-cache-noop:{version}[]
+dependency:io.micronaut.cache:micronaut-cache-noop[]
 
 The no operation cache manager needs to be enabled explicitly:
 

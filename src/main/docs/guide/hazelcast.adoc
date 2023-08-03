@@ -5,7 +5,7 @@ NOTE: This module is built and tested with Hazelcast {hazelcastVersion}
 
 Add the Micronaut Hazelcast module as a dependency:
 
-dependency:io.micronaut.cache:micronaut-cache-hazelcast:{version}[]
+dependency:io.micronaut.cache:micronaut-cache-hazelcast[]
 
 You can also add Hazelcast module to your project using cli feature as below:
 
