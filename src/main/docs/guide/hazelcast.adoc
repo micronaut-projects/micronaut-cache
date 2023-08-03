@@ -18,7 +18,7 @@ $ mn create-app hello-world -f hazelcast
 The minimal configuration to use Hazelcast is to simply declare `hazelcast:` with a network configuration for addresses of the
 Hazelcast cluster (example below).
 
-[source,yaml]
+[configuration]
 ----
 hazelcast:
   network:
@@ -56,7 +56,7 @@ Alternatively, the `HazelcastClientConfiguration` or `HazelcastMemberConfigurati
 
 To disable Hazelcast:
 
-[source,yaml]
+[configuration]
 ----
 hazelcast:
   enabled: false

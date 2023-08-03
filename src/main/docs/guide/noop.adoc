@@ -7,7 +7,7 @@ dependency:io.micronaut.cache:micronaut-cache-noop[]
 
 The no operation cache manager needs to be enabled explicitly:
 
-[source,yaml]
+[configuration]
 ----
 noop-cache.enabled: true
 ----

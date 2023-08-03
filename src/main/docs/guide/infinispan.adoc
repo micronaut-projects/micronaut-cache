@@ -11,7 +11,7 @@ By default, Micronaut will setup a
 https://docs.jboss.org/infinispan/10.0/apidocs/org/infinispan/client/hotrod/RemoteCacheManager.html[`RemoteCacheManager`]
 over `127.0.0.1:11222`. To define custom addresses:
 
-[source,yaml]
+[configuration]
 ----
 infinispan:
   client:
@@ -50,7 +50,7 @@ minIdle = 1
 
 To read this file from a different classpath location:
 
-[source,yaml]
+[configuration]
 ----
 infinispan:
   client:
@@ -67,7 +67,7 @@ include::{includedir}configurationProperties/io.micronaut.cache.infinispan.Infin
 
 To disable Infinispan:
 
-[source,yaml]
+[configuration]
 ----
 infinispan:
   enabled: false

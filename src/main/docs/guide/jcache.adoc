@@ -2,7 +2,7 @@ When there is a JSR 107 (JCache) implementation in the classpath (Ehcache, Hazel
 abstraction will use the JCache API internally by default. If you want Micronaut to use the concrete implementation API,
 JCache needs to be disabled:
 
-[source,yaml]
+[configuration]
 ----
 micronaut:
   jcache:

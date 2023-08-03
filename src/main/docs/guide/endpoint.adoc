@@ -7,11 +7,12 @@ dependency:io.micronaut.cache:micronaut-cache-management[]
 
 Also note it is disabled by default. To enable it:
 
-```yaml
+[configuration]
+----
 endpoints:
     caches:
         enabled: true
-```
+----
 
 To get a collection of all caches by name with their configuration, send a GET request to /caches.
 
@@ -56,7 +57,7 @@ $ curl -X DELETE http://localhost:8080/caches
 To configure the caches endpoint, supply configuration through `endpoints.caches`.
 
 .Caches Endpoint Configuration Example
-[source,yaml]
+[configuration]
 ----
 endpoints:
   caches:
