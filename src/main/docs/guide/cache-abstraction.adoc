@@ -32,7 +32,7 @@ dependency:io.micronaut.cache:micronaut-cache-caffeine[]
 Then configure one or many caches. For example with `application.yml`:
 
 .Cache Configuration Example
-[source,yaml]
+[configuration]
 ----
 micronaut:
     caches:
@@ -42,6 +42,7 @@ micronaut:
 
 The above example will configure a cache called "my-cache" with a maximum size of 20.
 
+[configuration]
 ----
 micronaut:
     caches:
