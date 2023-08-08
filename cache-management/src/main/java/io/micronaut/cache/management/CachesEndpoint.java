@@ -94,6 +94,25 @@ public class CachesEndpoint {
     }
 
     /**
+     * Returns a cache entry as a {@link Mono}, given a cache and a key within the provided cache.
+     *
+     * @param name The name of the cache
+     * @param key the key within the cache to retrieve
+     * @return The cache entry as a {@link Mono}
+     */
+    @Read
+    public Mono<Map<String, Object>> getCacheEntry(@NotBlank @Selector String name, @NotBlank @Selector String key) {
+        return Mono.just(name)
+            .map(cacheManager::getCache)
+            .map(SyncCache::async)
+            .map(asyncCache -> asyncCache.get(key, Object.class))
+            .flatMap(Mono::fromFuture)
+            .flatMap(optional -> optional.map(Mono::just).orElseGet(Mono::empty))
+            .map(value -> Map.of("key", key, "value", value))
+            .onErrorResume(e -> Mono.empty());
+    }
+
+    /**
      * Invalidates all the caches.
      *
      * @return A maybe that emits a boolean.
