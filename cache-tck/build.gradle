@@ -8,19 +8,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.micronaut.inject.groovy)
+    compileOnly(mn.micronaut.inject.groovy)
 
     runtimeOnly 'cglib:cglib-nodep:3.3.0'
     runtimeOnly 'org.objenesis:objenesis:3.3'
 
-    implementation projects.cacheCore
-    implementation(libs.reactor.core)
+    implementation projects.micronautCacheCore
+    implementation(mn.reactor)
     implementation(libs.spock.core)
-
-    implementation(libs.micronaut.test.spock)
-}
-
-java {
-    sourceCompatibility = JavaVersion.toVersion('1.8')
-    targetCompatibility = JavaVersion.toVersion('1.8')
 }

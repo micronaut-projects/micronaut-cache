@@ -28,8 +28,8 @@ import jakarta.inject.Singleton;
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.core.internal.statistics.DefaultStatisticsService;
 import org.ehcache.core.spi.service.StatisticsService;
-import org.ehcache.core.statistics.DefaultStatisticsService;
 
 import java.util.concurrent.ExecutorService;
 
@@ -92,7 +92,7 @@ public class EhcacheCacheFactory {
     @EachBean(EhcacheConfiguration.class)
     EhcacheSyncCache syncCache(@Parameter EhcacheConfiguration configuration,
                                CacheManager cacheManager,
-                               ConversionService<?> conversionService,
+                               ConversionService conversionService,
                                @Named(TaskExecutors.IO) ExecutorService executorService,
                                StatisticsService statisticsService) {
         Cache<?, ?> nativeCache = cacheManager.createCache(configuration.getName(), configuration.getBuilder());

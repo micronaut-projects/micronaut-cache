@@ -1,5 +1,15 @@
 plugins {
     id 'io.micronaut.build.internal.docs'
-    id 'io.micronaut.build.internal.dependency-updates'
     id 'io.micronaut.build.internal.quality-reporting'
+}
+
+repositories {
+    mavenCentral()
+}
+
+publishGuide {
+    properties.put("ehcacheVersion", libs.versions.managed.ehcache.get())
+    properties.put("caffeineVersion", libs.versions.managed.caffeine.get())
+    properties.put("hazelcastVersion", libs.versions.managed.hazelcast.get())
+    properties.put("infinispanVersion", libs.versions.managed.infinispan.get())
 }

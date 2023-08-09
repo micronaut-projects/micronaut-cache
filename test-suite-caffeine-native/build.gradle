@@ -1,0 +1,53 @@
+plugins {
+    id "io.micronaut.build.internal.common"
+    id 'org.graalvm.buildtools.native'
+}
+
+micronautBuild {
+    enableBom = false
+    enableProcessing = false
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testAnnotationProcessor(mn.micronaut.inject.java)
+    testImplementation projects.micronautCacheCaffeine
+    testImplementation(mn.micronaut.http.server.netty)
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mnTest.micronaut.test.junit5)
+    testRuntimeOnly(mnSerde.micronaut.serde.jackson)
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+configurations {
+    // Exclude Groovy from the nativeTestCompilation classpath
+    nativeImageTestClasspath {
+        exclude module: 'groovy-test'
+    }
+}
+
+def openGraalModules = [
+        "org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk",
+        "org.graalvm.nativeimage.builder/com.oracle.svm.core.configure",
+        "org.graalvm.sdk/org.graalvm.nativeimage.impl"
+]
+
+graalvmNative {
+    toolchainDetection = false
+    metadataRepository {
+        enabled = true
+    }
+    binaries {
+        all {
+            openGraalModules.each { module ->
+                jvmArgs.add("--add-exports=" + module + "=ALL-UNNAMED")
+            }
+        }
+    }
+}

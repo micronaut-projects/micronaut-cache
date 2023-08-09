@@ -29,6 +29,7 @@ import io.micronaut.http.annotation.Patch
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.runtime.server.EmbeddedServer
+import io.micronaut.serde.annotation.Serdeable
 import org.reactivestreams.Publisher
 import reactor.core.publisher.Mono
 import reactor.core.publisher.MonoSink
@@ -57,7 +58,7 @@ class CachingReactorCrudSpec extends Specification {
         given:
         BookClient client = context.getBean(BookClient)
         BookController bookController = context.getBean(BookController)
-        
+
         when:
         Optional<Book> bookOptional = Mono.from(client.get(99))
                 .onErrorResume(t -> Mono.empty())
@@ -235,6 +236,7 @@ class CachingReactorCrudSpec extends Specification {
     }
 
 
+    @Serdeable
     static class Book {
         Long id
         String title

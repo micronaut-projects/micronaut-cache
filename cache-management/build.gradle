@@ -3,13 +3,16 @@ plugins {
 }
 
 dependencies {
-    api projects.cacheCore
-    api(libs.micronaut.management)
+    annotationProcessor(mnValidation.micronaut.validation.processor)
+    api projects.micronautCacheCore
+    api(mn.micronaut.management)
 
-    implementation(libs.reactor.core)
+    implementation(mn.reactor)
+    implementation(mnValidation.micronaut.validation)
 
-    testImplementation projects.cacheCaffeine
-    testImplementation(libs.micronaut.http.client)
-    testImplementation(libs.micronaut.http.server.netty)
-    testImplementation(libs.micronaut.management)
+    testImplementation projects.micronautCacheCaffeine
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.http.server.netty)
+    testImplementation(mn.micronaut.management)
+    testRuntimeOnly(mnSerde.micronaut.serde.jackson)
 }

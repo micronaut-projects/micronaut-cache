@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 public class JCacheSyncCache implements SyncCache<Cache> {
 
     private final Cache nativeCache;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final ExecutorService ioExecutor;
 
     /**
@@ -49,7 +49,7 @@ public class JCacheSyncCache implements SyncCache<Cache> {
      */
     protected JCacheSyncCache(
             @NonNull Cache<?, ?> nativeCache,
-            ConversionService<?> conversionService,
+            ConversionService conversionService,
             ExecutorService ioExecutor) {
         ArgumentUtils.requireNonNull("nativeCache", nativeCache);
         this.nativeCache = nativeCache;

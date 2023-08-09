@@ -191,7 +191,7 @@ class SyncCacheSpec extends Specification {
         given:
         ApplicationContext applicationContext = ApplicationContext.run(
                 'micronaut.caches.test.initialCapacity':1,
-                'micronaut.caches.test.maximumSize':3,
+                'micronaut.caches.test.maximum-size':3,
                 'micronaut.caches.test.test-mode':true,
         )
 
@@ -205,6 +205,10 @@ class SyncCacheSpec extends Specification {
         syncCache.put("one", 1)
         syncCache.put("two", 2)
         syncCache.put("three", 3)
+        // force "two" and "three" to get 'used' so that "one" specifically is evicted
+        syncCache.get("two", Integer)
+        syncCache.get("three", Integer)
+
         syncCache.put("four", 4)
         syncCache.nativeCache.cleanUp()
         PollingConditions conditions = new PollingConditions(timeout: 15, delay: 0.5)

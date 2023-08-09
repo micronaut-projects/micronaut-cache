@@ -5,7 +5,7 @@ NOTE: This module is built and tested with Infinispan {infinispanVersion}
 
 To get started, add the Micronaut Infinispan module as a dependency:
 
-dependency:io.micronaut.cache:micronaut-cache-infinispan:{version}[]
+dependency:io.micronaut.cache:micronaut-cache-infinispan[]
 
 By default, Micronaut will setup a
 https://docs.jboss.org/infinispan/10.0/apidocs/org/infinispan/client/hotrod/RemoteCacheManager.html[`RemoteCacheManager`]
