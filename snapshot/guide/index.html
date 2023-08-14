@@ -1368,38 +1368,31 @@ Hazelcast cluster (example below).</p>
 <div class="content">
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">hazelcast.network.addresses[0]=121.0.0.1:5701</code></pre>
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">hazelcast.client.network.addresses[0]=121.0.0.1:5701</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">hazelcast:
-  network:
-    addresses: ['121.0.0.1:5701']</code></pre>
+  client:
+    network:
+      addresses: ['121.0.0.1:5701']</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[hazelcast]
-  [hazelcast.network]
-    addresses=[
-      "121.0.0.1:5701"
-    ]</code></pre>
+  [hazelcast.client]
+    [hazelcast.client.network]
+      addresses=[
+        "121.0.0.1:5701"
+      ]</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">hazelcast {
-  network {
-    addresses = ["121.0.0.1:5701"]
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
-  hazelcast {
+  client {
     network {
       addresses = ["121.0.0.1:5701"]
     }
@@ -1409,10 +1402,25 @@ Hazelcast cluster (example below).</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  hazelcast {
+    client {
+      network {
+        addresses = ["121.0.0.1:5701"]
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
   "hazelcast": {
-    "network": {
-      "addresses": ["121.0.0.1:5701"]
+    "client": {
+      "network": {
+        "addresses": ["121.0.0.1:5701"]
+      }
     }
   }
 }</code></pre>
