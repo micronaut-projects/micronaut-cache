@@ -22,6 +22,7 @@ import io.micronaut.context.env.Environment
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
 import spock.lang.Specification
 
@@ -116,6 +117,22 @@ class CachesEndpointSpec extends Specification {
         result.caffeine.stats.missRate == 0.25
         result.caffeine.stats.evictionCount == 0
         result.caffeine.stats.evictionWeight == 0
+
+        when:
+        response = client.toBlocking().exchange("/caches/foo-cache/foo1", Map)
+        result = response.body()
+
+        then:
+        response.code() == HttpStatus.OK.code
+        result.key == "foo1"
+        result.value == "value1"
+
+        when:
+        client.toBlocking().exchange("/caches/foo-cache/no-such-key", Map)
+
+        then:
+        HttpClientResponseException error = thrown()
+        error.status == HttpStatus.NOT_FOUND
 
         cleanup:
         client.close()

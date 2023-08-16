@@ -29,6 +29,14 @@ example, to access the configuration of the cache 'book-cache':
 $ curl http://localhost:8080/caches/book-cache
 ----
 
+To retrieve a specific cache entry within a single cache, include both cache name and key in your GET request.
+For example, to access the entry under key '123' in cache 'book-cache':
+
+[source,bash]
+----
+$ curl http://localhost:8080/caches/book-cache/123
+----
+
 To invalidate a specific cache entry within a single cache, send a DELETE request to the named cache URL with the desired key.
 
 NOTE: This only works for caches which have keys of type `String`.
