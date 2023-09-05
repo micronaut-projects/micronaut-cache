@@ -10,7 +10,7 @@ cache-ri-impl = "1.1.1"
 managed-caffeine = "3.1.8"
 managed-ehcache = "3.10.8"
 managed-hazelcast = "5.3.2"
-managed-infinispan = "14.0.14.Final"
+managed-infinispan = "14.0.16.Final"
 managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.0.1"
