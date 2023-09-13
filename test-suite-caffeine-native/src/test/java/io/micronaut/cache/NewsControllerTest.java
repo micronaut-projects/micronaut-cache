@@ -4,7 +4,6 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.uri.UriBuilder;
-import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest
 class NewsControllerTest {
-
-    @Inject
-    EmbeddedServer server;
 
     @Inject
     @Client("/")
