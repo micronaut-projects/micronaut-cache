@@ -46,5 +46,35 @@ class HazelcastClientFactorySpec extends Specification implements HazelcastClien
 
         then:
         hazelcastClientInstance.getName() == "myInstance"
+
+        cleanup:
+        ctx.close()
+    }
+
+    void "test hazelcast client instance is created with custom config file"() {
+        given:
+        File file = File.createTempFile("hazelcast-test-client-config-", ".yaml")
+        file.text = """
+hazelcast-client:
+  cluster-name: dev
+  instance-name: myCustomClientInstance
+  network:
+    cluster-members:
+    - 127.0.0.1:${hazelcast.firstMappedPort}
+    connection-timeout: 99
+"""
+        ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
+                "hazelcast.client.config": file.absolutePath
+        ])
+
+        when:
+        HazelcastInstance hazelcastClientInstance = ctx.getBean(HazelcastInstance)
+
+        then:
+        hazelcastClientInstance.getName() == "myCustomClientInstance"
+
+        cleanup:
+        ctx.close()
+        System.clearProperty("hazelcast.client.config")
     }
 }

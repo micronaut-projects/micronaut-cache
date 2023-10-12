@@ -27,6 +27,9 @@ import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
+import static com.hazelcast.internal.config.DeclarativeConfigUtil.SYSPROP_CLIENT_CONFIG;
+import static com.hazelcast.internal.config.DeclarativeConfigUtil.SYSPROP_MEMBER_CONFIG;
+
 /**
  * Factory class that creates a {@link HazelcastInstance}.
  *
@@ -46,6 +49,10 @@ public class HazelcastFactory {
     @Singleton
     @Bean(preDestroy = "shutdown")
     public HazelcastInstance hazelcastInstance(ClientConfig clientConfig) {
+        if (clientConfig instanceof HazelcastClientConfiguration client && client.getConfig() != null) {
+            System.setProperty(SYSPROP_CLIENT_CONFIG, client.getConfig());
+            return HazelcastClient.newHazelcastClient();
+        }
         return HazelcastClient.newHazelcastClient(clientConfig);
     }
 
@@ -59,6 +66,10 @@ public class HazelcastFactory {
     @Singleton
     @Bean(preDestroy = "shutdown")
     public HazelcastInstance hazelcastInstance(Config config) {
+        if (config instanceof HazelcastMemberConfiguration member && member.getConfig() != null) {
+            System.setProperty(SYSPROP_MEMBER_CONFIG, member.getConfig());
+            return Hazelcast.newHazelcastInstance();
+        }
         return Hazelcast.newHazelcastInstance(config);
     }
 
