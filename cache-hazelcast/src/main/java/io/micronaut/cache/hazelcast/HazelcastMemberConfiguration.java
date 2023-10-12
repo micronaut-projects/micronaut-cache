@@ -32,8 +32,8 @@ import io.micronaut.core.annotation.Nullable;
 @Requires(missingProperty = "hazelcast.client")
 public class HazelcastMemberConfiguration extends Config {
 
-    String config;
     @Nullable
+    private String config;
 
     /**
      * Default constructor.
