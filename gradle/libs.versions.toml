@@ -1,6 +1,6 @@
 [versions]
 micronaut-docs = "2.0.0"
-micronaut = "4.0.0"
+micronaut = "4.1.9"
 micronaut-test = "4.0.0"
 
 groovy = "4.0.12"
@@ -14,10 +14,10 @@ managed-infinispan = "14.0.19.Final"
 managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.0.1"
-micronaut-serde = "2.0.1"
+micronaut-serde = "2.2.6"
 micronaut-validation = "4.0.3"
-testcontainers = "1.18.3"
-graal-svm = "23.0.1"
+testcontainers = "1.19.1"
+graal-svm = "23.1.0"
 
 micronaut-logging = "1.0.0"
 [libraries]
