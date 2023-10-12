@@ -15,7 +15,11 @@
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
-<script type="text/javascript">var pathtoroot = "../../../../";
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../../../";
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -48,7 +52,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method-detail">Method</a></li>
 </ul>
 </div>
 <div class="nav-list-search"><label for="search-input">SEARCH:</label>
@@ -74,7 +78,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <hr>
 <div class="type-signature"><span class="annotations">@ConfigurationProperties(value="hazelcast",
-                         includes={"properties","licenseKey","instanceName","clusterName"})
+                         includes={"properties","licenseKey","instanceName","clusterName","config"})
 @Requires(condition=<a href="condition/HazelcastConfigResourceCondition.html" title="class in io.micronaut.cache.hazelcast.condition">HazelcastConfigResourceCondition.class</a>) @Requires(missingBeans=com.hazelcast.config.Config.class) @Requires(missingProperty="hazelcast.client")
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">HazelcastMemberConfiguration</span>
 <span class="extends-implements">extends com.hazelcast.config.Config</span></div>
@@ -114,6 +118,26 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel">
+<div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getConfig()" class="member-name-link">getConfig</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the path to a Hazelcast XML or YAML configuration file.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConfig(java.lang.String)" class="member-name-link">setConfig</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;config)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the path to a Hazelcast XML or YAML configuration file.</div>
+</div>
+</div>
+</div>
+</div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-com.hazelcast.config.Config">Methods inherited from class&nbsp;com.hazelcast.config.Config</h3>
 <code>addCacheConfig, addCardinalityEstimatorConfig, addDataConnectionConfig, addDeviceConfig, addDurableExecutorConfig, addExecutorConfig, addFlakeIdGeneratorConfig, addListConfig, addListenerConfig, addMapConfig, addMultiMapConfig, addPNCounterConfig, addQueueConfig, addReliableTopicConfig, addReplicatedMapConfig, addRingBufferConfig, addScheduledExecutorConfig, addSetConfig, addSplitBrainProtectionConfig, addTopicConfig, addWanReplicationConfig, findCacheConfig, findCacheConfigOrNull, findCardinalityEstimatorConfig, findDataConnectionConfig, findDurableExecutorConfig, findExecutorConfig, findFlakeIdGeneratorConfig, findListConfig, findMapConfig, findMultiMapConfig, findPNCounterConfig, findQueueConfig, findReliableTopicConfig, findReplicatedMapConfig, findRingbufferConfig, findScheduledExecutorConfig, findSetConfig, findSplitBrainProtectionConfig, findTopicConfig, getAdvancedNetworkConfig, getAuditlogConfig, getCacheConfig, getCacheConfigs, getCardinalityEstimatorConfig, getCardinalityEstimatorConfigs, getClassLoader, getClusterName, getConfigPatternMatcher, getConfigurationFile, getConfigurationUrl, getCPSubsystemConfig, getCRDTReplicationConfig, getDataConnectionConfig, getDataConnectionConfigs, getDeviceConfig, getDeviceConfig, getDeviceConfigs, getDurableExecutorConfig, getDurableExecutorConfigs, getDynamicConfigurationConfig, getExecutorConfig, getExecutorConfigs, getFlakeIdGeneratorConfig, getFlakeIdGeneratorConfigs, getHotRestartPersistenceConfig, getInstanceName, getInstanceTrackingConfig, getIntegrityCheckerConfig, getJetConfig, getLicenseKey, getListConfig, getListConfigs, getListenerConfigs, getManagedContext, getManagementCenterConfig, getMapConfig, getMapConfigOrNull, getMapConfigs, getMemberAttributeConfig, getMetricsConfig, getMultiMapConfig, getMultiMapConfigs, getNativeMemoryConfig, getNetworkConfig, getPartitionGroupConfig, getPersistenceConfig, getPNCounterConfig, getPNCounterConfigs, getProperties, getProperty, getQueueConfig, getQueueConfigs, getReliableTopicConfig, getReliableTopicConfigs, getReplicatedMapConfig, getReplicatedMapConfigs, getRingbufferConfig, getRingbufferConfigs, getScheduledExecutorConfig, getScheduledExecutorConfigs, getSecurityConfig, getSerializationConfig, getServicesConfig, getSetConfig, getSetConfigs, getSplitBrainProtectionConfig, getSplitBrainProtectionConfigs, getSqlConfig, getTopicConfig, getTopicConfigs, getTpcConfig, getUserCodeDeploymentConfig, getUserContext, getWanReplicationConfig, getWanReplicationConfigs, isLiteMember, load, loadDefault, loadDefault, loadFromClasspath, loadFromClasspath, loadFromFile, loadFromFile, loadFromStream, loadFromStream, loadFromString, loadFromString, setAdvancedNetworkConfig, setAuditlogConfig, setCacheConfigs, setCardinalityEstimatorConfigs, setClassLoader, setClusterName, setConfigPatternMatcher, setConfigurationFile, setConfigurationUrl, setCPSubsystemConfig, setCRDTReplicationConfig, setDataConnectionConfigs, setDeviceConfigs, setDurableExecutorConfigs, setDynamicConfigurationConfig, setExecutorConfigs, setFlakeIdGeneratorConfigs, setHotRestartPersistenceConfig, setInstanceName, setInstanceTrackingConfig, setIntegrityCheckerConfig, setJetConfig, setLicenseKey, setListConfigs, setListenerConfigs, setLiteMember, setManagedContext, setManagementCenterConfig, setMapConfigs, setMemberAttributeConfig, setMetricsConfig, setMultiMapConfigs, setNativeMemoryConfig, setNetworkConfig, setPartitionGroupConfig, setPersistenceConfig, setPNCounterConfigs, setProperties, setProperty, setQueueConfigs, setReliableTopicConfigs, setReplicatedMapConfigs, setRingbufferConfigs, setScheduledExecutorConfigs, setSecurityConfig, setSerializationConfig, setSetConfigs, setSplitBrainProtectionConfigs, setSqlConfig, setTopicConfigs, setTpcConfig, setUserCodeDeploymentConfig, setUserContext, setWanReplicationConfigs, toString</code></div>
@@ -136,6 +160,46 @@ loadScripts(document, 'script');</script>
 <h3>HazelcastMemberConfiguration</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">HazelcastMemberConfiguration</span>()</div>
 <div class="block">Default constructor.</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<!-- ============ METHOD DETAIL ========== -->
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="getConfig()">
+<h3>getConfig</h3>
+<div class="member-signature"><span class="annotations">@Nullable
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getConfig</span>()</div>
+<div class="block">Returns the path to a Hazelcast XML or YAML configuration file.
+ <p>If non-null, the contents of the file will override this configuration.
+ This path will be used to set system property <code>hazelcast.config</code>.</p></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The path to the Hazelcast XML or YAML configuration file.</dd>
+<dt>Since:</dt>
+<dd>4.1</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setConfig(java.lang.String)">
+<h3>setConfig</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setConfig</span><wbr><span class="parameters">(@Nullable
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;config)</span></div>
+<div class="block">Sets the path to a Hazelcast XML or YAML configuration file.
+ <p>If non-null, the contents of the file will override this configuration.
+ This path will be used to set system property <code>hazelcast.config</code>.</p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>config</code> - The path to the Hazelcast XML or YAML configuration file.</dd>
+<dt>Since:</dt>
+<dd>4.1</dd>
+</dl>
 </section>
 </li>
 </ul>
