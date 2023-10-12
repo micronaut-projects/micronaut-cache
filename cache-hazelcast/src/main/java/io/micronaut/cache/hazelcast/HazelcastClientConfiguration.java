@@ -23,6 +23,7 @@ import io.micronaut.cache.hazelcast.condition.HazelcastConfigResourceCondition;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.Nullable;
 
 /**
  * Configuration class for an Hazelcast as a client.
@@ -38,6 +39,7 @@ import io.micronaut.context.annotation.Requires;
 public class HazelcastClientConfiguration extends ClientConfig {
 
     String config;
+    @Nullable
 
     @ConfigurationBuilder(value = "network", includes = {"smartRouting", "connectionTimeout", "addresses",
                                                          "redoOperation", "outboundPortDefinitions", "outboundPorts"})
@@ -66,6 +68,7 @@ public class HazelcastClientConfiguration extends ClientConfig {
      * @since 4.1
      * @return The path to the Hazelcast XML or YAML configuration file.
      */
+    @Nullable
     public String getConfig() {
         return config;
     }
@@ -78,7 +81,7 @@ public class HazelcastClientConfiguration extends ClientConfig {
      * @param config The path to the Hazelcast XML or YAML configuration file.
      * @since 4.1
      */
-    public void setConfig(String config) {
+    public void setConfig(@Nullable String config) {
         this.config = config;
     }
 }
