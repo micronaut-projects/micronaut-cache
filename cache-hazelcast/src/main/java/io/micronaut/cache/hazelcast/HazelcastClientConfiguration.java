@@ -37,10 +37,6 @@ import io.micronaut.core.annotation.Nullable;
 @Requires(missingBeans = ClientConfig.class)
 @Requires(property = "hazelcast.client")
 public class HazelcastClientConfiguration extends ClientConfig {
-
-    @Nullable
-    private String config;
-
     @ConfigurationBuilder(value = "network", includes = {"smartRouting", "connectionTimeout", "addresses",
                                                          "redoOperation", "outboundPortDefinitions", "outboundPorts"})
     ClientNetworkConfig networkConfig = new ClientNetworkConfig();
@@ -50,6 +46,9 @@ public class HazelcastClientConfiguration extends ClientConfig {
 
     @ConfigurationBuilder("network.socket")
     SocketOptions socketOptions = new SocketOptions();
+
+    @Nullable
+    private String config;
 
     /**
      * Default constructor.
