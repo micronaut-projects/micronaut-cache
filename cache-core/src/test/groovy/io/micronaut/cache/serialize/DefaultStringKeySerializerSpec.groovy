@@ -2,7 +2,6 @@ package io.micronaut.cache.serialize
 
 import io.micronaut.core.convert.DefaultMutableConversionService
 import spock.lang.Issue
-import spock.lang.PendingFeature
 import spock.lang.Specification
 
 import java.nio.charset.Charset
@@ -16,7 +15,6 @@ import java.time.ZonedDateTime
 
 class DefaultStringKeySerializerSpec extends Specification {
 
-    @PendingFeature(reason = "Depends on https://github.com/micronaut-projects/micronaut-core/pull/8963")
     @Issue("https://github.com/micronaut-projects/micronaut-cache/issues/404")
     void "test TemporalAccessor serialization"() {
 
