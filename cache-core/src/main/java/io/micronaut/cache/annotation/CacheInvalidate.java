@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2023 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,4 +89,13 @@ public @interface CacheInvalidate {
      * @return True if should be done asynchronously
      */
     boolean async() default false;
+
+    /**
+     * A custom expression that can be used to indicate whether the value should be cached.
+     * Will be evaluated each time the method is called, and if the condition evaluates to false the cache will not be used.
+     *
+     * @return The condition
+     * @since 4.2.0
+     */
+    String condition() default "";
 }
