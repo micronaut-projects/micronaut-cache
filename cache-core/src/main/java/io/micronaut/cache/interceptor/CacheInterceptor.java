@@ -137,7 +137,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                     CacheOperation cacheOperation = getCacheOperation(context,
                                                                       returnType.isVoid() || returnTypeValue
                                                                               .equalsType(Argument.VOID_OBJECT));
-                    boolean cacheableCondition = context.findAnnotation(Cacheable.class).flatMap(a -> a.booleanValue("condition")).orElseGet(() -> true);
+                    boolean cacheableCondition = context.findAnnotation(Cacheable.class).flatMap(a -> a.booleanValue(MEMBER_CONDITION)).orElseGet(() -> true);
                     if (cacheOperation.cacheable && cacheableCondition) {
                         if (returnType.isSingleResult()) {
                             return interceptSingle(context, interceptedMethod, returnTypeValue, cacheOperation);
@@ -382,7 +382,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         final ValueWrapper wrapper = new ValueWrapper();
         CacheOperation cacheOperation = getCacheOperation(context, returnType.isVoid());
 
-        boolean cacheableCondition = context.findAnnotation(Cacheable.class).flatMap(a -> a.booleanValue("condition")).orElseGet(() -> true);
+        boolean cacheableCondition = context.findAnnotation(Cacheable.class).flatMap(a -> a.booleanValue(MEMBER_CONDITION)).orElseGet(() -> true);
         if (cacheOperation.cacheable && cacheableCondition) {
             Object key = getCacheableKey(context, cacheOperation);
             Argument returnArgument = returnType.asArgument();
@@ -477,7 +477,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         CacheOperation cacheOperation = getCacheOperation(context,
                                                           returnTypeObject.isVoid() || requiredType
                                                                   .equalsType(Argument.VOID_OBJECT));
-        boolean cacheableCondition = context.findAnnotation(Cacheable.class).flatMap(a -> a.booleanValue("condition")).orElseGet(() -> true);
+        boolean cacheableCondition = context.findAnnotation(Cacheable.class).flatMap(a -> a.booleanValue(MEMBER_CONDITION)).orElseGet(() -> true);
         CompletionStage<?> returnFuture;
         if (cacheOperation.cacheable && cacheableCondition) {
             AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
