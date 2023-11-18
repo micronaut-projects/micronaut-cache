@@ -15,7 +15,7 @@ managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.0.1"
 micronaut-serde = "2.4.0"
-micronaut-validation = "4.0.3"
+micronaut-validation = "4.2.0"
 testcontainers = "1.19.2"
 graal-svm = "23.1.1"
 
