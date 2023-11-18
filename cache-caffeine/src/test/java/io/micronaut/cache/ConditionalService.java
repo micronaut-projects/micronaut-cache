@@ -10,12 +10,12 @@ import jakarta.inject.Singleton;
 @Requires(property = "spec.name", value = "ConditionalCacheSpec")
 public class ConditionalService {
 
-    DocRepo repsoitory = new DocRepo();
+    DocRepo repository = new DocRepo();
 
     // tag::conditional[]
     @Cacheable(condition = "#{id > 5}")
     public String get(Integer id) {
-        return repsoitory.get(id);
+        return repository.get(id);
     }
     // end::conditional[]
 
