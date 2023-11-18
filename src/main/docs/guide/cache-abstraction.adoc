@@ -20,7 +20,7 @@ In addition if the underlying Cache implementation supports non-blocking cache o
 
 === Conditional caching using Expression Language
 
-Since Micronaut 4.0, the above annotations can be conditionally disabled via an https://docs.micronaut.io/latest/guide/#evaluatedExpressions[Expression Language] expression in the `condition` attribute.
+Since Micronaut Cache 4.2.0, the above annotations can be conditionally disabled via an https://docs.micronaut.io/latest/guide/#evaluatedExpressions[Expression Language] expression in the `condition` attribute.
 
 For example, we can cache the result of a method invocation only if the `id` parameter is greater than 5:
 
