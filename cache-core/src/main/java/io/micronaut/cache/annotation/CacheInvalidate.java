@@ -91,9 +91,10 @@ public @interface CacheInvalidate {
     boolean async() default false;
 
     /**
-     * A custom expression that can be used to indicate whether the value should be cached.
+     * Evaluated expression that can be used to indicate whether the value should be cached.
      * Will be evaluated each time the method is called, and if the condition evaluates to false the cache will not be used.
      *
+     * @see <a href="https://docs.micronaut.io/latest/guide/#evaluatedExpressions">Evaluated Expressions</a>.
      * @return The condition
      * @since 4.2.0
      */
