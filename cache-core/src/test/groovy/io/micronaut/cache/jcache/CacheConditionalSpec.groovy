@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import javax.cache.CacheManager
 import javax.cache.Caching
@@ -40,57 +41,40 @@ class CacheConditionalSpec extends Specification {
         cacheManager.cacheNames.each { cacheManager.getCache(it).clear() }
     }
 
-    void 'cacheable condition is used'() {
+    @Unroll('@Cacheable condition is used for #scenario return')
+    void 'condition is used for @Cacheable'(CacheScenario scenario) {
+        given:
+        Map<String, String> data = loadCacheableData(scenario)
+
         when:
-        def initialTest = cacheService.getValue('test')
-        def initialIgnore = cacheService.getValue('ignore')
         sleep(100)
 
         then: 'test returns cached value'
-        cacheService.getValue('test') == initialTest
+        Flux.from(cacheService.publisherValue('test')).blockFirst() == data.test
 
         and: 'ignore is not cached'
-        cacheService.getValue('ignore') != initialIgnore
+        Flux.from(cacheService.publisherValue('ignore')).blockFirst() != data.ignore
+
+        where:
+        scenario << CacheScenario.values()
     }
 
-    void 'cacheable future condition is used'() {
-        when:
-        def initialTest = cacheService.futureValue('test').get()
-        def initialIgnore = cacheService.futureValue('ignore').get()
-        sleep(100)
-
-        then: 'test returns cached value'
-        cacheService.futureValue('test').get() == initialTest
-
-        and: 'ignore is not cached'
-        cacheService.futureValue('ignore').get() != initialIgnore
-    }
-
-    void 'cacheable publisher condition is used'() {
-        when:
-        def initialTest = Flux.from(cacheService.publisherValue('test')).blockFirst()
-        def initialIgnore = Flux.from(cacheService.publisherValue('ignore')).blockFirst()
-        sleep(100)
-
-        then: 'test returns cached value'
-        Flux.from(cacheService.publisherValue('test')).blockFirst() == initialTest
-
-        and: 'ignore is not cached'
-        Flux.from(cacheService.publisherValue('ignore')).blockFirst() != initialIgnore
-    }
-
-    void 'cacheput uses the condition'() {
+    @Unroll('@CachePut condition is used for #scenario return')
+    void 'condition is used for @Cacheable'(CacheScenario scenario) {
+        given:
+        String cacheName = 'cond-service'
         when: 'we put a value for test and ignored'
-        cacheService.putValue('test', 'foo')
-        cacheService.putValue('ignore', 'bar')
-        cacheService.putValue('qux', 'ignore')
-        cacheService.putValue('ham', 'yes')
-        CacheManager cacheManager = applicationContext.getBean(CacheManager)
-        def cache = cacheManager.getCache('cond-service')
+        loadCachePutData(scenario)
+
+        def cache = cacheManager.getCache(cacheName)
 
         then: 'test is in the cache'
         cache.containsKey('test')
-        cache.get('test') == 'foo'
+        if (scenario == CacheScenario.PUBLISHER) {
+            assert cache.get('test') == ['foo']
+        } else {
+            assert cache.get('test') == 'foo'
+        }
 
         and: 'ignore is not in the cache as the name was "ignore"'
         !cache.containsKey('ignore')
@@ -100,55 +84,17 @@ class CacheConditionalSpec extends Specification {
 
         and: 'ham is in the cache'
         cache.containsKey('ham')
-        cache.get('ham') == 'yes'
-    }
+        if (scenario == CacheScenario.PUBLISHER) {
+            assert cache.get('ham') == ['yes']
+        } else {
+            assert cache.get('ham') == 'yes'
+        }
 
-    void 'future cacheput uses the condition'() {
-        when: 'we put a value for test and ignored'
-        cacheService.futurePutValue('test', 'foo').get()
-        cacheService.futurePutValue('ignore', 'bar').get()
-        cacheService.futurePutValue('qux', 'ignore').get()
-        cacheService.futurePutValue('ham', 'yes').get()
-        CacheManager cacheManager = applicationContext.getBean(CacheManager)
-        def cache = cacheManager.getCache('cond-service')
+        cleanup:
+        cache.removeAll()
 
-        then: 'test is in the cache'
-        cache.containsKey('test')
-        cache.get('test') == 'foo'
-
-        and: 'ignore is not in the cache as the name was "ignore"'
-        !cache.containsKey('ignore')
-
-        and: 'qux is not in the cache as the value was "ignore"'
-        !cache.containsKey('qux')
-
-        and: 'ham is in the cache'
-        cache.containsKey('ham')
-        cache.get('ham') == 'yes'
-    }
-
-    void 'publisher cacheput uses the condition'() {
-        when: 'we put a value for test and ignored'
-        Flux.from(cacheService.publisherPutValue('test', 'foo')).blockFirst()
-        Flux.from(cacheService.publisherPutValue('ignore', 'bar')).blockFirst()
-        Flux.from(cacheService.publisherPutValue('qux', 'ignore')).blockFirst()
-        Flux.from(cacheService.publisherPutValue('ham', 'yes')).blockFirst()
-
-        def cache = cacheManager.getCache('cond-service')
-
-        then: 'test is in the cache'
-        cache.containsKey('test')
-        cache.get('test') == ['foo']
-
-        and: 'ignore is not in the cache as the name was "ignore"'
-        !cache.containsKey('ignore')
-
-        and: 'qux is not in the cache as the value was "ignore"'
-        !cache.containsKey('qux')
-
-        and: 'ham is in the cache'
-        cache.containsKey('ham')
-        cache.get('ham') == ['yes']
+        where:
+        scenario << CacheScenario.values()
     }
 
     void 'cacheinvalidate uses the condition'() {
@@ -179,6 +125,55 @@ class CacheConditionalSpec extends Specification {
 
         and: 'ignore has the value we set at the start'
         cache.get('ignore') == 'foo'
+    }
+
+    private Map<String, String> loadCacheableData(CacheScenario scenario) {
+        String initialTest
+        String initialIgnore
+        switch (scenario) {
+            case CacheScenario.PUBLISHER:
+                initialTest = Flux.from(cacheService.publisherValue('test')).blockFirst()
+                initialIgnore = Flux.from(cacheService.publisherValue('ignore')).blockFirst()
+                break
+            case CacheScenario.FUTURE:
+                initialTest = cacheService.futureValue('test').get()
+                initialIgnore = cacheService.futureValue('ignore').get()
+                break
+            case CacheScenario.STRING:
+                initialTest = cacheService.getValue('test')
+                initialIgnore = cacheService.getValue('ignore')
+                break
+        }
+        return [test: initialTest, ignore: initialIgnore]
+    }
+
+    private void loadCachePutData(CacheScenario scenario) {
+        switch (scenario) {
+            case CacheScenario.PUBLISHER:
+                Flux.from(cacheService.publisherPutValue('test', 'foo')).blockFirst()
+                Flux.from(cacheService.publisherPutValue('ignore', 'bar')).blockFirst()
+                Flux.from(cacheService.publisherPutValue('qux', 'ignore')).blockFirst()
+                Flux.from(cacheService.publisherPutValue('ham', 'yes')).blockFirst()
+                break
+            case CacheScenario.FUTURE:
+                cacheService.futurePutValue('test', 'foo').get()
+                cacheService.futurePutValue('ignore', 'bar').get()
+                cacheService.futurePutValue('qux', 'ignore').get()
+                cacheService.futurePutValue('ham', 'yes').get()
+                break
+            case CacheScenario.STRING:
+                cacheService.putValue('test', 'foo')
+                cacheService.putValue('ignore', 'bar')
+                cacheService.putValue('qux', 'ignore')
+                cacheService.putValue('ham', 'yes')
+                break
+        }
+    }
+
+    private enum CacheScenario {
+        PUBLISHER,
+        FUTURE,
+        STRING
     }
 
     @Factory
