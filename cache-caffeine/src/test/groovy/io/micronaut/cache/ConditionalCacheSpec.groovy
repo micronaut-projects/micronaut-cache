@@ -14,9 +14,9 @@ class ConditionalCacheSpec extends Specification {
 
     void "test conditional cache"() {
         when:
-        def results = (1..10).collect { service.get(it) }
+        List<String> results = (1..10).collect { service.get(it) }
         sleep(10)
-        def secondResults = (1..10).collect { service.get(it) }
+        List<String> secondResults = (1..10).collect { service.get(it) }
 
         then: "condition results in the last 5 results being cached"
         results.drop(5) == secondResults.drop(5)
