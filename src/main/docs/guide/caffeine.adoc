@@ -1,0 +1,60 @@
+To cache using https://github.com/ben-manes/caffeine[Caffeine] add the following dependency to your application:
+
+NOTE: This module is built and tested with Caffeine {caffeineVersion}
+
+dependency:io.micronaut.cache:micronaut-cache-caffeine[]
+
+
+Then configure one or many caches. For example with `application.yml`:
+
+.Cache Configuration Example
+[configuration]
+----
+micronaut:
+    caches:
+        my-cache:
+            maximum-size: 20
+----
+
+The above example will configure a cache called "my-cache" with a maximum size of 20.
+
+[configuration]
+----
+micronaut:
+    caches:
+        my-cache:
+            listen-to-removals: true
+            listen-to-evictions: true
+----
+
+This example is a cache with the removal/eviction listeners. To be able to use them just implement the `com.github.benmanes.caffeine.cache.RemovalListener` interface as shown in the example.
+
+[source,java]
+----
+@Singleton
+public class RemovalListenerImpl implements RemovalListener<K, V> {
+
+    @Override
+    public void onRemoval(
+            @Nullable K key,
+            @Nullable V value,
+            @NonNull RemovalCause cause
+    ) {
+    }
+}
+----
+
+[NOTE]
+.Naming Caches
+====
+Names of caches under `micronaut.caches` should be defined in kebab case (lowercase and hyphen separated), if camel case is used the names are normalized to kebab case. So for example specifying `myCache` will become `my-cache`. The kebab case form should be used when referencing caches in the ann:cache.annotation.Cacheable[] annotation.
+====
+
+To configure a weigher to be used with the `maximumWeight` configuration, create a bean that implements `com.github.benmanes.caffeine.cache.Weigher`. To associate a given weigher with only a specific cache, annotate the bean with `@Named(<cache name>)`. Weighers without a named qualifier will apply to all caches that don't have a named weigher. If no beans are found, a default implementation will be used.
+
+[NOTE]
+.Native compilation
+====
+When using Caffeine with Native Compilation, the most commonly used caches will be automatically registered.
+If you require additional caches, you will need to register them with Graal yourself https://docs.micronaut.io/latest/guide/#_adding_additional_classes_for_reflective_access[as shown in the guide].
+====
