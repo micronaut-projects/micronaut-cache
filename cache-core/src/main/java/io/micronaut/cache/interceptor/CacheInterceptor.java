@@ -1034,24 +1034,21 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Filtering {} by expressions", executableMethodAnnotations);
             }
-            // For each annotation on this method, we need to find the same annotation in the invocation context
+            // For each annotation on this method, we need to find the same annotation in the invocation context.
             // And then execute the condition in that annotation. If the condition is true, then we keep the annotation.
-            return executableMethodAnnotations.stream().filter(element -> {
-                boolean keep = context.getAnnotationValuesByType(annotationClass)
-                    .stream()
-                    .filter(a -> a.equals(element))
-                    .findFirst()
-                    .flatMap(a -> a.booleanValue(MEMBER_CONDITION))
-                    .orElse(true);
-                if (LOG.isDebugEnabled()) {
-                    if (keep) {
-                        LOG.debug("Keeping {} for {}", element, context);
-                    } else {
-                        LOG.debug("Removing {} for {}", element, context);
+            List<U> filtered = new ArrayList<>(executableMethodAnnotations.size());
+            for (U executableMethodAnnotation: executableMethodAnnotations) {
+                for (AnnotationValue<T> value: context.getAnnotationValuesByType(annotationClass)) {
+                    if (value.equals(executableMethodAnnotation)) {
+                        // if the matching annotation has no condition, or the condition is true, then we keep it
+                        if (!value.isPresent(MEMBER_CONDITION) || value.booleanValue(MEMBER_CONDITION).orElse(false)) {
+                            filtered.add(executableMethodAnnotation);
+                        }
+                        break;
                     }
                 }
-                return keep;
-            }).toList();
+            }
+            return filtered;
         }
 
         boolean hasWriteOperations() {

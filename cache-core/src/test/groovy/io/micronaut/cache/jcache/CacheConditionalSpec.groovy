@@ -4,6 +4,7 @@ import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.CacheInvalidate
 import io.micronaut.cache.annotation.CachePut
 import io.micronaut.cache.annotation.Cacheable
+import io.micronaut.cache.annotation.PutOperations
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
@@ -14,7 +15,6 @@ import reactor.core.publisher.Flux
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import javax.cache.CacheManager
 import javax.cache.Caching
@@ -41,8 +41,7 @@ class CacheConditionalSpec extends Specification {
         cacheManager.cacheNames.each { cacheManager.getCache(it).clear() }
     }
 
-    @Unroll('@Cacheable condition is used for #scenario return')
-    void 'condition is used for @Cacheable'(CacheScenario scenario) {
+    void '@Cacheable condition is used for #scenario return'(CacheScenario scenario) {
         given:
         Map<String, String> data = loadCacheableData(scenario)
 
@@ -59,10 +58,10 @@ class CacheConditionalSpec extends Specification {
         scenario << CacheScenario.values()
     }
 
-    @Unroll('@CachePut condition is used for #scenario return')
-    void 'condition is used for @Cacheable'(CacheScenario scenario) {
+    void '@CachePut condition is used for #scenario returne'(CacheScenario scenario) {
         given:
         String cacheName = 'cond-service'
+
         when: 'we put a value for test and ignored'
         loadCachePutData(scenario)
 
@@ -99,7 +98,6 @@ class CacheConditionalSpec extends Specification {
 
     void 'cacheinvalidate uses the condition'() {
         when: 'we invalidate a value for test and ignored'
-        CacheManager cacheManager = applicationContext.getBean(CacheManager)
         def cache = cacheManager.getCache('cond-service')
         cache.put("ignore", "foo")
 
@@ -125,6 +123,32 @@ class CacheConditionalSpec extends Specification {
 
         and: 'ignore has the value we set at the start'
         cache.get('ignore') == 'foo'
+    }
+
+    void 'multiple puts with a condition are handled'() {
+        when: 'we invalidate a value for test and ignored'
+        def counter = cacheManager.getCache('counter')
+        def counter2 = cacheManager.getCache('counter2')
+        def counter3 = cacheManager.getCache('counter3')
+
+        cacheService.multiPut('foo')
+        cacheService.multiPut('bar')
+        cacheService.multiPut('ignore')
+
+        then: 'counter ignores the name "ignore"'
+        counter.get('foo') == 'set!'
+        counter.get('bar') == 'set!'
+        counter.get('ignore') == null
+
+        and: 'counter2 does not ignore anything'
+        counter2.get('foo') == 'set!'
+        counter2.get('bar') == 'set!'
+        counter2.get('ignore') == 'set!'
+
+        and: 'counter3 ignores the name "foo"'
+        counter3.get('foo') == null
+        counter3.get('bar') == 'set!'
+        counter3.get('ignore') == 'set!'
     }
 
     private Map<String, String> loadCacheableData(CacheScenario scenario) {
@@ -185,6 +209,9 @@ class CacheConditionalSpec extends Specification {
         CacheManager cacheManager() {
             Caching.getCachingProvider().cacheManager.tap {
                 createCache('cond-service', new MutableConfiguration())
+                createCache('counter', new MutableConfiguration())
+                createCache('counter2', new MutableConfiguration())
+                createCache('counter3', new MutableConfiguration())
             }
         }
     }
@@ -213,6 +240,15 @@ class CacheConditionalSpec extends Specification {
         @CachePut(parameters = 'name', condition = "#{ name != 'ignore' && value != 'ignore' }")
         String putValue(String name, String value) {
             value
+        }
+
+        @PutOperations([
+                @CachePut(cacheNames = 'counter', condition = "#{ name != 'ignore' }"),
+                @CachePut(cacheNames = 'counter2'),
+                @CachePut(cacheNames = 'counter3', condition = "#{ name != 'foo' }"),
+        ])
+        String multiPut(String name) {
+            return "set!"
         }
 
         @CachePut(parameters = 'name', condition = "#{ name != 'ignore' && value != 'ignore' }")
