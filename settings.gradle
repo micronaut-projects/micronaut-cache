@@ -25,6 +25,10 @@ include 'test-suite-caffeine-groovy'
 include 'test-suite-caffeine-java'
 include 'test-suite-caffeine-kotlin'
 
+include 'test-suite-hazelcast-groovy'
+include 'test-suite-hazelcast-java'
+include 'test-suite-hazelcast-kotlin'
+
 include 'test-suite-caffeine-native'
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
