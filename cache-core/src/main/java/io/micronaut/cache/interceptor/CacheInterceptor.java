@@ -531,7 +531,14 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     }
 
     private boolean isCacheableDueToCondition(MethodInvocationContext<?, ?> context) {
-        return !context.isPresent(Cacheable.class, MEMBER_CONDITION) || context.booleanValue(Cacheable.class, MEMBER_CONDITION).orElse(false);
+        if (!context.isPresent(Cacheable.class, MEMBER_CONDITION)) {
+            return true;
+        }
+        boolean expressionResult = context.booleanValue(Cacheable.class, MEMBER_CONDITION).orElse(false);
+        if (!expressionResult && LOG.isDebugEnabled()) {
+            LOG.debug("Cacheable condition evaluated to false for invocation: {}", context);
+        }
+        return expressionResult;
     }
 
     /**
