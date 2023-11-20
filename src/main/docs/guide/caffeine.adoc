@@ -29,20 +29,7 @@ micronaut:
 
 This example is a cache with the removal/eviction listeners. To be able to use them just implement the `com.github.benmanes.caffeine.cache.RemovalListener` interface as shown in the example.
 
-[source,java]
-----
-@Singleton
-public class RemovalListenerImpl implements RemovalListener<K, V> {
-
-    @Override
-    public void onRemoval(
-            @Nullable K key,
-            @Nullable V value,
-            @NonNull RemovalCause cause
-    ) {
-    }
-}
-----
+snippet::io.micronaut.cache.RemovalListenerImpl[project-base="test-suite-caffeine",tags="clazz"]
 
 [NOTE]
 .Naming Caches
