@@ -37,10 +37,6 @@ class CacheConditionalSpec extends Specification {
     @Shared
     CacheManager cacheManager = applicationContext.getBean(CacheManager)
 
-    def cleanup() {
-        cacheManager.cacheNames.each { cacheManager.getCache(it).clear() }
-    }
-
     void '@Cacheable condition is used for #scenario return'(CacheScenario scenario) {
         given:
         Map<String, String> data = loadCacheableData(scenario)
@@ -127,28 +123,28 @@ class CacheConditionalSpec extends Specification {
 
     void 'multiple puts with a condition are handled'() {
         when: 'we invalidate a value for test and ignored'
-        def counter = cacheManager.getCache('counter')
-        def counter2 = cacheManager.getCache('counter2')
-        def counter3 = cacheManager.getCache('counter3')
+        def noIgnoreCache = cacheManager.getCache('cache-no-ignore')
+        def allCache = cacheManager.getCache('cache-all')
+        def noFooCache = cacheManager.getCache('cache-no-foo')
 
         cacheService.multiPut('foo')
         cacheService.multiPut('bar')
         cacheService.multiPut('ignore')
 
-        then: 'counter ignores the name "ignore"'
-        counter.get('foo') == 'set!'
-        counter.get('bar') == 'set!'
-        counter.get('ignore') == null
+        then: 'noIgnoreCache ignores the name "ignore"'
+        noIgnoreCache.get('foo') == 'set!'
+        noIgnoreCache.get('bar') == 'set!'
+        noIgnoreCache.get('ignore') == null
 
-        and: 'counter2 does not ignore anything'
-        counter2.get('foo') == 'set!'
-        counter2.get('bar') == 'set!'
-        counter2.get('ignore') == 'set!'
+        and: 'allCache does not ignore anything'
+        allCache.get('foo') == 'set!'
+        allCache.get('bar') == 'set!'
+        allCache.get('ignore') == 'set!'
 
-        and: 'counter3 ignores the name "foo"'
-        counter3.get('foo') == null
-        counter3.get('bar') == 'set!'
-        counter3.get('ignore') == 'set!'
+        and: 'noFooCache ignores the name "foo"'
+        noFooCache.get('foo') == null
+        noFooCache.get('bar') == 'set!'
+        noFooCache.get('ignore') == 'set!'
     }
 
     private Map<String, String> loadCacheableData(CacheScenario scenario) {
@@ -209,9 +205,9 @@ class CacheConditionalSpec extends Specification {
         CacheManager cacheManager() {
             Caching.getCachingProvider().cacheManager.tap {
                 createCache('cond-service', new MutableConfiguration())
-                createCache('counter', new MutableConfiguration())
-                createCache('counter2', new MutableConfiguration())
-                createCache('counter3', new MutableConfiguration())
+                createCache('cache-no-ignore', new MutableConfiguration())
+                createCache('cache-all', new MutableConfiguration())
+                createCache('cache-no-foo', new MutableConfiguration())
             }
         }
     }
@@ -243,9 +239,9 @@ class CacheConditionalSpec extends Specification {
         }
 
         @PutOperations([
-                @CachePut(cacheNames = 'counter', condition = "#{ name != 'ignore' }"),
-                @CachePut(cacheNames = 'counter2'),
-                @CachePut(cacheNames = 'counter3', condition = "#{ name != 'foo' }"),
+                @CachePut(cacheNames = 'cache-no-ignore', condition = "#{ name != 'ignore' }"),
+                @CachePut(cacheNames = 'cache-all'),
+                @CachePut(cacheNames = 'cache-no-foo', condition = "#{ name != 'foo' }"),
         ])
         String multiPut(String name) {
             return "set!"
@@ -265,5 +261,4 @@ class CacheConditionalSpec extends Specification {
         void invalidate(String name) {
         }
     }
-
 }
