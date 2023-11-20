@@ -1,6 +1,10 @@
 introduction: Introduction
 releaseHistory: Release History
 cache-abstraction: Cache Abstraction
+annotations:
+  title: Cache Annotations
+  conditional: Conditional Caching
+caffeine: Caching with Caffeine
 jcache: JCache API support
 redis: Redis Support
 ehcache: Ehcache Support

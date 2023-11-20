@@ -3,6 +3,7 @@ micronaut-docs = "2.0.0"
 micronaut = "4.2.0"
 micronaut-test = "4.0.0"
 
+kotlin = "1.9.20"
 groovy = "4.0.12"
 spock = "2.3-groovy-4.0"
 
@@ -18,6 +19,7 @@ micronaut-serde = "2.4.0"
 micronaut-validation = "4.2.0"
 testcontainers = "1.19.2"
 graal-svm = "23.1.1"
+graal-plugin = "0.9.28"
 
 micronaut-logging = "1.0.0"
 [libraries]
@@ -39,6 +41,11 @@ micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-
 
 cache-api = { module = "javax.cache:cache-api", version.ref = "cache-ri-impl" }
 cache-ri-impl = { module = "org.jsr107.ri:cache-ri-impl", version.ref = "cache-ri-impl" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-spock = { module = "org.testcontainers:spock", version.ref = "testcontainers" }
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
 spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
+gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+gradle-graal = { module = "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin", version.ref = "graal-plugin" }
