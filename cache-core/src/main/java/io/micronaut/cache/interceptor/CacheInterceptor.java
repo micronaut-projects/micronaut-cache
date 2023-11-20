@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2023 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.AnnotationValueResolver;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.type.ReturnType;
@@ -47,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +79,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     private static final String MEMBER_ASYNC = "async";
     private static final Logger LOG = LoggerFactory.getLogger(CacheInterceptor.class);
     private static final String MEMBER_ATOMIC = "atomic";
+    private static final String MEMBER_CONDITION = "condition";
     private static final String MEMBER_PARAMETERS = "parameters";
     private static final String MEMBER_ALL = "all";
     private static final String MEMBER_KEY_GENERATOR = "keyGenerator";
@@ -119,6 +122,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     public Object intercept(MethodInvocationContext<Object, Object> context) {
         if (context.hasStereotype(CacheAnnotation.class)) {
             InterceptedMethod interceptedMethod = InterceptedMethod.of(context, beanContext.getConversionService());
+
             try {
                 ReturnType<?> returnType = context.getReturnType();
                 Argument<?> returnTypeValue = interceptedMethod.returnTypeValue();
@@ -133,7 +137,8 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                     CacheOperation cacheOperation = getCacheOperation(context,
                                                                       returnType.isVoid() || returnTypeValue
                                                                               .equalsType(Argument.VOID_OBJECT));
-                    if (cacheOperation.cacheable) {
+
+                    if (cacheOperation.cacheable && isCacheableDueToCondition(context)) {
                         if (returnType.isSingleResult()) {
                             return interceptSingle(context, interceptedMethod, returnTypeValue, cacheOperation);
                         } else {
@@ -180,8 +185,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
             if (result.isPresent()) {
                 // cache hit, return result
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Value found in cache [" + cacheOperation.cacheableCacheName + "] for "
-                                      + "invocation: " + context);
+                    LOG.debug("Value found in cache [{}] for invocation: {}", cacheOperation.cacheableCacheName, context);
                 }
                 return Mono.just(result.get());
             } else {
@@ -200,11 +204,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                         }).switchIfEmpty(Mono.defer(() -> {
                             if (LOG.isTraceEnabled()) {
                                 LOG.trace(
-                                        "Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was "
-                                                + "null",
-                                        key,
-                                        asyncCache.getName(),
-                                        context);
+                                    "Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null",
+                                    key,
+                                    asyncCache.getName(),
+                                    context
+                                );
                             }
                             return Mono.fromCompletionStage(asyncCacheInvalidate(asyncCache, key, errorHandler))
                                     .then(Mono.empty());
@@ -219,7 +223,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                                                      CacheOperation cacheOperation,
                                                      Mono<Object> cachingMono) {
         if (cacheOperation.hasWriteOperations()) {
-            List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
+            List<AnnotationValue<CachePut>> putOperations = cacheOperation.getPutOperations(context);
             if (CollectionUtils.isNotEmpty(putOperations)) {
                 for (AnnotationValue<CachePut> putOperation : putOperations) {
                     String[] cacheNames = cacheOperation.getCachePutNames(putOperation);
@@ -227,17 +231,17 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                         boolean isAsync = putOperation.isTrue(MEMBER_ASYNC);
                         if (isAsync) {
                             cachingMono = cachingMono.doOnNext((result) -> Mono.fromCompletionStage(
-                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                                putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
                             ));
                         } else {
                             cachingMono = cachingMono.flatMap(result -> Mono.fromCompletionStage(
-                                    putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
+                                putAsync(context, cacheOperation, putOperation, cacheNames, result, asyncCacheErrorHandler)
                             ).thenReturn(result));
                         }
                     }
                 }
             }
-            List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
+            List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.getInvalidateOperations(context);
             if (CollectionUtils.isNotEmpty(invalidateOperations)) {
                 for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
                     String[] cacheNames = cacheOperation.getCacheInvalidateNames(invalidateOperation);
@@ -317,11 +321,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                         }).switchIfEmpty(Mono.defer(() -> {
                             if (LOG.isTraceEnabled()) {
                                 LOG.trace(
-                                        "Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was "
-                                                + "null",
-                                        key,
-                                        asyncCache.getName(),
-                                        context);
+                                    "Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null",
+                                    key,
+                                    asyncCache.getName(),
+                                    context
+                                );
                             }
                             return Mono.fromCompletionStage(asyncCacheInvalidate(asyncCache, key, errorHandler))
                                     .then(Mono.empty());
@@ -336,7 +340,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                                                     CacheOperation cacheOperation,
                                                     Flux<Object> cachingFlux) {
         if (cacheOperation.hasWriteOperations()) {
-            List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
+            List<AnnotationValue<CachePut>> putOperations = cacheOperation.getPutOperations(context);
             if (CollectionUtils.isNotEmpty(putOperations)) {
                 for (AnnotationValue<CachePut> putOperation : putOperations) {
                     String[] cacheNames = cacheOperation.getCachePutNames(putOperation);
@@ -354,7 +358,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                     }
                 }
             }
-            List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
+            List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.getInvalidateOperations(context);
             if (CollectionUtils.isNotEmpty(invalidateOperations)) {
                 for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
                     String[] cacheNames = cacheOperation.getCacheInvalidateNames(invalidateOperation);
@@ -378,7 +382,8 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         final ValueWrapper wrapper = new ValueWrapper();
         CacheOperation cacheOperation = getCacheOperation(context, returnType.isVoid());
 
-        if (cacheOperation.cacheable) {
+        boolean cacheableCondition = isCacheableDueToCondition(context);
+        if (cacheOperation.cacheable && cacheableCondition) {
             Object key = getCacheableKey(context, cacheOperation);
             Argument returnArgument = returnType.asArgument();
             if (context.isTrue(Cacheable.class, MEMBER_ATOMIC)) {
@@ -401,8 +406,8 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                 }
             } else {
                 String[] cacheNames = resolveCacheNames(
-                        cacheOperation.defaultCacheNames,
-                        context.stringValues(Cacheable.class, MEMBER_CACHE_NAMES)
+                    cacheOperation.defaultCacheNames,
+                    context.stringValues(Cacheable.class, MEMBER_CACHE_NAMES)
                 );
                 boolean cacheHit = false;
                 for (String cacheName : cacheNames) {
@@ -411,7 +416,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                         Optional optional = syncCache.get(key, returnArgument);
                         if (optional.isPresent()) {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug("Value found in cache [" + cacheName + "] for invocation: " + context);
+                                LOG.debug("Value found in cache [{}] for invocation: {}", cacheName, context);
                             }
                             cacheHit = true;
                             wrapper.value = optional.get();
@@ -425,7 +430,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                 }
                 if (!cacheHit) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Value not found in cache for invocation: " + context);
+                        LOG.debug("Value not found in cache for invocation: {}", context);
                     }
                     doProceed(context, wrapper);
                     syncPut(cacheNames, key, wrapper.value);
@@ -439,14 +444,14 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
             }
         }
 
-        List<AnnotationValue<CachePut>> cachePuts = cacheOperation.putOperations;
+        List<AnnotationValue<CachePut>> cachePuts = cacheOperation.getPutOperations(context);
         if (CollectionUtils.isNotEmpty(cachePuts)) {
             for (AnnotationValue<CachePut> cachePut : cachePuts) {
                 processCachePut(context, wrapper, cachePut, cacheOperation);
             }
         }
 
-        List<AnnotationValue<CacheInvalidate>> cacheInvalidates = cacheOperation.invalidateOperations;
+        List<AnnotationValue<CacheInvalidate>> cacheInvalidates = cacheOperation.getInvalidateOperations(context);
         if (CollectionUtils.isNotEmpty(cacheInvalidates)) {
             for (AnnotationValue<CacheInvalidate> cacheInvalidate : cacheInvalidates) {
                 processCacheEvict(context, cacheOperation, cacheInvalidate);
@@ -472,8 +477,9 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         CacheOperation cacheOperation = getCacheOperation(context,
                                                           returnTypeObject.isVoid() || requiredType
                                                                   .equalsType(Argument.VOID_OBJECT));
+        boolean cacheableCondition = isCacheableDueToCondition(context);
         CompletionStage<?> returnFuture;
-        if (cacheOperation.cacheable) {
+        if (cacheOperation.cacheable && cacheableCondition) {
             AsyncCache<?> asyncCache = cacheManager.getCache(cacheOperation.cacheableCacheName).async();
             Object key = getCacheableKey(context, cacheOperation);
             returnFuture = asyncCacheGet(asyncCache, key, requiredType, errorHandler)
@@ -524,6 +530,17 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         return returnFuture;
     }
 
+    private boolean isCacheableDueToCondition(MethodInvocationContext<?, ?> context) {
+        if (!context.isPresent(Cacheable.class, MEMBER_CONDITION)) {
+            return true;
+        }
+        boolean expressionResult = context.booleanValue(Cacheable.class, MEMBER_CONDITION).orElse(false);
+        if (!expressionResult && LOG.isDebugEnabled()) {
+            LOG.debug("Cacheable condition evaluated to false for invocation: {}", context);
+        }
+        return expressionResult;
+    }
+
     /**
      * Saving inside the cache.
      *
@@ -557,7 +574,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     private CompletionStage<?> processFuturePutOperations(MethodInvocationContext<Object, Object> context,
                                                           CacheOperation cacheOperation,
                                                           CompletionStage<?> value) {
-        List<AnnotationValue<CachePut>> putOperations = cacheOperation.putOperations;
+        List<AnnotationValue<CachePut>> putOperations = cacheOperation.getPutOperations(context);
         if (CollectionUtils.isNotEmpty(putOperations)) {
             for (AnnotationValue<CachePut> putOperation : putOperations) {
                 String[] cacheNames = cacheOperation.getCachePutNames(putOperation);
@@ -586,7 +603,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     private CompletionStage<?> processFutureInvalidateOperations(MethodInvocationContext<Object, Object> context,
                                                                  CacheOperation cacheOperation,
                                                                  CompletionStage<?> value) {
-        List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.invalidateOperations;
+        List<AnnotationValue<CacheInvalidate>> invalidateOperations = cacheOperation.getInvalidateOperations(context);
         if (CollectionUtils.isNotEmpty(invalidateOperations)) {
             for (AnnotationValue<CacheInvalidate> invalidateOperation : invalidateOperations) {
                 String[] cacheNames = cacheOperation.getCacheInvalidateNames(invalidateOperation);
@@ -959,7 +976,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         final String[] defaultCacheNames;
         final boolean cacheable;
         String cacheableCacheName;
+
+        boolean putHasCondition; // if any of the put operations has a condition, then we need to filter
         List<AnnotationValue<CachePut>> putOperations;
+
+        boolean invalidateHasCondition;
         List<AnnotationValue<CacheInvalidate>> invalidateOperations;
 
         CacheOperation(ExecutableMethod<?, ?> method, boolean isVoid) {
@@ -967,7 +988,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                     method.classValue(CacheConfig.class, MEMBER_KEY_GENERATOR).orElse(getDefaultKeyGenerator(method))
             );
             this.putOperations = isVoid ? null : putOperations(method);
+            this.putHasCondition = this.putOperations != null && hasConditional(putOperations);
+
             this.invalidateOperations = invalidateOperations(method);
+            this.invalidateHasCondition = hasConditional(invalidateOperations); // if any of the invalidate operations has a condition, then we need to filter
+
             this.defaultCacheNames = method.stringValues(CacheConfig.class, MEMBER_CACHE_NAMES);
             this.cacheable = method.hasStereotype(Cacheable.class);
             if (!isVoid && cacheable) {
@@ -982,12 +1007,55 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
             }
         }
 
+        private <T extends Annotation> boolean hasConditional(@NonNull List<AnnotationValue<T>> annotationValues) {
+            if (CollectionUtils.isEmpty(annotationValues)) {
+                return false;
+            }
+            return annotationValues.stream().anyMatch(av -> av.isPresent(MEMBER_CONDITION));
+        }
+
         private Class<? extends CacheKeyGenerator> getDefaultKeyGenerator(ExecutableMethod<?, ?> method) {
             if (method.isSuspend()) {
                 return KotlinSuspendFunCacheKeyGenerator.class;
             } else {
                 return DefaultCacheKeyGenerator.class;
             }
+        }
+
+        List<AnnotationValue<CachePut>> getPutOperations(MethodInvocationContext<?, ?> context) {
+            return this.putHasCondition ? filter(putOperations, context, CachePut.class) : putOperations;
+        }
+
+        List<AnnotationValue<CacheInvalidate>> getInvalidateOperations(MethodInvocationContext<?, ?> context) {
+            return this.invalidateHasCondition ? filter(invalidateOperations, context, CacheInvalidate.class) : invalidateOperations;
+        }
+
+        private <T extends Annotation, U extends AnnotationValue<T>> List<U> filter(
+            List<U> executableMethodAnnotations,
+            MethodInvocationContext<?, ?> context,
+            Class<T> annotationClass
+        ) {
+            if (CollectionUtils.isEmpty(executableMethodAnnotations)) {
+                return executableMethodAnnotations;
+            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Filtering {} by expressions", executableMethodAnnotations);
+            }
+            // For each annotation on this method, we need to find the same annotation in the invocation context.
+            // And then execute the condition in that annotation. If the condition is true, then we keep the annotation.
+            List<U> filtered = new ArrayList<>(executableMethodAnnotations.size());
+            for (U executableMethodAnnotation: executableMethodAnnotations) {
+                for (AnnotationValue<T> value: context.getAnnotationValuesByType(annotationClass)) {
+                    if (value.equals(executableMethodAnnotation)) {
+                        // if the matching annotation has no condition, or the condition is true, then we keep it
+                        if (!value.isPresent(MEMBER_CONDITION) || value.booleanValue(MEMBER_CONDITION).orElse(false)) {
+                            filtered.add(executableMethodAnnotation);
+                        }
+                        break;
+                    }
+                }
+            }
+            return filtered;
         }
 
         boolean hasWriteOperations() {
@@ -1031,7 +1099,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         private CacheKeyGenerator getKeyGenerator(Class<?> alternateKeyGen) {
             CacheKeyGenerator keyGenerator = defaultKeyGenerator;
             if (alternateKeyGen != null && defaultKeyGenerator.getClass() != alternateKeyGen && CacheKeyGenerator.class
-                    .isAssignableFrom(alternateKeyGen)) {
+                .isAssignableFrom(alternateKeyGen)) {
                 //noinspection unchecked
                 keyGenerator = resolveKeyGenerator((Class<? extends CacheKeyGenerator>) alternateKeyGen);
             }
