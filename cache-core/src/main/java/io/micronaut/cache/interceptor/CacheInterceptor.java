@@ -887,7 +887,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         return asyncCache
             .invalidate(key)
             .exceptionallyAsync(throwable ->
-                exceptionallyAsync(throwable,errorHandler.handleInvalidateError(asyncCache, key, asRuntimeException(throwable)), true)
+                exceptionallyAsync(throwable, errorHandler.handleInvalidateError(asyncCache, key, asRuntimeException(throwable)), true)
             );
     }
 
