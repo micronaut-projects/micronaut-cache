@@ -296,8 +296,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
             if (result.isPresent()) {
                 // cache hit, return result
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Value found in cache [" + cacheOperation.cacheableCacheName + "] for "
-                                      + "invocation: " + context);
+                    LOG.debug("Value found in cache [{}] for invocation: {}", cacheOperation.cacheableCacheName, context);
                 }
                 return Mono.just(result.get());
             } else {
@@ -411,7 +410,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                         Optional optional = syncCache.get(key, returnArgument);
                         if (optional.isPresent()) {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug("Value found in cache [" + cacheName + "] for invocation: " + context);
+                                LOG.debug("Value found in cache [{}] for invocation: {}", cacheName, context);
                             }
                             cacheHit = true;
                             wrapper.value = optional.get();
@@ -425,9 +424,16 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                 }
                 if (!cacheHit) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Value not found in cache for invocation: " + context);
+                        LOG.debug("Value not found in cache for invocation: {}", context);
                     }
                     doProceed(context, wrapper);
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("Storing in the caches {} with key [{}] the result of invocation [{}]: {}",
+                            cacheNames,
+                            key,
+                            context,
+                            wrapper.value);
+                    }
                     syncPut(cacheNames, key, wrapper.value);
                 }
             }
@@ -481,7 +487,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                         if (o.isPresent()) {
                             // cache hit, return result
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug("Value found in cache [" + asyncCache.getName() + "] for invocation: " + context);
+                                LOG.debug("Value found in cache [{}] for invocation {}", asyncCache.getName(), context);
                             }
                             return CompletableFuture.completedFuture(o.get());
                         } else {
@@ -494,8 +500,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                                 if (o1 == null) {
                                     if (LOG.isTraceEnabled()) {
                                         LOG.trace(
-                                                "Invalidating the key [{}] of the cache [{}] since the result of invocation "
-                                                        + "[{}] was null",
+                                                "Invalidating the key [{}] of the cache [{}] since the result of invocation [{}] was null",
                                                 key,
                                                 asyncCache.getName(),
                                                 context);
@@ -852,13 +857,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Getting the value for the key [{}] of the cache [{}]", key, asyncCache.getName());
         }
-        return asyncCache.get(key, requiredType)
-                .exceptionally(throwable ->
-                                       exceptionallyAsync(throwable,
-                                                          () -> errorHandler.handleLoadError(asyncCache,
-                                                                                             key,
-                                                                                             asRuntimeException(throwable)),
-                                                          null));
+        return asyncCache
+            .get(key, requiredType)
+            .exceptionallyAsync(throwable ->
+                exceptionallyAsync(throwable, errorHandler.handleLoadError(asyncCache, key, asRuntimeException(throwable)), Optional.empty())
+            );
     }
 
     private CompletableFuture<Boolean> asyncCachePut(AsyncCache<?> asyncCache,
@@ -868,14 +871,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Putting the value [{}] for the key [{}] of the cache [{}]", value, key, asyncCache.getName());
         }
-        return asyncCache.put(key, value).exceptionally(throwable ->
-                                                                exceptionallyAsync(throwable,
-                                                                                   () -> errorHandler.handlePutError(asyncCache,
-                                                                                                                     key,
-                                                                                                                     value,
-                                                                                                                     asRuntimeException(
-                                                                                                                             throwable)),
-                                                                                   true));
+        return asyncCache
+            .put(key, value)
+            .exceptionally(throwable ->
+                exceptionallyAsync(throwable, errorHandler.handlePutError(asyncCache, key, value, asRuntimeException(throwable)), true)
+            );
     }
 
     private CompletableFuture<Boolean> asyncCacheInvalidate(AsyncCache<?> asyncCache,
@@ -884,35 +884,25 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Invalidating the key [{}] of the cache [{}]", key, asyncCache.getName());
         }
-        return asyncCache.invalidate(key).exceptionally(throwable ->
-                                                                exceptionallyAsync(throwable,
-                                                                                   () -> errorHandler.handleInvalidateError(
-                                                                                           asyncCache,
-                                                                                           key,
-                                                                                           asRuntimeException(throwable)),
-                                                                                   true));
+        return asyncCache
+            .invalidate(key)
+            .exceptionallyAsync(throwable ->
+                exceptionallyAsync(throwable,errorHandler.handleInvalidateError(asyncCache, key, asRuntimeException(throwable)), true)
+            );
     }
 
     private CompletableFuture<Boolean> asyncCacheInvalidateAll(AsyncCache<?> asyncCache, CacheErrorHandler errorHandler) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Invalidating all the entries of the cache [{}]", asyncCache.getName());
         }
-        return asyncCache.invalidateAll().exceptionally(throwable ->
-                                                                exceptionallyAsync(throwable,
-                                                                                   () -> errorHandler.handleInvalidateError(
-                                                                                           asyncCache,
-                                                                                           asRuntimeException(throwable)),
-                                                                                   true));
+        return asyncCache
+            .invalidateAll()
+            .exceptionallyAsync(throwable ->
+                exceptionallyAsync(throwable, errorHandler.handleInvalidateError(asyncCache, asRuntimeException(throwable)), true)
+            );
     }
 
-    private <T> T exceptionallyAsync(Throwable throwable, Supplier<Boolean> handleInvalidateErrorSupplier, T def) {
-        // replace with exceptionallyAsync in Java 11
-        boolean handleInvalidateError = true;
-        try {
-            handleInvalidateError = ioExecutor.submit(handleInvalidateErrorSupplier::get).get();
-        } catch (Throwable e) {
-            // Ignore
-        }
+    private <T> T exceptionallyAsync(Throwable throwable, boolean handleInvalidateError, T def) {
         if (handleInvalidateError) {
             Throwable rethrow = throwable;
             if (rethrow instanceof CompletionException) {
@@ -924,8 +914,8 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     }
 
     private RuntimeException asRuntimeException(Throwable throwable) {
-        if (throwable instanceof RuntimeException) {
-            return (RuntimeException) throwable;
+        if (throwable instanceof RuntimeException runtimeException) {
+            return runtimeException;
         } else {
             return new RuntimeException(throwable);
         }
