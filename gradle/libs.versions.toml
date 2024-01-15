@@ -3,7 +3,7 @@ micronaut-docs = "2.0.0"
 micronaut = "4.2.3"
 micronaut-test = "4.0.0"
 
-kotlin = "1.9.20"
+kotlin = "1.9.22"
 groovy = "4.0.12"
 spock = "2.3-groovy-4.0"
 
