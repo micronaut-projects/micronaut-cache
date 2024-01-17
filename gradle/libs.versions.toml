@@ -18,7 +18,7 @@ micronaut-micrometer = "5.2.0"
 micronaut-serde = "2.7.0"
 micronaut-validation = "4.2.0"
 testcontainers = "1.19.3"
-graal-svm = "23.1.1"
+graal-svm = "23.1.2"
 graal-plugin = "0.9.28"
 
 micronaut-logging = "1.0.0"
