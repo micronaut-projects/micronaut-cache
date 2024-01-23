@@ -36,6 +36,7 @@ public class CaffeineFeature implements Feature {
     private static final CacheType[] COMMON_CACHE_TYPES = new CacheType[]{
         new CacheType("com.github.benmanes.caffeine.cache.PDMS"),
         new CacheType("com.github.benmanes.caffeine.cache.PSA"),
+        new CacheType("com.github.benmanes.caffeine.cache.PSAW"),
         new CacheType("com.github.benmanes.caffeine.cache.PS", "key", "value"),
         new CacheType("com.github.benmanes.caffeine.cache.PSW", "writeTime"),
         new CacheType("com.github.benmanes.caffeine.cache.PSMS"),
@@ -43,6 +44,7 @@ public class CaffeineFeature implements Feature {
         new CacheType("com.github.benmanes.caffeine.cache.PSWMW"),
         new CacheType("com.github.benmanes.caffeine.cache.SILMS"),
         new CacheType("com.github.benmanes.caffeine.cache.SSA"),
+        new CacheType("com.github.benmanes.caffeine.cache.SSAW"),
         new CacheType("com.github.benmanes.caffeine.cache.SSLA"),
         new CacheType("com.github.benmanes.caffeine.cache.SSLMS"),
         new CacheType("com.github.benmanes.caffeine.cache.SSMS"),
