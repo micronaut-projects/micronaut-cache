@@ -19,6 +19,7 @@ dependencies {
     testImplementation(projects.micronautCacheCaffeine)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.reactor)
     testImplementation(mnTest.micronaut.test.junit5)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
 }
