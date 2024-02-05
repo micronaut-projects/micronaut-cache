@@ -14,7 +14,7 @@ dependencies {
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mnSerde.micronaut.serde.jackson)
     testImplementation(mnTest.micronaut.test.spock)
-    testImplementation(libs.testcontainers)
+    testImplementation(mnTestResources.testcontainers.core)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
     testRuntimeOnly(mnLogging.logback.classic)

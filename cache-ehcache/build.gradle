@@ -11,5 +11,6 @@ dependencies {
     testImplementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.reactor)
+    testImplementation(platform(mnTestResources.boms.testcontainers))
     testImplementation(libs.testcontainers.spock)
 }
