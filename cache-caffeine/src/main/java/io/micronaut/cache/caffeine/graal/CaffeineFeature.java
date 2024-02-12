@@ -17,7 +17,6 @@ package io.micronaut.cache.caffeine.graal;
 
 import io.micronaut.core.annotation.Internal;
 import org.graalvm.nativeimage.hosted.Feature;
-import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
 import java.lang.reflect.Field;
@@ -55,9 +54,6 @@ public class CaffeineFeature implements Feature {
 
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
-        RuntimeClassInitialization.initializeAtRunTime("io.micronaut.cache.caffeine.metrics.$CaffeineCacheMetricsBinder$Definition");
-
-        RuntimeClassInitialization.initializeAtBuildTime("com.github.benmanes.caffeine.cache.RemovalCause");
         registerFields(access, "com.github.benmanes.caffeine.cache.BLCHeader$DrainStatusRef", "drainStatus");
         registerFields(access, "com.github.benmanes.caffeine.cache.BBHeader$ReadCounterRef", "readCounter");
         registerFields(access, "com.github.benmanes.caffeine.cache.BBHeader$ReadAndWriteCounterRef", "writeCounter");
