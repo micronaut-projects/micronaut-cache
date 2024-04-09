@@ -112,7 +112,7 @@ class InfinispanCacheFactorySpec extends Specification {
 
         then:
         remoteCacheManager.configuration.asyncExecutorFactory().factoryClass() == DefaultAsyncExecutorFactory
-        !remoteCacheManager.configuration.asyncExecutorFactory().factory()
+        remoteCacheManager.configuration.asyncExecutorFactory().factory()
 
         cleanup:
         ctx.close()
