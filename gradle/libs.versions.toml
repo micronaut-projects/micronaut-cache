@@ -10,7 +10,7 @@ spock = "2.3-groovy-4.0"
 cache-ri-impl = "1.1.1"
 managed-caffeine = "3.1.8"
 managed-ehcache = "3.10.8"
-managed-hazelcast = "5.3.6"
+managed-hazelcast = "5.3.7"
 managed-infinispan = "15.0.0.Final"
 managed-jcache = "1.1.1"
 
