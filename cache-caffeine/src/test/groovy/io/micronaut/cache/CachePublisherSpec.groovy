@@ -18,12 +18,11 @@ package io.micronaut.cache
 import io.micronaut.cache.annotation.CacheInvalidate
 import io.micronaut.cache.annotation.CachePut
 import io.micronaut.cache.annotation.Cacheable
-import io.micronaut.cache.annotation.InvalidateOperations
+import io.micronaut.cache.caffeine.configuration.CaffeineCacheConfiguration
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.async.annotation.SingleResult
 import jakarta.inject.Singleton
 import org.reactivestreams.Publisher
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.MonoSink
 import spock.lang.Issue
@@ -32,6 +31,34 @@ import spock.lang.Specification
 import java.util.concurrent.atomic.AtomicInteger
 
 class CachePublisherSpec extends Specification {
+
+    void 'check default max size of cache'() {
+        given:
+        def ctx = ApplicationContext.run(
+                'micronaut.caches.my-cache.testMode':true
+        )
+        CaffeineCacheConfiguration config = ctx.getBean(CaffeineCacheConfiguration)
+
+        expect:
+        config.maximumSize == OptionalLong.empty()
+
+        cleanup:
+        ctx.close()
+    }
+
+    void 'check set max size of cache'() {
+        given:
+        def ctx = ApplicationContext.run(
+                'micronaut.caches.my-cache.maximum-size': 10,
+        )
+        CaffeineCacheConfiguration config = ctx.getBean(CaffeineCacheConfiguration)
+
+        expect:
+        config.maximumSize == OptionalLong.of(10)
+
+        cleanup:
+        ctx.close()
+    }
 
     @Issue(["https://github.com/micronaut-projects/micronaut-core/issues/1197",
         "https://github.com/micronaut-projects/micronaut-core/issues/1082"])
