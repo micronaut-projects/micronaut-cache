@@ -18,12 +18,10 @@ package io.micronaut.cache
 import io.micronaut.cache.annotation.CacheInvalidate
 import io.micronaut.cache.annotation.CachePut
 import io.micronaut.cache.annotation.Cacheable
-import io.micronaut.cache.annotation.InvalidateOperations
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.async.annotation.SingleResult
 import jakarta.inject.Singleton
 import org.reactivestreams.Publisher
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.MonoSink
 import spock.lang.Issue

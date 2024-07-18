@@ -315,4 +315,48 @@ class CachesEndpointSpec extends Specification {
         caches.containsKey("foo-cache")
     }
 
+    void 'check default max size of cache'() {
+        given:
+        EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer,
+                [
+                        "endpoints.caches.enabled": true,
+                        "endpoints.caches.sensitive": false,
+                        "micronaut.caches.bar-cache.recordStats": true
+                ], Environment.TEST)
+        HttpClient client = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
+
+        when:
+        def response = client.toBlocking().exchange("/caches", Map)
+        Map result = response.body()
+        Map<String, Map<String, Object>> caches = result.caches
+
+        then:
+        response.code() == HttpStatus.OK.code
+        caches.size() == 1
+        caches["bar-cache"].implementationClass == "com.github.benmanes.caffeine.cache.UnboundedLocalCache\$UnboundedLocalManualCache"
+        caches["bar-cache"].caffeine.maximumSize == null
+    }
+
+    void 'check set max size of cache'() {
+        given:
+        EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer,
+                [
+                        "endpoints.caches.enabled": true,
+                        "endpoints.caches.sensitive": false,
+                        "micronaut.caches.bar-cache.recordStats": true,
+                        "micronaut.caches.bar-cache.maximumSize": 10
+                ], Environment.TEST)
+        HttpClient client = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
+
+        when:
+        def response = client.toBlocking().exchange("/caches", Map)
+        Map result = response.body()
+        Map<String, Map<String, Object>> caches = result.caches
+
+        then:
+        response.code() == HttpStatus.OK.code
+        caches.size() == 1
+        caches["bar-cache"].implementationClass == "com.github.benmanes.caffeine.cache.BoundedLocalCache\$BoundedLocalManualCache"
+        caches["bar-cache"].caffeine.maximumSize == 10
+    }
 }
