@@ -1,7 +1,7 @@
 [versions]
 micronaut-docs = "2.0.0"
 micronaut = "4.6.1"
-micronaut-test = "4.0.0"
+micronaut-test = "4.5.0"
 
 kotlin = "1.9.25"
 groovy = "4.0.12"
