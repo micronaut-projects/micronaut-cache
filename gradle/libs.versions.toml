@@ -11,7 +11,7 @@ cache-ri-impl = "1.1.1"
 managed-caffeine = "3.1.8"
 managed-ehcache = "3.10.8"
 managed-hazelcast = "5.3.7"
-managed-infinispan = "15.0.8.Final"
+managed-infinispan = "15.0.10.Final"
 managed-jcache = "1.1.1"
 
 micronaut-micrometer = "5.8.0"
