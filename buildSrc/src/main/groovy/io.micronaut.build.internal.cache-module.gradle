@@ -6,6 +6,7 @@ plugins {
 String ossIndexUsername = System.getenv("OSS_INDEX_USERNAME") ?: project.properties["ossIndexUsername"]
 String ossIndexPassword = System.getenv("OSS_INDEX_PASSWORD") ?: project.properties["ossIndexPassword"]
 boolean sonatypePluginConfigured = ossIndexUsername != null && ossIndexPassword != null
+logger.quiet("sonatypePluginConfigured: {} ossIndexUsername: {} ossIndexPassword: {}",  sonatypePluginConfigured, ossIndexUsername != null, ossIndexPassword != null)
 if (sonatypePluginConfigured) {
 ossIndexAudit {
     username = ossIndexUsername
