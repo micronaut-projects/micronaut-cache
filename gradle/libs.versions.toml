@@ -21,7 +21,7 @@ micronaut-validation = "4.8.1"
 graal-svm = "23.1.6"
 graal-plugin = "0.10.4"
 micronaut-logging = "1.5.1"
-sonatype-scan = "2.8.3"
+sonatype-scan = "3.0.0"
 
 [libraries]
 # Core
