@@ -15,8 +15,10 @@
  */
 package io.micronaut.cache.interceptor;
 
+import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Introspected;
+import kotlin.coroutines.Continuation;
 
 import java.util.Arrays;
 
@@ -31,12 +33,17 @@ import java.util.Arrays;
 public class KotlinSuspendFunCacheKeyGenerator extends DefaultCacheKeyGenerator {
 
     @Override
-    public Object generateKey(AnnotationMetadata annotationMetadata, Object... params) {
-        if (params == null || params.length == 0) {
-            return super.generateKey(annotationMetadata, params);
-        } else {
-            Object[] usableParams = Arrays.copyOfRange(params, 0, params.length - 1);
-            return super.generateKey(annotationMetadata, usableParams);
+    public Object generateKey(AnnotationMetadata metadata, Object... params) {
+        String[] explicit = metadata.stringValues(Cacheable.class, "parameters");
+        if (params == null || params.length == 0 || explicit.length > 0) {
+            return super.generateKey(metadata, params);
         }
+
+        // drop hidden Continuation if present as last argument
+        int len = params.length;
+        Object last = params[len - 1];
+        Object[] keyParams = (last instanceof Continuation) ? Arrays.copyOf(params, len - 1) : params;
+
+        return super.generateKey(metadata, keyParams);
     }
 }
