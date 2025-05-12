@@ -12,7 +12,6 @@ dependencies {
     compileOnly(libs.cache.api)
 
     implementation(mn.reactor)
-    implementation(mn.kotlin.stdlib)
 
     testImplementation(mnLogging.logback.classic)
     testImplementation(mn.micronaut.http.client)
