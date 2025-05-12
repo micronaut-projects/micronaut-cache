@@ -18,7 +18,8 @@ package io.micronaut.cache.interceptor;
 import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Introspected;
-import kotlin.coroutines.Continuation;
+import io.micronaut.core.reflect.ClassUtils;
+import io.micronaut.core.util.KotlinUtils;
 
 import java.util.Arrays;
 
@@ -39,11 +40,17 @@ public class KotlinSuspendFunCacheKeyGenerator extends DefaultCacheKeyGenerator 
             return super.generateKey(metadata, params);
         }
 
-        // drop hidden Continuation if present as last argument
         int len = params.length;
         Object last = params[len - 1];
-        Object[] keyParams = (last instanceof Continuation) ? Arrays.copyOf(params, len - 1) : params;
 
+        boolean isContinuation = KotlinUtils.KOTLIN_COROUTINES_SUPPORTED
+            && ClassUtils.forName("kotlin.coroutines.Continuation", getClass().getClassLoader())
+            .map(contClass -> contClass.isInstance(last))
+            .orElse(false);
+
+        // drop hidden Continuation if present as last argument
+        Object[] keyParams = isContinuation ? Arrays.copyOf(params, len - 1) : params;
         return super.generateKey(metadata, keyParams);
     }
 }
+
