@@ -20,6 +20,7 @@ import io.micronaut.aop.InterceptedMethod;
 import io.micronaut.aop.InterceptorBean;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
+import io.micronaut.aop.kotlin.KotlinInterceptedMethod;
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.AsyncCacheErrorHandler;
 import io.micronaut.cache.CacheErrorHandler;
@@ -50,6 +51,7 @@ import reactor.core.publisher.Mono;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -952,7 +954,11 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         Object[] parameterValues;
         Object[] methodParameterValues = context.getParameterValues();
         if (ArrayUtils.isEmpty(parameterNames)) {
-            parameterValues = methodParameterValues;
+            if (InterceptedMethod.of(context, beanContext.getConversionService()) instanceof KotlinInterceptedMethod) {
+                parameterValues = Arrays.copyOf(methodParameterValues, methodParameterValues.length - 1);
+            } else {
+                parameterValues = methodParameterValues;
+            }
         } else {
             List<Object> list = new ArrayList<>();
             Set<String> names = CollectionUtils.setOf(parameterNames);
@@ -1015,11 +1021,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         }
 
         private Class<? extends CacheKeyGenerator> getDefaultKeyGenerator(ExecutableMethod<?, ?> method) {
-            if (method.isSuspend()) {
-                return KotlinSuspendFunCacheKeyGenerator.class;
-            } else {
-                return DefaultCacheKeyGenerator.class;
-            }
+            return DefaultCacheKeyGenerator.class;
         }
 
         List<AnnotationValue<CachePut>> getPutOperations(MethodInvocationContext<?, ?> context) {
