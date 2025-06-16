@@ -26,7 +26,9 @@ import java.util.Arrays;
  *
  * @author Jacek Gajek
  * @since 3.2.3
+ * @deprecated Not used, the params are correctly calculated in {@link CacheInterceptor}
  */
+@Deprecated(forRemoval = true, since = "5.3.0")
 @Introspected
 public class KotlinSuspendFunCacheKeyGenerator extends DefaultCacheKeyGenerator {
 
