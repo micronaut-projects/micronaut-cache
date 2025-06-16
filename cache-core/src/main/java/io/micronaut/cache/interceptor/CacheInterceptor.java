@@ -18,8 +18,10 @@ package io.micronaut.cache.interceptor;
 import io.micronaut.aop.InterceptPhase;
 import io.micronaut.aop.InterceptedMethod;
 import io.micronaut.aop.InterceptorBean;
+import io.micronaut.aop.InvocationContext;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
+import io.micronaut.aop.kotlin.KotlinInterceptedMethod;
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.AsyncCacheErrorHandler;
 import io.micronaut.cache.CacheErrorHandler;
@@ -50,6 +52,7 @@ import reactor.core.publisher.Mono;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -964,6 +967,9 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
                 }
             }
             parameterValues = list.toArray();
+        }
+        if (InterceptedMethod.of(context, beanContext.getConversionService()) instanceof KotlinInterceptedMethod) {
+            parameterValues = Arrays.copyOf(parameterValues, parameterValues.length - 1);
         }
         return parameterValues;
     }

@@ -15,11 +15,8 @@
  */
 package io.micronaut.cache.interceptor;
 
-import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Introspected;
-import io.micronaut.core.reflect.ClassUtils;
-import io.micronaut.core.util.KotlinUtils;
 
 import java.util.Arrays;
 
@@ -34,23 +31,12 @@ import java.util.Arrays;
 public class KotlinSuspendFunCacheKeyGenerator extends DefaultCacheKeyGenerator {
 
     @Override
-    public Object generateKey(AnnotationMetadata metadata, Object... params) {
-        String[] explicit = metadata.stringValues(Cacheable.class, "parameters");
-        if (params == null || params.length == 0 || explicit.length > 0) {
-            return super.generateKey(metadata, params);
+    public Object generateKey(AnnotationMetadata annotationMetadata, Object... params) {
+        if (params == null || params.length == 0) {
+            return super.generateKey(annotationMetadata, params);
+        } else {
+            Object[] usableParams = Arrays.copyOfRange(params, 0, params.length - 1);
+            return super.generateKey(annotationMetadata, usableParams);
         }
-
-        int len = params.length;
-        Object last = params[len - 1];
-
-        boolean isContinuation = KotlinUtils.KOTLIN_COROUTINES_SUPPORTED
-            && ClassUtils.forName("kotlin.coroutines.Continuation", getClass().getClassLoader())
-            .map(contClass -> contClass.isInstance(last))
-            .orElse(false);
-
-        // drop hidden Continuation if present as last argument
-        Object[] keyParams = isContinuation ? Arrays.copyOf(params, len - 1) : params;
-        return super.generateKey(metadata, keyParams);
     }
 }
-
