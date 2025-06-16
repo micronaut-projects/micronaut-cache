@@ -2,10 +2,9 @@ package io.micronaut.cache;
 
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import jakarta.inject.Singleton;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
