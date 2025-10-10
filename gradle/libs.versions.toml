@@ -21,7 +21,6 @@ micronaut-validation = "4.11.0"
 graal-svm = "23.1.8"
 graal-plugin = "0.11.1"
 micronaut-logging = "1.7.0"
-sonatype-scan = "3.1.4"
 
 [libraries]
 # Core
@@ -48,6 +47,5 @@ testcontainers-junit = { module = "org.testcontainers:junit-jupiter" }
 testcontainers-spock = { module = "org.testcontainers:spock" }
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
 spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
-sonatype-scan = { module = "org.sonatype.gradle.plugins:scan-gradle-plugin", version.ref = "sonatype-scan" }
 gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradle-graal = { module = "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin", version.ref = "graal-plugin" }
