@@ -1,22 +1,14 @@
 plugins {
     id 'io.micronaut.build.internal.module'
     id 'io.micronaut.build.internal.cache-base'
-    id("org.sonatype.gradle.plugins.scan")
 }
-String ossIndexUsername = System.getenv("OSS_INDEX_USERNAME") ?: project.properties["ossIndexUsername"]
-String ossIndexPassword = System.getenv("OSS_INDEX_PASSWORD") ?: project.properties["ossIndexPassword"]
-boolean sonatypePluginConfigured = ossIndexUsername != null && ossIndexPassword != null
-logger.quiet("sonatypePluginConfigured: {} ossIndexUsername: {} ossIndexPassword: {}",  sonatypePluginConfigured, ossIndexUsername != null, ossIndexPassword != null)
-if (sonatypePluginConfigured) {
-    ossIndexAudit {
-        username = ossIndexUsername
-        password = ossIndexPassword
+
+ossIndexAudit {
         excludeCompileOnly = true
         excludeVulnerabilityIds = ["CVE-2025-24970"]
         // the vulnerability description says Netty 4.1.118 patches it. However, Netty 4.1.118 is still reported as vulnerable.
         // https://ossindex.sonatype.org/vulnerability/CVE-2025-24970?component-type=maven&component-name=io.netty/netty-handler
         // > Version 4.1.118.Final contains a patch
         // SslHandler doesn't correctly validate packets which can lead to native crash when using native SSLEngine https://netty.io/news/2025/02/10/4-1-118-Final.html_
-    }
 }
 
