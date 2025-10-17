@@ -13,4 +13,5 @@ dependencies {
     testImplementation(mn.reactor)
     testImplementation(platform(mnTestResources.boms.testcontainers))
     testImplementation(libs.testcontainers.spock)
+    testRuntimeOnly(mnTest.junit.platform.suite)
 }
