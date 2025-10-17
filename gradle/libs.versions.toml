@@ -3,7 +3,7 @@ micronaut-docs = "3.0.0"
 micronaut = "4.10.6"
 micronaut-test = "4.7.0"
 
-kotlin = "1.9.25"
+kotlin = "2.2.20"
 groovy = "4.0.12"
 spock = "2.3-groovy-4.0"
 
@@ -42,7 +42,6 @@ micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-
 
 cache-api = { module = "javax.cache:cache-api", version.ref = "cache-ri-impl" }
 cache-ri-impl = { module = "org.jsr107.ri:cache-ri-impl", version.ref = "cache-ri-impl" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 testcontainers-junit = { module = "org.testcontainers:junit-jupiter" }
 testcontainers-spock = { module = "org.testcontainers:spock" }
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }

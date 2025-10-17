@@ -18,8 +18,9 @@ dependencies {
     testImplementation(platform(mnTestResources.boms.testcontainers))
     testImplementation(libs.testcontainers.junit)
 
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(mnTest.junit.jupiter.engine)
     testRuntimeOnly(mnLogging.logback.classic)
+    testRuntimeOnly(mnTest.junit.platform.suite)
 }
 
 tasks.withType<Test>().configureEach {
