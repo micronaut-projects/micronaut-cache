@@ -1,6 +1,6 @@
 [versions]
 micronaut-docs = "3.0.0"
-micronaut = "4.10.6"
+micronaut = "4.10.9"
 micronaut-test = "4.7.0"
 
 kotlin = "2.2.20"
