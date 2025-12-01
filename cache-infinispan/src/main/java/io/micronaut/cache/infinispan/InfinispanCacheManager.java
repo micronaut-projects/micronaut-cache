@@ -17,7 +17,7 @@ package io.micronaut.cache.infinispan;
 
 import io.micronaut.cache.DynamicCacheManager;
 import io.micronaut.cache.SyncCache;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import jakarta.inject.Singleton;
 import org.infinispan.client.hotrod.RemoteCache;
