@@ -19,7 +19,7 @@ import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.core.convert.format.ReadableBytes;
 import io.micronaut.core.naming.Named;
 import org.ehcache.clustered.client.config.builders.ClusteredResourcePoolBuilder;

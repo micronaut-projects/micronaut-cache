@@ -18,7 +18,7 @@ package io.micronaut.cache.infinispan;
 import io.micronaut.cache.AbstractMapBasedSyncCache;
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.CacheInfo;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ConversionService;
 import org.infinispan.client.hotrod.RemoteCache;

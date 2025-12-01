@@ -1,7 +1,7 @@
 package io.micronaut.cache;
 
 import io.micronaut.cache.hazelcast.HazelcastCacheManager;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;

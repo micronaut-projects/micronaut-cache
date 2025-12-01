@@ -18,7 +18,7 @@ package io.micronaut.cache.ehcache;
 import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.SyncCache;
 import io.micronaut.cache.ehcache.configuration.EhcacheConfiguration;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionService;

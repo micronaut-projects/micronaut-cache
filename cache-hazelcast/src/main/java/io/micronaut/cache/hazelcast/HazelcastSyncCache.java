@@ -18,7 +18,7 @@ package io.micronaut.cache.hazelcast;
 import com.hazelcast.map.IMap;
 import io.micronaut.cache.AbstractMapBasedSyncCache;
 import io.micronaut.cache.AsyncCache;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.util.ArgumentUtils;
 

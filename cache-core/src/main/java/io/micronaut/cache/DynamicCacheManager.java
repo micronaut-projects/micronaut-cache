@@ -15,7 +15,7 @@
  */
 package io.micronaut.cache;
 
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * <p>A contract for a cache manager that does not have pre-defined caches.</p>
