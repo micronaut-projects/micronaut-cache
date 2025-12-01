@@ -16,7 +16,7 @@
 package io.micronaut.cache.infinispan;
 
 import io.micronaut.cache.CacheInfo;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.jmx.RemoteCacheClientStatisticsMXBean;

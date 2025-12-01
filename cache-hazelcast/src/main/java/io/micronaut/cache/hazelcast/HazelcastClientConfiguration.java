@@ -23,7 +23,7 @@ import io.micronaut.cache.hazelcast.condition.HazelcastConfigResourceCondition;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Configuration class for an Hazelcast as a client.
