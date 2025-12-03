@@ -18,14 +18,13 @@ package io.micronaut.cache.infinispan
 import io.micronaut.cache.tck.AbstractAsyncCacheSpec
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.spock.Testcontainers
-import spock.lang.IgnoreIf
 import spock.lang.Retry
 import spock.lang.Shared
 
 @Testcontainers
 @Retry
-@IgnoreIf({System.getenv('GITHUB_WORKFLOW')})
 class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
@@ -33,7 +32,7 @@ class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
             .withExposedPorts(11222)
             .withEnv('USER', 'user')
             .withEnv('PASS', 'pass')
-
+            .waitingFor(Wait.forHttp("/rest/v2/cache-managers/default/health/status"))
 
     @Override
     ApplicationContext createApplicationContext() {

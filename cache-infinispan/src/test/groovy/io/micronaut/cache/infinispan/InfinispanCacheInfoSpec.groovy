@@ -21,6 +21,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.core.type.Argument
 import org.infinispan.client.hotrod.RemoteCache
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.spock.Testcontainers
 import reactor.core.publisher.Flux
 import spock.lang.Shared
@@ -34,6 +35,8 @@ class InfinispanCacheInfoSpec extends Specification {
             .withExposedPorts(11222)
             .withEnv('USER', 'user')
             .withEnv('PASS', 'pass')
+            .waitingFor(Wait.forHttp("/rest/v2/cache-managers/default/health/status"))
+
 
     void "it publishes cache info stats"() {
         given:
