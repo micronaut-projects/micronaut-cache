@@ -28,7 +28,6 @@ class HazelcastClientConfigurationSpec extends Specification {
     void "test nested network configuration"() {
         given:
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
-                "hazelcast.client.network.smartRouting": false,
                 "hazelcast.client.network.connectionTimeout": 1000,
                 "hazelcast.client.network.addresses": ['127.0.0.1:5701', 'http://hazelcast:5702'],
                 "hazelcast.client.network.redoOperation": true,
@@ -52,7 +51,6 @@ class HazelcastClientConfigurationSpec extends Specification {
         HazelcastClientConfiguration hazelcastClientConfiguration = ctx.getBean(HazelcastClientConfiguration)
 
         then:
-        !hazelcastClientConfiguration.networkConfig.smartRouting
         hazelcastClientConfiguration.networkConfig.addresses[0] == "127.0.0.1:5701"
         hazelcastClientConfiguration.networkConfig.addresses[1] == "http://hazelcast:5702"
         hazelcastClientConfiguration.networkConfig.redoOperation
