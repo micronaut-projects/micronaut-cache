@@ -20,13 +20,11 @@ import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.spock.Testcontainers
-import spock.lang.IgnoreIf
 import spock.lang.Retry
 import spock.lang.Shared
 
 @Testcontainers
 @Retry
-@IgnoreIf({System.getenv('GITHUB_WORKFLOW')})
 class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
 
     @Shared
