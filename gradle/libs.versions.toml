@@ -1,7 +1,7 @@
 [versions]
 micronaut = "4.10.9"
 
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 
 cache-ri-impl = "1.1.1"
 managed-caffeine = "3.2.2"
