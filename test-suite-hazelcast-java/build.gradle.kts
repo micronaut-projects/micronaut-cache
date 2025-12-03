@@ -17,6 +17,7 @@ dependencies {
     testImplementation(mnTest.micronaut.test.junit5)
     testImplementation(platform(mnTestResources.boms.testcontainers))
     testImplementation(libs.testcontainers.junit)
+    testImplementation(mn.jspecify)
 
     testRuntimeOnly(mnTest.junit.jupiter.engine)
     testRuntimeOnly(mnLogging.logback.classic)

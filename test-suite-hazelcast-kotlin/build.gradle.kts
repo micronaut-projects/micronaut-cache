@@ -1,6 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jetbrains.kotlin.kapt")
+    id("io.micronaut.build.internal.cache-test-suite-kotlin")
 }
 
 repositories {
@@ -28,10 +27,4 @@ dependencies {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     systemProperty("hazelcastVersion", libs.versions.managed.hazelcast.get())
-}
-
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
 }

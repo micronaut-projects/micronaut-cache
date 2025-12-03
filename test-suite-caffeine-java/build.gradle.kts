@@ -1,9 +1,6 @@
 plugins {
+    id("io.micronaut.build.internal.cache-test-suite")
     id("java-library")
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -19,8 +16,4 @@ dependencies {
     testRuntimeOnly(mnTest.junit.jupiter.engine)
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnTest.junit.platform.suite)
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
 }

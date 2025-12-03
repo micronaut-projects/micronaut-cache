@@ -1,9 +1,6 @@
 plugins {
+    id("io.micronaut.build.internal.cache-test-suite")
     id("groovy")
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {

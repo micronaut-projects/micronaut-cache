@@ -1,10 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jetbrains.kotlin.kapt")
-}
-
-repositories {
-    mavenCentral()
+    id("io.micronaut.build.internal.cache-test-suite-kotlin")
 }
 
 dependencies {
@@ -21,14 +16,4 @@ dependencies {
     testRuntimeOnly(mnTest.junit.jupiter.engine)
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnTest.junit.platform.suite)
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-}
-
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
 }
