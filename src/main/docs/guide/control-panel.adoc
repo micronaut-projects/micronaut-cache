@@ -1,0 +1,6 @@
+The Micronaut Control Panel module has support for Micronaut Cache by adding the following dependency:
+
+dependency:io.micronaut.controlpanel:micronaut-control-panel-cache[scope=developmentOnly]
+
+Check
+https://micronaut-projects.github.io/micronaut-control-panel/latest/guide/#cache[the documentation] for more information
