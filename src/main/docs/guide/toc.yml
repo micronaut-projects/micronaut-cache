@@ -13,5 +13,6 @@ infinispan: Infinispan Support
 microstream: MicroStream Support
 noop: No Operation Cache Support
 endpoint: Endpoint
+control-panel: Control Panel
 cacheGuides: Guides
 repository: Repository
