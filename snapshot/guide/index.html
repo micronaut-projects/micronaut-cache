@@ -72,9 +72,11 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#endpoint"><strong>13</strong><span>Endpoint</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#cacheGuides"><strong>14</strong><span>Guides</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#control-panel"><strong>14</strong><span>Control Panel</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>15</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#cacheGuides"><strong>15</strong><span>Guides</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>16</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -133,9 +135,11 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-endpoint"><a href="#endpoint"><strong>13</strong><span>Endpoint</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-cacheGuides"><a href="#cacheGuides"><strong>14</strong><span>Guides</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-control-panel"><a href="#control-panel"><strong>14</strong><span>Control Panel</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>15</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-cacheGuides"><a href="#cacheGuides"><strong>15</strong><span>Guides</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>16</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -2360,7 +2364,42 @@ annotation to your class with the value being the default implementation.</p>
 </div>
 </div>
 
-<h1 id="cacheGuides"><a class="anchor" href="#cacheGuides"></a>14 Guides</h1>
+<h1 id="control-panel"><a class="anchor" href="#control-panel"></a>14 Control Panel</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/control-panel.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The Micronaut Control Panel module has support for Micronaut Cache by adding the following dependency:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">developmentOnly(<span class="hljs-string">"io.micronaut.controlpanel:micronaut-control-panel-cache")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.controlpanel&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-control-panel-cache&lt;/artifactId&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Check
+<a href="https://micronaut-projects.github.io/micronaut-control-panel/latest/guide/#cache">the documentation</a> for more information</p>
+</div>
+
+<h1 id="cacheGuides"><a class="anchor" href="#cacheGuides"></a>15 Guides</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/cacheGuides.adoc"'>
@@ -2373,7 +2412,7 @@ annotation to your class with the value being the default implementation.</p>
 <p>See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cache.html">Micronaut Cache</a> to learn more.</p>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>15 Repository</h1>
+<h1 id="repository"><a class="anchor" href="#repository"></a>16 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/repository.adoc"'>
