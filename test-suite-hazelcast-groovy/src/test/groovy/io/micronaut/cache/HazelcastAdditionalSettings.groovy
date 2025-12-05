@@ -3,7 +3,7 @@ package io.micronaut.cache
 import io.micronaut.cache.hazelcast.HazelcastClientConfiguration
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
-import io.micronaut.core.annotation.NonNull
+import org.jspecify.annotations.NonNull
 import jakarta.inject.Singleton
 
 // tag::clazz[]
