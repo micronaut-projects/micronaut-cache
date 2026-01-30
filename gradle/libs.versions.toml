@@ -10,7 +10,7 @@ managed-hazelcast = "5.6.0"
 managed-infinispan = "16.0.5"
 managed-jcache = "1.1.1"
 
-micronaut-micrometer = "5.13.1"
+micronaut-micrometer = "5.13.2"
 micronaut-serde = "3.0.0-M2"
 micronaut-test-resources = "3.0.0-M4"
 micronaut-validation = "5.0.0-M1"
