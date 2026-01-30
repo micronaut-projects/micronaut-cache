@@ -1,5 +1,5 @@
 [versions]
-micronaut = "5.0.0-M2"
+micronaut = "5.0.0-M9"
 
 kotlin = "2.2.21"
 
