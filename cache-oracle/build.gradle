@@ -18,8 +18,7 @@ dependencies {
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.reactor)
     testImplementation(platform(mnTestResources.boms.testcontainers))
-    testImplementation(libs.testcontainers.oracle)
-    testImplementation(libs.testcontainers.spock)
+    testImplementation("org.testcontainers:testcontainers-oracle-xe")
     testAnnotationProcessor(mnData.micronaut.data.processor)
 }
 

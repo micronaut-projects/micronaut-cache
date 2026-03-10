@@ -18,23 +18,14 @@ package io.micronaut.cache.oracle
 import io.micronaut.cache.oracle.persistence.CacheEntryEntity
 import io.micronaut.cache.oracle.persistence.CacheEntryId
 import io.micronaut.cache.oracle.persistence.OracleCacheEntryRepository
-import io.micronaut.cache.oracle.schema.OracleCacheSchemaInitializer
 import io.micronaut.context.ApplicationContext
-import org.testcontainers.containers.OracleContainer
-import org.testcontainers.spock.Testcontainers
-import spock.lang.Shared
-import spock.lang.Specification
 import spock.lang.Stepwise
 
 import java.time.Instant
 import java.util.Arrays
 
-@Testcontainers
 @Stepwise
-class OracleCacheRepositoryTest extends Specification {
-
-    @Shared
-    OracleContainer oracle = new OracleContainer('gvenzl/oracle-xe:21-slim-faststart')
+class OracleCacheRepositoryTest extends OracleIntegrationSupport {
 
     void putAndFetchByHashAndPayload() {
         given:
@@ -136,20 +127,5 @@ class OracleCacheRepositoryTest extends Specification {
 
         cleanup:
         context.close()
-    }
-
-    private ApplicationContext newContext() {
-        ApplicationContext context = ApplicationContext.run([
-                'datasources.default.url'                        : oracle.jdbcUrl,
-                'datasources.default.username'                   : oracle.username,
-                'datasources.default.password'                   : oracle.password,
-                'datasources.default.driver-class-name'          : 'oracle.jdbc.OracleDriver',
-                'micronaut.caches.orders.expire-after-access'   : '30s',
-                'micronaut.caches.orders.expire-after-write'    : '2m',
-                'micronaut.caches.orders.record-stats'          : true,
-                'micronaut.caches.orders.test-mode'             : true
-        ])
-        context.getBean(OracleCacheSchemaInitializer).initializeSchema()
-        return context
     }
 }

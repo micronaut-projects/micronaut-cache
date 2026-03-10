@@ -54,7 +54,7 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
     @Query(value = "DELETE FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName AND EXPIRES_AT IS NOT NULL AND EXPIRES_AT < :now", nativeQuery = true)
     long deleteExpired(String cacheName, Instant now);
 
-    @Query(value = "BEGIN MN_CACHE_CLEANUP_CACHE(:cacheName, :batchSize); END;", nativeQuery = true)
+    @Procedure("MN_CACHE_CLEANUP_CACHE")
     void runCleanupProcedure(String cacheName, long batchSize);
 
     @Query(value = "SELECT COUNT(*) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
