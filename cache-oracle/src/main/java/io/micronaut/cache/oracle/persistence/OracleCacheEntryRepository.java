@@ -56,33 +56,6 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
     @Query(value = "BEGIN MN_CACHE_CLEANUP_CACHE(:cacheName, :batchSize); END;", nativeQuery = true)
     void runCleanupProcedure(String cacheName, long batchSize);
 
-    @Query(value = "BEGIN MN_CACHE_REGISTER_CLEANUP_JOB(:cacheName, :intervalSeconds); END;", nativeQuery = true)
-    void registerCleanupJob(String cacheName, long intervalSeconds);
-
-    @Query(value = """
-        MERGE INTO MN_CACHE_CONFIG cfg
-        USING (SELECT :cacheName AS CACHE_NAME FROM DUAL) incoming
-        ON (cfg.CACHE_NAME = incoming.CACHE_NAME)
-        WHEN MATCHED THEN UPDATE SET
-            BLOCKING = :blocking,
-            LOCK_WAIT_TIMEOUT_MS = :lockWaitTimeoutMs,
-            CLEANUP_INTERVAL_SECONDS = :cleanupIntervalSeconds,
-            MAXIMUM_SIZE = :maximumSize,
-            MAXIMUM_WEIGHT = :maximumWeight,
-            UPDATED_AT = :updatedAt
-        WHEN NOT MATCHED THEN
-            INSERT (CACHE_NAME, BLOCKING, LOCK_WAIT_TIMEOUT_MS, CLEANUP_INTERVAL_SECONDS, MAXIMUM_SIZE, MAXIMUM_WEIGHT, CREATED_AT, UPDATED_AT)
-            VALUES (:cacheName, :blocking, :lockWaitTimeoutMs, :cleanupIntervalSeconds, :maximumSize, :maximumWeight, :createdAt, :updatedAt)
-        """, nativeQuery = true)
-    long upsertCacheConfig(String cacheName,
-                           int blocking,
-                           long lockWaitTimeoutMs,
-                           long cleanupIntervalSeconds,
-                           @Nullable Long maximumSize,
-                           @Nullable Long maximumWeight,
-                           Instant createdAt,
-                           Instant updatedAt);
-
     long countByIdCacheName(String cacheName);
 
     @Query(value = "SELECT COALESCE(SUM(VALUE_WEIGHT), 0) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)

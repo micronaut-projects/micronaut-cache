@@ -15,6 +15,7 @@
  */
 package io.micronaut.cache.oracle.schema;
 
+import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration;
 import io.micronaut.data.connection.annotation.Connectable;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.runtime.server.event.ServerStartupEvent;
@@ -24,9 +25,13 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,18 +44,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OracleCacheSchemaInitializer implements ApplicationEventListener<ServerStartupEvent> {
 
     private static final String DEFAULT_RESOURCE_PATH = "db/oracle-cache.sql";
+    private static final String UPSERT_CACHE_CONFIG_CALL = "{ call MN_CACHE_UPSERT_CONFIG(?, ?, ?, ?, ?, ?, ?) }";
+    private static final String REGISTER_CLEANUP_JOB_CALL = "{ call MN_CACHE_REGISTER_CLEANUP_JOB(?, ?) }";
 
     private final DataSource dataSource;
+    private final List<OracleCacheConfiguration> cacheConfigurations;
     private final String scriptResourcePath;
     private final AtomicBoolean initialized = new AtomicBoolean(false);
 
-    public OracleCacheSchemaInitializer(DataSource dataSource) {
-        this(dataSource, DEFAULT_RESOURCE_PATH);
+    public OracleCacheSchemaInitializer(DataSource dataSource,
+                                        List<OracleCacheConfiguration> cacheConfigurations) {
+        this(dataSource, DEFAULT_RESOURCE_PATH, cacheConfigurations);
     }
 
-    OracleCacheSchemaInitializer(DataSource dataSource, String scriptResourcePath) {
+    OracleCacheSchemaInitializer(DataSource dataSource,
+                                 String scriptResourcePath,
+                                 List<OracleCacheConfiguration> cacheConfigurations) {
         this.dataSource = dataSource;
         this.scriptResourcePath = scriptResourcePath;
+        this.cacheConfigurations = List.copyOf(cacheConfigurations);
     }
 
     @Override
@@ -75,12 +87,54 @@ public class OracleCacheSchemaInitializer implements ApplicationEventListener<Se
                     }
                 }
             }
+            initializeCacheConfigurations(connection);
         } catch (SQLException e) {
             initialized.set(false);
             throw new IllegalStateException("Failed to initialize Oracle cache schema", e);
         } catch (RuntimeException e) {
             initialized.set(false);
             throw e;
+        }
+    }
+
+    private void initializeCacheConfigurations(Connection connection) throws SQLException {
+        if (cacheConfigurations.isEmpty()) {
+            return;
+        }
+
+        try (CallableStatement upsertConfig = connection.prepareCall(UPSERT_CACHE_CONFIG_CALL);
+             CallableStatement registerCleanupJob = connection.prepareCall(REGISTER_CLEANUP_JOB_CALL)) {
+            for (OracleCacheConfiguration cacheConfiguration : cacheConfigurations) {
+                Instant now = Instant.now();
+                Timestamp nowTimestamp = Timestamp.from(now);
+                String cacheName = cacheConfiguration.getCacheName();
+                int blocking = cacheConfiguration.isBlocking() ? 1 : 0;
+                long lockWaitTimeoutMs = cacheConfiguration.getLockWaitTimeout().toMillis();
+                long cleanupIntervalSeconds = Math.max(1, cacheConfiguration.getCleanupInterval().toSeconds());
+                Long maximumSize = cacheConfiguration.getMaximumSize().isPresent() ? cacheConfiguration.getMaximumSize().getAsLong() : null;
+                Long maximumWeight = cacheConfiguration.getMaximumWeight().isPresent() ? cacheConfiguration.getMaximumWeight().getAsLong() : null;
+
+                upsertConfig.setString(1, cacheName);
+                upsertConfig.setInt(2, blocking);
+                upsertConfig.setLong(3, lockWaitTimeoutMs);
+                upsertConfig.setLong(4, cleanupIntervalSeconds);
+                setNullableLong(upsertConfig, 5, maximumSize);
+                setNullableLong(upsertConfig, 6, maximumWeight);
+                upsertConfig.setTimestamp(7, nowTimestamp);
+                upsertConfig.execute();
+
+                registerCleanupJob.setString(1, cacheName);
+                registerCleanupJob.setLong(2, cleanupIntervalSeconds);
+                registerCleanupJob.execute();
+            }
+        }
+    }
+
+    private void setNullableLong(CallableStatement callableStatement, int index, Long value) throws SQLException {
+        if (value == null) {
+            callableStatement.setNull(index, Types.NUMERIC);
+        } else {
+            callableStatement.setLong(index, value);
         }
     }
 

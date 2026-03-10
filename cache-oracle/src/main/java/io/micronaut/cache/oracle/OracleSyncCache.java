@@ -61,7 +61,6 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         this.entryRepository = entryRepository;
         this.keySerializer = keySerializer;
         this.conversionService = conversionService;
-        initializeDbManagedCleanup();
     }
 
     @NonNull
@@ -207,29 +206,6 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
 
     void runCleanup() {
         entryRepository.runCleanupProcedure(configuration.getCacheName(), CLEANUP_BATCH_SIZE);
-    }
-
-    private void initializeDbManagedCleanup() {
-        Instant now = Instant.now();
-        int blocking = configuration.isBlocking() ? 1 : 0;
-        Long maximumSize = configuration.getMaximumSize().isPresent() ? configuration.getMaximumSize().getAsLong() : null;
-        Long maximumWeight = configuration.getMaximumWeight().isPresent() ? configuration.getMaximumWeight().getAsLong() : null;
-        entryRepository.upsertCacheConfig(
-            configuration.getCacheName(),
-            blocking,
-            configuration.getLockWaitTimeout().toMillis(),
-            cleanupIntervalSeconds(),
-            maximumSize,
-            maximumWeight,
-            now,
-            now
-        );
-
-        try {
-            entryRepository.registerCleanupJob(configuration.getCacheName(), cleanupIntervalSeconds());
-        } catch (RuntimeException e) {
-            throw new IllegalStateException("Failed to register Oracle cleanup job for cache: " + configuration.getCacheName(), e);
-        }
     }
 
     private long cleanupIntervalSeconds() {
