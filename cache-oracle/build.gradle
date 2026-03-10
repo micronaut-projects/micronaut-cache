@@ -1,0 +1,24 @@
+plugins {
+    id 'io.micronaut.build.internal.cache-module'
+}
+
+dependencies {
+    annotationProcessor(mnData.micronaut.data.processor)
+
+    api projects.micronautCacheCore
+
+    implementation(libs.managed.oracle.jdbc)
+    implementation("io.micronaut:micronaut-json-core")
+    implementation(mnSerde.micronaut.serde.jackson)
+    implementation(mnData.micronaut.data.jdbc)
+    implementation(mnSql.micronaut.jdbc.hikari)
+
+    testImplementation projects.micronautCacheTck
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.inject.groovy)
+    testImplementation(mn.reactor)
+    testImplementation(platform(mnTestResources.boms.testcontainers))
+    testImplementation(libs.testcontainers.oracle)
+    testImplementation(libs.testcontainers.spock)
+    testAnnotationProcessor(mnData.micronaut.data.processor)
+}
