@@ -60,22 +60,23 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), conversionService())
 
         CacheEntryEntity expired = new CacheEntryEntity()
-        expired.id = new CacheEntryId('orders', [1] as byte[], [2] as byte[])
+        expired.id = new CacheEntryId('orders', [1] as byte[])
+        expired.keyPayload = [2] as byte[]
         expired.valuePayload = '15'.bytes
         expired.createdAt = Instant.now().minusSeconds(120)
         expired.lastAccessAt = Instant.now().minusSeconds(120)
         expired.expiresAt = Instant.now().minusSeconds(1)
 
         and:
-        repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload(_, _, _) >> Optional.of(expired)
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(expired)
 
         when:
         Optional<Integer> result = cache.get('k2', Argument.of(Integer))
 
         then:
         result.empty
-        1 * repository.invalidateKey('orders', _ as byte[], _ as byte[])
-        0 * repository.updateLastAccess(_, _, _, _, _)
+        1 * repository.invalidateKey('orders', _ as byte[])
+        0 * repository.updateLastAccess(_, _, _, _)
     }
 
     void nullPutInvalidatesKey() {
@@ -87,7 +88,7 @@ class OracleSyncCacheTest extends Specification {
         cache.put('k3', null)
 
         then:
-        1 * repository.invalidateKey('orders', _ as byte[], _ as byte[])
+        1 * repository.invalidateKey('orders', _ as byte[])
         0 * repository.save(_)
     }
 
@@ -97,14 +98,15 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), conversionService())
 
         CacheEntryEntity existing = new CacheEntryEntity()
-        existing.id = new CacheEntryId('orders', [3] as byte[], [4] as byte[])
+        existing.id = new CacheEntryId('orders', [3] as byte[])
+        existing.keyPayload = [4] as byte[]
         existing.valuePayload = '99'.bytes
         existing.createdAt = Instant.now().minusSeconds(5)
         existing.lastAccessAt = Instant.now().minusSeconds(5)
         existing.expiresAt = Instant.now().plusSeconds(30)
 
         and:
-        repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload(_, _, _) >> Optional.of(existing)
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(existing)
 
         when:
         Optional<Integer> result = cache.putIfAbsent('k4', 10)
@@ -129,7 +131,7 @@ class OracleSyncCacheTest extends Specification {
         }
 
         and:
-        repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload(_, _, _) >> {
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> {
             return Optional.ofNullable(stored.get())
         }
         repository.blockingPut(_, _, _, _, _, _) >> {
@@ -177,7 +179,8 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, serializer(), conversionService())
 
         CacheEntryEntity persisted = new CacheEntryEntity()
-        persisted.id = new CacheEntryId('orders', [9] as byte[], [8] as byte[])
+        persisted.id = new CacheEntryId('orders', [9] as byte[])
+        persisted.keyPayload = [8] as byte[]
         persisted.valuePayload = '11'.bytes
         persisted.createdAt = Instant.now()
         persisted.lastAccessAt = Instant.now()
@@ -185,7 +188,7 @@ class OracleSyncCacheTest extends Specification {
 
         and:
         repository.blockingPut(_, _, _, _, _, _) >> 'ALREADY_INSERTED'
-        repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload(_, _, _) >> Optional.of(persisted)
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(persisted)
 
         when:
         Integer value = cache.get('collision', Argument.of(Integer), { 11 })
@@ -200,7 +203,7 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, serializer(), conversionService())
 
         and:
-        repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload(_, _, _) >> Optional.empty()
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
         repository.blockingPut(_, _, _, _, _, _) >> { throw new IllegalStateException('connection lost') }
 
         when:
@@ -217,7 +220,7 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, serializer(), conversionService())
 
         and:
-        repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload(_, _, _) >> Optional.empty()
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
 
         when:
         cache.get('rollback-key', Argument.of(Integer), { throw new IllegalStateException('write failed') })
@@ -234,7 +237,8 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(false), repository, serializer(), conversionService())
 
         CacheEntryEntity existing = new CacheEntryEntity()
-        existing.id = new CacheEntryId('orders', [1] as byte[], [2] as byte[])
+        existing.id = new CacheEntryId('orders', [1] as byte[])
+        existing.keyPayload = [2] as byte[]
         existing.valuePayload = '44'.bytes
         existing.createdAt = Instant.now().minusSeconds(5)
         existing.lastAccessAt = Instant.now().minusSeconds(5)
@@ -242,7 +246,7 @@ class OracleSyncCacheTest extends Specification {
 
         and:
         repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
-        repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload(_, _, _) >> Optional.of(existing)
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(existing)
 
         when:
         Optional<Integer> result = cache.putIfAbsent('duplicate', 22)
@@ -326,7 +330,8 @@ class OracleSyncCacheTest extends Specification {
 
     private static CacheEntryEntity storedEntity() {
         CacheEntryEntity entity = new CacheEntryEntity()
-        entity.id = new CacheEntryId('orders', [3] as byte[], [4] as byte[])
+        entity.id = new CacheEntryId('orders', [3] as byte[])
+        entity.keyPayload = [4] as byte[]
         entity.valuePayload = '5'.bytes
         entity.createdAt = Instant.now()
         entity.lastAccessAt = Instant.now()

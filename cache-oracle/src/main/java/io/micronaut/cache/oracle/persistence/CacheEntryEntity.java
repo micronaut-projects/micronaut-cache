@@ -30,6 +30,9 @@ public final class CacheEntryEntity {
     @EmbeddedId
     private CacheEntryId id;
 
+    @MappedProperty("KEY_PAYLOAD")
+    private byte[] keyPayload;
+
     @MappedProperty("VALUE_PAYLOAD")
     private byte[] valuePayload;
 
@@ -55,6 +58,14 @@ public final class CacheEntryEntity {
 
     public byte[] getValuePayload() {
         return valuePayload;
+    }
+
+    public byte[] getKeyPayload() {
+        return keyPayload;
+    }
+
+    public void setKeyPayload(byte[] keyPayload) {
+        this.keyPayload = keyPayload;
     }
 
     public void setValuePayload(byte[] valuePayload) {

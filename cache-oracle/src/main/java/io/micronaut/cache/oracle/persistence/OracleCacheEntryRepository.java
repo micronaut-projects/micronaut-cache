@@ -31,7 +31,8 @@ import java.util.Optional;
 @JdbcRepository(dialect = Dialect.ORACLE)
 public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEntity, CacheEntryId> {
 
-    Optional<CacheEntryEntity> findByIdCacheNameAndIdKeyHashAndIdKeyPayload(String cacheName, byte[] keyHash, byte[] keyPayload);
+    @Query(value = "SELECT CACHE_NAME, KEY_HASH, KEY_PAYLOAD, VALUE_PAYLOAD, VALUE_WEIGHT, CREATED_AT, LAST_ACCESS_AT, EXPIRES_AT FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash", nativeQuery = true)
+    Optional<CacheEntryEntity> findByIdCacheNameAndIdKeyHash(String cacheName, byte[] keyHash);
 
     @Procedure("MN_CACHE_PUT_BLOCKING")
     String blockingPut(String cacheName,
@@ -41,11 +42,11 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
                        @Nullable Instant expiresAt,
                        long valueWeight);
 
-    @Query(value = "UPDATE MN_CACHE_ENTRY SET LAST_ACCESS_AT = :lastAccessAt, EXPIRES_AT = :expiresAt WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash AND KEY_PAYLOAD = :keyPayload", nativeQuery = true)
-    long updateLastAccess(String cacheName, byte[] keyHash, byte[] keyPayload, Instant lastAccessAt, @Nullable Instant expiresAt);
+    @Query(value = "UPDATE MN_CACHE_ENTRY SET LAST_ACCESS_AT = :lastAccessAt, EXPIRES_AT = :expiresAt WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash", nativeQuery = true)
+    long updateLastAccess(String cacheName, byte[] keyHash, Instant lastAccessAt, @Nullable Instant expiresAt);
 
-    @Query(value = "DELETE FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash AND KEY_PAYLOAD = :keyPayload", nativeQuery = true)
-    long invalidateKey(String cacheName, byte[] keyHash, byte[] keyPayload);
+    @Query(value = "DELETE FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash", nativeQuery = true)
+    long invalidateKey(String cacheName, byte[] keyHash);
 
     @Query(value = "DELETE FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
     long invalidateCache(String cacheName);
@@ -56,6 +57,7 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
     @Query(value = "BEGIN MN_CACHE_CLEANUP_CACHE(:cacheName, :batchSize); END;", nativeQuery = true)
     void runCleanupProcedure(String cacheName, long batchSize);
 
+    @Query(value = "SELECT COUNT(*) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
     long countByIdCacheName(String cacheName);
 
     @Query(value = "SELECT COALESCE(SUM(VALUE_WEIGHT), 0) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)

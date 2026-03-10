@@ -22,7 +22,6 @@ import io.micronaut.cache.oracle.schema.OracleCacheSchemaInitializer
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.OracleContainer
 import org.testcontainers.spock.Testcontainers
-import spock.lang.IgnoreIf
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
@@ -32,7 +31,6 @@ import java.util.Arrays
 
 @Testcontainers
 @Stepwise
-@IgnoreIf({ !new File('/var/run/docker.sock').exists() && !System.getenv('DOCKER_HOST') })
 class OracleCacheRepositoryTest extends Specification {
 
     @Shared
@@ -47,7 +45,8 @@ class OracleCacheRepositoryTest extends Specification {
         byte[] payload = [4, 5, 6] as byte[]
 
         CacheEntryEntity entity = new CacheEntryEntity()
-        entity.id = new CacheEntryId('orders', hash, payload)
+        entity.id = new CacheEntryId('orders', hash)
+        entity.keyPayload = payload
         entity.valuePayload = 'value-1'.bytes
         entity.valueWeight = 10L
         entity.createdAt = Instant.now()
@@ -57,11 +56,12 @@ class OracleCacheRepositoryTest extends Specification {
         repository.save(entity)
 
         when:
-        CacheEntryEntity fetched = repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload('orders', hash, payload).orElse(null)
+        CacheEntryEntity fetched = repository.findByIdCacheNameAndIdKeyHash('orders', hash).orElse(null)
 
         then:
         fetched != null
         fetched.id == entity.id
+        Arrays.equals(fetched.keyPayload, payload)
         Arrays.equals(fetched.valuePayload, entity.valuePayload)
         fetched.valueWeight == 10L
 
@@ -69,7 +69,7 @@ class OracleCacheRepositoryTest extends Specification {
         context.close()
     }
 
-    void hashCollisionDoesNotReturnWrongPayload() {
+    void duplicateHashInsertIsRejected() {
         given:
         ApplicationContext context = newContext()
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
@@ -79,7 +79,8 @@ class OracleCacheRepositoryTest extends Specification {
         byte[] payloadB = [2, 2, 2] as byte[]
 
         CacheEntryEntity first = new CacheEntryEntity()
-        first.id = new CacheEntryId('orders', sameHash, payloadA)
+        first.id = new CacheEntryId('orders', sameHash)
+        first.keyPayload = payloadA
         first.valuePayload = 'a'.bytes
         first.valueWeight = 1L
         first.createdAt = Instant.now()
@@ -87,7 +88,8 @@ class OracleCacheRepositoryTest extends Specification {
         first.expiresAt = Instant.now().plusSeconds(120)
 
         CacheEntryEntity second = new CacheEntryEntity()
-        second.id = new CacheEntryId('orders', sameHash, payloadB)
+        second.id = new CacheEntryId('orders', sameHash)
+        second.keyPayload = payloadB
         second.valuePayload = 'b'.bytes
         second.valueWeight = 2L
         second.createdAt = Instant.now()
@@ -95,17 +97,13 @@ class OracleCacheRepositoryTest extends Specification {
         second.expiresAt = Instant.now().plusSeconds(120)
 
         repository.save(first)
-        repository.save(second)
 
         when:
-        CacheEntryEntity fetched = repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload('orders', sameHash, payloadB).orElse(null)
-        CacheEntryEntity wrong = repository.findByIdCacheNameAndIdKeyHashAndIdKeyPayload('orders', sameHash, payloadA).orElse(null)
+        repository.save(second)
 
         then:
-        fetched != null
-        wrong != null
-        Arrays.equals(fetched.id.keyPayload, payloadB)
-        Arrays.equals(wrong.id.keyPayload, payloadA)
+        RuntimeException ex = thrown()
+        ex.message.contains('ORA-00001')
 
         cleanup:
         context.close()
@@ -119,7 +117,8 @@ class OracleCacheRepositoryTest extends Specification {
         byte[] payload = [8, 8, 8] as byte[]
 
         CacheEntryEntity expiring = new CacheEntryEntity()
-        expiring.id = new CacheEntryId('orders', hash, payload)
+        expiring.id = new CacheEntryId('orders', hash)
+        expiring.keyPayload = payload
         expiring.valuePayload = 'expiring'.bytes
         expiring.valueWeight = 1L
         expiring.createdAt = Instant.now().minusSeconds(30)
@@ -129,7 +128,7 @@ class OracleCacheRepositoryTest extends Specification {
 
         when:
         long deletedExpired = repository.deleteExpired('orders', Instant.now())
-        long deletedMissing = repository.invalidateKey('orders', hash, payload)
+        long deletedMissing = repository.invalidateKey('orders', hash)
 
         then:
         deletedExpired == 1

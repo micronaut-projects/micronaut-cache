@@ -33,16 +33,12 @@ public final class CacheEntryId {
     @MappedProperty("KEY_HASH")
     private byte[] keyHash;
 
-    @MappedProperty("KEY_PAYLOAD")
-    private byte[] keyPayload;
-
     public CacheEntryId() {
     }
 
-    public CacheEntryId(String cacheName, byte[] keyHash, byte[] keyPayload) {
+    public CacheEntryId(String cacheName, byte[] keyHash) {
         this.cacheName = cacheName;
         this.keyHash = keyHash;
-        this.keyPayload = keyPayload;
     }
 
     public String getCacheName() {
@@ -61,14 +57,6 @@ public final class CacheEntryId {
         this.keyHash = keyHash;
     }
 
-    public byte[] getKeyPayload() {
-        return keyPayload;
-    }
-
-    public void setKeyPayload(byte[] keyPayload) {
-        this.keyPayload = keyPayload;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -78,15 +66,13 @@ public final class CacheEntryId {
             return false;
         }
         return Objects.equals(cacheName, that.cacheName)
-            && Arrays.equals(keyHash, that.keyHash)
-            && Arrays.equals(keyPayload, that.keyPayload);
+            && Arrays.equals(keyHash, that.keyHash);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(cacheName);
         result = 31 * result + Arrays.hashCode(keyHash);
-        result = 31 * result + Arrays.hashCode(keyPayload);
         return result;
     }
 }
