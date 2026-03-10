@@ -15,6 +15,7 @@
  */
 package io.micronaut.cache.oracle.persistence;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Query;
 import io.micronaut.data.annotation.sql.Procedure;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
@@ -37,11 +38,11 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
                        byte[] keyHash,
                        byte[] keyPayload,
                        byte[] valuePayload,
-                       Instant expiresAt,
+                       @Nullable Instant expiresAt,
                        long valueWeight);
 
     @Query(value = "UPDATE MN_CACHE_ENTRY SET LAST_ACCESS_AT = :lastAccessAt, EXPIRES_AT = :expiresAt WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash AND KEY_PAYLOAD = :keyPayload", nativeQuery = true)
-    long updateLastAccess(String cacheName, byte[] keyHash, byte[] keyPayload, Instant lastAccessAt, Instant expiresAt);
+    long updateLastAccess(String cacheName, byte[] keyHash, byte[] keyPayload, Instant lastAccessAt, @Nullable Instant expiresAt);
 
     @Query(value = "DELETE FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash AND KEY_PAYLOAD = :keyPayload", nativeQuery = true)
     long invalidateKey(String cacheName, byte[] keyHash, byte[] keyPayload);
@@ -77,8 +78,8 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
                            int blocking,
                            long lockWaitTimeoutMs,
                            long cleanupIntervalSeconds,
-                           Long maximumSize,
-                           Long maximumWeight,
+                           @Nullable Long maximumSize,
+                           @Nullable Long maximumWeight,
                            Instant createdAt,
                            Instant updatedAt);
 

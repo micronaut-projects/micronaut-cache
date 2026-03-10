@@ -32,15 +32,15 @@ import jakarta.inject.Singleton;
 public final class OracleCacheFactory {
 
     @Singleton
-    OracleKeySerializer oracleKeySerializer(JsonMapper jsonMapper, ConversionService conversionService) {
+    static OracleKeySerializer oracleKeySerializer(JsonMapper jsonMapper, ConversionService conversionService) {
         return new OracleKeySerializer(jsonMapper, conversionService);
     }
 
     @EachBean(OracleCacheConfiguration.class)
-    OracleSyncCache oracleSyncCache(@Parameter OracleCacheConfiguration configuration,
-                                    OracleCacheEntryRepository entryRepository,
-                                    OracleKeySerializer keySerializer,
-                                    ConversionService conversionService) {
+    static OracleSyncCache oracleSyncCache(@Parameter OracleCacheConfiguration configuration,
+                                           OracleCacheEntryRepository entryRepository,
+                                           OracleKeySerializer keySerializer,
+                                           ConversionService conversionService) {
         return new OracleSyncCache(configuration, entryRepository, keySerializer, conversionService);
     }
 }
