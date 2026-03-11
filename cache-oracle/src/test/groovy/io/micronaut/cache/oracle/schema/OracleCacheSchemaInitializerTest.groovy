@@ -58,6 +58,9 @@ class OracleCacheSchemaInitializerTest extends Specification {
         executedStatements.any { it.contains('CREATE TABLE MN_CACHE_ENTRY') }
         executedStatements.any { it.contains('CREATE TABLE MN_CACHE_CONFIG') }
         executedStatements.any { it.contains('CREATE TABLE MN_CACHE_STATS') }
+        executedStatements.any { it.contains('EXPIRES_AT TIMESTAMP(6) WITH TIME ZONE') }
+        executedStatements.any { it.contains('P_CURRENT_TIME IN TIMESTAMP WITH TIME ZONE') }
+        executedStatements.any { it.contains('SYS_EXTRACT_UTC(EXPIRES_AT) < SYS_EXTRACT_UTC(SYSTIMESTAMP)') }
         executedStatements.any { it.contains('CREATE INDEX MN_CACHE_ENTRY_EXPIRES_IDX') }
         executedStatements.any { it.contains('CREATE OR REPLACE PROCEDURE MN_CACHE_UPSERT_CONFIG') }
         executedStatements.any { it.contains('CREATE OR REPLACE PROCEDURE MN_CACHE_CLEANUP_CACHE') }

@@ -25,6 +25,56 @@ import java.time.Instant
 
 class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
 
+    void runCleanupUsesUtcComparisonIndependentlyFromSessionTimezone() {
+        given:
+        ApplicationContext context = newContext([
+            'micronaut.caches.orders.cleanup-interval': '5s',
+        ])
+        OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
+        repository.invalidateCache('orders')
+
+        when:
+        try (def connection = openJdbcConnection();
+             def insert = connection.prepareStatement('''
+                 INSERT INTO MN_CACHE_ENTRY (
+                     CACHE_NAME,
+                     KEY_HASH,
+                     KEY_PAYLOAD,
+                     VALUE_PAYLOAD,
+                     VALUE_WEIGHT,
+                     CREATED_AT,
+                     LAST_ACCESS_AT,
+                     EXPIRES_AT
+                 ) VALUES (
+                     ?,
+                     HEXTORAW('0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20'),
+                     ?,
+                     ?,
+                     1,
+                     SYSTIMESTAMP AT TIME ZONE 'UTC',
+                     SYSTIMESTAMP AT TIME ZONE 'UTC',
+                     (SYSTIMESTAMP AT TIME ZONE 'UTC') - INTERVAL '5' SECOND
+                 )
+             ''')) {
+            insert.setString(1, 'orders')
+            insert.setBytes(2, [1, 2, 3] as byte[])
+            insert.setBytes(3, [4, 5, 6] as byte[])
+            insert.executeUpdate()
+        }
+
+        try (def connection = openJdbcConnection();
+             def statement = connection.createStatement()) {
+            statement.execute("ALTER SESSION SET TIME_ZONE = 'Europe/Zurich'")
+            statement.execute("BEGIN MN_CACHE_CLEANUP_CACHE('orders', 100); END;")
+        }
+
+        then:
+        repository.countByIdCacheName('orders') == 0L
+
+        cleanup:
+        context.close()
+    }
+
     void runCleanupRemovesExpiredEntries() {
         given:
         ApplicationContext context = newContext([

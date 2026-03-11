@@ -29,9 +29,9 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.sql.Types;
-import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -105,8 +105,7 @@ public class OracleCacheSchemaInitializer implements ApplicationEventListener<Se
         try (CallableStatement upsertConfig = connection.prepareCall(UPSERT_CACHE_CONFIG_CALL);
              CallableStatement registerCleanupJob = connection.prepareCall(REGISTER_CLEANUP_JOB_CALL)) {
             for (OracleCacheConfiguration cacheConfiguration : cacheConfigurations) {
-                Instant now = Instant.now();
-                Timestamp nowTimestamp = Timestamp.from(now);
+                OffsetDateTime nowUtc = OffsetDateTime.now(ZoneOffset.UTC);
                 String cacheName = cacheConfiguration.getCacheName();
                 int blocking = cacheConfiguration.isBlocking() ? 1 : 0;
                 long lockWaitTimeoutMs = cacheConfiguration.getLockWaitTimeout().toMillis();
@@ -122,7 +121,7 @@ public class OracleCacheSchemaInitializer implements ApplicationEventListener<Se
                 upsertConfig.setLong(5, cleanupBatchSize);
                 setNullableLong(upsertConfig, 6, maximumSize);
                 setNullableLong(upsertConfig, 7, maximumWeight);
-                upsertConfig.setTimestamp(8, nowTimestamp);
+                upsertConfig.setObject(8, nowUtc);
                 upsertConfig.execute();
 
                 registerCleanupJob.setString(1, cacheName);
