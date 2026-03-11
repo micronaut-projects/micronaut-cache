@@ -54,6 +54,8 @@ class OracleSyncCacheTest extends Specification {
         cache.put('k1', 42)
 
         then:
+        // Non-obvious contract: put must always persist metadata fields because cleanup and TTL logic
+        // rely on timestamps/weight being present even for simple scalar values.
         1 * repository.save({ CacheEntryEntity entity ->
             entity.id.cacheName == 'orders' &&
                     entity.valueWeight == 1L &&
@@ -83,8 +85,10 @@ class OracleSyncCacheTest extends Specification {
         Optional<Integer> result = cache.get('k2', Argument.of(Integer))
 
         then:
+        // Oracle cache should actively invalidate expired rows to avoid returning stale data forever.
         result.empty
         1 * repository.invalidateKey('orders', _ as byte[])
+        // Once expired, access metadata should not be refreshed because entry is logically dead.
         0 * repository.updateLastAccess(_, _, _, _)
     }
 
@@ -97,6 +101,7 @@ class OracleSyncCacheTest extends Specification {
         cache.put('k3', null)
 
         then:
+        // null values are modeled as invalidation, not as nullable payload rows.
         1 * repository.invalidateKey('orders', _ as byte[])
         0 * repository.save(_)
     }
@@ -121,6 +126,7 @@ class OracleSyncCacheTest extends Specification {
         Optional<Integer> result = cache.putIfAbsent('k4', 10)
 
         then:
+        // If insert collides with an existing key, putIfAbsent must resolve by reading existing value.
         result.present
         result.get() == 99
         1 * repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
@@ -145,10 +151,12 @@ class OracleSyncCacheTest extends Specification {
         }
         repository.blockingPut(_, _, _, _, _, _) >> {
             int call = blockingCalls.incrementAndGet()
+            // First caller wins and stores the row. Later callers observe ALREADY_INSERTED.
             if (call == 1) {
                 stored.set(storedEntity())
                 return 'SUCCESS'
             }
+            // Simulate database-level coordination: second caller waits until first committed value exists.
             while (stored.get() == null) {
                 Thread.sleep(5)
             }
@@ -175,6 +183,8 @@ class OracleSyncCacheTest extends Specification {
         then:
         r1 == 5
         r2 == 5
+        // Current implementation computes supplier in each caller before DB coordination.
+        // This assertion captures current semantics and protects against accidental behavior changes.
         supplierCalls.get() == 2
         blockingCalls.get() == 2
 
@@ -203,6 +213,8 @@ class OracleSyncCacheTest extends Specification {
         Integer value = cache.get('collision', Argument.of(Integer), { 11 })
 
         then:
+        // ALREADY_INSERTED means another contender has already committed the value.
+        // Caller must read the persisted row and return it.
         value == 11
     }
 
@@ -219,6 +231,7 @@ class OracleSyncCacheTest extends Specification {
         cache.get('failure', Argument.of(Integer), { 15 })
 
         then:
+        // Only duplicate-key conflicts are recoverable; operational failures must bubble up.
         IllegalStateException ex = thrown()
         ex.message.contains('connection lost')
     }
@@ -235,6 +248,7 @@ class OracleSyncCacheTest extends Specification {
         cache.get('rollback-key', Argument.of(Integer), { throw new IllegalStateException('write failed') })
 
         then:
+        // If supplier fails, cache must not attempt DB write coordination at all.
         IllegalStateException ex = thrown()
         ex.message.contains('write failed')
         0 * repository.blockingPut(_, _, _, _, _, _)
@@ -261,6 +275,7 @@ class OracleSyncCacheTest extends Specification {
         Optional<Integer> result = cache.putIfAbsent('duplicate', 22)
 
         then:
+        // Duplicate insert path should degrade to "read existing" instead of surfacing ORA-00001.
         result.present
         result.get() == 44
     }
@@ -274,6 +289,7 @@ class OracleSyncCacheTest extends Specification {
         cache.put('json-key', new TestCar(model: 'Hello', year: 2026))
 
         then:
+        // We store JSON bytes (not toString text) so object payloads can be deserialized later.
         1 * repository.save({ CacheEntryEntity entity ->
             String payload = new String(entity.valuePayload, StandardCharsets.UTF_8)
             payload.contains('"model":"Hello"') && payload.contains('"year":2026')
@@ -300,9 +316,35 @@ class OracleSyncCacheTest extends Specification {
         Optional<TestCar> result = cache.get('json-key', Argument.of(TestCar))
 
         then:
+        // Round-trip contract: encoded JSON payload must deserialize to requested typed argument.
         result.present
         result.get().model == 'Hello'
         result.get().year == 2026
+    }
+
+    void getFailsFastWhenStoredPayloadIsNotValidJsonForRequestedType() {
+        given:
+        OracleCacheEntryRepository repository = Mock()
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+
+        CacheEntryEntity existing = new CacheEntryEntity()
+        existing.id = new CacheEntryId('orders', [7] as byte[])
+        existing.keyPayload = [8] as byte[]
+        // Simulates legacy/non-JSON text payload previously observed in integration debugging.
+        existing.valuePayload = 'Car[model=Hello,year=2026]'.bytes
+        existing.createdAt = Instant.now().minusSeconds(5)
+        existing.lastAccessAt = Instant.now().minusSeconds(5)
+        existing.expiresAt = Instant.now().plusSeconds(30)
+
+        and:
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(existing)
+
+        when:
+        cache.get('json-key', Argument.of(TestCar))
+
+        then:
+        IllegalStateException ex = thrown()
+        ex.message.contains('Failed to decode cache value as JSON')
     }
 
     void cleanupEnforcesSizeAndWeightBounds() {
@@ -314,7 +356,8 @@ class OracleSyncCacheTest extends Specification {
         cache.runCleanup()
 
         then:
-        1 * repository.runCleanupProcedure('orders', 100L)
+        // Cache delegates retention policy enforcement to Oracle cleanup procedure.
+        1 * repository.runCleanupProcedure('orders', 37L)
     }
 
     void exposesCacheInfoPayload() {
@@ -330,6 +373,7 @@ class OracleSyncCacheTest extends Specification {
         def info = reactor.core.publisher.Flux.from(cache.cacheInfo).blockFirst()
 
         then:
+        // CacheInfo bridges runtime cache metadata with Oracle-specific metrics from repository queries.
         info.name == 'orders'
         info.get().implementationClass == 'io.micronaut.cache.oracle.OracleSyncCache'
         info.get().oracle.entryCount == 2L
@@ -360,7 +404,8 @@ class OracleSyncCacheTest extends Specification {
                 'micronaut.caches.orders.blocking'          : false,
                 'micronaut.caches.orders.maximum-size'      : 1,
                 'micronaut.caches.orders.maximum-weight'    : 10,
-                'micronaut.caches.orders.cleanup-interval'  : '365d'
+                'micronaut.caches.orders.cleanup-interval'  : '365d',
+                'micronaut.caches.orders.cleanup-batch-size': 37
         ])
         try {
             return context.getBean(OracleCacheConfiguration, Qualifiers.byName('orders'))

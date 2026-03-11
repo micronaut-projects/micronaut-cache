@@ -28,6 +28,7 @@ class OracleCacheEntryRepositorySignatureTest extends Specification {
         )
 
         then:
+        // Nullable contract is important because expiry can be intentionally omitted in both APIs.
         blockingPut.parameters[4].isAnnotationPresent(Nullable)
         updateLastAccess.parameters[3].isAnnotationPresent(Nullable)
     }
@@ -48,6 +49,7 @@ class OracleCacheEntryRepositorySignatureTest extends Specification {
         Query countByCacheQuery = countByCache.getAnnotation(Query)
 
         then:
+        // We pin explicit native SQL because Oracle LOB comparison behavior is easy to regress.
         findByKeyQuery != null
         findByKeyQuery.nativeQuery()
         findByKeyQuery.value().contains('KEY_HASH = :keyHash')
@@ -76,9 +78,25 @@ class OracleCacheEntryRepositorySignatureTest extends Specification {
         Query invalidateKeyQuery = invalidateKey.getAnnotation(Query)
 
         then:
+        // Hash-only predicates preserve index usage and avoid payload-level comparisons.
         updateLastAccessQuery.value().contains('KEY_HASH = :keyHash')
         !updateLastAccessQuery.value().contains('KEY_PAYLOAD')
         invalidateKeyQuery.value().contains('KEY_HASH = :keyHash')
         !invalidateKeyQuery.value().contains('KEY_PAYLOAD')
+    }
+
+    void totalWeightTreatsNullWeightsAsOne() {
+        when:
+        def totalWeight = OracleCacheEntryRepository.getMethod(
+            'totalWeight',
+            String,
+        )
+
+        Query totalWeightQuery = totalWeight.getAnnotation(Query)
+
+        then:
+        totalWeightQuery != null
+        totalWeightQuery.nativeQuery()
+        totalWeightQuery.value().contains('SUM(COALESCE(VALUE_WEIGHT, 1))')
     }
 }

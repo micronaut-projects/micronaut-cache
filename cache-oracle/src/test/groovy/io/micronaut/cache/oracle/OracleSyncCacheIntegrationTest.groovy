@@ -36,6 +36,7 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
 
         when:
+        // Integration intent: verify we persist/fetch/invalidate against Oracle tables, not mocks.
         cache.put('car:model:s3', 101)
         Optional<Integer> stored = cache.get('car:model:s3', Argument.of(Integer))
         cache.invalidate('car:model:s3')
@@ -56,6 +57,7 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
 
         when:
+        // First write seeds the DB row; second call must keep existing value intact.
         cache.put('car:model:x', 7)
         Optional<Integer> duplicate = cache.putIfAbsent('car:model:x', 9)
 
@@ -73,6 +75,7 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
 
         when:
+        // Regression for JSON value serialization: object payloads must round-trip through Oracle storage.
         cache.put('car:model:json', new TestCar(model: 'Hello', year: 2026))
         Optional<TestCar> stored = cache.get('car:model:json', Argument.of(TestCar))
 
@@ -94,10 +97,12 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         AtomicInteger supplierCalls = new AtomicInteger(0)
 
         when:
+        // First call computes and persists.
         Integer first = cache.get('car:model:blocking', Argument.of(Integer), {
             supplierCalls.incrementAndGet()
             return 42
         })
+        // Second call should read cached value without invoking supplier again.
         Integer second = cache.get('car:model:blocking', Argument.of(Integer), {
             supplierCalls.incrementAndGet()
             return 84

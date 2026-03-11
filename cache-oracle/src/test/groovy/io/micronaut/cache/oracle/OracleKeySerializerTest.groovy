@@ -40,6 +40,7 @@ class OracleKeySerializerTest extends Specification {
         def second = serializer.serialize(key)
 
         then:
+        // Deterministic payload is required so semantically equal keys hash to exactly the same byte sequence.
         first == second
         new String(first.keyPayload, StandardCharsets.UTF_8) == '["user-1",{"a":{"x":1,"y":[2,3]},"b":[3,2,1],"message":"hello"},["z","y"]]'
         first.keyHash.length == 32
@@ -60,6 +61,7 @@ class OracleKeySerializerTest extends Specification {
         def second = serializer.serialize(new ParametersKey(secondMap))
 
         then:
+        // Map ordering differences must not change cache key identity.
         first == second
     }
 }

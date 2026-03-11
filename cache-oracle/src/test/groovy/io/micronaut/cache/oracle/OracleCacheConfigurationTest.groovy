@@ -26,8 +26,10 @@ class OracleCacheConfigurationTest extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 'micronaut.caches.orders.cleanup-interval' : '30s',
+                'micronaut.caches.orders.cleanup-batch-size': 50,
                 'micronaut.caches.orders.lock-wait-timeout': '2s',
                 'micronaut.caches.users.cleanup-interval'  : '45s',
+                'micronaut.caches.users.cleanup-batch-size' : 75,
                 'micronaut.caches.users.lock-wait-timeout' : '3s',
                 'micronaut.caches.users.blocking'          : true
         ])
@@ -37,6 +39,7 @@ class OracleCacheConfigurationTest extends Specification {
         OracleCacheConfiguration users = context.getBean(OracleCacheConfiguration, Qualifiers.byName('users'))
 
         then:
+        // This guards against cross-cache property bleed where one cache's values override another's.
         orders.cacheName == 'orders'
         users.cacheName == 'users'
         !orders.blocking
@@ -45,6 +48,8 @@ class OracleCacheConfigurationTest extends Specification {
         users.cleanupInterval.seconds == 45
         orders.lockWaitTimeout.seconds == 2
         users.lockWaitTimeout.seconds == 3
+        orders.cleanupBatchSize == 50L
+        users.cleanupBatchSize == 75L
 
         cleanup:
         context.close()
@@ -56,6 +61,7 @@ class OracleCacheConfigurationTest extends Specification {
                 'micronaut.caches.orders.blocking'                : true,
                 'micronaut.caches.orders.lock-wait-timeout'       : '15s',
                 'micronaut.caches.orders.cleanup-interval'        : '30s',
+                'micronaut.caches.orders.cleanup-batch-size'      : 40,
                 'micronaut.caches.orders.expire-after-write'      : '5m',
                 'micronaut.caches.orders.expire-after-access'     : '2m',
                 'micronaut.caches.orders.maximum-size'            : 100,
@@ -63,6 +69,7 @@ class OracleCacheConfigurationTest extends Specification {
                 'micronaut.caches.orders.record-stats'            : true,
                 'micronaut.caches.orders.test-mode'               : true,
                 'micronaut.caches.default.cleanup-interval'       : '1m',
+                'micronaut.caches.default.cleanup-batch-size'     : 100,
                 'micronaut.caches.default.lock-wait-timeout'      : '5s'
         ])
 
@@ -71,10 +78,12 @@ class OracleCacheConfigurationTest extends Specification {
         OracleCacheConfiguration defaultConfiguration = context.getBean(OracleCacheConfiguration, Qualifiers.byName('default'))
 
         then:
+        // Assert full mapping for non-default cache so schema initializer can persist expected values.
         configuration.cacheName == 'orders'
         configuration.blocking
         configuration.lockWaitTimeout.seconds == 15
         configuration.cleanupInterval.seconds == 30
+        configuration.cleanupBatchSize == 40L
         configuration.expireAfterWrite.get().toMinutes() == 5
         configuration.expireAfterAccess.get().toMinutes() == 2
         configuration.maximumSize.getAsLong() == 100
@@ -83,8 +92,10 @@ class OracleCacheConfigurationTest extends Specification {
         configuration.testMode
 
         and:
+        // Default cache still uses baseline values when properties are not explicitly provided.
         !defaultConfiguration.blocking
         defaultConfiguration.cleanupInterval.seconds == 60
+        defaultConfiguration.cleanupBatchSize == 100L
         defaultConfiguration.lockWaitTimeout.seconds == 5
 
         cleanup:
@@ -95,6 +106,7 @@ class OracleCacheConfigurationTest extends Specification {
         when:
         ApplicationContext context = ApplicationContext.run([
                 'micronaut.caches.bad.cleanup-interval'      : '-1s',
+                'micronaut.caches.bad.cleanup-batch-size'    : 0,
                 'micronaut.caches.bad.lock-wait-timeout'     : '-5s',
                 'micronaut.caches.bad.expire-after-write'    : '-1m',
                 'micronaut.caches.bad.maximum-size'          : -1,
@@ -103,6 +115,7 @@ class OracleCacheConfigurationTest extends Specification {
         context.getBean(OracleCacheConfiguration, Qualifiers.byName('bad'))
 
         then:
+        // We intentionally accept any wrapper exception shape as long as IllegalArgumentException is in the chain.
         Exception ex = thrown()
         findIllegalArgumentException(ex) != null
     }

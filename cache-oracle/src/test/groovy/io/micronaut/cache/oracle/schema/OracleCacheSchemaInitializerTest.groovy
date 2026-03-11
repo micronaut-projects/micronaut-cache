@@ -54,6 +54,7 @@ class OracleCacheSchemaInitializerTest extends Specification {
         initializer.onApplicationEvent(null)
 
         then:
+        // Verify we emit the expected DDL and procedural objects, not just a subset of schema artifacts.
         executedStatements.any { it.contains('CREATE TABLE MN_CACHE_ENTRY') }
         executedStatements.any { it.contains('CREATE TABLE MN_CACHE_CONFIG') }
         executedStatements.any { it.contains('CREATE TABLE MN_CACHE_STATS') }
@@ -71,6 +72,7 @@ class OracleCacheSchemaInitializerTest extends Specification {
         Statement statement = Mock()
         statement.execute(_ as String) >> { String sql ->
             if (sql.startsWith('CREATE')) {
+                // ORA-00955 equivalent: object already exists during repeated bootstrap.
                 throw new SQLException('name is already used by an existing object', '42000', 955)
             }
             true
@@ -83,6 +85,7 @@ class OracleCacheSchemaInitializerTest extends Specification {
         initializer.onApplicationEvent(null)
 
         then:
+        // Idempotency means startup can retry initialization without breaking subsequent runs.
         noExceptionThrown()
         1 * dataSource.getConnection() >> connection
         1 * connection.createStatement() >> statement
@@ -100,6 +103,7 @@ class OracleCacheSchemaInitializerTest extends Specification {
         statement.execute(_ as String) >> {
             if (firstCall) {
                 firstCall = false
+                // Simulate transient startup fault: first call fails, second should recover.
                 throw new SQLException('transient error', '42000', 900)
             }
             true
@@ -130,6 +134,7 @@ class OracleCacheSchemaInitializerTest extends Specification {
         connection.createStatement() >> statement
         statement.execute(_ as String) >> { String sql ->
             if (sql.contains('MN_CACHE_REGISTER_CLEANUP_JOB')) {
+                // ORA-01031 simulation: cleanup job registration missing privileges.
                 throw new SQLException('insufficient privileges', '42000', 1031)
             }
             true
@@ -157,11 +162,13 @@ class OracleCacheSchemaInitializerTest extends Specification {
                 'blocking'         : true,
                 'lock-wait-timeout': '2s',
                 'cleanup-interval' : '15s',
+                'cleanup-batch-size': 15,
                 'maximum-size'     : 10,
                 'maximum-weight'   : 100
         ])
         OracleCacheConfiguration products = configuration('products', [
-                'cleanup-interval': '45s'
+                'cleanup-interval': '45s',
+                'cleanup-batch-size': 25
         ])
 
         dataSource.getConnection() >> connection
@@ -182,7 +189,10 @@ class OracleCacheSchemaInitializerTest extends Specification {
         initializer.onApplicationEvent(null)
 
         then:
+        // Each cache config should upsert once and schedule one cleanup job with its own interval.
         2 * upsert.execute()
+        1 * upsert.setLong(5, 15L)
+        1 * upsert.setLong(5, 25L)
         1 * register.setString(1, 'orders')
         1 * register.setLong(2, 15L)
         1 * register.setString(1, 'products')

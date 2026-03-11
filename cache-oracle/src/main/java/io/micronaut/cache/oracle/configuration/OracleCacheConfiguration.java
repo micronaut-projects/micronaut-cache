@@ -31,10 +31,12 @@ public final class OracleCacheConfiguration extends CacheConfiguration {
 
     public static final Duration DEFAULT_LOCK_WAIT_TIMEOUT = Duration.ofSeconds(5);
     public static final Duration DEFAULT_CLEANUP_INTERVAL = Duration.ofSeconds(60);
+    public static final long DEFAULT_CLEANUP_BATCH_SIZE = 100L;
 
     private boolean blocking;
     private Duration lockWaitTimeout = DEFAULT_LOCK_WAIT_TIMEOUT;
     private Duration cleanupInterval = DEFAULT_CLEANUP_INTERVAL;
+    private long cleanupBatchSize = DEFAULT_CLEANUP_BATCH_SIZE;
 
     public OracleCacheConfiguration(@Parameter String cacheName, ApplicationConfiguration applicationConfiguration) {
         super(cacheName, applicationConfiguration);
@@ -70,6 +72,17 @@ public final class OracleCacheConfiguration extends CacheConfiguration {
             throw new IllegalArgumentException("cleanupInterval cannot be negative");
         }
         this.cleanupInterval = cleanupInterval;
+    }
+
+    public long getCleanupBatchSize() {
+        return cleanupBatchSize;
+    }
+
+    public void setCleanupBatchSize(long cleanupBatchSize) {
+        if (cleanupBatchSize <= 0) {
+            throw new IllegalArgumentException("cleanupBatchSize must be greater than 0");
+        }
+        this.cleanupBatchSize = cleanupBatchSize;
     }
 
     @Override

@@ -47,6 +47,7 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         repository.save(entity)
 
         when:
+        // Critical repository behavior: lookups must be hash-based to avoid LOB payload comparisons.
         CacheEntryEntity fetched = repository.findByIdCacheNameAndIdKeyHash('orders', hash).orElse(null)
 
         then:
@@ -90,6 +91,7 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         repository.save(first)
 
         when:
+        // Oracle PK is (cache_name, key_hash), so second insert with same hash must fail.
         repository.save(second)
 
         then:
@@ -118,6 +120,7 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         repository.save(expiring)
 
         when:
+        // deleteExpired should remove stale rows, then invalidateKey should report no-op for missing row.
         long deletedExpired = repository.deleteExpired('orders', Instant.now())
         long deletedMissing = repository.invalidateKey('orders', hash)
 

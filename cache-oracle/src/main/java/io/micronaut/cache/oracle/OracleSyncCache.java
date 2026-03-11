@@ -45,8 +45,6 @@ import java.util.function.Supplier;
  */
 public final class OracleSyncCache implements SyncCache<OracleCacheEntryRepository> {
 
-    private static final long CLEANUP_BATCH_SIZE = 100L;
-
     private final OracleCacheConfiguration configuration;
     private final OracleCacheEntryRepository entryRepository;
     private final OracleKeySerializer keySerializer;
@@ -205,7 +203,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     }
 
     void runCleanup() {
-        entryRepository.runCleanupProcedure(configuration.getCacheName(), CLEANUP_BATCH_SIZE);
+        entryRepository.runCleanupProcedure(configuration.getCacheName(), configuration.getCleanupBatchSize());
     }
 
     private long cleanupIntervalSeconds() {
@@ -331,8 +329,11 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         }
         try {
             return Optional.ofNullable(jsonMapper.readValue(payload, requiredType));
-        } catch (IOException ignored) {
-            return Optional.empty();
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                "Failed to decode cache value as JSON for type " + requiredType.getType().getName(),
+                e
+            );
         }
     }
 

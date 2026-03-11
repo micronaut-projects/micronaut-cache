@@ -60,7 +60,7 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
     @Query(value = "SELECT COUNT(*) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
     long countByIdCacheName(String cacheName);
 
-    @Query(value = "SELECT COALESCE(SUM(VALUE_WEIGHT), 0) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
+    @Query(value = "SELECT COALESCE(SUM(COALESCE(VALUE_WEIGHT, 1)), 0) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
     long totalWeight(String cacheName);
 
 }

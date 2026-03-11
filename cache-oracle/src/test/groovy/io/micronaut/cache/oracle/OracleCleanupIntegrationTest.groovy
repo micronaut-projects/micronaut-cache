@@ -34,6 +34,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
         repository.invalidateCache('orders')
 
+        // Build one expired row and one live row to ensure cleanup only removes the intended subset.
         repository.save(entry('orders', [1, 1, 1] as byte[], [3, 3, 3] as byte[], Instant.now().minusSeconds(30)))
         repository.save(entry('orders', [2, 2, 2] as byte[], [4, 4, 4] as byte[], Instant.now().plusSeconds(30)))
 
@@ -41,6 +42,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         cache.runCleanup()
 
         then:
+        // Exactly one row should remain: the non-expired row.
         repository.countByIdCacheName('orders') == 1L
 
         cleanup:
@@ -56,6 +58,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
         repository.invalidateCache('orders')
 
+        // Control case: all rows are valid, so cleanup should be a no-op.
         repository.save(entry('orders', [5, 5, 5] as byte[], [6, 6, 6] as byte[], Instant.now().plusSeconds(60)))
 
         when:
@@ -68,12 +71,74 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         context.close()
     }
 
+    void runCleanupWeightLimitRemovesOnlyRequiredRows() {
+        given:
+        ApplicationContext context = newContext([
+            'micronaut.caches.orders.cleanup-interval': '5s',
+            'micronaut.caches.orders.cleanup-batch-size': 100,
+            'micronaut.caches.orders.maximum-weight': 10,
+        ])
+        OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
+        OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
+        repository.invalidateCache('orders')
+
+        repository.save(entry('orders', [1, 0, 0] as byte[], [1, 0, 0] as byte[], Instant.now().plusSeconds(60), 6L))
+        repository.save(entry('orders', [2, 0, 0] as byte[], [2, 0, 0] as byte[], Instant.now().plusSeconds(60), 5L))
+        repository.save(entry('orders', [3, 0, 0] as byte[], [3, 0, 0] as byte[], Instant.now().plusSeconds(60), 4L))
+
+        expect:
+        repository.totalWeight('orders') == 15L
+        repository.countByIdCacheName('orders') == 3L
+
+        when:
+        cache.runCleanup()
+
+        then:
+        repository.totalWeight('orders') == 9L
+        repository.countByIdCacheName('orders') == 2L
+
+        cleanup:
+        context.close()
+    }
+
+    void runCleanupTreatsNullWeightAsOne() {
+        given:
+        ApplicationContext context = newContext([
+            'micronaut.caches.orders.cleanup-interval': '5s',
+            'micronaut.caches.orders.cleanup-batch-size': 100,
+            'micronaut.caches.orders.maximum-weight': 1,
+        ])
+        OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
+        OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
+        repository.invalidateCache('orders')
+
+        repository.save(entry('orders', [9, 0, 0] as byte[], [9, 0, 0] as byte[], Instant.now().plusSeconds(60), null))
+        repository.save(entry('orders', [8, 0, 0] as byte[], [8, 0, 0] as byte[], Instant.now().plusSeconds(60), 1L))
+
+        expect:
+        repository.totalWeight('orders') == 2L
+
+        when:
+        cache.runCleanup()
+
+        then:
+        repository.totalWeight('orders') == 1L
+        repository.countByIdCacheName('orders') == 1L
+
+        cleanup:
+        context.close()
+    }
+
     private static CacheEntryEntity entry(String cacheName, byte[] keyHash, byte[] keyPayload, Instant expiresAt) {
+        return entry(cacheName, keyHash, keyPayload, expiresAt, 1L)
+    }
+
+    private static CacheEntryEntity entry(String cacheName, byte[] keyHash, byte[] keyPayload, Instant expiresAt, Long valueWeight) {
         CacheEntryEntity entity = new CacheEntryEntity()
         entity.id = new CacheEntryId(cacheName, keyHash)
         entity.keyPayload = keyPayload
         entity.valuePayload = 'value'.bytes
-        entity.valueWeight = 1L
+        entity.valueWeight = valueWeight
         entity.createdAt = Instant.now().minusSeconds(60)
         entity.lastAccessAt = Instant.now().minusSeconds(60)
         entity.expiresAt = expiresAt

@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OracleCacheSchemaInitializer implements ApplicationEventListener<ServerStartupEvent> {
 
     private static final String DEFAULT_RESOURCE_PATH = "db/oracle-cache.sql";
-    private static final String UPSERT_CACHE_CONFIG_CALL = "{ call MN_CACHE_UPSERT_CONFIG(?, ?, ?, ?, ?, ?, ?) }";
+    private static final String UPSERT_CACHE_CONFIG_CALL = "{ call MN_CACHE_UPSERT_CONFIG(?, ?, ?, ?, ?, ?, ?, ?) }";
     private static final String REGISTER_CLEANUP_JOB_CALL = "{ call MN_CACHE_REGISTER_CLEANUP_JOB(?, ?) }";
 
     private final DataSource dataSource;
@@ -111,6 +111,7 @@ public class OracleCacheSchemaInitializer implements ApplicationEventListener<Se
                 int blocking = cacheConfiguration.isBlocking() ? 1 : 0;
                 long lockWaitTimeoutMs = cacheConfiguration.getLockWaitTimeout().toMillis();
                 long cleanupIntervalSeconds = Math.max(1, cacheConfiguration.getCleanupInterval().toSeconds());
+                long cleanupBatchSize = cacheConfiguration.getCleanupBatchSize();
                 Long maximumSize = cacheConfiguration.getMaximumSize().isPresent() ? cacheConfiguration.getMaximumSize().getAsLong() : null;
                 Long maximumWeight = cacheConfiguration.getMaximumWeight().isPresent() ? cacheConfiguration.getMaximumWeight().getAsLong() : null;
 
@@ -118,9 +119,10 @@ public class OracleCacheSchemaInitializer implements ApplicationEventListener<Se
                 upsertConfig.setInt(2, blocking);
                 upsertConfig.setLong(3, lockWaitTimeoutMs);
                 upsertConfig.setLong(4, cleanupIntervalSeconds);
-                setNullableLong(upsertConfig, 5, maximumSize);
-                setNullableLong(upsertConfig, 6, maximumWeight);
-                upsertConfig.setTimestamp(7, nowTimestamp);
+                upsertConfig.setLong(5, cleanupBatchSize);
+                setNullableLong(upsertConfig, 6, maximumSize);
+                setNullableLong(upsertConfig, 7, maximumWeight);
+                upsertConfig.setTimestamp(8, nowTimestamp);
                 upsertConfig.execute();
 
                 registerCleanupJob.setString(1, cacheName);

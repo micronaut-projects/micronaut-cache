@@ -32,6 +32,7 @@ class CleanupScheduleTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configurationWithTtlOnly(), repository, serializer(), jsonMapper())
 
         when:
+        // Cleanup is procedure-backed; this test verifies scheduling path for TTL-only configuration.
         cache.runCleanup()
 
         then:
@@ -44,6 +45,7 @@ class CleanupScheduleTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configurationWithLimits(), repository, serializer(), jsonMapper())
 
         when:
+        // Same cleanup entrypoint should also activate size/weight enforcement policy.
         cache.runCleanup()
 
         then:
