@@ -40,7 +40,7 @@ public final class OracleCacheFactory {
     static OracleSyncCache oracleSyncCache(@Parameter OracleCacheConfiguration configuration,
                                            OracleCacheEntryRepository entryRepository,
                                            OracleKeySerializer keySerializer,
-                                           ConversionService conversionService) {
-        return new OracleSyncCache(configuration, entryRepository, keySerializer, conversionService);
+                                           JsonMapper jsonMapper) {
+        return new OracleSyncCache(configuration, entryRepository, keySerializer, jsonMapper);
     }
 }

@@ -18,10 +18,17 @@ package io.micronaut.cache.oracle
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.type.Argument
 import io.micronaut.inject.qualifiers.Qualifiers
+import io.micronaut.serde.annotation.Serdeable
 
 import java.util.concurrent.atomic.AtomicInteger
 
 class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
+
+    @Serdeable
+    static class TestCar {
+        String model
+        int year
+    }
 
     void putGetAndInvalidateUseRealOracleTable() {
         given:
@@ -55,6 +62,24 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         then:
         duplicate.present
         duplicate.get() == 7
+
+        cleanup:
+        context.close()
+    }
+
+    void putGetRoundTripsPojoValueAsJson() {
+        given:
+        ApplicationContext context = newContext()
+        OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
+
+        when:
+        cache.put('car:model:json', new TestCar(model: 'Hello', year: 2026))
+        Optional<TestCar> stored = cache.get('car:model:json', Argument.of(TestCar))
+
+        then:
+        stored.present
+        stored.get().model == 'Hello'
+        stored.get().year == 2026
 
         cleanup:
         context.close()

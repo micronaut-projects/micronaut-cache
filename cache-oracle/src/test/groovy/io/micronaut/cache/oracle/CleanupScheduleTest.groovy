@@ -21,6 +21,7 @@ import io.micronaut.cache.oracle.serialization.OracleKeySerializer
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.DefaultMutableConversionService
 import io.micronaut.inject.qualifiers.Qualifiers
+import io.micronaut.json.JsonMapper
 import spock.lang.Specification
 
 class CleanupScheduleTest extends Specification {
@@ -28,7 +29,7 @@ class CleanupScheduleTest extends Specification {
     void cleanupRemovesEntriesExpiredByWriteTtl() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configurationWithTtlOnly(), repository, serializer(), conversionService())
+        OracleSyncCache cache = new OracleSyncCache(configurationWithTtlOnly(), repository, serializer(), jsonMapper())
 
         when:
         cache.runCleanup()
@@ -40,7 +41,7 @@ class CleanupScheduleTest extends Specification {
     void cleanupEnforcesMaxSizeAndWeight() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configurationWithLimits(), repository, serializer(), conversionService())
+        OracleSyncCache cache = new OracleSyncCache(configurationWithLimits(), repository, serializer(), jsonMapper())
 
         when:
         cache.runCleanup()
@@ -81,5 +82,9 @@ class CleanupScheduleTest extends Specification {
 
     private static DefaultMutableConversionService conversionService() {
         return new DefaultMutableConversionService()
+    }
+
+    private static JsonMapper jsonMapper() {
+        return JsonMapper.createDefault()
     }
 }

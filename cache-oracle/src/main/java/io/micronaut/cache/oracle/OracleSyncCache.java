@@ -24,15 +24,14 @@ import io.micronaut.cache.oracle.persistence.OracleCacheEntryRepository;
 import io.micronaut.cache.oracle.serialization.OracleCacheKey;
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer;
 import io.micronaut.core.async.publisher.Publishers;
-import io.micronaut.core.convert.ConversionContext;
-import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
+import io.micronaut.json.JsonMapper;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
@@ -51,16 +50,16 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     private final OracleCacheConfiguration configuration;
     private final OracleCacheEntryRepository entryRepository;
     private final OracleKeySerializer keySerializer;
-    private final ConversionService conversionService;
+    private final JsonMapper jsonMapper;
 
     public OracleSyncCache(OracleCacheConfiguration configuration,
                            OracleCacheEntryRepository entryRepository,
                            OracleKeySerializer keySerializer,
-                           ConversionService conversionService) {
+                           JsonMapper jsonMapper) {
         this.configuration = configuration;
         this.entryRepository = entryRepository;
         this.keySerializer = keySerializer;
-        this.conversionService = conversionService;
+        this.jsonMapper = jsonMapper;
     }
 
     @NonNull
@@ -136,12 +135,12 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     @Override
     public void put(@NonNull Object key, @Nullable Object value) {
         ArgumentUtils.requireNonNull("key", key);
+        OracleCacheKey cacheKey = keySerializer.serialize(key);
         if (value == null) {
             invalidate(key);
             return;
         }
 
-        OracleCacheKey cacheKey = keySerializer.serialize(key);
         Instant now = Instant.now();
 
         CacheEntryEntity entity = new CacheEntryEntity();
@@ -319,16 +318,22 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     }
 
     private byte[] encodeValue(Object value) {
-        String asString = conversionService.convert(value, String.class).orElseGet(() -> String.valueOf(value));
-        return asString.getBytes(StandardCharsets.UTF_8);
+        try {
+            return jsonMapper.writeValueAsBytes(value);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to encode cache value as JSON", e);
+        }
     }
 
     private <T> Optional<T> decodeValue(byte[] payload, Argument<T> requiredType) {
         if (payload == null) {
             return Optional.empty();
         }
-        String asString = new String(payload, StandardCharsets.UTF_8);
-        return conversionService.convert(asString, ConversionContext.of(requiredType));
+        try {
+            return Optional.ofNullable(jsonMapper.readValue(payload, requiredType));
+        } catch (IOException ignored) {
+            return Optional.empty();
+        }
     }
 
     private boolean hasStoredValue(@Nullable byte[] payload) {
@@ -349,4 +354,5 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         }
         return false;
     }
+
 }
