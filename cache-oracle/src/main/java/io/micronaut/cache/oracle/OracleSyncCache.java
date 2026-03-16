@@ -90,18 +90,34 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         }
 
         recordStats(0, 1, 0, 0);
-
-        if (!configuration.isBlocking()) {
-            T supplied = supplier.get();
-            putBySerializedKey(cacheKey, supplied);
-            recordStats(0, 0, 1, 0);
-            return supplied;
-        }
-
         T supplied = supplier.get();
         putBySerializedKey(cacheKey, supplied);
         recordStats(0, 0, 1, 0);
         return supplied;
+    }
+
+    private <T> Optional<T> getBySerializedKey(OracleCacheKey cacheKey, Argument<T> requiredType) {
+        Optional<CacheEntryEntity> existing = entryRepository.findByIdCacheNameAndIdKeyHash(
+            configuration.getCacheName(),
+            cacheKey.getKeyHash()
+        );
+        if (existing.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Instant now = Instant.now();
+        CacheEntryEntity entity = existing.get();
+        if (isExpired(entity, now)) {
+            entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+            return Optional.empty();
+        }
+        if (!hasStoredValue(entity.getValuePayload())) {
+            return Optional.empty();
+        }
+
+        Instant nextExpiry = computeExpiry(now, entity.getCreatedAt()).orElse(entity.getExpiresAt());
+        entryRepository.updateLastAccess(configuration.getCacheName(), cacheKey.getKeyHash(), now, nextExpiry);
+        return decodeValue(entity.getValuePayload(), requiredType);
     }
 
     @NonNull
@@ -113,16 +129,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         @SuppressWarnings("unchecked")
         Argument<T> argument = (Argument<T>) Argument.of(value.getClass());
         OracleCacheKey cacheKey = keySerializer.serialize(key);
-        Instant now = Instant.now();
-
-        CacheEntryEntity entity = new CacheEntryEntity();
-        entity.setId(new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash()));
-        entity.setKeyPayload(cacheKey.getKeyPayload());
-        entity.setCreatedAt(now);
-        entity.setLastAccessAt(now);
-        entity.setExpiresAt(computeExpiry(now, now).orElse(null));
-        entity.setValueWeight(1L);
-        entity.setValuePayload(encodeValue(value));
+        CacheEntryEntity entity = newEntry(cacheKey, value);
 
         try {
             entryRepository.save(entity);
@@ -162,20 +169,19 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         }
 
         if (configuration.isBlocking()) {
-            blockingPutBySerializedKey(cacheKey, value);
+            try {
+                blockingPutInstruction(cacheKey, value);
+            } catch (RuntimeException e) {
+                if (!isDuplicateKeyViolation(e)) {
+                    throw e;
+                }
+                entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+                blockingPutInstruction(cacheKey, value);
+            }
             return;
         }
 
-        Instant now = Instant.now();
-
-        CacheEntryEntity entity = new CacheEntryEntity();
-        entity.setId(new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash()));
-        entity.setKeyPayload(cacheKey.getKeyPayload());
-        entity.setCreatedAt(now);
-        entity.setLastAccessAt(now);
-        entity.setExpiresAt(computeExpiry(now, now).orElse(null));
-        entity.setValueWeight(1L);
-        entity.setValuePayload(encodeValue(value));
+        CacheEntryEntity entity = newEntry(cacheKey, value);
         try {
             entryRepository.save(entity);
         } catch (RuntimeException e) {
@@ -188,35 +194,31 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         recordStats(0, 0, 1, 0);
     }
 
-    private void blockingPutBySerializedKey(OracleCacheKey cacheKey, Object suppliedValue) {
+    private CacheEntryEntity newEntry(OracleCacheKey cacheKey, Object value) {
+        Instant now = Instant.now();
+        CacheEntryEntity entity = new CacheEntryEntity();
+        entity.setId(new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash()));
+        entity.setKeyPayload(cacheKey.getKeyPayload());
+        entity.setCreatedAt(now);
+        entity.setLastAccessAt(now);
+        entity.setExpiresAt(computeExpiry(now, now).orElse(null));
+        entity.setValueWeight(1L);
+        entity.setValuePayload(encodeValue(value));
+        return entity;
+    }
+
+    private void blockingPutInstruction(OracleCacheKey cacheKey, Object suppliedValue) {
         Instant now = Instant.now();
         Instant expiresAt = computeExpiry(now, now).orElse(null);
-        String status;
-        try {
-            status = entryRepository.blockingPut(
-                configuration.getCacheName(),
-                cacheKey.getKeyHash(),
-                cacheKey.getKeyPayload(),
-                encodeValue(suppliedValue),
-                expiresAt,
-                1L
-            );
-        } catch (RuntimeException e) {
-            if (isDuplicateKeyViolation(e)) {
-                return;
-            }
-            throw e;
-        }
-
-        if ("SUCCESS".equals(status)) {
-            return;
-        }
-
-        if ("ALREADY_INSERTED".equals(status)) {
-            return;
-        }
-
-        throw new IllegalStateException("Blocking cache put returned unexpected status: " + status);
+        byte[] valuePayload = encodeValue(suppliedValue);
+        entryRepository.blockingPut(
+            configuration.getCacheName(),
+            cacheKey.getKeyHash(),
+            cacheKey.getKeyPayload(),
+            valuePayload,
+            expiresAt,
+            1L
+        );
     }
 
     @Override
@@ -276,36 +278,12 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         });
     }
 
-    void runCleanup() {
+    public void runCleanup() {
         entryRepository.runCleanupProcedure(configuration.getCacheName(), configuration.getCleanupBatchSize());
     }
 
     private long cleanupIntervalSeconds() {
         return Math.max(1, configuration.getCleanupInterval().toSeconds());
-    }
-
-    private <T> Optional<T> getBySerializedKey(OracleCacheKey cacheKey, Argument<T> requiredType) {
-        Optional<CacheEntryEntity> existing = entryRepository.findByIdCacheNameAndIdKeyHash(
-            configuration.getCacheName(),
-            cacheKey.getKeyHash()
-        );
-        if (existing.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Instant now = Instant.now();
-        CacheEntryEntity entity = existing.get();
-        if (isExpired(entity, now)) {
-            entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
-            return Optional.empty();
-        }
-        if (!hasStoredValue(entity.getValuePayload())) {
-            return Optional.empty();
-        }
-
-        Instant nextExpiry = computeExpiry(now, entity.getCreatedAt()).orElse(entity.getExpiresAt());
-        entryRepository.updateLastAccess(configuration.getCacheName(), cacheKey.getKeyHash(), now, nextExpiry);
-        return decodeValue(entity.getValuePayload(), requiredType);
     }
 
     private Optional<Instant> computeExpiry(Instant now, @Nullable Instant createdAt) {

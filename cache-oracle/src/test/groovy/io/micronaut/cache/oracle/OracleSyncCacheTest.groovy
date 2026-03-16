@@ -159,6 +159,24 @@ class OracleSyncCacheTest extends Specification {
         value == 11
     }
 
+    void blockingPathReplacesExistingValueWhenProcedureInsertCollides() {
+        given:
+        OracleCacheEntryRepository repository = Mock()
+        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), serializer(), jsonMapper())
+
+        and:
+        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
+
+        when:
+        Integer value = cache.get('blocking-replace', Argument.of(Integer), { 12 })
+
+        then:
+        value == 12
+        1 * repository.blockingPut(_, _, _, _, _, _) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
+        1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
+        1 * repository.blockingPut(_, _, _, _, _, _) >> 'SUCCESS'
+    }
+
     void blockingPathRethrowsNonDuplicateFailure() {
         given:
         OracleCacheEntryRepository repository = Mock()
