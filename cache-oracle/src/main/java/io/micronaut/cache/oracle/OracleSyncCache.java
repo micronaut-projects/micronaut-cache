@@ -38,6 +38,7 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 /**
@@ -214,6 +215,11 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     @Override
     public OracleCacheEntryRepository getNativeCache() {
         return entryRepository;
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return SyncCache.super.getExecutorService();
     }
 
     @Override

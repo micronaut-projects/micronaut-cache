@@ -1,0 +1,50 @@
+/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.cache.oracle
+
+import io.micronaut.context.ApplicationContext
+import org.testcontainers.containers.OracleContainer
+
+final class OracleTckSupport {
+
+    private static final OracleContainer ORACLE = OracleTestSupport.newOracleContainer()
+
+    static synchronized ApplicationContext sharedContext(Map<String, Object> properties = [:]) {
+        ensureStarted()
+        Map<String, Object> base = [
+            'datasources.default.url'               : ORACLE.jdbcUrl,
+            'datasources.default.username'          : ORACLE.username,
+            'datasources.default.password'          : ORACLE.password,
+            'datasources.default.driver-class-name' : 'oracle.jdbc.OracleDriver',
+            'micronaut.caches.counter.expire-after-access' : '30s',
+            'micronaut.caches.counter2.expire-after-access': '30s',
+            'micronaut.caches.test.expire-after-access'    : '30s',
+            'micronaut.caches.counter.test-mode'           : true,
+            'micronaut.caches.counter2.test-mode'          : true,
+            'micronaut.caches.test.test-mode'              : true,
+        ]
+        base.putAll(properties)
+        return ApplicationContext.run(base)
+    }
+
+    private static synchronized void ensureStarted() {
+        if (ORACLE.isRunning()) {
+            return
+        }
+        ORACLE.start()
+        OracleTestSupport.applyCleanupJobPrivilegeGrants(ORACLE)
+    }
+}
