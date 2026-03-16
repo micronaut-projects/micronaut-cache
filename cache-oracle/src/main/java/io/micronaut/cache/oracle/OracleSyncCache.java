@@ -45,6 +45,9 @@ import java.util.function.Supplier;
 
 /**
  * Synchronous Oracle cache implementation.
+ *
+ * @author Davide Cocco
+ * @since 5.0.0
  */
 public final class OracleSyncCache implements SyncCache<OracleCacheEntryRepository> {
 

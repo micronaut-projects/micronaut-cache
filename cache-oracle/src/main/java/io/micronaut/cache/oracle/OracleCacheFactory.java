@@ -28,6 +28,9 @@ import jakarta.inject.Singleton;
 
 /**
  * Creates Oracle cache beans for configured cache names.
+ *
+ * @author Davide Cocco
+ * @since 5.0.0
  */
 @Factory
 public final class OracleCacheFactory {

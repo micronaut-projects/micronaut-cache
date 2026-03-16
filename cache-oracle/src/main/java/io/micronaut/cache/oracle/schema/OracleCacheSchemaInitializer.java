@@ -38,6 +38,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Initializes Oracle cache schema from a single SQL resource.
+ *
+ * @author Davide Cocco
+ * @since 5.0.0
  */
 @Singleton
 @Connectable

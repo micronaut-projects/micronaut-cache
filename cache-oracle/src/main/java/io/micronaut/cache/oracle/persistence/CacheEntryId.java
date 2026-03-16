@@ -23,6 +23,8 @@ import java.util.Objects;
 
 /**
  * Composite key for a cache entry row.
+ * @author Davide Cocco
+ * @since 5.0.0
  */
 @Embeddable
 public final class CacheEntryId {

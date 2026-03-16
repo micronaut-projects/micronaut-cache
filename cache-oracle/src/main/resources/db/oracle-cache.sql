@@ -74,6 +74,8 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_UPDATE_STATS(
     P_UPDATED_AT IN TIMESTAMP WITH TIME ZONE
 ) AS
 BEGIN
+    -- Stats rows are updated opportunistically from cache operations, so we upsert and
+    -- increment counters in one statement instead of requiring the row to exist first.
     MERGE INTO MN_CACHE_STATS stats
     USING (SELECT P_CACHE_NAME AS CACHE_NAME FROM DUAL) incoming
     ON (stats.CACHE_NAME = incoming.CACHE_NAME)
@@ -110,6 +112,8 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_CLEANUP_CACHE(
     V_EXCESS_WEIGHT NUMBER;
     V_DELETE_COUNT NUMBER;
 BEGIN
+    -- Expiry checks are done in UTC so cleanup behaves the same regardless of the
+    -- Oracle session timezone used by the caller or scheduler job.
     DELETE FROM MN_CACHE_ENTRY
     WHERE CACHE_NAME = P_CACHE_NAME
       AND EXPIRES_AT IS NOT NULL
@@ -140,6 +144,8 @@ BEGIN
             V_EXCESS_SIZE := V_CURRENT_SIZE - V_MAX_SIZE;
             V_DELETE_COUNT := LEAST(V_EXCESS_SIZE, V_EFFECTIVE_BATCH_SIZE);
 
+            -- Size enforcement evicts the least-recently-used rows in bounded batches so
+            -- large backlogs can be drained incrementally without one massive delete.
             DELETE FROM MN_CACHE_ENTRY
             WHERE ROWID IN (
                 SELECT ROWID
@@ -165,6 +171,8 @@ BEGIN
 
             V_EXCESS_WEIGHT := V_CURRENT_WEIGHT - V_MAX_WEIGHT;
 
+            -- Weight enforcement approximates LRU eviction while deleting enough rows to
+            -- cover the weight overage, again capped by the configured batch size.
             DELETE FROM MN_CACHE_ENTRY
             WHERE ROWID IN (
                 SELECT RID
@@ -202,6 +210,8 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_REGISTER_CLEANUP_JOB(
     V_ACTION VARCHAR2(4000);
 BEGIN
     V_INTERVAL := GREATEST(1, NVL(P_INTERVAL_SECONDS, 60));
+    -- Scheduler object names must be simple identifiers, so cache names are normalized
+    -- and truncated into a deterministic job name.
     V_NORMALIZED_CACHE_NAME := REGEXP_REPLACE(UPPER(NVL(P_CACHE_NAME, 'CACHE')), '[^A-Z0-9_]', '_');
     IF V_NORMALIZED_CACHE_NAME IS NULL OR LENGTH(V_NORMALIZED_CACHE_NAME) = 0 THEN
         V_NORMALIZED_CACHE_NAME := 'CACHE';
@@ -215,6 +225,7 @@ BEGIN
     WHERE JOB_NAME = V_JOB_NAME;
 
     IF V_EXISTS = 0 THEN
+        -- Create disabled first so create/update flows share the same enable step below.
         DBMS_SCHEDULER.CREATE_JOB(
             JOB_NAME => V_JOB_NAME,
             JOB_TYPE => 'PLSQL_BLOCK',
@@ -225,6 +236,8 @@ BEGIN
             AUTO_DROP => FALSE
         );
     ELSE
+        -- Existing jobs are reconfigured in place so cache interval changes take effect
+        -- without dropping and recreating the Oracle scheduler object.
         DBMS_SCHEDULER.SET_ATTRIBUTE(V_JOB_NAME, 'job_action', V_ACTION);
         DBMS_SCHEDULER.SET_ATTRIBUTE(V_JOB_NAME, 'repeat_interval', 'FREQ=SECONDLY;INTERVAL=' || TO_CHAR(V_INTERVAL));
     END IF;
@@ -233,6 +246,8 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         IF SQLCODE = -27477 THEN
+            -- If another session created the job concurrently, converge by updating and
+            -- enabling the already-existing job instead of failing registration.
             DBMS_SCHEDULER.SET_ATTRIBUTE(V_JOB_NAME, 'repeat_interval', 'FREQ=SECONDLY;INTERVAL=' || TO_CHAR(V_INTERVAL));
             DBMS_SCHEDULER.ENABLE(V_JOB_NAME);
         ELSE
@@ -254,6 +269,8 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_PUT_BLOCKING(
 BEGIN
     P_STATUS := 'ERROR';
 
+    -- Insert a placeholder row first so competing blocking writers serialize on the
+    -- unique key. The payload is filled in by the follow-up update below.
     INSERT INTO MN_CACHE_ENTRY (
         CACHE_NAME,
         KEY_HASH,
@@ -274,6 +291,7 @@ BEGIN
         P_EXPIRES_AT
     );
 
+    -- Once the row exists, the actual value payload is written in the same procedure call.
     UPDATE MN_CACHE_ENTRY
        SET VALUE_PAYLOAD = P_VALUE_PAYLOAD,
            VALUE_WEIGHT = NVL(P_VALUE_WEIGHT, 1),

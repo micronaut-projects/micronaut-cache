@@ -24,6 +24,12 @@ import io.micronaut.data.repository.CrudRepository;
 import java.time.Instant;
 import java.util.Optional;
 
+/**
+ * Repository for lightweight cache statistics rows.
+ *
+ * @author Davide Cocco
+ * @since 5.0.0
+ */
 @JdbcRepository(dialect = Dialect.ORACLE)
 public interface OracleCacheStatsRepository extends CrudRepository<CacheStatsEntity, String> {
 

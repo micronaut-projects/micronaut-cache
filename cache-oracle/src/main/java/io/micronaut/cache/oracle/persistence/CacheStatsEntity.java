@@ -23,6 +23,8 @@ import java.time.Instant;
 
 /**
  * Persisted cache statistics row.
+ * @author Davide Cocco
+ * @since 5.0.0
  */
 @MappedEntity("MN_CACHE_STATS")
 public final class CacheStatsEntity {

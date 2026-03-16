@@ -27,6 +27,9 @@ import java.util.Optional;
 
 /**
  * Repository for cache entry rows.
+ *
+ * @author Davide Cocco
+ * @since 5.0.0
  */
 @JdbcRepository(dialect = Dialect.ORACLE)
 public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEntity, CacheEntryId> {

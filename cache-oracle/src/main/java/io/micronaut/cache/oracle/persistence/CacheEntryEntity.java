@@ -23,6 +23,8 @@ import java.time.Instant;
 
 /**
  * Cache entry row persisted in Oracle.
+ * @author Davide Cocco
+ * @since 5.0.0
  */
 @MappedEntity("MN_CACHE_ENTRY")
 public final class CacheEntryEntity {
