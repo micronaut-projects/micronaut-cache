@@ -15,6 +15,8 @@
  */
 package io.micronaut.cache.oracle
 
+import io.micronaut.cache.oracle.persistence.CacheStatsEntity
+import io.micronaut.cache.oracle.persistence.OracleCacheStatsRepository
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.type.Argument
 import io.micronaut.inject.qualifiers.Qualifiers
@@ -115,5 +117,45 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
 
         cleanup:
         context.close()
+    }
+
+    void statsAreUpdatedAsynchronouslyFromCacheOperations() {
+        given:
+        ApplicationContext context = newContext()
+        OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
+        OracleCacheStatsRepository statsRepository = context.getBean(OracleCacheStatsRepository)
+
+        when:
+        cache.put('stats:key', 21)
+        cache.get('stats:key', Argument.of(Integer))
+        cache.get('stats:missing', Argument.of(Integer))
+        cache.invalidate('stats:key')
+
+        then:
+        CacheStatsEntity stats = waitForStats(statsRepository, 'orders') {
+            Optional<CacheStatsEntity> row = statsRepository.findByCacheName('orders')
+            row.present && row.get().putCount >= 1 && row.get().hitCount >= 1 && row.get().missCount >= 1 && row.get().invalidateCount >= 1
+        }
+        stats.putCount >= 1
+        stats.hitCount >= 1
+        stats.missCount >= 1
+        stats.invalidateCount >= 1
+
+        cleanup:
+        context.close()
+    }
+
+    private static CacheStatsEntity waitForStats(OracleCacheStatsRepository repository,
+                                                 String cacheName,
+                                                 Closure<Boolean> ready) {
+        long deadline = System.currentTimeMillis() + 10_000L
+        while (System.currentTimeMillis() < deadline) {
+            Optional<CacheStatsEntity> stats = repository.findByCacheName(cacheName)
+            if (stats.present && ready.call()) {
+                return stats.get()
+            }
+            Thread.sleep(100L)
+        }
+        return repository.findByCacheName(cacheName).orElseThrow()
     }
 }

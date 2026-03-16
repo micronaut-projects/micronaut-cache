@@ -17,6 +17,7 @@ package io.micronaut.cache.oracle
 
 import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration
 import io.micronaut.cache.oracle.persistence.OracleCacheEntryRepository
+import io.micronaut.cache.oracle.persistence.OracleCacheStatsRepository
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.DefaultMutableConversionService
@@ -29,7 +30,7 @@ class CleanupScheduleTest extends Specification {
     void cleanupRemovesEntriesExpiredByWriteTtl() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configurationWithTtlOnly(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configurationWithTtlOnly(), repository, Mock(OracleCacheStatsRepository), serializer(), jsonMapper())
 
         when:
         // Cleanup is procedure-backed; this test verifies scheduling path for TTL-only configuration.
@@ -42,7 +43,7 @@ class CleanupScheduleTest extends Specification {
     void cleanupEnforcesMaxSizeAndWeight() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configurationWithLimits(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configurationWithLimits(), repository, Mock(OracleCacheStatsRepository), serializer(), jsonMapper())
 
         when:
         // Same cleanup entrypoint should also activate size/weight enforcement policy.

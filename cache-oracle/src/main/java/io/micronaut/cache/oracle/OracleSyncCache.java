@@ -21,6 +21,7 @@ import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration;
 import io.micronaut.cache.oracle.persistence.CacheEntryEntity;
 import io.micronaut.cache.oracle.persistence.CacheEntryId;
 import io.micronaut.cache.oracle.persistence.OracleCacheEntryRepository;
+import io.micronaut.cache.oracle.persistence.OracleCacheStatsRepository;
 import io.micronaut.cache.oracle.serialization.OracleCacheKey;
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer;
 import io.micronaut.core.async.publisher.Publishers;
@@ -38,6 +39,7 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
@@ -48,15 +50,18 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
 
     private final OracleCacheConfiguration configuration;
     private final OracleCacheEntryRepository entryRepository;
+    private final OracleCacheStatsRepository statsRepository;
     private final OracleKeySerializer keySerializer;
     private final JsonMapper jsonMapper;
 
     public OracleSyncCache(OracleCacheConfiguration configuration,
                            OracleCacheEntryRepository entryRepository,
+                           OracleCacheStatsRepository statsRepository,
                            OracleKeySerializer keySerializer,
                            JsonMapper jsonMapper) {
         this.configuration = configuration;
         this.entryRepository = entryRepository;
+        this.statsRepository = statsRepository;
         this.keySerializer = keySerializer;
         this.jsonMapper = jsonMapper;
     }
@@ -66,7 +71,9 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     public <T> Optional<T> get(@NonNull Object key, @NonNull Argument<T> requiredType) {
         ArgumentUtils.requireNonNull("key", key);
         ArgumentUtils.requireNonNull("requiredType", requiredType);
-        return getBySerializedKey(keySerializer.serialize(key), requiredType);
+        Optional<T> result = getBySerializedKey(keySerializer.serialize(key), requiredType);
+        recordStats(result.isPresent() ? 1 : 0, result.isPresent() ? 0 : 1, 0, 0);
+        return result;
     }
 
     @Override
@@ -78,17 +85,22 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         OracleCacheKey cacheKey = keySerializer.serialize(key);
         Optional<T> existing = getBySerializedKey(cacheKey, requiredType);
         if (existing.isPresent()) {
+            recordStats(1, 0, 0, 0);
             return existing.get();
         }
+
+        recordStats(0, 1, 0, 0);
 
         if (!configuration.isBlocking()) {
             T supplied = supplier.get();
             putBySerializedKey(cacheKey, supplied);
+            recordStats(0, 0, 1, 0);
             return supplied;
         }
 
         T supplied = supplier.get();
         putBySerializedKey(cacheKey, supplied);
+        recordStats(0, 0, 1, 0);
         return supplied;
     }
 
@@ -114,6 +126,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
 
         try {
             entryRepository.save(entity);
+            recordStats(0, 0, 1, 0);
             return Optional.empty();
         } catch (RuntimeException e) {
             if (!isDuplicateKeyViolation(e)) {
@@ -127,6 +140,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                 Instant access = Instant.now();
                 Instant nextExpiry = computeExpiry(access, existing.get().getCreatedAt()).orElse(existing.get().getExpiresAt());
                 entryRepository.updateLastAccess(configuration.getCacheName(), cacheKey.getKeyHash(), access, nextExpiry);
+                recordStats(1, 0, 0, 0);
                 return decodeValue(existing.get().getValuePayload(), argument);
             }
             return Optional.empty();
@@ -142,7 +156,8 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
 
     private void putBySerializedKey(OracleCacheKey cacheKey, @Nullable Object value) {
         if (value == null) {
-            entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+            long invalidated = entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+            recordStats(0, 0, 0, invalidated);
             return;
         }
 
@@ -170,6 +185,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
             entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
             entryRepository.save(entity);
         }
+        recordStats(0, 0, 1, 0);
     }
 
     private void blockingPutBySerializedKey(OracleCacheKey cacheKey, Object suppliedValue) {
@@ -207,12 +223,14 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     public void invalidate(@NonNull Object key) {
         ArgumentUtils.requireNonNull("key", key);
         OracleCacheKey cacheKey = keySerializer.serialize(key);
-        entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+        long invalidated = entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+        recordStats(0, 0, 0, invalidated);
     }
 
     @Override
     public void invalidateAll() {
-        entryRepository.invalidateCache(configuration.getCacheName());
+        long invalidated = entryRepository.invalidateCache(configuration.getCacheName());
+        recordStats(0, 0, 0, invalidated);
     }
 
     @Override
@@ -327,6 +345,30 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     private boolean isExpired(CacheEntryEntity entity, Instant now) {
         Instant expiresAt = entity.getExpiresAt();
         return expiresAt != null && expiresAt.isBefore(now);
+    }
+
+    private void recordStats(long hitDelta, long missDelta, long putDelta, long invalidateDelta) {
+        statsExecutor().execute(() -> {
+            try {
+                statsRepository.updateStats(
+                    configuration.getCacheName(),
+                    hitDelta,
+                    missDelta,
+                    putDelta,
+                    invalidateDelta,
+                    Instant.now()
+                );
+            } catch (RuntimeException ignored) {
+            }
+        });
+    }
+
+    private Executor statsExecutor() {
+        ExecutorService executorService = getExecutorService();
+        if (executorService != null) {
+            return executorService;
+        }
+        return Runnable::run;
     }
 
     private byte[] encodeValue(Object value) {

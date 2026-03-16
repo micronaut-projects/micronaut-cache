@@ -43,12 +43,6 @@ public final class CacheStatsEntity {
     @MappedProperty("INVALIDATE_COUNT")
     private long invalidateCount;
 
-    @MappedProperty("CURRENT_SIZE")
-    private long currentSize;
-
-    @MappedProperty("CURRENT_WEIGHT")
-    private long currentWeight;
-
     @MappedProperty("UPDATED_AT")
     private Instant updatedAt;
 
@@ -90,22 +84,6 @@ public final class CacheStatsEntity {
 
     public void setInvalidateCount(long invalidateCount) {
         this.invalidateCount = invalidateCount;
-    }
-
-    public long getCurrentSize() {
-        return currentSize;
-    }
-
-    public void setCurrentSize(long currentSize) {
-        this.currentSize = currentSize;
-    }
-
-    public long getCurrentWeight() {
-        return currentWeight;
-    }
-
-    public void setCurrentWeight(long currentWeight) {
-        this.currentWeight = currentWeight;
     }
 
     public Instant getUpdatedAt() {

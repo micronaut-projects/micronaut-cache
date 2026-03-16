@@ -17,6 +17,7 @@ package io.micronaut.cache.oracle;
 
 import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration;
 import io.micronaut.cache.oracle.persistence.OracleCacheEntryRepository;
+import io.micronaut.cache.oracle.persistence.OracleCacheStatsRepository;
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
@@ -39,8 +40,9 @@ public final class OracleCacheFactory {
     @EachBean(OracleCacheConfiguration.class)
     static OracleSyncCache oracleSyncCache(@Parameter OracleCacheConfiguration configuration,
                                            OracleCacheEntryRepository entryRepository,
+                                           OracleCacheStatsRepository statsRepository,
                                            OracleKeySerializer keySerializer,
                                            JsonMapper jsonMapper) {
-        return new OracleSyncCache(configuration, entryRepository, keySerializer, jsonMapper);
+        return new OracleSyncCache(configuration, entryRepository, statsRepository, keySerializer, jsonMapper);
     }
 }

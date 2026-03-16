@@ -19,6 +19,7 @@ import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration
 import io.micronaut.cache.oracle.persistence.CacheEntryEntity
 import io.micronaut.cache.oracle.persistence.CacheEntryId
 import io.micronaut.cache.oracle.persistence.OracleCacheEntryRepository
+import io.micronaut.cache.oracle.persistence.OracleCacheStatsRepository
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.DefaultMutableConversionService
@@ -48,7 +49,7 @@ class OracleSyncCacheTest extends Specification {
     void putPersistsEntryPayloadAndMetadata() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
 
         when:
         cache.put('k1', 42)
@@ -68,7 +69,7 @@ class OracleSyncCacheTest extends Specification {
     void getTreatsExpiredRowAsMiss() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
 
         CacheEntryEntity expired = new CacheEntryEntity()
         expired.id = new CacheEntryId('orders', [1] as byte[])
@@ -87,7 +88,7 @@ class OracleSyncCacheTest extends Specification {
         then:
         // Oracle cache should actively invalidate expired rows to avoid returning stale data forever.
         result.empty
-        1 * repository.invalidateKey('orders', _ as byte[])
+        1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
         // Once expired, access metadata should not be refreshed because entry is logically dead.
         0 * repository.updateLastAccess(_, _, _, _)
     }
@@ -95,21 +96,21 @@ class OracleSyncCacheTest extends Specification {
     void nullPutInvalidatesKey() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
 
         when:
         cache.put('k3', null)
 
         then:
         // null values are modeled as invalidation, not as nullable payload rows.
-        1 * repository.invalidateKey('orders', _ as byte[])
+        1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
         0 * repository.save(_)
     }
 
     void putIfAbsentReturnsExistingValue() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
 
         CacheEntryEntity existing = new CacheEntryEntity()
         existing.id = new CacheEntryId('orders', [3] as byte[])
@@ -135,7 +136,7 @@ class OracleSyncCacheTest extends Specification {
     void concurrentBlockingPutsCoordinateThroughDatabaseProcedure() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), serializer(), jsonMapper())
         AtomicInteger supplierCalls = new AtomicInteger()
         AtomicInteger blockingCalls = new AtomicInteger()
         AtomicReference<CacheEntryEntity> stored = new AtomicReference<>()
@@ -195,7 +196,7 @@ class OracleSyncCacheTest extends Specification {
     void blockingPathReturnsPersistedValueWhenAlreadyInserted() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), serializer(), jsonMapper())
 
         CacheEntryEntity persisted = new CacheEntryEntity()
         persisted.id = new CacheEntryId('orders', [9] as byte[])
@@ -221,7 +222,7 @@ class OracleSyncCacheTest extends Specification {
     void blockingPathRethrowsNonDuplicateFailure() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), serializer(), jsonMapper())
 
         and:
         repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
@@ -239,7 +240,7 @@ class OracleSyncCacheTest extends Specification {
     void blockingPutRollsbackOnFailure() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), serializer(), jsonMapper())
 
         and:
         repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
@@ -257,7 +258,7 @@ class OracleSyncCacheTest extends Specification {
     void putIfAbsentReturnsExistingOnDuplicateInsert() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(false), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(false), repository, statsRepository(), serializer(), jsonMapper())
 
         CacheEntryEntity existing = new CacheEntryEntity()
         existing.id = new CacheEntryId('orders', [1] as byte[])
@@ -283,7 +284,7 @@ class OracleSyncCacheTest extends Specification {
     void putSerializesObjectValueAsJsonBytes() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
 
         when:
         cache.put('json-key', new TestCar(model: 'Hello', year: 2026))
@@ -299,14 +300,14 @@ class OracleSyncCacheTest extends Specification {
     void putReplacesExistingValueWhenInsertCollides() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
 
         when:
         cache.put('replace-key', 4)
 
         then:
         1 * repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
-        1 * repository.invalidateKey('orders', _ as byte[])
+        1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
         1 * repository.save({ CacheEntryEntity entity ->
             new String(entity.valuePayload, StandardCharsets.UTF_8) == '4'
         })
@@ -315,7 +316,7 @@ class OracleSyncCacheTest extends Specification {
     void getDecodesJsonPayloadBackToObject() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
 
         CacheEntryEntity existing = new CacheEntryEntity()
         existing.id = new CacheEntryId('orders', [7] as byte[])
@@ -341,7 +342,7 @@ class OracleSyncCacheTest extends Specification {
     void getFailsFastWhenStoredPayloadIsNotValidJsonForRequestedType() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
 
         CacheEntryEntity existing = new CacheEntryEntity()
         existing.id = new CacheEntryId('orders', [7] as byte[])
@@ -366,7 +367,7 @@ class OracleSyncCacheTest extends Specification {
     void cleanupEnforcesSizeAndWeightBounds() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configurationWithLimits(), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configurationWithLimits(), repository, statsRepository(), serializer(), jsonMapper())
 
         when:
         cache.runCleanup()
@@ -379,7 +380,7 @@ class OracleSyncCacheTest extends Specification {
     void exposesCacheInfoPayload() {
         given:
         OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, serializer(), jsonMapper())
+        OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), serializer(), jsonMapper())
 
         and:
         repository.countByIdCacheName('orders') >> 2L
@@ -440,6 +441,12 @@ class OracleSyncCacheTest extends Specification {
 
     private static JsonMapper jsonMapper() {
         return JsonMapper.createDefault()
+    }
+
+    private OracleCacheStatsRepository statsRepository() {
+        return Mock(OracleCacheStatsRepository) {
+            _ * updateStats(_, _, _, _, _, _)
+        }
     }
 
     private static CacheEntryEntity storedEntity() {
