@@ -1,6 +1,4 @@
 plugins {
     id("io.micronaut.build.internal.cache-test-suite")
-    id("io.micronaut.build.internal.kotlin-base")
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jetbrains.kotlin.kapt")
+    id("io.micronaut.build.internal.kotlin-kapt")
 }

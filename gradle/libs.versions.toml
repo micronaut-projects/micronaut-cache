@@ -1,8 +1,6 @@
 [versions]
 micronaut = "5.0.0-M17"
 
-kotlin = "2.3.0"
-
 cache-ri-impl = "1.1.1"
 managed-caffeine = "3.2.3"
 managed-ehcache = "3.11.1"
@@ -40,5 +38,4 @@ cache-ri-impl = { module = "org.jsr107.ri:cache-ri-impl", version.ref = "cache-r
 testcontainers-junit = { module = "org.testcontainers:testcontainers-junit-jupiter" }
 testcontainers-spock = { module = "org.testcontainers:testcontainers-spock" }
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
-gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradle-graal = { module = "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin", version.ref = "graal-plugin" }
