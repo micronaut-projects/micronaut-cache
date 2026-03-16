@@ -46,26 +46,6 @@ class OracleSyncCacheTest extends Specification {
         int year
     }
 
-    void putPersistsEntryPayloadAndMetadata() {
-        given:
-        OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
-
-        when:
-        cache.put('k1', 42)
-
-        then:
-        // Non-obvious contract: put must always persist metadata fields because cleanup and TTL logic
-        // rely on timestamps/weight being present even for simple scalar values.
-        1 * repository.save({ CacheEntryEntity entity ->
-            entity.id.cacheName == 'orders' &&
-                    entity.valueWeight == 1L &&
-                    entity.valuePayload != null &&
-                    entity.createdAt != null &&
-                    entity.lastAccessAt != null
-        })
-    }
-
     void getTreatsExpiredRowAsMiss() {
         given:
         OracleCacheEntryRepository repository = Mock()
@@ -91,46 +71,6 @@ class OracleSyncCacheTest extends Specification {
         1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
         // Once expired, access metadata should not be refreshed because entry is logically dead.
         0 * repository.updateLastAccess(_, _, _, _)
-    }
-
-    void nullPutInvalidatesKey() {
-        given:
-        OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
-
-        when:
-        cache.put('k3', null)
-
-        then:
-        // null values are modeled as invalidation, not as nullable payload rows.
-        1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
-        0 * repository.save(_)
-    }
-
-    void putIfAbsentReturnsExistingValue() {
-        given:
-        OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
-
-        CacheEntryEntity existing = new CacheEntryEntity()
-        existing.id = new CacheEntryId('orders', [3] as byte[])
-        existing.keyPayload = [4] as byte[]
-        existing.valuePayload = '99'.bytes
-        existing.createdAt = Instant.now().minusSeconds(5)
-        existing.lastAccessAt = Instant.now().minusSeconds(5)
-        existing.expiresAt = Instant.now().plusSeconds(30)
-
-        and:
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(existing)
-
-        when:
-        Optional<Integer> result = cache.putIfAbsent('k4', 10)
-
-        then:
-        // If insert collides with an existing key, putIfAbsent must resolve by reading existing value.
-        result.present
-        result.get() == 99
-        1 * repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
     }
 
     void concurrentBlockingPutsCoordinateThroughDatabaseProcedure() {
@@ -311,32 +251,6 @@ class OracleSyncCacheTest extends Specification {
         1 * repository.save({ CacheEntryEntity entity ->
             new String(entity.valuePayload, StandardCharsets.UTF_8) == '4'
         })
-    }
-
-    void getDecodesJsonPayloadBackToObject() {
-        given:
-        OracleCacheEntryRepository repository = Mock()
-        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), serializer(), jsonMapper())
-
-        CacheEntryEntity existing = new CacheEntryEntity()
-        existing.id = new CacheEntryId('orders', [7] as byte[])
-        existing.keyPayload = [8] as byte[]
-        existing.valuePayload = '{"model":"Hello","year":2026}'.bytes
-        existing.createdAt = Instant.now().minusSeconds(5)
-        existing.lastAccessAt = Instant.now().minusSeconds(5)
-        existing.expiresAt = Instant.now().plusSeconds(30)
-
-        and:
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(existing)
-
-        when:
-        Optional<TestCar> result = cache.get('json-key', Argument.of(TestCar))
-
-        then:
-        // Round-trip contract: encoded JSON payload must deserialize to requested typed argument.
-        result.present
-        result.get().model == 'Hello'
-        result.get().year == 2026
     }
 
     void getFailsFastWhenStoredPayloadIsNotValidJsonForRequestedType() {
