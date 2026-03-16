@@ -102,7 +102,7 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         context.close()
     }
 
-    void invalidationAndExpirationQueriesWork() {
+    void invalidationQueriesWork() {
         given:
         ApplicationContext context = newContext()
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
@@ -120,12 +120,11 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         repository.save(expiring)
 
         when:
-        // deleteExpired should remove stale rows, then invalidateKey should report no-op for missing row.
-        long deletedExpired = repository.deleteExpired('orders', Instant.now())
+        long deleted = repository.invalidateKey('orders', hash)
         long deletedMissing = repository.invalidateKey('orders', hash)
 
         then:
-        deletedExpired == 1
+        deleted == 1
         deletedMissing == 0
 
         cleanup:

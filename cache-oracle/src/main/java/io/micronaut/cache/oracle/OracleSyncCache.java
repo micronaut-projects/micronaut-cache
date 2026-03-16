@@ -178,18 +178,17 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                 entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
                 blockingPutInstruction(cacheKey, value);
             }
-            return;
-        }
-
-        CacheEntryEntity entity = newEntry(cacheKey, value);
-        try {
-            entryRepository.save(entity);
-        } catch (RuntimeException e) {
-            if (!isDuplicateKeyViolation(e)) {
-                throw e;
+        } else {
+            CacheEntryEntity entity = newEntry(cacheKey, value);
+            try {
+                entryRepository.save(entity);
+            } catch (RuntimeException e) {
+                if (!isDuplicateKeyViolation(e)) {
+                    throw e;
+                }
+                entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+                entryRepository.save(entity);
             }
-            entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
-            entryRepository.save(entity);
         }
         recordStats(0, 0, 1, 0);
     }
