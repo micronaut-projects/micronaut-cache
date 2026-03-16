@@ -8,7 +8,7 @@ dependencies {
     api projects.micronautCacheCore
 
     implementation(libs.managed.oracle.jdbc)
-    implementation("io.micronaut:micronaut-json-core")
+    implementation(mn.micronaut.json.core)
     implementation(mnSerde.micronaut.serde.jackson)
     implementation(mnData.micronaut.data.jdbc)
     implementation(mnSql.micronaut.jdbc.hikari)
@@ -18,7 +18,7 @@ dependencies {
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.reactor)
     testImplementation(platform(mnTestResources.boms.testcontainers))
-    testImplementation("org.testcontainers:testcontainers-oracle-xe")
+    testImplementation(mnTestResources.testcontainers.oracle.xe)
     testAnnotationProcessor(mnData.micronaut.data.processor)
 }
 
