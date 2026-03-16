@@ -296,6 +296,22 @@ class OracleSyncCacheTest extends Specification {
         })
     }
 
+    void putReplacesExistingValueWhenInsertCollides() {
+        given:
+        OracleCacheEntryRepository repository = Mock()
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, serializer(), jsonMapper())
+
+        when:
+        cache.put('replace-key', 4)
+
+        then:
+        1 * repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
+        1 * repository.invalidateKey('orders', _ as byte[])
+        1 * repository.save({ CacheEntryEntity entity ->
+            new String(entity.valuePayload, StandardCharsets.UTF_8) == '4'
+        })
+    }
+
     void getDecodesJsonPayloadBackToObject() {
         given:
         OracleCacheEntryRepository repository = Mock()

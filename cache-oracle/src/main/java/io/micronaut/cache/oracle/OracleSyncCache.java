@@ -161,7 +161,15 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         entity.setExpiresAt(computeExpiry(now, now).orElse(null));
         entity.setValueWeight(1L);
         entity.setValuePayload(encodeValue(value));
-        entryRepository.save(entity);
+        try {
+            entryRepository.save(entity);
+        } catch (RuntimeException e) {
+            if (!isDuplicateKeyViolation(e)) {
+                throw e;
+            }
+            entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+            entryRepository.save(entity);
+        }
     }
 
     private void blockingPutBySerializedKey(OracleCacheKey cacheKey, Object suppliedValue) {

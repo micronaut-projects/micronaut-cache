@@ -15,7 +15,6 @@
  */
 package io.micronaut.cache.oracle
 
-import io.micronaut.cache.oracle.schema.OracleCacheSchemaInitializer
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.OracleContainer
 import spock.lang.Shared
@@ -39,20 +38,12 @@ abstract class OracleIntegrationSupport extends Specification {
     }
 
     protected ApplicationContext newContext(Map<String, Object> properties = [:]) {
-        Map<String, Object> base = [
-            'datasources.default.url'               : oracle.jdbcUrl,
-            'datasources.default.username'          : oracle.username,
-            'datasources.default.password'          : oracle.password,
-            'datasources.default.driver-class-name' : 'oracle.jdbc.OracleDriver',
+        return OracleTestSupport.newContext(oracle, [
             'micronaut.caches.orders.expire-after-access': '30s',
             'micronaut.caches.orders.expire-after-write' : '2m',
             'micronaut.caches.orders.record-stats'       : true,
             'micronaut.caches.orders.test-mode'          : true,
-        ]
-        base.putAll(properties)
-        ApplicationContext context = ApplicationContext.run(base)
-        context.getBean(OracleCacheSchemaInitializer).onApplicationEvent(null)
-        return context
+        ], properties)
     }
 
     protected Connection openJdbcConnection() {

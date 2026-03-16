@@ -24,20 +24,14 @@ final class OracleTckSupport {
 
     static synchronized ApplicationContext sharedContext(Map<String, Object> properties = [:]) {
         ensureStarted()
-        Map<String, Object> base = [
-            'datasources.default.url'               : ORACLE.jdbcUrl,
-            'datasources.default.username'          : ORACLE.username,
-            'datasources.default.password'          : ORACLE.password,
-            'datasources.default.driver-class-name' : 'oracle.jdbc.OracleDriver',
+        return OracleTestSupport.newContext(ORACLE, [
             'micronaut.caches.counter.expire-after-access' : '30s',
             'micronaut.caches.counter2.expire-after-access': '30s',
             'micronaut.caches.test.expire-after-access'    : '30s',
             'micronaut.caches.counter.test-mode'           : true,
             'micronaut.caches.counter2.test-mode'          : true,
             'micronaut.caches.test.test-mode'              : true,
-        ]
-        base.putAll(properties)
-        return ApplicationContext.run(base)
+        ], properties)
     }
 
     private static synchronized void ensureStarted() {

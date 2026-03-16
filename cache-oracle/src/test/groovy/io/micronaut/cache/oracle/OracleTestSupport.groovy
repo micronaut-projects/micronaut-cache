@@ -15,6 +15,8 @@
  */
 package io.micronaut.cache.oracle
 
+import io.micronaut.cache.oracle.schema.OracleCacheSchemaInitializer
+import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.OracleContainer
 import org.testcontainers.utility.DockerImageName
@@ -61,6 +63,22 @@ final class OracleTestSupport {
                 "Failed applying cleanup job privilege grants (exit=${result.exitCode}). stdout=${result.stdout} stderr=${result.stderr}"
             )
         }
+    }
+
+    static ApplicationContext newContext(OracleContainer oracle,
+                                         Map<String, Object> baseProperties,
+                                         Map<String, Object> properties = [:]) {
+        Map<String, Object> resolved = [
+            'datasources.default.url'               : oracle.jdbcUrl,
+            'datasources.default.username'          : oracle.username,
+            'datasources.default.password'          : oracle.password,
+            'datasources.default.driver-class-name' : 'oracle.jdbc.OracleDriver',
+        ]
+        resolved.putAll(baseProperties)
+        resolved.putAll(properties)
+        ApplicationContext context = ApplicationContext.run(resolved)
+        context.getBean(OracleCacheSchemaInitializer).onApplicationEvent(null)
+        return context
     }
 
     static String resolveOracleImage() {
