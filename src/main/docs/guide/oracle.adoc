@@ -1,0 +1,43 @@
+To cache using Oracle Database add the following dependency to your application:
+
+dependency:io.micronaut.cache:micronaut-cache-oracle[]
+
+Then configure one or more caches. For example with `application.yml`:
+
+.Cache Configuration Example
+[configuration]
+----
+micronaut:
+    caches:
+        orders:
+            expire-after-access: 30s
+            expire-after-write: 2m
+            cleanup-interval: 60s
+            cleanup-batch-size: 100
+----
+
+The Oracle implementation persists cache entries in Oracle tables and creates a scheduler job per configured cache to clean up expired entries.
+
+If you want cache writes for a given cache name to coordinate through the database, enable blocking mode:
+
+[configuration]
+----
+micronaut:
+    caches:
+        orders:
+            blocking: true
+            lock-wait-timeout: 5s
+----
+
+Additional Oracle-specific options include:
+
+- `cleanup-interval` to control how often the Oracle scheduler job runs
+- `cleanup-batch-size` to bound each cleanup pass
+- `maximum-size` to enforce a row-count limit during cleanup
+- `maximum-weight` to enforce an approximate total-weight limit during cleanup
+
+[NOTE]
+.Database setup
+====
+The Oracle cache implementation expects an Oracle datasource to be configured and uses JDBC plus Micronaut Data to create the cache schema on startup.
+====

@@ -54,17 +54,20 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     private final OracleCacheConfiguration configuration;
     private final OracleCacheEntryRepository entryRepository;
     private final OracleCacheStatsRepository statsRepository;
+    private final ExecutorService executorService;
     private final OracleKeySerializer keySerializer;
     private final JsonMapper jsonMapper;
 
     public OracleSyncCache(OracleCacheConfiguration configuration,
                            OracleCacheEntryRepository entryRepository,
                            OracleCacheStatsRepository statsRepository,
+                           ExecutorService executorService,
                            OracleKeySerializer keySerializer,
                            JsonMapper jsonMapper) {
         this.configuration = configuration;
         this.entryRepository = entryRepository;
         this.statsRepository = statsRepository;
+        this.executorService = executorService;
         this.keySerializer = keySerializer;
         this.jsonMapper = jsonMapper;
     }
@@ -255,7 +258,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
 
     @Override
     public ExecutorService getExecutorService() {
-        return SyncCache.super.getExecutorService();
+        return executorService;
     }
 
     @Override
