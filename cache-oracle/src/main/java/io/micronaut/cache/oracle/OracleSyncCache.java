@@ -337,6 +337,9 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     }
 
     private void recordStats(long hitDelta, long missDelta, long putDelta, long invalidateDelta) {
+        if (!configuration.isRecordStats()) {
+            return;
+        }
         statsExecutor().execute(() -> {
             try {
                 statsRepository.updateStats(
