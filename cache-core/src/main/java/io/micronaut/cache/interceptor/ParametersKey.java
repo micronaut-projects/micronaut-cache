@@ -48,6 +48,14 @@ public class ParametersKey implements Serializable {
         }
     }
 
+    /**
+     * @return A defensive copy of the parameters used to build this key
+     * @since 6.0.0
+     */
+    public Object[] getParameters() {
+        return Arrays.copyOf(params, params.length);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -60,19 +60,9 @@ public final class OracleKeySerializer {
             return List.of();
         }
         if (cacheKey instanceof ParametersKey parametersKey) {
-            return List.of(getParams(parametersKey));
+            return List.of(parametersKey.getParameters());
         }
         return List.of(cacheKey);
-    }
-
-    private Object[] getParams(ParametersKey key) {
-        try {
-            var field = ParametersKey.class.getDeclaredField("params");
-            field.setAccessible(true);
-            return (Object[]) field.get(key);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Unable to read ParametersKey arguments", e);
-        }
     }
 
     private Object canonicalize(Object value) {
