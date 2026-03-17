@@ -18,13 +18,14 @@ package io.micronaut.cache.oracle
 import io.micronaut.cache.interceptor.ParametersKey
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer
 import io.micronaut.core.convert.DefaultMutableConversionService
+import io.micronaut.json.JsonMapper
 import spock.lang.Specification
 
 import java.nio.charset.StandardCharsets
 
 class OracleKeySerializerTest extends Specification {
 
-    private final OracleKeySerializer serializer = new OracleKeySerializer(new DefaultMutableConversionService())
+    private final OracleKeySerializer serializer = new OracleKeySerializer(JsonMapper.createDefault(), new DefaultMutableConversionService())
 
     void canonicalizesNestedArguments() {
         given:

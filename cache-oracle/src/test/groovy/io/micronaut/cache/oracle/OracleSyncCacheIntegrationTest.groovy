@@ -16,12 +16,14 @@
 package io.micronaut.cache.oracle
 
 import io.micronaut.cache.oracle.persistence.CacheStatsEntity
-import io.micronaut.cache.oracle.persistence.OracleCacheStatsRepository
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.type.Argument
 import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.serde.annotation.Serdeable
 
+import java.sql.Connection
+import java.time.OffsetDateTime
+import java.util.Optional
 import java.util.concurrent.atomic.AtomicInteger
 
 class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
@@ -123,7 +125,6 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         given:
         ApplicationContext context = newContext()
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
-        OracleCacheStatsRepository statsRepository = context.getBean(OracleCacheStatsRepository)
 
         when:
         cache.put('stats:key', 21)
@@ -132,8 +133,8 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         cache.invalidate('stats:key')
 
         then:
-        CacheStatsEntity stats = waitForStats(statsRepository, 'orders') {
-            Optional<CacheStatsEntity> row = statsRepository.findByCacheName('orders')
+        CacheStatsEntity stats = waitForStats('orders') {
+            Optional<CacheStatsEntity> row = readStats('orders')
             row.present && row.get().putCount >= 1 && row.get().hitCount >= 1 && row.get().missCount >= 1 && row.get().invalidateCount >= 1
         }
         stats.putCount >= 1
@@ -145,17 +146,40 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         context.close()
     }
 
-    private static CacheStatsEntity waitForStats(OracleCacheStatsRepository repository,
-                                                 String cacheName,
-                                                 Closure<Boolean> ready) {
+    private CacheStatsEntity waitForStats(String cacheName,
+                                                  Closure<Boolean> ready) {
         long deadline = System.currentTimeMillis() + 10_000L
         while (System.currentTimeMillis() < deadline) {
-            Optional<CacheStatsEntity> stats = repository.findByCacheName(cacheName)
+            Optional<CacheStatsEntity> stats = readStats(cacheName)
             if (stats.present && ready.call()) {
                 return stats.get()
             }
             Thread.sleep(100L)
         }
-        return repository.findByCacheName(cacheName).orElseThrow()
+        return readStats(cacheName).orElseThrow()
+    }
+
+    private Optional<CacheStatsEntity> readStats(String cacheName) {
+        try (Connection connection = openJdbcConnection();
+             def statement = connection.prepareStatement('''
+                 SELECT CACHE_NAME, HIT_COUNT, MISS_COUNT, PUT_COUNT, INVALIDATE_COUNT, UPDATED_AT
+                 FROM MN_CACHE_STATS
+                 WHERE CACHE_NAME = ?
+             ''')) {
+            statement.setString(1, cacheName)
+            try (def rs = statement.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty()
+                }
+                CacheStatsEntity entity = new CacheStatsEntity()
+                entity.cacheName = rs.getString('CACHE_NAME')
+                entity.hitCount = rs.getLong('HIT_COUNT')
+                entity.missCount = rs.getLong('MISS_COUNT')
+                entity.putCount = rs.getLong('PUT_COUNT')
+                entity.invalidateCount = rs.getLong('INVALIDATE_COUNT')
+                entity.updatedAt = rs.getObject('UPDATED_AT', OffsetDateTime).toInstant()
+                return Optional.of(entity)
+            }
+        }
     }
 }

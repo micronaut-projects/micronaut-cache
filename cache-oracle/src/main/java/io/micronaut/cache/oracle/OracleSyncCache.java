@@ -88,15 +88,19 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         OracleCacheKey cacheKey = keySerializer.serialize(key);
         Optional<T> existing = getBySerializedKey(cacheKey, requiredType);
         if (existing.isPresent()) {
+            // Cache Hit
             recordStats(1, 0, 0, 0);
             return existing.get();
         }
-
-        recordStats(0, 1, 0, 0);
-        T supplied = supplier.get();
-        putBySerializedKey(cacheKey, supplied);
-        recordStats(0, 0, 1, 0);
-        return supplied;
+        else {
+            // Cache Miss
+            recordStats(0, 1, 0, 0);
+            T supplied = supplier.get();
+            putBySerializedKey(cacheKey, supplied);
+            // Cache Put
+            recordStats(0, 0, 1, 0);
+            return supplied;
+        }
     }
 
     private <T> Optional<T> getBySerializedKey(OracleCacheKey cacheKey, Argument<T> requiredType) {
@@ -136,6 +140,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
 
         try {
             entryRepository.save(entity);
+            // Cache Put
             recordStats(0, 0, 1, 0);
             return Optional.empty();
         } catch (RuntimeException e) {
@@ -150,6 +155,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                 Instant access = Instant.now();
                 Instant nextExpiry = computeExpiry(access, existing.get().getCreatedAt()).orElse(existing.get().getExpiresAt());
                 entryRepository.updateLastAccess(configuration.getCacheName(), cacheKey.getKeyHash(), access, nextExpiry);
+                // Cache Hit
                 recordStats(1, 0, 0, 0);
                 return decodeValue(existing.get().getValuePayload(), argument);
             }

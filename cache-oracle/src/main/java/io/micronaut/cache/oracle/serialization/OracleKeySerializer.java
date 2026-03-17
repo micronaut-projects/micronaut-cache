@@ -44,10 +44,6 @@ public final class OracleKeySerializer {
     private final JsonMapper jsonMapper;
     private final ConversionService conversionService;
 
-    public OracleKeySerializer(ConversionService conversionService) {
-        this(JsonMapper.createDefault(), conversionService);
-    }
-
     public OracleKeySerializer(JsonMapper jsonMapper, ConversionService conversionService) {
         this.jsonMapper = jsonMapper;
         this.conversionService = conversionService;

@@ -364,7 +364,7 @@ class OracleSyncCacheTest extends Specification {
     }
 
     private static OracleKeySerializer serializer() {
-        return new OracleKeySerializer(conversionService())
+        return new OracleKeySerializer(JsonMapper.createDefault(), conversionService())
     }
 
     private static DefaultMutableConversionService conversionService() {
