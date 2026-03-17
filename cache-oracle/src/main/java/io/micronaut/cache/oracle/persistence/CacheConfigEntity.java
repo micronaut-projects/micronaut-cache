@@ -42,6 +42,9 @@ public final class CacheConfigEntity {
     @MappedProperty("CLEANUP_INTERVAL_SECONDS")
     private long cleanupIntervalSeconds;
 
+    @MappedProperty("CLEANUP_BATCH_SIZE")
+    private long cleanupBatchSize;
+
     @MappedProperty("MAXIMUM_SIZE")
     private Long maximumSize;
 
@@ -84,6 +87,14 @@ public final class CacheConfigEntity {
 
     public void setCleanupIntervalSeconds(long cleanupIntervalSeconds) {
         this.cleanupIntervalSeconds = cleanupIntervalSeconds;
+    }
+
+    public long getCleanupBatchSize() {
+        return cleanupBatchSize;
+    }
+
+    public void setCleanupBatchSize(long cleanupBatchSize) {
+        this.cleanupBatchSize = cleanupBatchSize;
     }
 
     public Long getMaximumSize() {

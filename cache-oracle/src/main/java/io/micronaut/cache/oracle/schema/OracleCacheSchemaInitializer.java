@@ -18,7 +18,7 @@ package io.micronaut.cache.oracle.schema;
 import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration;
 import io.micronaut.data.connection.annotation.Connectable;
 import io.micronaut.context.event.ApplicationEventListener;
-import io.micronaut.runtime.server.event.ServerStartupEvent;
+import io.micronaut.runtime.event.ApplicationStartupEvent;
 import jakarta.inject.Singleton;
 
 import javax.sql.DataSource;
@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Singleton
 @Connectable
-public class OracleCacheSchemaInitializer implements ApplicationEventListener<ServerStartupEvent> {
+public class OracleCacheSchemaInitializer implements ApplicationEventListener<ApplicationStartupEvent> {
 
     private static final String DEFAULT_RESOURCE_PATH = "db/oracle-cache.sql";
     private static final String UPSERT_CACHE_CONFIG_CALL = "{ call MN_CACHE_UPSERT_CONFIG(?, ?, ?, ?, ?, ?, ?, ?) }";
@@ -69,7 +69,7 @@ public class OracleCacheSchemaInitializer implements ApplicationEventListener<Se
     }
 
     @Override
-    public void onApplicationEvent(ServerStartupEvent event) {
+    public void onApplicationEvent(ApplicationStartupEvent event) {
         initializeSchema();
     }
 
