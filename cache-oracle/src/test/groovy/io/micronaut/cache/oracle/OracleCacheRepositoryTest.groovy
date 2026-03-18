@@ -48,7 +48,7 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
 
         when:
         // Critical repository behavior: lookups must be hash-based to avoid LOB payload comparisons.
-        CacheEntryEntity fetched = repository.findByIdCacheNameAndIdKeyHash('orders', hash).orElse(null)
+        CacheEntryEntity fetched = repository.findById(new CacheEntryId('orders', hash)).orElse(null)
 
         then:
         fetched != null

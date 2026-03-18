@@ -23,8 +23,6 @@ import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 
 import java.time.Instant;
-import java.util.Optional;
-
 /**
  * Repository for cache entry rows.
  *
@@ -33,9 +31,6 @@ import java.util.Optional;
  */
 @JdbcRepository(dialect = Dialect.ORACLE)
 public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEntity, CacheEntryId> {
-
-    @Query(value = "SELECT CACHE_NAME, KEY_HASH, KEY_PAYLOAD, VALUE_PAYLOAD, VALUE_WEIGHT, CREATED_AT, LAST_ACCESS_AT, EXPIRES_AT FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash", nativeQuery = true)
-    Optional<CacheEntryEntity> findByIdCacheNameAndIdKeyHash(String cacheName, byte[] keyHash);
 
     @Procedure("MN_CACHE_PUT_BLOCKING")
     String blockingPut(String cacheName,

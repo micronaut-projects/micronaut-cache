@@ -60,7 +60,7 @@ class OracleSyncCacheTest extends Specification {
         expired.expiresAt = Instant.now().minusSeconds(1)
 
         and:
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(expired)
+        repository.findById(_ as CacheEntryId) >> Optional.of(expired)
 
         when:
         Optional<Integer> result = cache.get('k2', Argument.of(Integer))
@@ -87,7 +87,7 @@ class OracleSyncCacheTest extends Specification {
         }
 
         and:
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> {
+        repository.findById(_ as CacheEntryId) >> {
             return Optional.ofNullable(stored.get())
         }
         repository.blockingPut(_, _, _, _, _, _, 0L) >> {
@@ -170,7 +170,7 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), executorService(), serializer(), jsonMapper())
 
         and:
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
+        repository.findById(_ as CacheEntryId) >> Optional.empty()
         repository.blockingPut(_, _, _, _, _, _, 0L) >> { throw new IllegalStateException('connection lost') }
 
         when:
@@ -188,7 +188,7 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), executorService(), serializer(), jsonMapper())
 
         and:
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
+        repository.findById(_ as CacheEntryId) >> Optional.empty()
 
         when:
         cache.get('rollback-key', Argument.of(Integer), { throw new IllegalStateException('write failed') })
@@ -215,7 +215,7 @@ class OracleSyncCacheTest extends Specification {
 
         and:
         repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(existing)
+        repository.findById(_ as CacheEntryId) >> Optional.of(existing)
 
         when:
         Optional<Integer> result = cache.putIfAbsent('duplicate', 22)
@@ -273,7 +273,7 @@ class OracleSyncCacheTest extends Specification {
         existing.expiresAt = Instant.now().plusSeconds(30)
 
         and:
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(existing)
+        repository.findById(_ as CacheEntryId) >> Optional.of(existing)
 
         when:
         cache.get('json-key', Argument.of(TestCar))

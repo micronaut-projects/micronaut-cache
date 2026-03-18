@@ -18,6 +18,7 @@ package io.micronaut.cache.oracle.schema;
 import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration;
 import io.micronaut.data.connection.annotation.Connectable;
 import io.micronaut.context.event.ApplicationEventListener;
+import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.runtime.event.ApplicationStartupEvent;
 import jakarta.inject.Singleton;
 
@@ -51,19 +52,23 @@ public class OracleCacheSchemaInitializer implements ApplicationEventListener<Ap
     private static final String REGISTER_CLEANUP_JOB_CALL = "{ call MN_CACHE_REGISTER_CLEANUP_JOB(?, ?) }";
 
     private final DataSource dataSource;
+    private final ResourceResolver resourceResolver;
     private final List<OracleCacheConfiguration> cacheConfigurations;
     private final String scriptResourcePath;
     private final AtomicBoolean initialized = new AtomicBoolean(false);
 
     public OracleCacheSchemaInitializer(DataSource dataSource,
+                                        ResourceResolver resourceResolver,
                                         List<OracleCacheConfiguration> cacheConfigurations) {
-        this(dataSource, DEFAULT_RESOURCE_PATH, cacheConfigurations);
+        this(dataSource, resourceResolver, DEFAULT_RESOURCE_PATH, cacheConfigurations);
     }
 
     OracleCacheSchemaInitializer(DataSource dataSource,
+                                 ResourceResolver resourceResolver,
                                  String scriptResourcePath,
                                  List<OracleCacheConfiguration> cacheConfigurations) {
         this.dataSource = dataSource;
+        this.resourceResolver = resourceResolver;
         this.scriptResourcePath = scriptResourcePath;
         this.cacheConfigurations = List.copyOf(cacheConfigurations);
     }
@@ -143,10 +148,9 @@ public class OracleCacheSchemaInitializer implements ApplicationEventListener<Ap
     }
 
     private List<String> readStatements() {
-        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(scriptResourcePath)) {
-            if (stream == null) {
-                throw new IllegalStateException("Schema SQL resource not found: " + scriptResourcePath);
-            }
+        try (InputStream stream = resourceResolver.getResource("classpath:" + scriptResourcePath).orElseThrow(() ->
+            new IllegalStateException("Schema SQL resource not found: " + scriptResourcePath)
+        ).openStream()) {
             String content = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
             return parseStatements(stripLineComments(content));
         } catch (IOException e) {

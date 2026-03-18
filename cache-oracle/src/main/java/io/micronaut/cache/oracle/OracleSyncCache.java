@@ -114,9 +114,8 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     }
 
     private <T> Optional<T> getBySerializedKey(OracleCacheKey cacheKey, Argument<T> requiredType) {
-        Optional<CacheEntryEntity> existing = entryRepository.findByIdCacheNameAndIdKeyHash(
-            configuration.getCacheName(),
-            cacheKey.getKeyHash()
+        Optional<CacheEntryEntity> existing = entryRepository.findById(
+            new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash())
         );
         if (existing.isEmpty()) {
             return Optional.empty();
@@ -154,9 +153,8 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                 return Optional.empty();
             }
             if ("UPDATED_TIMESTAMP".equals(status)) {
-                Optional<CacheEntryEntity> existing = entryRepository.findByIdCacheNameAndIdKeyHash(
-                    configuration.getCacheName(),
-                    cacheKey.getKeyHash()
+                Optional<CacheEntryEntity> existing = entryRepository.findById(
+                    new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash())
                 );
                 if (existing.isPresent() && !isExpired(existing.get(), Instant.now()) && hasStoredValue(existing.get().getValuePayload())) {
                     recordStats(1, 0, 0, 0);
@@ -176,9 +174,8 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                 if (!isDuplicateKeyViolation(e)) {
                     throw e;
                 }
-                Optional<CacheEntryEntity> existing = entryRepository.findByIdCacheNameAndIdKeyHash(
-                    configuration.getCacheName(),
-                    cacheKey.getKeyHash()
+                Optional<CacheEntryEntity> existing = entryRepository.findById(
+                    new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash())
                 );
                 if (existing.isPresent() && !isExpired(existing.get(), Instant.now()) && hasStoredValue(existing.get().getValuePayload())) {
                     Instant access = Instant.now();

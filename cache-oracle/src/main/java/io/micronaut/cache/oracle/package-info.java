@@ -19,4 +19,10 @@
  * @author Davide Cocco
  * @since 6.0.0
  */
+@Configuration
+@Requires(property = "oracle.enabled", notEquals = StringUtils.FALSE)
 package io.micronaut.cache.oracle;
+
+import io.micronaut.context.annotation.Configuration;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.util.StringUtils;

@@ -46,6 +46,15 @@ Additional Oracle-specific options include:
 - `maximum-size` to enforce a row-count limit during cleanup
 - `maximum-weight` to enforce an approximate total-weight limit during cleanup
 
+To disable the Oracle-backed cache:
+
+[configuration]
+----
+oracle-cache:
+  enabled: false
+----
+
+
 [NOTE]
 .Schema initialization
 ====
