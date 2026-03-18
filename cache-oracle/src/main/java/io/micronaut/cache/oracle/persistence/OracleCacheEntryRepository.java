@@ -29,7 +29,7 @@ import java.util.Optional;
  * Repository for cache entry rows.
  *
  * @author Davide Cocco
- * @since 5.0.0
+ * @since 6.0.0
  */
 @JdbcRepository(dialect = Dialect.ORACLE)
 public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEntity, CacheEntryId> {
@@ -43,7 +43,8 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
                        byte[] keyPayload,
                        byte[] valuePayload,
                        @Nullable Instant expiresAt,
-                       long valueWeight);
+                       long valueWeight,
+                       long insertOnly);
 
     @Query(value = "UPDATE MN_CACHE_ENTRY SET LAST_ACCESS_AT = :lastAccessAt, EXPIRES_AT = :expiresAt WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash", nativeQuery = true)
     long updateLastAccess(String cacheName, byte[] keyHash, Instant lastAccessAt, @Nullable Instant expiresAt);

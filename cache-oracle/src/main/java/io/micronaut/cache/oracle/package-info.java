@@ -17,6 +17,6 @@
  * Contains an Oracle-backed cache implementation.
  *
  * @author Davide Cocco
- * @since 5.0.0
+ * @since 6.0.0
  */
 package io.micronaut.cache.oracle;

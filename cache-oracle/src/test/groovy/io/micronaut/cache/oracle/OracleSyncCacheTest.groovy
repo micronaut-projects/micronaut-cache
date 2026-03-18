@@ -90,18 +90,19 @@ class OracleSyncCacheTest extends Specification {
         repository.findByIdCacheNameAndIdKeyHash(_, _) >> {
             return Optional.ofNullable(stored.get())
         }
-        repository.blockingPut(_, _, _, _, _, _) >> {
+        repository.blockingPut(_, _, _, _, _, _, 0L) >> {
             int call = blockingCalls.incrementAndGet()
-            // First caller wins and stores the row. Later callers observe ALREADY_INSERTED.
+            // First caller inserts, later callers update after Oracle serialization.
             if (call == 1) {
                 stored.set(storedEntity())
-                return 'SUCCESS'
+                return 'INSERTED'
             }
-            // Simulate database-level coordination: second caller waits until first committed value exists.
+            // Simulate database-level coordination: second caller waits until first committed value exists,
+            // then overwrites it.
             while (stored.get() == null) {
                 Thread.sleep(5)
             }
-            return 'ALREADY_INSERTED'
+            return 'UPDATED_PAYLOAD'
         }
 
         ExecutorService pool = Executors.newFixedThreadPool(2)
@@ -133,48 +134,34 @@ class OracleSyncCacheTest extends Specification {
         pool.shutdownNow()
     }
 
-    void blockingPathReturnsPersistedValueWhenAlreadyInserted() {
+    void blockingPutAcceptsUpdatedStatusAsSuccessfulOverwrite() {
         given:
         OracleCacheEntryRepository repository = Mock()
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), executorService(), serializer(), jsonMapper())
 
-        CacheEntryEntity persisted = new CacheEntryEntity()
-        persisted.id = new CacheEntryId('orders', [9] as byte[])
-        persisted.keyPayload = [8] as byte[]
-        persisted.valuePayload = '11'.bytes
-        persisted.createdAt = Instant.now()
-        persisted.lastAccessAt = Instant.now()
-        persisted.expiresAt = Instant.now().plusSeconds(30)
-
         and:
-        repository.blockingPut(_, _, _, _, _, _) >> 'ALREADY_INSERTED'
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.of(persisted)
+        repository.blockingPut(_, _, _, _, _, _, 0L) >> 'UPDATED'
 
         when:
-        Integer value = cache.get('collision', Argument.of(Integer), { 11 })
+        cache.put('collision', 12)
 
         then:
-        // ALREADY_INSERTED means another contender has already committed the value.
-        // Caller must read the persisted row and return it.
-        value == 11
+        noExceptionThrown()
     }
 
-    void blockingPathReplacesExistingValueWhenProcedureInsertCollides() {
+    void blockingPutTreatsInsertedStatusAsSuccessfulWrite() {
         given:
         OracleCacheEntryRepository repository = Mock()
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), executorService(), serializer(), jsonMapper())
 
         and:
-        repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
+        repository.blockingPut(_, _, _, _, _, _, 0L) >> 'INSERTED'
 
         when:
-        Integer value = cache.get('blocking-replace', Argument.of(Integer), { 12 })
+        cache.put('blocking-replace', 12)
 
         then:
-        value == 12
-        1 * repository.blockingPut(_, _, _, _, _, _) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
-        1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
-        1 * repository.blockingPut(_, _, _, _, _, _) >> 'SUCCESS'
+        noExceptionThrown()
     }
 
     void blockingPathRethrowsNonDuplicateFailure() {
@@ -184,7 +171,7 @@ class OracleSyncCacheTest extends Specification {
 
         and:
         repository.findByIdCacheNameAndIdKeyHash(_, _) >> Optional.empty()
-        repository.blockingPut(_, _, _, _, _, _) >> { throw new IllegalStateException('connection lost') }
+        repository.blockingPut(_, _, _, _, _, _, 0L) >> { throw new IllegalStateException('connection lost') }
 
         when:
         cache.get('failure', Argument.of(Integer), { 15 })
@@ -210,7 +197,7 @@ class OracleSyncCacheTest extends Specification {
         // If supplier fails, cache must not attempt DB write coordination at all.
         IllegalStateException ex = thrown()
         ex.message.contains('write failed')
-        0 * repository.blockingPut(_, _, _, _, _, _)
+        0 * repository.blockingPut(_, _, _, _, _, _, _)
     }
 
     void putIfAbsentReturnsExistingOnDuplicateInsert() {

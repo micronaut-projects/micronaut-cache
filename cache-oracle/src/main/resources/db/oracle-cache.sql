@@ -263,6 +263,7 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_PUT_BLOCKING(
     P_VALUE_PAYLOAD IN BLOB,
     P_EXPIRES_AT IN TIMESTAMP WITH TIME ZONE,
     P_VALUE_WEIGHT IN NUMBER,
+    P_INSERT_ONLY IN NUMBER,
     P_STATUS OUT VARCHAR2
 ) AS
     V_NOW TIMESTAMP(6) WITH TIME ZONE := SYSTIMESTAMP AT TIME ZONE 'UTC';
@@ -300,10 +301,30 @@ BEGIN
      WHERE CACHE_NAME = P_CACHE_NAME
        AND KEY_HASH = P_KEY_HASH;
 
-    P_STATUS := 'SUCCESS';
+    P_STATUS := 'INSERTED';
 EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
-        P_STATUS := 'ALREADY_INSERTED';
+        IF NVL(P_INSERT_ONLY, 0) = 1 THEN
+            -- putIfAbsent path -> only update timestamps and keep same payload
+            UPDATE MN_CACHE_ENTRY
+               SET LAST_ACCESS_AT = V_NOW,
+                   EXPIRES_AT = P_EXPIRES_AT
+             WHERE CACHE_NAME = P_CACHE_NAME
+               AND KEY_HASH = P_KEY_HASH;
+
+            P_STATUS := 'UPDATED_TIMESTAMP';
+        ELSE
+            -- put path -> update payload as well
+            UPDATE MN_CACHE_ENTRY
+               SET VALUE_PAYLOAD = P_VALUE_PAYLOAD,
+                   VALUE_WEIGHT = NVL(P_VALUE_WEIGHT, 1),
+                   LAST_ACCESS_AT = V_NOW,
+                   EXPIRES_AT = P_EXPIRES_AT
+             WHERE CACHE_NAME = P_CACHE_NAME
+               AND KEY_HASH = P_KEY_HASH;
+
+            P_STATUS := 'UPDATED_PAYLOAD';
+        END IF;
     WHEN OTHERS THEN
         ROLLBACK;
         RAISE;

@@ -21,7 +21,7 @@ import java.util.Arrays;
  * Canonicalized cache key payload and hash.
  *
  * @author Davide Cocco
- * @since 5.0.0
+ * @since 6.0.0
  */
 public final class OracleCacheKey {
 

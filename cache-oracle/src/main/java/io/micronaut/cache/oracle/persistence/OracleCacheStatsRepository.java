@@ -25,7 +25,7 @@ import java.time.Instant;
  * Repository for lightweight cache statistics rows.
  *
  * @author Davide Cocco
- * @since 5.0.0
+ * @since 6.0.0
  */
 @JdbcRepository(dialect = Dialect.ORACLE)
 public interface OracleCacheStatsRepository extends CrudRepository<CacheStatsEntity, String> {

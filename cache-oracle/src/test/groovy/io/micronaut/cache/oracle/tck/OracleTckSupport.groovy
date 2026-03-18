@@ -18,13 +18,15 @@ package io.micronaut.cache.oracle
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.OracleContainer
 
+import java.sql.DriverManager
+
 final class OracleTckSupport {
 
     private static final OracleContainer ORACLE = OracleTestSupport.newOracleContainer()
 
     static synchronized ApplicationContext sharedContext(Map<String, Object> properties = [:]) {
         ensureStarted()
-        return OracleTestSupport.newContext(ORACLE, [
+        ApplicationContext context = OracleTestSupport.newContext(ORACLE, [
             'micronaut.caches.counter.expire-after-access' : '30s',
             'micronaut.caches.counter2.expire-after-access': '30s',
             'micronaut.caches.test.expire-after-access'    : '30s',
@@ -32,6 +34,8 @@ final class OracleTckSupport {
             'micronaut.caches.counter2.test-mode'          : true,
             'micronaut.caches.test.test-mode'              : true,
         ], properties)
+        resetState()
+        return context
     }
 
     private static synchronized void ensureStarted() {
@@ -40,5 +44,13 @@ final class OracleTckSupport {
         }
         ORACLE.start()
         OracleTestSupport.applyCleanupJobPrivilegeGrants(ORACLE)
+    }
+
+    private static void resetState() {
+        try (def connection = DriverManager.getConnection(ORACLE.jdbcUrl, ORACLE.username, ORACLE.password);
+             def statement = connection.createStatement()) {
+            statement.executeUpdate('DELETE FROM MN_CACHE_ENTRY')
+            statement.executeUpdate('DELETE FROM MN_CACHE_STATS')
+        }
     }
 }

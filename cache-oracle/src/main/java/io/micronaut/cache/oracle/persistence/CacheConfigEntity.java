@@ -24,7 +24,7 @@ import java.time.Instant;
 /**
  * Persisted per-cache Oracle configuration row.
  * @author Davide Cocco
- * @since 5.0.0
+ * @since 6.0.0
  */
 @MappedEntity("MN_CACHE_CONFIG")
 public final class CacheConfigEntity {
