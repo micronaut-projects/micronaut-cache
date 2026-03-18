@@ -1,0 +1,332 @@
+CREATE TABLE MN_CACHE_ENTRY (
+    CACHE_NAME VARCHAR2(255) NOT NULL,
+    KEY_HASH RAW(32) NOT NULL,
+    KEY_PAYLOAD BLOB NOT NULL,
+    VALUE_PAYLOAD BLOB,
+    VALUE_WEIGHT NUMBER(19, 0),
+    CREATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    LAST_ACCESS_AT TIMESTAMP(6) WITH TIME ZONE,
+    EXPIRES_AT TIMESTAMP(6) WITH TIME ZONE,
+    CONSTRAINT MN_CACHE_ENTRY_PK PRIMARY KEY (CACHE_NAME, KEY_HASH)
+);
+
+CREATE TABLE MN_CACHE_CONFIG (
+    CACHE_NAME VARCHAR2(255) NOT NULL,
+    BLOCKING NUMBER(1, 0) DEFAULT 0 NOT NULL,
+    LOCK_WAIT_TIMEOUT_MS NUMBER(19, 0) DEFAULT 5000 NOT NULL,
+    CLEANUP_INTERVAL_SECONDS NUMBER(19, 0) DEFAULT 60 NOT NULL,
+    CLEANUP_BATCH_SIZE NUMBER(19, 0) DEFAULT 100 NOT NULL,
+    MAXIMUM_SIZE NUMBER(19, 0),
+    MAXIMUM_WEIGHT NUMBER(19, 0),
+    CREATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    CONSTRAINT MN_CACHE_CONFIG_PK PRIMARY KEY (CACHE_NAME)
+);
+
+CREATE TABLE MN_CACHE_STATS (
+    CACHE_NAME VARCHAR2(255) NOT NULL,
+    HIT_COUNT NUMBER(19, 0) DEFAULT 0 NOT NULL,
+    MISS_COUNT NUMBER(19, 0) DEFAULT 0 NOT NULL,
+    PUT_COUNT NUMBER(19, 0) DEFAULT 0 NOT NULL,
+    INVALIDATE_COUNT NUMBER(19, 0) DEFAULT 0 NOT NULL,
+    UPDATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    CONSTRAINT MN_CACHE_STATS_PK PRIMARY KEY (CACHE_NAME)
+);
+
+CREATE INDEX MN_CACHE_ENTRY_EXPIRES_IDX ON MN_CACHE_ENTRY (CACHE_NAME, EXPIRES_AT);
+
+CREATE INDEX MN_CACHE_ENTRY_ACCESS_IDX ON MN_CACHE_ENTRY (CACHE_NAME, LAST_ACCESS_AT, CREATED_AT);
+
+CREATE OR REPLACE PROCEDURE MN_CACHE_UPSERT_CONFIG(
+    P_CACHE_NAME IN VARCHAR2,
+    P_BLOCKING IN NUMBER,
+    P_LOCK_WAIT_TIMEOUT_MS IN NUMBER,
+    P_CLEANUP_INTERVAL_SECONDS IN NUMBER,
+    P_CLEANUP_BATCH_SIZE IN NUMBER,
+    P_MAXIMUM_SIZE IN NUMBER,
+    P_MAXIMUM_WEIGHT IN NUMBER,
+    P_CURRENT_TIME IN TIMESTAMP WITH TIME ZONE
+) AS
+BEGIN
+    MERGE INTO MN_CACHE_CONFIG cfg
+    USING (SELECT P_CACHE_NAME AS CACHE_NAME FROM DUAL) incoming
+    ON (cfg.CACHE_NAME = incoming.CACHE_NAME)
+    WHEN MATCHED THEN UPDATE SET
+        BLOCKING = P_BLOCKING,
+        LOCK_WAIT_TIMEOUT_MS = P_LOCK_WAIT_TIMEOUT_MS,
+        CLEANUP_INTERVAL_SECONDS = P_CLEANUP_INTERVAL_SECONDS,
+        CLEANUP_BATCH_SIZE = P_CLEANUP_BATCH_SIZE,
+        MAXIMUM_SIZE = P_MAXIMUM_SIZE,
+        MAXIMUM_WEIGHT = P_MAXIMUM_WEIGHT,
+        UPDATED_AT = P_CURRENT_TIME
+    WHEN NOT MATCHED THEN
+        INSERT (CACHE_NAME, BLOCKING, LOCK_WAIT_TIMEOUT_MS, CLEANUP_INTERVAL_SECONDS, CLEANUP_BATCH_SIZE, MAXIMUM_SIZE, MAXIMUM_WEIGHT, CREATED_AT, UPDATED_AT)
+        VALUES (P_CACHE_NAME, P_BLOCKING, P_LOCK_WAIT_TIMEOUT_MS, P_CLEANUP_INTERVAL_SECONDS, P_CLEANUP_BATCH_SIZE, P_MAXIMUM_SIZE, P_MAXIMUM_WEIGHT, P_CURRENT_TIME, P_CURRENT_TIME);
+END;
+/
+
+CREATE OR REPLACE PROCEDURE MN_CACHE_UPDATE_STATS(
+    P_CACHE_NAME IN VARCHAR2,
+    P_HIT_DELTA IN NUMBER,
+    P_MISS_DELTA IN NUMBER,
+    P_PUT_DELTA IN NUMBER,
+    P_INVALIDATE_DELTA IN NUMBER,
+    P_UPDATED_AT IN TIMESTAMP WITH TIME ZONE
+) AS
+BEGIN
+    -- Stats rows are updated opportunistically from cache operations, so we upsert and
+    -- increment counters in one statement instead of requiring the row to exist first.
+    MERGE INTO MN_CACHE_STATS stats
+    USING (SELECT P_CACHE_NAME AS CACHE_NAME FROM DUAL) incoming
+    ON (stats.CACHE_NAME = incoming.CACHE_NAME)
+    WHEN MATCHED THEN UPDATE SET
+        HIT_COUNT = HIT_COUNT + NVL(P_HIT_DELTA, 0),
+        MISS_COUNT = MISS_COUNT + NVL(P_MISS_DELTA, 0),
+        PUT_COUNT = PUT_COUNT + NVL(P_PUT_DELTA, 0),
+        INVALIDATE_COUNT = INVALIDATE_COUNT + NVL(P_INVALIDATE_DELTA, 0),
+        UPDATED_AT = P_UPDATED_AT
+    WHEN NOT MATCHED THEN
+        INSERT (CACHE_NAME, HIT_COUNT, MISS_COUNT, PUT_COUNT, INVALIDATE_COUNT, UPDATED_AT)
+        VALUES (
+            P_CACHE_NAME,
+            NVL(P_HIT_DELTA, 0),
+            NVL(P_MISS_DELTA, 0),
+            NVL(P_PUT_DELTA, 0),
+            NVL(P_INVALIDATE_DELTA, 0),
+            P_UPDATED_AT
+        );
+END;
+/
+
+CREATE OR REPLACE PROCEDURE MN_CACHE_CLEANUP_CACHE(
+    P_CACHE_NAME IN VARCHAR2,
+    P_BATCH_SIZE IN NUMBER
+) AS
+    V_MAX_SIZE NUMBER;
+    V_MAX_WEIGHT NUMBER;
+    V_CONFIG_BATCH_SIZE NUMBER;
+    V_CURRENT_SIZE NUMBER;
+    V_CURRENT_WEIGHT NUMBER;
+    V_EFFECTIVE_BATCH_SIZE NUMBER := 100;
+    V_EXCESS_SIZE NUMBER;
+    V_EXCESS_WEIGHT NUMBER;
+    V_DELETE_COUNT NUMBER;
+BEGIN
+    -- Expiry checks are done in UTC so cleanup behaves the same regardless of the
+    -- Oracle session timezone used by the caller or scheduler job.
+    DELETE FROM MN_CACHE_ENTRY
+    WHERE CACHE_NAME = P_CACHE_NAME
+      AND EXPIRES_AT IS NOT NULL
+      AND SYS_EXTRACT_UTC(EXPIRES_AT) < SYS_EXTRACT_UTC(SYSTIMESTAMP);
+
+    BEGIN
+        SELECT MAXIMUM_SIZE, MAXIMUM_WEIGHT, CLEANUP_BATCH_SIZE
+        INTO V_MAX_SIZE, V_MAX_WEIGHT, V_CONFIG_BATCH_SIZE
+        FROM MN_CACHE_CONFIG
+        WHERE CACHE_NAME = P_CACHE_NAME;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            V_MAX_SIZE := NULL;
+            V_MAX_WEIGHT := NULL;
+            V_CONFIG_BATCH_SIZE := NULL;
+    END;
+
+    V_EFFECTIVE_BATCH_SIZE := LEAST(5000, GREATEST(1, NVL(P_BATCH_SIZE, NVL(V_CONFIG_BATCH_SIZE, 100))));
+
+    IF V_MAX_SIZE IS NOT NULL THEN
+        LOOP
+            SELECT COUNT(*)
+            INTO V_CURRENT_SIZE
+            FROM MN_CACHE_ENTRY
+            WHERE CACHE_NAME = P_CACHE_NAME;
+            EXIT WHEN V_CURRENT_SIZE <= V_MAX_SIZE;
+
+            V_EXCESS_SIZE := V_CURRENT_SIZE - V_MAX_SIZE;
+            V_DELETE_COUNT := LEAST(V_EXCESS_SIZE, V_EFFECTIVE_BATCH_SIZE);
+
+            -- Size enforcement evicts the least-recently-used rows in bounded batches so
+            -- large backlogs can be drained incrementally without one massive delete.
+            DELETE FROM MN_CACHE_ENTRY
+            WHERE ROWID IN (
+                SELECT ROWID
+                FROM (
+                    SELECT ROWID
+                    FROM MN_CACHE_ENTRY
+                    WHERE CACHE_NAME = P_CACHE_NAME
+                    ORDER BY NVL(LAST_ACCESS_AT, CREATED_AT), CREATED_AT, KEY_HASH
+                )
+                WHERE ROWNUM <= V_DELETE_COUNT
+            );
+            EXIT WHEN SQL%ROWCOUNT = 0;
+        END LOOP;
+    END IF;
+
+    IF V_MAX_WEIGHT IS NOT NULL THEN
+        LOOP
+            SELECT NVL(SUM(NVL(VALUE_WEIGHT, 1)), 0)
+            INTO V_CURRENT_WEIGHT
+            FROM MN_CACHE_ENTRY
+            WHERE CACHE_NAME = P_CACHE_NAME;
+            EXIT WHEN V_CURRENT_WEIGHT <= V_MAX_WEIGHT;
+
+            V_EXCESS_WEIGHT := V_CURRENT_WEIGHT - V_MAX_WEIGHT;
+
+            -- Weight enforcement approximates LRU eviction while deleting enough rows to
+            -- cover the weight overage, again capped by the configured batch size.
+            DELETE FROM MN_CACHE_ENTRY
+            WHERE ROWID IN (
+                SELECT RID
+                FROM (
+                    SELECT RID
+                    FROM (
+                        SELECT ROWID AS RID,
+                               NVL(VALUE_WEIGHT, 1) AS ENTRY_WEIGHT,
+                               SUM(NVL(VALUE_WEIGHT, 1)) OVER (
+                                   ORDER BY NVL(LAST_ACCESS_AT, CREATED_AT), CREATED_AT, KEY_HASH
+                               ) AS RUNNING_WEIGHT
+                        FROM MN_CACHE_ENTRY
+                        WHERE CACHE_NAME = P_CACHE_NAME
+                    )
+                    WHERE RUNNING_WEIGHT <= V_EXCESS_WEIGHT
+                       OR (RUNNING_WEIGHT - ENTRY_WEIGHT) < V_EXCESS_WEIGHT
+                    ORDER BY RUNNING_WEIGHT
+                )
+                WHERE ROWNUM <= V_EFFECTIVE_BATCH_SIZE
+            );
+            EXIT WHEN SQL%ROWCOUNT = 0;
+        END LOOP;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE MN_CACHE_REGISTER_CLEANUP_JOB(
+    P_CACHE_NAME IN VARCHAR2,
+    P_INTERVAL_SECONDS IN NUMBER
+) AS
+    V_JOB_NAME VARCHAR2(128);
+    V_NORMALIZED_CACHE_NAME VARCHAR2(255);
+    V_EXISTS NUMBER;
+    V_INTERVAL NUMBER;
+    V_ACTION VARCHAR2(4000);
+BEGIN
+    V_INTERVAL := GREATEST(1, NVL(P_INTERVAL_SECONDS, 60));
+    -- Scheduler object names must be simple identifiers, so cache names are normalized
+    -- and truncated into a deterministic job name.
+    V_NORMALIZED_CACHE_NAME := REGEXP_REPLACE(UPPER(NVL(P_CACHE_NAME, 'CACHE')), '[^A-Z0-9_]', '_');
+    IF V_NORMALIZED_CACHE_NAME IS NULL OR LENGTH(V_NORMALIZED_CACHE_NAME) = 0 THEN
+        V_NORMALIZED_CACHE_NAME := 'CACHE';
+    END IF;
+    V_JOB_NAME := 'MN_CACHE_CLEANUP_' || SUBSTR(V_NORMALIZED_CACHE_NAME, 1, 111);
+    V_ACTION := 'BEGIN MN_CACHE_CLEANUP_CACHE(''' || REPLACE(P_CACHE_NAME, '''', '''''') || ''', NULL); END;';
+
+    SELECT COUNT(1)
+    INTO V_EXISTS
+    FROM USER_SCHEDULER_JOBS
+    WHERE JOB_NAME = V_JOB_NAME;
+
+    IF V_EXISTS = 0 THEN
+        -- Create disabled first so create/update flows share the same enable step below.
+        DBMS_SCHEDULER.CREATE_JOB(
+            JOB_NAME => V_JOB_NAME,
+            JOB_TYPE => 'PLSQL_BLOCK',
+            JOB_ACTION => V_ACTION,
+            START_DATE => SYSTIMESTAMP,
+            REPEAT_INTERVAL => 'FREQ=SECONDLY;INTERVAL=' || TO_CHAR(V_INTERVAL),
+            ENABLED => FALSE,
+            AUTO_DROP => FALSE
+        );
+    ELSE
+        -- Existing jobs are reconfigured in place so cache interval changes take effect
+        -- without dropping and recreating the Oracle scheduler object.
+        DBMS_SCHEDULER.SET_ATTRIBUTE(V_JOB_NAME, 'job_action', V_ACTION);
+        DBMS_SCHEDULER.SET_ATTRIBUTE(V_JOB_NAME, 'repeat_interval', 'FREQ=SECONDLY;INTERVAL=' || TO_CHAR(V_INTERVAL));
+    END IF;
+
+    DBMS_SCHEDULER.ENABLE(V_JOB_NAME);
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE = -27477 THEN
+            -- If another session created the job concurrently, converge by updating and
+            -- enabling the already-existing job instead of failing registration.
+            DBMS_SCHEDULER.SET_ATTRIBUTE(V_JOB_NAME, 'repeat_interval', 'FREQ=SECONDLY;INTERVAL=' || TO_CHAR(V_INTERVAL));
+            DBMS_SCHEDULER.ENABLE(V_JOB_NAME);
+        ELSE
+            RAISE;
+        END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE MN_CACHE_PUT_BLOCKING(
+    P_CACHE_NAME IN VARCHAR2,
+    P_KEY_HASH IN RAW,
+    P_KEY_PAYLOAD IN BLOB,
+    P_VALUE_PAYLOAD IN BLOB,
+    P_EXPIRES_AT IN TIMESTAMP WITH TIME ZONE,
+    P_VALUE_WEIGHT IN NUMBER,
+    P_INSERT_ONLY IN NUMBER,
+    P_STATUS OUT VARCHAR2
+) AS
+    V_NOW TIMESTAMP(6) WITH TIME ZONE := SYSTIMESTAMP AT TIME ZONE 'UTC';
+BEGIN
+    P_STATUS := 'ERROR';
+
+    -- Insert a placeholder row first so competing blocking writers serialize on the
+    -- unique key. The payload is filled in by the follow-up update below.
+    INSERT INTO MN_CACHE_ENTRY (
+        CACHE_NAME,
+        KEY_HASH,
+        KEY_PAYLOAD,
+        VALUE_PAYLOAD,
+        VALUE_WEIGHT,
+        CREATED_AT,
+        LAST_ACCESS_AT,
+        EXPIRES_AT
+    ) VALUES (
+        P_CACHE_NAME,
+        P_KEY_HASH,
+        P_KEY_PAYLOAD,
+        NULL,
+        NVL(P_VALUE_WEIGHT, 1),
+        V_NOW,
+        V_NOW,
+        P_EXPIRES_AT
+    );
+
+    -- Once the row exists, the actual value payload is written in the same procedure call.
+    UPDATE MN_CACHE_ENTRY
+       SET VALUE_PAYLOAD = P_VALUE_PAYLOAD,
+           VALUE_WEIGHT = NVL(P_VALUE_WEIGHT, 1),
+           LAST_ACCESS_AT = V_NOW,
+           EXPIRES_AT = P_EXPIRES_AT
+     WHERE CACHE_NAME = P_CACHE_NAME
+       AND KEY_HASH = P_KEY_HASH;
+
+    P_STATUS := 'INSERTED';
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        IF NVL(P_INSERT_ONLY, 0) = 1 THEN
+            -- putIfAbsent path -> only update timestamps and keep same payload
+            UPDATE MN_CACHE_ENTRY
+               SET LAST_ACCESS_AT = V_NOW,
+                   EXPIRES_AT = P_EXPIRES_AT
+             WHERE CACHE_NAME = P_CACHE_NAME
+               AND KEY_HASH = P_KEY_HASH;
+
+            P_STATUS := 'UPDATED_TIMESTAMP';
+        ELSE
+            -- put path -> update payload as well
+            UPDATE MN_CACHE_ENTRY
+               SET VALUE_PAYLOAD = P_VALUE_PAYLOAD,
+                   VALUE_WEIGHT = NVL(P_VALUE_WEIGHT, 1),
+                   LAST_ACCESS_AT = V_NOW,
+                   EXPIRES_AT = P_EXPIRES_AT
+             WHERE CACHE_NAME = P_CACHE_NAME
+               AND KEY_HASH = P_KEY_HASH;
+
+            P_STATUS := 'UPDATED_PAYLOAD';
+        END IF;
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END;
+/

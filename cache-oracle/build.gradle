@@ -1,0 +1,33 @@
+plugins {
+    id 'io.micronaut.build.internal.cache-module'
+}
+
+tasks.matching { it.name in ['findBaseline', 'japicmp'] }.configureEach {
+    enabled = false
+}
+
+dependencies {
+    annotationProcessor(mnData.micronaut.data.processor)
+
+    api projects.micronautCacheCore
+
+    implementation(libs.managed.oracle.jdbc)
+    implementation(mn.micronaut.json.core)
+    implementation(mnSerde.micronaut.serde.jackson)
+    implementation(mnData.micronaut.data.jdbc)
+    implementation(mnSql.micronaut.jdbc.hikari)
+
+    testImplementation projects.micronautCacheTck
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.inject.groovy)
+    testImplementation(mn.reactor)
+    testImplementation(platform(mnTestResources.boms.testcontainers))
+    testImplementation(mnTestResources.testcontainers.oracle.xe)
+    testAnnotationProcessor(mnData.micronaut.data.processor)
+}
+
+tasks.withType(Test).configureEach {
+    environment "TESTCONTAINERS_RYUK_DISABLED", "true"
+    environment "DOCKER_API_VERSION", "1.53"
+    systemProperty "testcontainers.ryuk.disabled", "true"
+}
