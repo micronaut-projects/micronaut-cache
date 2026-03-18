@@ -29,6 +29,8 @@ micronaut:
             lock-wait-timeout: 5s
 ----
 
+This will allow concurrency control for concurrent writers to be managed by the database.
+
 Additional Oracle-specific options include:
 
 - `cleanup-interval` to control how often the Oracle scheduler job runs
@@ -39,5 +41,5 @@ Additional Oracle-specific options include:
 [NOTE]
 .Database setup
 ====
-The Oracle cache implementation expects an Oracle datasource to be configured and uses JDBC plus Micronaut Data to create the cache schema on startup.
+This cache implementation does not provision Oracle for you. You must set up and manage your own Oracle database and configure Micronaut Data with a datasource that can connect to it. The Oracle cache uses JDBC plus Micronaut Data to create the cache schema on startup.
 ====
