@@ -49,19 +49,23 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
 
     void schemaInitializationIsIdempotentOnRealDatabase() {
         given:
-        ApplicationContext context = newContext()
-        OracleCacheSchemaInitializer initializer = context.getBean(OracleCacheSchemaInitializer)
+        ApplicationContext firstContext = newContext()
 
         when:
-        // Re-run initializer twice to validate idempotent DDL/procedure creation semantics.
-        initializer.onApplicationEvent(null)
-        initializer.onApplicationEvent(null)
+        firstContext.close()
+
+        ApplicationContext secondContext = newContext()
 
         then:
         countUserTables(['MN_CACHE_ENTRY', 'MN_CACHE_CONFIG', 'MN_CACHE_STATS']) == 3
+        hasProcedure('MN_CACHE_UPSERT_CONFIG')
+        hasProcedure('MN_CACHE_UPDATE_STATS')
+        hasProcedure('MN_CACHE_CLEANUP_CACHE')
+        hasProcedure('MN_CACHE_REGISTER_CLEANUP_JOB')
+        hasProcedure('MN_CACHE_PUT_BLOCKING')
 
         cleanup:
-        context.close()
+        secondContext.close()
     }
 
     void initializationCanRetryAfterDroppedSchemaOnRealDatabase() {
@@ -128,7 +132,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
 
     void configurationBeanBindsExpectedValues() {
         given:
-        ApplicationContext context = ApplicationContext.run([
+        ApplicationContext context = newContext([
             'micronaut.caches.orders.blocking': true,
             'micronaut.caches.orders.lock-wait-timeout': '2s',
             'micronaut.caches.orders.cleanup-interval': '15s',

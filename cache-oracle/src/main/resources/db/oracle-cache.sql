@@ -112,13 +112,6 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_CLEANUP_CACHE(
     V_EXCESS_WEIGHT NUMBER;
     V_DELETE_COUNT NUMBER;
 BEGIN
-    -- Expiry checks are done in UTC so cleanup behaves the same regardless of the
-    -- Oracle session timezone used by the caller or scheduler job.
-    DELETE FROM MN_CACHE_ENTRY
-    WHERE CACHE_NAME = P_CACHE_NAME
-      AND EXPIRES_AT IS NOT NULL
-      AND SYS_EXTRACT_UTC(EXPIRES_AT) < SYS_EXTRACT_UTC(SYSTIMESTAMP);
-
     BEGIN
         SELECT MAXIMUM_SIZE, MAXIMUM_WEIGHT, CLEANUP_BATCH_SIZE
         INTO V_MAX_SIZE, V_MAX_WEIGHT, V_CONFIG_BATCH_SIZE
@@ -132,6 +125,25 @@ BEGIN
     END;
 
     V_EFFECTIVE_BATCH_SIZE := LEAST(5000, GREATEST(1, NVL(P_BATCH_SIZE, NVL(V_CONFIG_BATCH_SIZE, 100))));
+
+    LOOP
+        -- Expiry checks are done in UTC so cleanup behaves the same regardless of the
+        -- Oracle session timezone used by the caller or scheduler job.
+        DELETE FROM MN_CACHE_ENTRY
+        WHERE ROWID IN (
+            SELECT ROWID
+            FROM (
+                SELECT ROWID
+                FROM MN_CACHE_ENTRY
+                WHERE CACHE_NAME = P_CACHE_NAME
+                  AND EXPIRES_AT IS NOT NULL
+                  AND SYS_EXTRACT_UTC(EXPIRES_AT) < SYS_EXTRACT_UTC(SYSTIMESTAMP)
+                ORDER BY EXPIRES_AT, KEY_HASH
+            )
+            WHERE ROWNUM <= V_EFFECTIVE_BATCH_SIZE
+        );
+        EXIT WHEN SQL%ROWCOUNT = 0;
+    END LOOP;
 
     IF V_MAX_SIZE IS NOT NULL THEN
         LOOP
@@ -248,6 +260,7 @@ EXCEPTION
         IF SQLCODE = -27477 THEN
             -- If another session created the job concurrently, converge by updating and
             -- enabling the already-existing job instead of failing registration.
+            DBMS_SCHEDULER.SET_ATTRIBUTE(V_JOB_NAME, 'job_action', V_ACTION);
             DBMS_SCHEDULER.SET_ATTRIBUTE(V_JOB_NAME, 'repeat_interval', 'FREQ=SECONDLY;INTERVAL=' || TO_CHAR(V_INTERVAL));
             DBMS_SCHEDULER.ENABLE(V_JOB_NAME);
         ELSE
@@ -269,6 +282,8 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_PUT_BLOCKING(
     V_NOW TIMESTAMP(6) WITH TIME ZONE := SYSTIMESTAMP AT TIME ZONE 'UTC';
 BEGIN
     P_STATUS := 'ERROR';
+
+    SAVEPOINT MN_CACHE_PUT_BLOCKING_SP;
 
     -- Insert a placeholder row first so competing blocking writers serialize on the
     -- unique key. The payload is filled in by the follow-up update below.
@@ -326,7 +341,7 @@ EXCEPTION
             P_STATUS := 'UPDATED_PAYLOAD';
         END IF;
     WHEN OTHERS THEN
-        ROLLBACK;
+        ROLLBACK TO MN_CACHE_PUT_BLOCKING_SP;
         RAISE;
 END;
 /

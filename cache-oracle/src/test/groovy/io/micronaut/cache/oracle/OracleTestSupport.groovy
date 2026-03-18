@@ -24,7 +24,7 @@ import org.testcontainers.utility.MountableFile
 
 final class OracleTestSupport {
 
-    static final String DEFAULT_IMAGE = 'ghcr.io/gvenzl/oracle-free:latest-faststart'
+    static final String DEFAULT_IMAGE = 'ghcr.io/gvenzl/oracle-free:23.5-faststart'
     static final String IMAGE_OVERRIDE_PROPERTY = 'oracle.test.image'
     static final String IMAGE_OVERRIDE_ENV = 'ORACLE_TEST_IMAGE'
     static final String TESTCONTAINERS_IMAGE_PROPERTY = 'oracle.container.image'
