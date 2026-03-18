@@ -2,6 +2,9 @@ plugins {
     id 'io.micronaut.build.internal.cache-module'
 }
 
+// Temporary for the first cache-oracle release: there is no previously published
+// version to compare against yet, so baseline/japicmp should be re-enabled once
+// the module has an actual prior release.
 tasks.matching { it.name in ['findBaseline', 'japicmp'] }.configureEach {
     enabled = false
 }

@@ -2,6 +2,14 @@ To cache using Oracle Database add the following dependency to your application:
 
 dependency:io.micronaut.cache:micronaut-cache-oracle[]
 
+[IMPORTANT]
+.Bring your own Oracle database
+====
+This cache implementation does not provision Oracle for you. You must set up and manage your own Oracle database and configure Micronaut Data with a datasource that can connect to it.
+
+The Oracle user used by the datasource must be able to create the cache tables, indexes, and stored procedures. If you want scheduler-driven cleanup jobs, that user must also have the Oracle scheduler privileges required to create and manage jobs.
+====
+
 Then configure one or more caches. For example with `application.yml`:
 
 .Cache Configuration Example
@@ -39,7 +47,7 @@ Additional Oracle-specific options include:
 - `maximum-weight` to enforce an approximate total-weight limit during cleanup
 
 [NOTE]
-.Database setup
+.Schema initialization
 ====
-This cache implementation does not provision Oracle for you. You must set up and manage your own Oracle database and configure Micronaut Data with a datasource that can connect to it. The Oracle cache uses JDBC plus Micronaut Data to create the cache schema on startup.
+The Oracle cache uses JDBC plus Micronaut Data to create the cache schema on startup.
 ====
