@@ -284,30 +284,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
 
     @Override
     public Publisher<CacheInfo> getCacheInfo() {
-        return Publishers.just(new CacheInfo() {
-            @NonNull
-            @Override
-            public String getName() {
-                return configuration.getCacheName();
-            }
-
-            @NonNull
-            @Override
-            public Map<String, Object> get() {
-                Map<String, Object> oracle = new LinkedHashMap<>(6);
-                oracle.put("blocking", configuration.isBlocking());
-                oracle.put("cleanupIntervalSeconds", cleanupIntervalSeconds());
-                oracle.put("lockWaitTimeoutMs", configuration.getLockWaitTimeout().toMillis());
-                oracle.put("entryCount", entryRepository.countByIdCacheName(configuration.getCacheName()));
-                oracle.put("totalWeight", entryRepository.totalWeight(configuration.getCacheName()));
-
-                Map<String, Object> result = new LinkedHashMap<>(3);
-                result.put("implementationClass", OracleSyncCache.class.getName());
-                result.put("nativeClass", entryRepository.getClass().getName());
-                result.put("oracle", oracle);
-                return result;
-            }
-        });
+        return Publishers.just(new OracleCacheInfo());
     }
 
     public void runCleanup() {
@@ -429,6 +406,30 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
             current = current.getCause();
         }
         return false;
+    }
+
+    private final class OracleCacheInfo implements CacheInfo {
+
+        @Override
+        public @NonNull String getName() {
+            return configuration.getCacheName();
+        }
+
+        @Override
+        public @NonNull Map<String, Object> get() {
+            Map<String, Object> oracle = new LinkedHashMap<>(6);
+            oracle.put("blocking", configuration.isBlocking());
+            oracle.put("cleanupIntervalSeconds", cleanupIntervalSeconds());
+            oracle.put("lockWaitTimeoutMs", configuration.getLockWaitTimeout().toMillis());
+            oracle.put("entryCount", entryRepository.countByIdCacheName(configuration.getCacheName()));
+            oracle.put("totalWeight", entryRepository.totalWeight(configuration.getCacheName()));
+
+            Map<String, Object> result = new LinkedHashMap<>(3);
+            result.put("implementationClass", OracleSyncCache.class.getName());
+            result.put("nativeClass", entryRepository.getClass().getName());
+            result.put("oracle", oracle);
+            return result;
+        }
     }
 
 }

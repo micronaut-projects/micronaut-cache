@@ -28,9 +28,3 @@ dependencies {
     testImplementation(mnTestResources.testcontainers.oracle.xe)
     testAnnotationProcessor(mnData.micronaut.data.processor)
 }
-
-tasks.withType(Test).configureEach {
-    environment "TESTCONTAINERS_RYUK_DISABLED", "true"
-    environment "DOCKER_API_VERSION", "1.53"
-    systemProperty "testcontainers.ryuk.disabled", "true"
-}

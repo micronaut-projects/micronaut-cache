@@ -327,6 +327,7 @@ class OracleSyncCacheTest extends Specification {
 
     private static OracleCacheConfiguration configuration(boolean blocking) {
         ApplicationContext context = ApplicationContext.run([
+                'micronaut.cache.oracle.datasource'      : 'default',
                 'micronaut.caches.orders.expire-after-access': '30s',
                 'micronaut.caches.orders.lock-wait-timeout' : '2s',
                 'micronaut.caches.orders.blocking'          : blocking
@@ -340,6 +341,7 @@ class OracleSyncCacheTest extends Specification {
 
     private static OracleCacheConfiguration configurationWithLimits() {
         ApplicationContext context = ApplicationContext.run([
+                'micronaut.cache.oracle.datasource'      : 'default',
                 'micronaut.caches.orders.expire-after-access': '30s',
                 'micronaut.caches.orders.lock-wait-timeout' : '2s',
                 'micronaut.caches.orders.blocking'          : false,

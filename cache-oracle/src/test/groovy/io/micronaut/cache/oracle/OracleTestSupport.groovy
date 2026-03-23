@@ -15,8 +15,12 @@
  */
 package io.micronaut.cache.oracle
 
+import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration
+import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguration
+import io.micronaut.cache.oracle.schema.OracleCacheSchemaExecutor
 import io.micronaut.cache.oracle.schema.OracleCacheSchemaInitializer
 import io.micronaut.context.ApplicationContext
+import io.micronaut.core.io.ResourceResolver
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.OracleContainer
 import org.testcontainers.utility.DockerImageName
@@ -69,6 +73,7 @@ final class OracleTestSupport {
                                          Map<String, Object> baseProperties,
                                          Map<String, Object> properties = [:]) {
         Map<String, Object> resolved = [
+            'micronaut.cache.oracle.datasource'   : 'default',
             'datasources.default.url'               : oracle.jdbcUrl,
             'datasources.default.username'          : oracle.username,
             'datasources.default.password'          : oracle.password,
@@ -77,7 +82,13 @@ final class OracleTestSupport {
         resolved.putAll(baseProperties)
         resolved.putAll(properties)
         ApplicationContext context = ApplicationContext.run(resolved)
-        context.getBean(OracleCacheSchemaInitializer).onApplicationEvent(null)
+        new OracleCacheSchemaExecutor(
+            context,
+            context.getBean(ResourceResolver),
+            context.getBean(OracleCacheDataSourceConfiguration),
+            'db/oracle-cache.sql',
+            context.getBeansOfType(OracleCacheConfiguration).toList()
+        ).initializeSchemaNow()
         return context
     }
 

@@ -25,6 +25,7 @@ class OracleCacheConfigurationTest extends Specification {
     void multipleConfigurationsCoexist() {
         given:
         ApplicationContext context = ApplicationContext.run([
+                'micronaut.cache.oracle.datasource'       : 'default',
                 'micronaut.caches.orders.cleanup-interval' : '30s',
                 'micronaut.caches.orders.cleanup-batch-size': 50,
                 'micronaut.caches.orders.lock-wait-timeout': '2s',
@@ -58,6 +59,7 @@ class OracleCacheConfigurationTest extends Specification {
     void configurationRowsMatchCacheConfiguration() {
         given:
         ApplicationContext context = ApplicationContext.run([
+                'micronaut.cache.oracle.datasource'           : 'default',
                 'micronaut.caches.orders.blocking'                : true,
                 'micronaut.caches.orders.lock-wait-timeout'       : '15s',
                 'micronaut.caches.orders.cleanup-interval'        : '30s',
@@ -105,6 +107,7 @@ class OracleCacheConfigurationTest extends Specification {
     void rejectsInvalidDurations() {
         when:
         ApplicationContext context = ApplicationContext.run([
+                'micronaut.cache.oracle.datasource'      : 'default',
                 'micronaut.caches.bad.cleanup-interval'      : '-1s',
                 'micronaut.caches.bad.cleanup-batch-size'    : 0,
                 'micronaut.caches.bad.lock-wait-timeout'     : '-5s',

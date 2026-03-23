@@ -27,7 +27,7 @@ import java.time.Instant;
  * @author Davide Cocco
  * @since 6.0.0
  */
-@JdbcRepository(dialect = Dialect.ORACLE)
+@JdbcRepository(dialect = Dialect.ORACLE, dataSource = "${micronaut.cache.oracle.datasource}")
 public interface OracleCacheStatsRepository extends CrudRepository<CacheStatsEntity, String> {
 
     @Procedure("MN_CACHE_UPDATE_STATS")

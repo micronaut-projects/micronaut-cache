@@ -17,17 +17,18 @@ package io.micronaut.cache.oracle.schema
 
 import io.micronaut.cache.oracle.OracleIntegrationSupport
 import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration
+import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguration
 import io.micronaut.context.ApplicationContext
-import io.micronaut.data.connection.annotation.Connectable
+import io.micronaut.context.env.Environment
 import io.micronaut.inject.qualifiers.Qualifiers
 
 import java.sql.Connection
 
 class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSupport {
 
-    void initializerRunsWithinConnectableContext() {
+    void initializerUsesManualSchemaExecutionPath() {
         expect:
-        OracleCacheSchemaInitializer.getAnnotation(Connectable) != null
+        OracleCacheSchemaInitializer.getDeclaredMethod('initializeSchemaManually') != null
     }
 
     void schemaObjectsAreCreatedOnRealDatabase() {
@@ -78,7 +79,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
 
         ApplicationContext retryContext = newContext()
         OracleCacheSchemaInitializer initializer = retryContext.getBean(OracleCacheSchemaInitializer)
-        initializer.onApplicationEvent(null)
+        initializer.initializeSchemaManually()
 
         then:
         countUserTables(['MN_CACHE_ENTRY', 'MN_CACHE_CONFIG', 'MN_CACHE_STATS']) == 3
@@ -151,6 +152,89 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         configuration.cleanupBatchSize == 15
         configuration.maximumSize.asLong == 10L
         configuration.maximumWeight.asLong == 100L
+
+        cleanup:
+        context.close()
+    }
+
+    void oracleDatasourceConfigurationFailsWhenUnset() {
+        given:
+        ApplicationContext context = ApplicationContext.run()
+
+        when:
+        OracleCacheDataSourceConfiguration configuration = context.getBean(OracleCacheDataSourceConfiguration)
+        configuration.datasource
+
+        then:
+        IllegalStateException ex = thrown()
+        ex.message == 'micronaut.cache.oracle.datasource must be configured'
+
+        cleanup:
+        context.close()
+    }
+
+    void explicitDefaultDatasourceIsRecognizedAsConfigured() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+            'micronaut.cache.oracle.datasource': 'default'
+        ])
+
+        when:
+        OracleCacheDataSourceConfiguration configuration = context.getBean(OracleCacheDataSourceConfiguration)
+
+        then:
+        configuration.datasourceConfigured
+        configuration.datasource == 'default'
+
+        cleanup:
+        context.close()
+    }
+
+    void multipleDatasourcesAndWrongConfiguredDatasourceFails() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+            'micronaut.cache.oracle.datasource'   : 'missing',
+            'datasources.default.url'             : oracle.jdbcUrl,
+            'datasources.default.username'        : oracle.username,
+            'datasources.default.password'        : oracle.password,
+            'datasources.default.driver-class-name': 'oracle.jdbc.OracleDriver',
+            'datasources.secondary.url'          : oracle.jdbcUrl,
+            'datasources.secondary.username'     : oracle.username,
+            'datasources.secondary.password'     : oracle.password,
+            'datasources.secondary.driver-class-name': 'oracle.jdbc.OracleDriver',
+        ])
+
+        when:
+        context.getBean(OracleCacheSchemaInitializer).initializeSchemaManually()
+
+        then:
+        IllegalStateException ex = thrown()
+        ex.message == "No DataSource bean found for micronaut.cache.oracle.datasource='missing'"
+
+        cleanup:
+        context.close()
+    }
+
+    void multipleDatasourcesAndCorrectConfiguredDatasourceUsesSpecifiedDatasource() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+            'micronaut.cache.oracle.datasource'      : 'secondary',
+            'datasources.default.url'                : oracle.jdbcUrl,
+            'datasources.default.username'           : oracle.username,
+            'datasources.default.password'           : oracle.password,
+            'datasources.default.driver-class-name'  : 'oracle.jdbc.OracleDriver',
+            'datasources.secondary.url'              : oracle.jdbcUrl,
+            'datasources.secondary.username'         : oracle.username,
+            'datasources.secondary.password'         : oracle.password,
+            'datasources.secondary.driver-class-name': 'oracle.jdbc.OracleDriver',
+        ])
+
+        when:
+        context.getBean(OracleCacheSchemaInitializer).initializeSchemaManually()
+
+        then:
+        hasTableOnSelectedDatasource(context, 'secondary', 'MN_CACHE_ENTRY')
+        hasTableOnSelectedDatasource(context, 'default', 'MN_CACHE_ENTRY')
 
         cleanup:
         context.close()
@@ -231,6 +315,24 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         try {
             statement.execute(ddl)
         } catch (java.sql.SQLException ignored) {
+        }
+    }
+
+    private boolean hasTableOnSelectedDatasource(ApplicationContext context, String datasourceName, String tableName) {
+        Environment environment = context.getBean(Environment)
+        String prefix = "datasources.${datasourceName}."
+        String url = environment.getProperty(prefix + 'url', String).orElse(null)
+        String username = environment.getProperty(prefix + 'username', String).orElse(null)
+        String password = environment.getProperty(prefix + 'password', String).orElse(null)
+        try (Connection connection = java.sql.DriverManager.getConnection(url, username, password);
+             def statement = connection.prepareStatement('SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = ?')) {
+            statement.setString(1, tableName)
+            try (def rs = statement.executeQuery()) {
+                rs.next()
+                return rs.getInt(1) == 1
+            }
+        } catch (java.sql.SQLException ignored) {
+            return false
         }
     }
 }
