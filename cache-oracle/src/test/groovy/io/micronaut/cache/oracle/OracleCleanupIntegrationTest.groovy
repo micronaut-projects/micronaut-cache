@@ -31,7 +31,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
             'micronaut.caches.orders.cleanup-interval': '5s',
         ])
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
-        repository.invalidateCache('orders')
+        repository.deleteByCacheName('orders')
 
         when:
         try (def connection = openJdbcConnection();
@@ -69,7 +69,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         }
 
         then:
-        repository.countByIdCacheName('orders') == 0L
+        repository.countByCacheName('orders') == 0L
 
         cleanup:
         context.close()
@@ -82,7 +82,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         ])
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
-        repository.invalidateCache('orders')
+        repository.deleteByCacheName('orders')
 
         // Build one expired row and one live row to ensure cleanup only removes the intended subset.
         repository.save(entry('orders', [1, 1, 1] as byte[], [3, 3, 3] as byte[], Instant.now().minusSeconds(30)))
@@ -93,7 +93,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
 
         then:
         // Exactly one row should remain: the non-expired row.
-        repository.countByIdCacheName('orders') == 1L
+        repository.countByCacheName('orders') == 1L
 
         cleanup:
         context.close()
@@ -106,7 +106,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         ])
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
-        repository.invalidateCache('orders')
+        repository.deleteByCacheName('orders')
 
         // Control case: all rows are valid, so cleanup should be a no-op.
         repository.save(entry('orders', [5, 5, 5] as byte[], [6, 6, 6] as byte[], Instant.now().plusSeconds(60)))
@@ -115,7 +115,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         cache.runCleanup()
 
         then:
-        repository.countByIdCacheName('orders') == 1L
+        repository.countByCacheName('orders') == 1L
 
         cleanup:
         context.close()
@@ -130,7 +130,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         ])
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
-        repository.invalidateCache('orders')
+        repository.deleteByCacheName('orders')
 
         repository.save(entry('orders', [1, 0, 0] as byte[], [1, 0, 0] as byte[], Instant.now().plusSeconds(60), 6L))
         repository.save(entry('orders', [2, 0, 0] as byte[], [2, 0, 0] as byte[], Instant.now().plusSeconds(60), 5L))
@@ -138,14 +138,14 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
 
         expect:
         repository.totalWeight('orders') == 15L
-        repository.countByIdCacheName('orders') == 3L
+        repository.countByCacheName('orders') == 3L
 
         when:
         cache.runCleanup()
 
         then:
         repository.totalWeight('orders') == 9L
-        repository.countByIdCacheName('orders') == 2L
+        repository.countByCacheName('orders') == 2L
 
         cleanup:
         context.close()
@@ -160,7 +160,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
         ])
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
-        repository.invalidateCache('orders')
+        repository.deleteByCacheName('orders')
 
         repository.save(entry('orders', [9, 0, 0] as byte[], [9, 0, 0] as byte[], Instant.now().plusSeconds(60), null))
         repository.save(entry('orders', [8, 0, 0] as byte[], [8, 0, 0] as byte[], Instant.now().plusSeconds(60), 1L))
@@ -173,7 +173,7 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
 
         then:
         repository.totalWeight('orders') == 1L
-        repository.countByIdCacheName('orders') == 1L
+        repository.countByCacheName('orders') == 1L
 
         cleanup:
         context.close()

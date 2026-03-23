@@ -113,9 +113,8 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     }
 
     private <T> Optional<T> getBySerializedKey(OracleCacheKey cacheKey, Argument<T> requiredType) {
-        Optional<CacheEntryEntity> existing = entryRepository.findById(
-            new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash())
-        );
+        CacheEntryId cacheEntryId = new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash());
+        Optional<CacheEntryEntity> existing = entryRepository.findById(cacheEntryId);
         if (existing.isEmpty()) {
             return Optional.empty();
         }
@@ -123,7 +122,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         Instant now = Instant.now();
         CacheEntryEntity entity = existing.get();
         if (isExpired(entity, now)) {
-            entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+            entryRepository.delete(cacheEntryId);
             return Optional.empty();
         }
         if (!hasStoredValue(entity.valuePayload())) {
@@ -131,7 +130,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         }
 
         Instant nextExpiry = computeExpiry(now, entity.createdAt()).orElse(entity.expiresAt());
-        entryRepository.updateLastAccess(configuration.getCacheName(), cacheKey.getKeyHash(), now, nextExpiry);
+        entryRepository.update(cacheEntryId, now, nextExpiry);
         return decodeValue(entity.valuePayload(), requiredType);
     }
 
@@ -144,6 +143,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         @SuppressWarnings("unchecked")
         Argument<T> argument = (Argument<T>) Argument.of(value.getClass());
         OracleCacheKey cacheKey = keySerializer.serialize(key);
+        CacheEntryId cacheEntryId = new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash());
 
         if (configuration.isBlocking()) {
             String status = blockingPutBySerializedKey(cacheKey, value, 1L);
@@ -152,9 +152,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                 return Optional.empty();
             }
             if ("UPDATED_TIMESTAMP".equals(status)) {
-                Optional<CacheEntryEntity> existing = entryRepository.findById(
-                    new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash())
-                );
+                Optional<CacheEntryEntity> existing = entryRepository.findById(cacheEntryId);
                 if (existing.isPresent() && !isExpired(existing.get(), Instant.now()) && hasStoredValue(existing.get().valuePayload())) {
                     recordStats(1, 0, 0, 0);
                     return decodeValue(existing.get().valuePayload(), argument);
@@ -173,13 +171,11 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                 if (!isDuplicateKeyViolation(e)) {
                     throw e;
                 }
-                Optional<CacheEntryEntity> existing = entryRepository.findById(
-                    new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash())
-                );
+                Optional<CacheEntryEntity> existing = entryRepository.findById(cacheEntryId);
                 if (existing.isPresent() && !isExpired(existing.get(), Instant.now()) && hasStoredValue(existing.get().valuePayload())) {
                     Instant access = Instant.now();
                     Instant nextExpiry = computeExpiry(access, existing.get().createdAt()).orElse(existing.get().expiresAt());
-                    entryRepository.updateLastAccess(configuration.getCacheName(), cacheKey.getKeyHash(), access, nextExpiry);
+                    entryRepository.update(cacheEntryId, access, nextExpiry);
                     // Cache Hit
                     recordStats(1, 0, 0, 0);
                     return decodeValue(existing.get().valuePayload(), argument);
@@ -199,8 +195,9 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     }
 
     private void putBySerializedKey(OracleCacheKey cacheKey, @Nullable Object value) {
+        CacheEntryId cacheEntryId = new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash());
         if (value == null) {
-            long invalidated = entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+            long invalidated = entryRepository.delete(cacheEntryId);
             recordStats(0, 0, 0, invalidated);
             return;
         }
@@ -218,7 +215,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                 if (!isDuplicateKeyViolation(e)) {
                     throw e;
                 }
-                entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+                entryRepository.delete(cacheEntryId);
                 entryRepository.save(entity);
             }
         }
@@ -256,13 +253,14 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     public void invalidate(@NonNull Object key) {
         ArgumentUtils.requireNonNull("key", key);
         OracleCacheKey cacheKey = keySerializer.serialize(key);
-        long invalidated = entryRepository.invalidateKey(configuration.getCacheName(), cacheKey.getKeyHash());
+        CacheEntryId cacheEntryId = new CacheEntryId(configuration.getCacheName(), cacheKey.getKeyHash());
+        long invalidated = entryRepository.delete(cacheEntryId);
         recordStats(0, 0, 0, invalidated);
     }
 
     @Override
     public void invalidateAll() {
-        long invalidated = entryRepository.invalidateCache(configuration.getCacheName());
+        long invalidated = entryRepository.deleteByCacheName(configuration.getCacheName());
         recordStats(0, 0, 0, invalidated);
     }
 
@@ -420,7 +418,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
             oracle.put("blocking", configuration.isBlocking());
             oracle.put("cleanupIntervalSeconds", cleanupIntervalSeconds());
             oracle.put("lockWaitTimeoutMs", configuration.getLockWaitTimeout().toMillis());
-            oracle.put("entryCount", entryRepository.countByIdCacheName(configuration.getCacheName()));
+            oracle.put("entryCount", entryRepository.countByCacheName(configuration.getCacheName()));
             oracle.put("totalWeight", entryRepository.totalWeight(configuration.getCacheName()));
 
             Map<String, Object> result = new LinkedHashMap<>(3);

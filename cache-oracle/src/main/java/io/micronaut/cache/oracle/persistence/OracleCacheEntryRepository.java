@@ -16,6 +16,7 @@
 package io.micronaut.cache.oracle.persistence;
 
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.Query;
 import io.micronaut.data.annotation.sql.Procedure;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
@@ -31,6 +32,13 @@ import java.time.Instant;
  */
 @JdbcRepository(dialect = Dialect.ORACLE, dataSource = "${micronaut.cache.oracle.datasource}")
 public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEntity, CacheEntryId> {
+    void update(@Id CacheEntryId id, Instant lastAccessAt, @Nullable Instant expiresAt);
+
+    long delete(@Id CacheEntryId id);
+
+    long countByCacheName(String cacheName);
+
+    long deleteByCacheName(String cacheName);
 
     @Procedure("MN_CACHE_PUT_BLOCKING")
     String blockingPut(String cacheName,
@@ -41,20 +49,8 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
                        long valueWeight,
                        long insertOnly);
 
-    @Query(value = "UPDATE MN_CACHE_ENTRY SET LAST_ACCESS_AT = :lastAccessAt, EXPIRES_AT = :expiresAt WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash", nativeQuery = true)
-    long updateLastAccess(String cacheName, byte[] keyHash, Instant lastAccessAt, @Nullable Instant expiresAt);
-
-    @Query(value = "DELETE FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName AND KEY_HASH = :keyHash", nativeQuery = true)
-    long invalidateKey(String cacheName, byte[] keyHash);
-
-    @Query(value = "DELETE FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
-    long invalidateCache(String cacheName);
-
     @Procedure("MN_CACHE_CLEANUP_CACHE")
     void runCleanupProcedure(String cacheName, long batchSize);
-
-    @Query(value = "SELECT COUNT(*) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
-    long countByIdCacheName(String cacheName);
 
     @Query(value = "SELECT COALESCE(SUM(COALESCE(VALUE_WEIGHT, 1)), 0) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
     long totalWeight(String cacheName);

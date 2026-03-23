@@ -124,12 +124,12 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         repository.save(expiring)
 
         when:
-        long deleted = repository.invalidateKey('orders', hash)
-        long deletedMissing = repository.invalidateKey('orders', hash)
+        repository.delete(new CacheEntryId('orders', hash))
+        CacheEntryEntity deletedMissing = repository.findById(new CacheEntryId('orders', hash)).orElse(null)
 
         then:
-        deleted == 1
-        deletedMissing == 0
+        repository.findById(new CacheEntryId('orders', hash)).empty
+        deletedMissing == null
 
         cleanup:
         context.close()

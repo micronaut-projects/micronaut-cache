@@ -70,7 +70,7 @@ class OracleSyncCacheTest extends Specification {
         then:
         // Oracle cache should actively invalidate expired rows to avoid returning stale data forever.
         result.empty
-        1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
+        1 * repository.delete(_ as CacheEntryId)
         // Once expired, access metadata should not be refreshed because entry is logically dead.
         0 * repository.updateLastAccess(_, _, _, _)
     }
@@ -256,7 +256,7 @@ class OracleSyncCacheTest extends Specification {
 
         then:
         1 * repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
-        1 * repository.invalidateKey('orders', _ as byte[]) >> 1L
+        1 * repository.delete(_ as CacheEntryId)
         1 * repository.save({ CacheEntryEntity entity ->
             new String(entity.valuePayload, StandardCharsets.UTF_8) == '4'
         })
@@ -307,7 +307,7 @@ class OracleSyncCacheTest extends Specification {
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), executorService(), serializer(), jsonMapper())
 
         and:
-        repository.countByIdCacheName('orders') >> 2L
+        repository.countByCacheName('orders') >> 2L
         repository.totalWeight('orders') >> 9L
 
         when:

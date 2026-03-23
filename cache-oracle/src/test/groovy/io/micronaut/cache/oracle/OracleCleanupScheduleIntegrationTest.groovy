@@ -30,7 +30,7 @@ class OracleCleanupScheduleIntegrationTest extends OracleIntegrationSupport {
             'micronaut.caches.orders.cleanup-interval': '1s',
         ])
         OracleCacheEntryRepository repository = context.getBean(OracleCacheEntryRepository)
-        repository.invalidateCache('orders')
+        repository.deleteByCacheName('orders')
         repository.save(expiredEntry())
 
         expect:
@@ -41,7 +41,7 @@ class OracleCleanupScheduleIntegrationTest extends OracleIntegrationSupport {
             schedulerRunCount('MN_CACHE_CLEANUP_ORDERS') > 0L
         }
         boolean expiredEntryDeleted = waitForCondition(20_000L, 200L) {
-            repository.countByIdCacheName('orders') == 0L
+            repository.countByCacheName('orders') == 0L
         }
 
         then:
