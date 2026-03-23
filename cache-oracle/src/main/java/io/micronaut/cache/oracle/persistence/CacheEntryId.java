@@ -23,6 +23,9 @@ import java.util.Objects;
 
 /**
  * Composite key for a cache entry row.
+ *
+ * @param cacheName The cache name
+ * @param keyHash The serialized key hash
  * @author Davide Cocco
  * @since 6.0.0
  */

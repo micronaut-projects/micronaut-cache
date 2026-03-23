@@ -23,6 +23,16 @@ import java.time.Instant;
 
 /**
  * Persisted per-cache Oracle configuration row.
+ *
+ * @param cacheName The cache name
+ * @param blocking Whether blocking mode is enabled
+ * @param lockWaitTimeoutMs The blocking lock wait timeout in milliseconds
+ * @param cleanupIntervalSeconds The cleanup interval in seconds
+ * @param cleanupBatchSize The cleanup batch size
+ * @param maximumSize The maximum entry count
+ * @param maximumWeight The maximum total weight
+ * @param createdAt The row creation time
+ * @param updatedAt The last update time
  * @author Davide Cocco
  * @since 6.0.0
  */

@@ -94,8 +94,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
             // Cache Hit
             recordStats(1, 0, 0, 0);
             return existing.get();
-        }
-        else {
+        } else {
             // Cache Miss
             recordStats(0, 1, 0, 0);
             T supplied = supplier.get();

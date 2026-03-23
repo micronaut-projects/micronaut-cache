@@ -23,6 +23,13 @@ import java.time.Instant;
 
 /**
  * Persisted cache statistics row.
+ *
+ * @param cacheName The cache name
+ * @param hitCount The cache hit count
+ * @param missCount The cache miss count
+ * @param putCount The cache put count
+ * @param invalidateCount The cache invalidate count
+ * @param updatedAt The last update time
  * @author Davide Cocco
  * @since 6.0.0
  */

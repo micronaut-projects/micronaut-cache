@@ -23,6 +23,14 @@ import java.time.Instant;
 
 /**
  * Cache entry row persisted in Oracle.
+ *
+ * @param id The composite cache entry identifier
+ * @param keyPayload The serialized cache key payload
+ * @param valuePayload The serialized cache value payload
+ * @param valueWeight The stored value weight
+ * @param createdAt The row creation time
+ * @param lastAccessAt The last access time
+ * @param expiresAt The expiry time
  * @author Davide Cocco
  * @since 6.0.0
  */

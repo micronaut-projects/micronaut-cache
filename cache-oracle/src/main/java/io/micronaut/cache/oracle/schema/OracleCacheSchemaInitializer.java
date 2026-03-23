@@ -32,7 +32,7 @@ import java.util.List;
  * @since 6.0.0
  */
 @Singleton
-public class OracleCacheSchemaInitializer implements ApplicationEventListener<ApplicationStartupEvent> {
+public final class OracleCacheSchemaInitializer implements ApplicationEventListener<ApplicationStartupEvent> {
 
     private static final String DEFAULT_RESOURCE_PATH = "db/oracle-cache.sql";
 
