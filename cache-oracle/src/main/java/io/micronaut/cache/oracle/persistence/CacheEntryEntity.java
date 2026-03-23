@@ -27,82 +27,13 @@ import java.time.Instant;
  * @since 6.0.0
  */
 @MappedEntity("MN_CACHE_ENTRY")
-public final class CacheEntryEntity {
-
-    @EmbeddedId
-    private CacheEntryId id;
-
-    @MappedProperty("KEY_PAYLOAD")
-    private byte[] keyPayload;
-
-    @MappedProperty("VALUE_PAYLOAD")
-    private byte[] valuePayload;
-
-    @MappedProperty("VALUE_WEIGHT")
-    private Long valueWeight;
-
-    @MappedProperty("CREATED_AT")
-    private Instant createdAt;
-
-    @MappedProperty("LAST_ACCESS_AT")
-    private Instant lastAccessAt;
-
-    @MappedProperty("EXPIRES_AT")
-    private Instant expiresAt;
-
-    public CacheEntryId getId() {
-        return id;
-    }
-
-    public void setId(CacheEntryId id) {
-        this.id = id;
-    }
-
-    public byte[] getValuePayload() {
-        return valuePayload;
-    }
-
-    public byte[] getKeyPayload() {
-        return keyPayload;
-    }
-
-    public void setKeyPayload(byte[] keyPayload) {
-        this.keyPayload = keyPayload;
-    }
-
-    public void setValuePayload(byte[] valuePayload) {
-        this.valuePayload = valuePayload;
-    }
-
-    public Long getValueWeight() {
-        return valueWeight;
-    }
-
-    public void setValueWeight(Long valueWeight) {
-        this.valueWeight = valueWeight;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getLastAccessAt() {
-        return lastAccessAt;
-    }
-
-    public void setLastAccessAt(Instant lastAccessAt) {
-        this.lastAccessAt = lastAccessAt;
-    }
-
-    public Instant getExpiresAt() {
-        return expiresAt;
-    }
-
-    public void setExpiresAt(Instant expiresAt) {
-        this.expiresAt = expiresAt;
-    }
+public record CacheEntryEntity(
+    @EmbeddedId CacheEntryId id,
+    @MappedProperty("KEY_PAYLOAD") byte[] keyPayload,
+    @MappedProperty("VALUE_PAYLOAD") byte[] valuePayload,
+    @MappedProperty("VALUE_WEIGHT") Long valueWeight,
+    @MappedProperty("CREATED_AT") Instant createdAt,
+    @MappedProperty("LAST_ACCESS_AT") Instant lastAccessAt,
+    @MappedProperty("EXPIRES_AT") Instant expiresAt
+) {
 }

@@ -27,37 +27,10 @@ import java.util.Objects;
  * @since 6.0.0
  */
 @Embeddable
-public final class CacheEntryId {
-
-    @MappedProperty("CACHE_NAME")
-    private String cacheName;
-
-    @MappedProperty("KEY_HASH")
-    private byte[] keyHash;
-
-    public CacheEntryId() {
-    }
-
-    public CacheEntryId(String cacheName, byte[] keyHash) {
-        this.cacheName = cacheName;
-        this.keyHash = keyHash;
-    }
-
-    public String getCacheName() {
-        return cacheName;
-    }
-
-    public void setCacheName(String cacheName) {
-        this.cacheName = cacheName;
-    }
-
-    public byte[] getKeyHash() {
-        return keyHash;
-    }
-
-    public void setKeyHash(byte[] keyHash) {
-        this.keyHash = keyHash;
-    }
+public record CacheEntryId(
+    @MappedProperty("CACHE_NAME") String cacheName,
+    @MappedProperty("KEY_HASH") byte[] keyHash
+) {
 
     @Override
     public boolean equals(Object o) {

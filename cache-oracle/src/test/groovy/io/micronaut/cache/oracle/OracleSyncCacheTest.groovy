@@ -51,13 +51,15 @@ class OracleSyncCacheTest extends Specification {
         OracleCacheEntryRepository repository = Mock()
         OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), executorService(), serializer(), jsonMapper())
 
-        CacheEntryEntity expired = new CacheEntryEntity()
-        expired.id = new CacheEntryId('orders', [1] as byte[])
-        expired.keyPayload = [2] as byte[]
-        expired.valuePayload = '15'.bytes
-        expired.createdAt = Instant.now().minusSeconds(120)
-        expired.lastAccessAt = Instant.now().minusSeconds(120)
-        expired.expiresAt = Instant.now().minusSeconds(1)
+        CacheEntryEntity expired = new CacheEntryEntity(
+            new CacheEntryId('orders', [1] as byte[]),
+            [2] as byte[],
+            '15'.bytes,
+            null,
+            Instant.now().minusSeconds(120),
+            Instant.now().minusSeconds(120),
+            Instant.now().minusSeconds(1)
+        )
 
         and:
         repository.findById(_ as CacheEntryId) >> Optional.of(expired)
@@ -205,13 +207,15 @@ class OracleSyncCacheTest extends Specification {
         OracleCacheEntryRepository repository = Mock()
         OracleSyncCache cache = new OracleSyncCache(configuration(false), repository, statsRepository(), executorService(), serializer(), jsonMapper())
 
-        CacheEntryEntity existing = new CacheEntryEntity()
-        existing.id = new CacheEntryId('orders', [1] as byte[])
-        existing.keyPayload = [2] as byte[]
-        existing.valuePayload = '44'.bytes
-        existing.createdAt = Instant.now().minusSeconds(5)
-        existing.lastAccessAt = Instant.now().minusSeconds(5)
-        existing.expiresAt = Instant.now().plusSeconds(30)
+        CacheEntryEntity existing = new CacheEntryEntity(
+            new CacheEntryId('orders', [1] as byte[]),
+            [2] as byte[],
+            '44'.bytes,
+            null,
+            Instant.now().minusSeconds(5),
+            Instant.now().minusSeconds(5),
+            Instant.now().plusSeconds(30)
+        )
 
         and:
         repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
@@ -263,14 +267,15 @@ class OracleSyncCacheTest extends Specification {
         OracleCacheEntryRepository repository = Mock()
         OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), executorService(), serializer(), jsonMapper())
 
-        CacheEntryEntity existing = new CacheEntryEntity()
-        existing.id = new CacheEntryId('orders', [7] as byte[])
-        existing.keyPayload = [8] as byte[]
-        // Simulates legacy/non-JSON text payload previously observed in integration debugging.
-        existing.valuePayload = 'Car[model=Hello,year=2026]'.bytes
-        existing.createdAt = Instant.now().minusSeconds(5)
-        existing.lastAccessAt = Instant.now().minusSeconds(5)
-        existing.expiresAt = Instant.now().plusSeconds(30)
+        CacheEntryEntity existing = new CacheEntryEntity(
+            new CacheEntryId('orders', [7] as byte[]),
+            [8] as byte[],
+            'Car[model=Hello,year=2026]'.bytes,
+            null,
+            Instant.now().minusSeconds(5),
+            Instant.now().minusSeconds(5),
+            Instant.now().plusSeconds(30)
+        )
 
         and:
         repository.findById(_ as CacheEntryId) >> Optional.of(existing)
@@ -375,13 +380,14 @@ class OracleSyncCacheTest extends Specification {
     }
 
     private static CacheEntryEntity storedEntity() {
-        CacheEntryEntity entity = new CacheEntryEntity()
-        entity.id = new CacheEntryId('orders', [3] as byte[])
-        entity.keyPayload = [4] as byte[]
-        entity.valuePayload = '5'.bytes
-        entity.createdAt = Instant.now()
-        entity.lastAccessAt = Instant.now()
-        entity.expiresAt = Instant.now().plusSeconds(20)
-        return entity
+        return new CacheEntryEntity(
+            new CacheEntryId('orders', [3] as byte[]),
+            [4] as byte[],
+            '5'.bytes,
+            null,
+            Instant.now(),
+            Instant.now(),
+            Instant.now().plusSeconds(20)
+        )
     }
 }

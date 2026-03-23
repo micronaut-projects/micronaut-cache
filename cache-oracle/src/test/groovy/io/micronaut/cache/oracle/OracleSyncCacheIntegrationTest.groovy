@@ -171,14 +171,14 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
                 if (!rs.next()) {
                     return Optional.empty()
                 }
-                CacheStatsEntity entity = new CacheStatsEntity()
-                entity.cacheName = rs.getString('CACHE_NAME')
-                entity.hitCount = rs.getLong('HIT_COUNT')
-                entity.missCount = rs.getLong('MISS_COUNT')
-                entity.putCount = rs.getLong('PUT_COUNT')
-                entity.invalidateCount = rs.getLong('INVALIDATE_COUNT')
-                entity.updatedAt = rs.getObject('UPDATED_AT', OffsetDateTime).toInstant()
-                return Optional.of(entity)
+                return Optional.of(new CacheStatsEntity(
+                    rs.getString('CACHE_NAME'),
+                    rs.getLong('HIT_COUNT'),
+                    rs.getLong('MISS_COUNT'),
+                    rs.getLong('PUT_COUNT'),
+                    rs.getLong('INVALIDATE_COUNT'),
+                    rs.getObject('UPDATED_AT', OffsetDateTime).toInstant()
+                ))
             }
         }
     }

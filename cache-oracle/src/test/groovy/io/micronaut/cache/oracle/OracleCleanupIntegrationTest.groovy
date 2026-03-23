@@ -184,14 +184,14 @@ class OracleCleanupIntegrationTest extends OracleIntegrationSupport {
     }
 
     private static CacheEntryEntity entry(String cacheName, byte[] keyHash, byte[] keyPayload, Instant expiresAt, Long valueWeight) {
-        CacheEntryEntity entity = new CacheEntryEntity()
-        entity.id = new CacheEntryId(cacheName, keyHash)
-        entity.keyPayload = keyPayload
-        entity.valuePayload = 'value'.bytes
-        entity.valueWeight = valueWeight
-        entity.createdAt = Instant.now().minusSeconds(60)
-        entity.lastAccessAt = Instant.now().minusSeconds(60)
-        entity.expiresAt = expiresAt
-        return entity
+        return new CacheEntryEntity(
+            new CacheEntryId(cacheName, keyHash),
+            keyPayload,
+            'value'.bytes,
+            valueWeight,
+            Instant.now().minusSeconds(60),
+            Instant.now().minusSeconds(60),
+            expiresAt
+        )
     }
 }

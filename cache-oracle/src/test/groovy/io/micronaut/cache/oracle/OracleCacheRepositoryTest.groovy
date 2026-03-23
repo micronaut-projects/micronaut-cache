@@ -35,14 +35,15 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         byte[] hash = [1, 2, 3] as byte[]
         byte[] payload = [4, 5, 6] as byte[]
 
-        CacheEntryEntity entity = new CacheEntryEntity()
-        entity.id = new CacheEntryId('orders', hash)
-        entity.keyPayload = payload
-        entity.valuePayload = 'value-1'.bytes
-        entity.valueWeight = 10L
-        entity.createdAt = Instant.now()
-        entity.lastAccessAt = Instant.now()
-        entity.expiresAt = Instant.now().plusSeconds(60)
+        CacheEntryEntity entity = new CacheEntryEntity(
+            new CacheEntryId('orders', hash),
+            payload,
+            'value-1'.bytes,
+            10L,
+            Instant.now(),
+            Instant.now(),
+            Instant.now().plusSeconds(60)
+        )
 
         repository.save(entity)
 
@@ -70,23 +71,25 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         byte[] payloadA = [1, 1, 1] as byte[]
         byte[] payloadB = [2, 2, 2] as byte[]
 
-        CacheEntryEntity first = new CacheEntryEntity()
-        first.id = new CacheEntryId('orders', sameHash)
-        first.keyPayload = payloadA
-        first.valuePayload = 'a'.bytes
-        first.valueWeight = 1L
-        first.createdAt = Instant.now()
-        first.lastAccessAt = Instant.now()
-        first.expiresAt = Instant.now().plusSeconds(120)
+        CacheEntryEntity first = new CacheEntryEntity(
+            new CacheEntryId('orders', sameHash),
+            payloadA,
+            'a'.bytes,
+            1L,
+            Instant.now(),
+            Instant.now(),
+            Instant.now().plusSeconds(120)
+        )
 
-        CacheEntryEntity second = new CacheEntryEntity()
-        second.id = new CacheEntryId('orders', sameHash)
-        second.keyPayload = payloadB
-        second.valuePayload = 'b'.bytes
-        second.valueWeight = 2L
-        second.createdAt = Instant.now()
-        second.lastAccessAt = Instant.now()
-        second.expiresAt = Instant.now().plusSeconds(120)
+        CacheEntryEntity second = new CacheEntryEntity(
+            new CacheEntryId('orders', sameHash),
+            payloadB,
+            'b'.bytes,
+            2L,
+            Instant.now(),
+            Instant.now(),
+            Instant.now().plusSeconds(120)
+        )
 
         repository.save(first)
 
@@ -109,14 +112,15 @@ class OracleCacheRepositoryTest extends OracleIntegrationSupport {
         byte[] hash = [7, 7, 7] as byte[]
         byte[] payload = [8, 8, 8] as byte[]
 
-        CacheEntryEntity expiring = new CacheEntryEntity()
-        expiring.id = new CacheEntryId('orders', hash)
-        expiring.keyPayload = payload
-        expiring.valuePayload = 'expiring'.bytes
-        expiring.valueWeight = 1L
-        expiring.createdAt = Instant.now().minusSeconds(30)
-        expiring.lastAccessAt = Instant.now().minusSeconds(30)
-        expiring.expiresAt = Instant.now().minusSeconds(5)
+        CacheEntryEntity expiring = new CacheEntryEntity(
+            new CacheEntryId('orders', hash),
+            payload,
+            'expiring'.bytes,
+            1L,
+            Instant.now().minusSeconds(30),
+            Instant.now().minusSeconds(30),
+            Instant.now().minusSeconds(5)
+        )
         repository.save(expiring)
 
         when:

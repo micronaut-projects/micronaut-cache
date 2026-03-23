@@ -98,14 +98,14 @@ class OracleCleanupScheduleIntegrationTest extends OracleIntegrationSupport {
     }
 
     private static CacheEntryEntity expiredEntry() {
-        CacheEntryEntity entity = new CacheEntryEntity()
-        entity.id = new CacheEntryId('orders', [7, 7, 7] as byte[])
-        entity.keyPayload = [8, 8, 8] as byte[]
-        entity.valuePayload = 'value'.bytes
-        entity.valueWeight = 1L
-        entity.createdAt = Instant.now().minusSeconds(120)
-        entity.lastAccessAt = Instant.now().minusSeconds(120)
-        entity.expiresAt = Instant.now().minusSeconds(30)
-        return entity
+        return new CacheEntryEntity(
+            new CacheEntryId('orders', [7, 7, 7] as byte[]),
+            [8, 8, 8] as byte[],
+            'value'.bytes,
+            1L,
+            Instant.now().minusSeconds(120),
+            Instant.now().minusSeconds(120),
+            Instant.now().minusSeconds(30)
+        )
     }
 }

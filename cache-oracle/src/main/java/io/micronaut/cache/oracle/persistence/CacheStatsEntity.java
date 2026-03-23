@@ -27,72 +27,12 @@ import java.time.Instant;
  * @since 6.0.0
  */
 @MappedEntity("MN_CACHE_STATS")
-public final class CacheStatsEntity {
-
-    @Id
-    @MappedProperty("CACHE_NAME")
-    private String cacheName;
-
-    @MappedProperty("HIT_COUNT")
-    private long hitCount;
-
-    @MappedProperty("MISS_COUNT")
-    private long missCount;
-
-    @MappedProperty("PUT_COUNT")
-    private long putCount;
-
-    @MappedProperty("INVALIDATE_COUNT")
-    private long invalidateCount;
-
-    @MappedProperty("UPDATED_AT")
-    private Instant updatedAt;
-
-    public String getCacheName() {
-        return cacheName;
-    }
-
-    public void setCacheName(String cacheName) {
-        this.cacheName = cacheName;
-    }
-
-    public long getHitCount() {
-        return hitCount;
-    }
-
-    public void setHitCount(long hitCount) {
-        this.hitCount = hitCount;
-    }
-
-    public long getMissCount() {
-        return missCount;
-    }
-
-    public void setMissCount(long missCount) {
-        this.missCount = missCount;
-    }
-
-    public long getPutCount() {
-        return putCount;
-    }
-
-    public void setPutCount(long putCount) {
-        this.putCount = putCount;
-    }
-
-    public long getInvalidateCount() {
-        return invalidateCount;
-    }
-
-    public void setInvalidateCount(long invalidateCount) {
-        this.invalidateCount = invalidateCount;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+public record CacheStatsEntity(
+    @Id @MappedProperty("CACHE_NAME") String cacheName,
+    @MappedProperty("HIT_COUNT") long hitCount,
+    @MappedProperty("MISS_COUNT") long missCount,
+    @MappedProperty("PUT_COUNT") long putCount,
+    @MappedProperty("INVALIDATE_COUNT") long invalidateCount,
+    @MappedProperty("UPDATED_AT") Instant updatedAt
+) {
 }
