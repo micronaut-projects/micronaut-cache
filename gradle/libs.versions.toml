@@ -33,7 +33,6 @@ managed-ehcache = { module = "org.ehcache:ehcache", version.ref = "managed-ehcac
 managed-infinispan-client-hotrod = { module = "org.infinispan:infinispan-client-hotrod", version.ref = "managed-infinispan" }
 managed-infinispan-core = { module = "org.infinispan:infinispan-core", version.ref = "managed-infinispan" }
 managed-jcache = { module = "javax.cache:cache-api", version.ref = "managed-jcache" }
-managed-oracle-jdbc = { module = "com.oracle.database.jdbc:ojdbc11", version.ref = "managed-oracle-jdbc" }
 
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
 micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }

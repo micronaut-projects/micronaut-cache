@@ -14,11 +14,11 @@ dependencies {
 
     api projects.micronautCacheCore
 
-    implementation(libs.managed.oracle.jdbc)
     implementation(mn.micronaut.json.core)
-    implementation(mnSerde.micronaut.serde.jackson)
     implementation(mnData.micronaut.data.jdbc)
+    implementation(mnSerde.micronaut.serde.jackson)
     implementation(mnSql.micronaut.jdbc.hikari)
+    implementation(mnSql.ojdbc11)
 
     testImplementation projects.micronautCacheTck
     testImplementation(mn.micronaut.http.client)
