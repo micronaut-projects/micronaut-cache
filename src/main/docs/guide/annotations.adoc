@@ -6,6 +6,14 @@ The following cache annotations are supported:
 
 By using one of the annotations the api:cache.interceptor.CacheInterceptor[] is activated which in the case of `@Cacheable` will cache the return result of the method.
 
+[NOTE]
+.Cache hits skip method execution
+====
+When a value is already present for the computed cache key, `@Cacheable` returns the cached value and does not invoke the original method again.
+
+This also applies in tests that reuse the same application context. If multiple test methods use the same cache name and key, later tests may observe values cached by earlier tests unless the cache is invalidated or a different key is used.
+====
+
 If the return type of the method is a non-blocking type (either link:{jdkapi}/java.base/java/util/concurrent/CompletableFuture.html[CompletableFuture] or an instance of rs:Publisher[] the emitted result will be cached.
 
 In addition if the underlying Cache implementation supports non-blocking cache operations then cache values will be read from the cache without blocking, resulting in the ability to implement completely non-blocking cache operations.
