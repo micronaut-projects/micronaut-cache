@@ -40,7 +40,7 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
 
     long deleteByCacheName(String cacheName);
 
-    @Procedure("MN_CACHE_PUT_BLOCKING")
+    @Procedure("${micronaut.cache.oracle.prefix}_CACHE_PUT_BLOCKING")
     String blockingPut(String cacheName,
                        byte[] keyHash,
                        byte[] keyPayload,
@@ -49,10 +49,10 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
                        long valueWeight,
                        long insertOnly);
 
-    @Procedure("MN_CACHE_CLEANUP_CACHE")
+    @Procedure("${micronaut.cache.oracle.prefix}_CACHE_CLEANUP_CACHE")
     void runCleanupProcedure(String cacheName, long batchSize);
 
-    @Query(value = "SELECT COALESCE(SUM(COALESCE(VALUE_WEIGHT, 1)), 0) FROM MN_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
+    @Query(value = "SELECT COALESCE(SUM(COALESCE(VALUE_WEIGHT, 1)), 0) FROM ${micronaut.cache.oracle.prefix}_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
     long totalWeight(String cacheName);
 
 }

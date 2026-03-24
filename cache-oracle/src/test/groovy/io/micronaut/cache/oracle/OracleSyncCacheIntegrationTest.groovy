@@ -55,6 +55,30 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         context.close()
     }
 
+    void cacheOperationsUseConfiguredPrefixTables() {
+        given:
+        ApplicationContext context = newContext([
+            'micronaut.cache.oracle.prefix': 'ALT'
+        ])
+        OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
+
+        when:
+        cache.put('car:model:prefixed', 202)
+        Optional<Integer> stored = cache.get('car:model:prefixed', Argument.of(Integer))
+        cache.invalidate('car:model:prefixed')
+        Optional<Integer> afterInvalidate = cache.get('car:model:prefixed', Argument.of(Integer))
+
+        then:
+        stored.present
+        stored.get() == 202
+        afterInvalidate.empty
+        tableRowCount('ALT_CACHE_ENTRY') == 0
+        tableRowCount('MN_CACHE_ENTRY') == 0
+
+        cleanup:
+        context.close()
+    }
+
     void putIfAbsentReturnsExistingValueFromDatabase() {
         given:
         ApplicationContext context = newContext()
@@ -180,6 +204,15 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
                     rs.getObject('UPDATED_AT', OffsetDateTime).toInstant()
                 ))
             }
+        }
+    }
+
+    private long tableRowCount(String tableName) {
+        try (Connection connection = openJdbcConnection();
+             def statement = connection.createStatement();
+             def rs = statement.executeQuery("SELECT COUNT(*) FROM ${tableName}")) {
+            rs.next()
+            return rs.getLong(1)
         }
     }
 }

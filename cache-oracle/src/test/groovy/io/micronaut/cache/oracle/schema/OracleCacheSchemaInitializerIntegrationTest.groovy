@@ -48,6 +48,26 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         context.close()
     }
 
+    void schemaObjectsUseConfiguredPrefix() {
+        given:
+        ApplicationContext context = newContext([
+            'micronaut.cache.oracle.prefix': 'ALT'
+        ])
+
+        expect:
+        countUserTables(['ALT_CACHE_ENTRY', 'ALT_CACHE_CONFIG', 'ALT_CACHE_STATS']) == 3
+        hasIndex('ALT_CACHE_ENTRY_EXPIRES_IDX')
+        hasIndex('ALT_CACHE_ENTRY_ACCESS_IDX')
+        hasProcedure('ALT_CACHE_UPSERT_CONFIG')
+        hasProcedure('ALT_CACHE_UPDATE_STATS')
+        hasProcedure('ALT_CACHE_CLEANUP_CACHE')
+        hasProcedure('ALT_CACHE_REGISTER_CLEANUP_JOB')
+        hasProcedure('ALT_CACHE_PUT_BLOCKING')
+
+        cleanup:
+        context.close()
+    }
+
     void schemaInitializationIsIdempotentOnRealDatabase() {
         given:
         ApplicationContext firstContext = newContext()
@@ -176,7 +196,8 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
     void explicitDefaultDatasourceIsRecognizedAsConfigured() {
         given:
         ApplicationContext context = ApplicationContext.run([
-            'micronaut.cache.oracle.datasource': 'default'
+            'micronaut.cache.oracle.datasource': 'default',
+            'micronaut.cache.oracle.prefix': 'MN'
         ])
 
         when:
@@ -194,6 +215,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         given:
         ApplicationContext context = ApplicationContext.run([
             'micronaut.cache.oracle.datasource'   : 'missing',
+            'micronaut.cache.oracle.prefix'       : 'MN',
             'datasources.default.url'             : oracle.jdbcUrl,
             'datasources.default.username'        : oracle.username,
             'datasources.default.password'        : oracle.password,
@@ -219,6 +241,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         given:
         ApplicationContext context = ApplicationContext.run([
             'micronaut.cache.oracle.datasource'      : 'secondary',
+            'micronaut.cache.oracle.prefix'          : 'MN',
             'datasources.default.url'                : oracle.jdbcUrl,
             'datasources.default.username'           : oracle.username,
             'datasources.default.password'           : oracle.password,
@@ -279,6 +302,17 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
              def statement = connection.prepareStatement('SELECT COUNT(*) FROM USER_OBJECTS WHERE OBJECT_TYPE = ? AND OBJECT_NAME = ?')) {
             statement.setString(1, 'PROCEDURE')
             statement.setString(2, objectName)
+            try (def rs = statement.executeQuery()) {
+                rs.next()
+                return rs.getInt(1) == 1
+            }
+        }
+    }
+
+    private boolean hasIndex(String objectName) {
+        try (Connection connection = openJdbcConnection();
+             def statement = connection.prepareStatement('SELECT COUNT(*) FROM USER_INDEXES WHERE INDEX_NAME = ?')) {
+            statement.setString(1, objectName)
             try (def rs = statement.executeQuery()) {
                 rs.next()
                 return rs.getInt(1) == 1

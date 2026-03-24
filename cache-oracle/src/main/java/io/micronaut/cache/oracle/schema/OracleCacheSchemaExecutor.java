@@ -51,8 +51,6 @@ import javax.sql.DataSource;
 public final class OracleCacheSchemaExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCacheSchemaExecutor.class);
-    private static final String UPSERT_CACHE_CONFIG_CALL = "{ call MN_CACHE_UPSERT_CONFIG(?, ?, ?, ?, ?, ?, ?, ?) }";
-    private static final String REGISTER_CLEANUP_JOB_CALL = "{ call MN_CACHE_REGISTER_CLEANUP_JOB(?, ?) }";
 
     private final BeanContext beanContext;
     private final ResourceResolver resourceResolver;
@@ -104,9 +102,10 @@ public final class OracleCacheSchemaExecutor {
         if (cacheConfigurations.isEmpty()) {
             return;
         }
-
-        try (CallableStatement upsertConfig = connection.prepareCall(UPSERT_CACHE_CONFIG_CALL);
-             CallableStatement registerCleanupJob = connection.prepareCall(REGISTER_CLEANUP_JOB_CALL)) {
+        String upsertCacheConfigCall = "{ call MN_CACHE_UPSERT_CONFIG(?, ?, ?, ?, ?, ?, ?, ?) }".replace("MN", dataSourceConfiguration.getPrefix());
+        String registerCleanupJobCall = "{ call MN_CACHE_REGISTER_CLEANUP_JOB(?, ?) }".replace("MN", dataSourceConfiguration.getPrefix());
+        try (CallableStatement upsertConfig = connection.prepareCall(upsertCacheConfigCall);
+             CallableStatement registerCleanupJob = connection.prepareCall(registerCleanupJobCall)) {
             for (OracleCacheConfiguration cacheConfiguration : cacheConfigurations) {
                 OffsetDateTime nowUtc = OffsetDateTime.now(ZoneOffset.UTC);
                 String cacheName = cacheConfiguration.getCacheName();
@@ -183,7 +182,7 @@ public final class OracleCacheSchemaExecutor {
             if (plsqlBlock && "/".equals(trimmed)) {
                 String sql = current.toString().trim();
                 if (!sql.isEmpty()) {
-                    statements.add(sql);
+                    statements.add(sql.replace("MN", dataSourceConfiguration.getPrefix()));
                 }
                 current.setLength(0);
                 plsqlBlock = false;
@@ -198,7 +197,7 @@ public final class OracleCacheSchemaExecutor {
             if (!plsqlBlock && trimmed.endsWith(";")) {
                 String sql = current.toString().trim();
                 if (!sql.isEmpty()) {
-                    statements.add(trimTrailingSemicolon(sql));
+                    statements.add(trimTrailingSemicolon(sql.replace("MN", dataSourceConfiguration.getPrefix())));
                 }
                 current.setLength(0);
             }
@@ -206,7 +205,7 @@ public final class OracleCacheSchemaExecutor {
 
         String trailing = current.toString().trim();
         if (!trailing.isEmpty()) {
-            statements.add(trimTrailingSemicolon(trailing));
+            statements.add(trimTrailingSemicolon(trailing.replace("MN", dataSourceConfiguration.getPrefix())));
         }
         return statements;
     }

@@ -33,6 +33,7 @@ final class OracleTckSupport {
         ensureStarted()
         Map<String, Object> resolved = [
             'micronaut.cache.oracle.datasource'   : 'default',
+            'micronaut.cache.oracle.prefix'       : 'MN',
             'datasources.default.url'               : ORACLE.jdbcUrl,
             'datasources.default.username'          : ORACLE.username,
             'datasources.default.password'          : ORACLE.password,
