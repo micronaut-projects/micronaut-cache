@@ -40,6 +40,8 @@ import java.util.Set;
 @Primary
 public class NoOpCacheManager implements io.micronaut.cache.CacheManager<Object> {
 
+    private static final int MAX_CACHE_SIZE = 100;
+
     private Map<String, NoOpSyncCache> cacheMap;
 
     /**
@@ -48,7 +50,7 @@ public class NoOpCacheManager implements io.micronaut.cache.CacheManager<Object>
     public NoOpCacheManager() {
         this.cacheMap = new ConcurrentLinkedHashMap.Builder<String, NoOpSyncCache>()
             .initialCapacity(1)
-            .maximumWeightedCapacity(Long.MAX_VALUE)
+            .maximumWeightedCapacity(MAX_CACHE_SIZE)
             .build();
     }
 
