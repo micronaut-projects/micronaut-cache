@@ -35,8 +35,11 @@ public class MapToConcurrentMapConverter implements TypeConverter<Map, Concurren
 
     @Override
     public Optional<ConcurrentMap> convert(Map object, Class<ConcurrentMap> targetType, ConversionContext context) {
-        return Optional.of(new ConcurrentLinkedHashMap.Builder<>()
+        var map = new ConcurrentLinkedHashMap.Builder<>()
+            .initialCapacity(Math.max(object.size(), 1))
             .maximumWeightedCapacity(Math.max(object.size(), 1))
-            .build());
+            .build();
+        map.putAll(object);
+        return Optional.of(map);
     }
 }

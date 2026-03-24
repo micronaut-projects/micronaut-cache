@@ -46,7 +46,10 @@ public class NoOpCacheManager implements io.micronaut.cache.CacheManager<Object>
      * Constructor.
      */
     public NoOpCacheManager() {
-        this.cacheMap = new ConcurrentLinkedHashMap.Builder<String, NoOpSyncCache>().build();
+        this.cacheMap = new ConcurrentLinkedHashMap.Builder<String, NoOpSyncCache>()
+            .initialCapacity(1)
+            .maximumWeightedCapacity(Long.MAX_VALUE)
+            .build();
     }
 
     @NonNull
