@@ -15,6 +15,7 @@ dependencies {
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mnSerde.micronaut.serde.jackson)
     testImplementation(mnTest.micronaut.test.junit5)
+    testImplementation("org.mockito:mockito-core:5.20.0")
 
     testRuntimeOnly(libs.junit.jupiter.engine)
     testRuntimeOnly(mnLogging.logback.classic)
