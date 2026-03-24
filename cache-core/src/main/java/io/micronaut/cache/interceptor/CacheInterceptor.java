@@ -34,6 +34,7 @@ import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.AnnotationValueResolver;
+import io.micronaut.core.util.clhm.ConcurrentLinkedHashMap;
 import org.jspecify.annotations.NonNull;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.type.Argument;
@@ -59,7 +60,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
@@ -87,8 +87,8 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     private static final String MEMBER_KEY_GENERATOR = "keyGenerator";
 
     private final CacheManager cacheManager;
-    private final Map<Class<? extends CacheKeyGenerator>, CacheKeyGenerator> keyGenerators = new ConcurrentHashMap<>();
-    private final Map<ExecutableMethod<?, ?>, CacheOperation> cacheOperations = new ConcurrentHashMap<>(30);
+    private final Map<Class<? extends CacheKeyGenerator>, CacheKeyGenerator> keyGenerators = new ConcurrentLinkedHashMap.Builder<Class<? extends CacheKeyGenerator>, CacheKeyGenerator>().build();
+    private final Map<ExecutableMethod<?, ?>, CacheOperation> cacheOperations =         new ConcurrentLinkedHashMap.Builder<ExecutableMethod<?, ?>, CacheOperation>().initialCapacity(30).build();
     private final BeanContext beanContext;
     private final ExecutorService ioExecutor;
     private final CacheErrorHandler errorHandler;

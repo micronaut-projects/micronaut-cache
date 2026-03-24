@@ -20,12 +20,12 @@ import io.micronaut.cache.SyncCache;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.util.clhm.ConcurrentLinkedHashMap;
 import org.jspecify.annotations.NonNull;
 import io.micronaut.core.util.StringUtils;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A no operation {@link io.micronaut.cache.CacheManager} implementation suitable for disabling caching.
@@ -46,7 +46,7 @@ public class NoOpCacheManager implements io.micronaut.cache.CacheManager<Object>
      * Constructor.
      */
     public NoOpCacheManager() {
-        this.cacheMap = new ConcurrentHashMap<>();
+        this.cacheMap = new ConcurrentLinkedHashMap.Builder<String, NoOpSyncCache>().build();
     }
 
     @NonNull

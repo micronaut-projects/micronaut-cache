@@ -17,11 +17,11 @@ package io.micronaut.cache.hazelcast.converters;
 
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.TypeConverter;
+import io.micronaut.core.util.clhm.ConcurrentLinkedHashMap;
 import jakarta.inject.Singleton;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -35,6 +35,8 @@ public class MapToConcurrentMapConverter implements TypeConverter<Map, Concurren
 
     @Override
     public Optional<ConcurrentMap> convert(Map object, Class<ConcurrentMap> targetType, ConversionContext context) {
-        return Optional.of(new ConcurrentHashMap(object));
+        return Optional.of(new ConcurrentLinkedHashMap.Builder<>()
+            .maximumWeightedCapacity(Math.max(object.size(), 1))
+            .build());
     }
 }
