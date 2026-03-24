@@ -88,7 +88,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
 
     private final CacheManager cacheManager;
     private final Map<Class<? extends CacheKeyGenerator>, CacheKeyGenerator> keyGenerators = new ConcurrentLinkedHashMap.Builder<Class<? extends CacheKeyGenerator>, CacheKeyGenerator>().build();
-    private final Map<ExecutableMethod<?, ?>, CacheOperation> cacheOperations =         new ConcurrentLinkedHashMap.Builder<ExecutableMethod<?, ?>, CacheOperation>().initialCapacity(30).build();
+    private final Map<ExecutableMethod<?, ?>, CacheOperation> cacheOperations = new ConcurrentLinkedHashMap.Builder<ExecutableMethod<?, ?>, CacheOperation>().initialCapacity(30).build();
     private final BeanContext beanContext;
     private final ExecutorService ioExecutor;
     private final CacheErrorHandler errorHandler;
