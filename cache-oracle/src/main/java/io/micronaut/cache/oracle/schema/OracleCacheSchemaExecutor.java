@@ -20,25 +20,26 @@ import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguratio
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationUtil;
 import io.micronaut.context.env.Environment;
-import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.inject.BeanDefinition;
+import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.PrintWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.ConnectionBuilder;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.ShardingKeyBuilder;
 import java.sql.Types;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.sql.DataSource;
 
@@ -53,21 +54,15 @@ public final class OracleCacheSchemaExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(OracleCacheSchemaExecutor.class);
 
     private final BeanContext beanContext;
-    private final ResourceResolver resourceResolver;
     private final OracleCacheDataSourceConfiguration dataSourceConfiguration;
     private final List<OracleCacheConfiguration> cacheConfigurations;
-    private final String scriptResourcePath;
     private final AtomicBoolean initialized = new AtomicBoolean(false);
 
     public OracleCacheSchemaExecutor(BeanContext beanContext,
-                                     ResourceResolver resourceResolver,
                                      OracleCacheDataSourceConfiguration dataSourceConfiguration,
-                                     String scriptResourcePath,
                                      List<OracleCacheConfiguration> cacheConfigurations) {
         this.beanContext = beanContext;
-        this.resourceResolver = resourceResolver;
         this.dataSourceConfiguration = dataSourceConfiguration;
-        this.scriptResourcePath = scriptResourcePath;
         this.cacheConfigurations = List.copyOf(cacheConfigurations);
     }
 
@@ -76,18 +71,16 @@ public final class OracleCacheSchemaExecutor {
             return;
         }
 
-        List<String> statements = readStatements();
-        try (Connection connection = openConnection();
-             Statement statement = connection.createStatement()) {
-            for (String sql : statements) {
-                try {
-                    statement.execute(sql);
-                } catch (SQLException e) {
-                    if (!isIgnorableExistsError(e)) {
-                        throw new IllegalStateException("Failed to initialize Oracle cache schema", e);
-                    }
-                }
-            }
+        JdbcConnectionSettings settings = resolveConnectionSettings();
+
+        try {
+            migrateSchema(settings);
+        } catch (SQLException e) {
+            initialized.set(false);
+            throw new IllegalStateException("Failed to initialize Oracle cache schema", e);
+        }
+
+        try (Connection connection = settings.openConnection()) {
             initializeCacheConfigurations(connection);
         } catch (SQLException e) {
             initialized.set(false);
@@ -141,91 +134,49 @@ public final class OracleCacheSchemaExecutor {
         }
     }
 
-    private List<String> readStatements() {
-        try (InputStream stream = resourceResolver.getResource("classpath:" + scriptResourcePath).get().openStream()) {
-            String content = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-            return parseStatements(stripLineComments(content));
-        } catch (java.util.NoSuchElementException e) {
-            throw new IllegalStateException("Schema SQL resource not found: " + scriptResourcePath, e);
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to read schema SQL resource: " + scriptResourcePath, e);
+    private void migrateSchema(JdbcConnectionSettings settings) throws SQLException {
+        String prefix = dataSourceConfiguration.getPrefix().toUpperCase(Locale.ROOT);
+        try (OracleFlywayDataSource dataSource = new OracleFlywayDataSource(settings)) {
+            boolean baselineOnMigrate;
+            try (Connection connection = settings.openConnection()) {
+                baselineOnMigrate = shouldBaselineHistory(connection, prefix);
+            }
+            Flyway flyway = Flyway.configure()
+                .dataSource(dataSource)
+            .locations("classpath:db/test-migration/oracle-cache", "classpath:db/migration/oracle-cache")
+            .table("FLYWAY_SCHEMA_HISTORY_" + prefix)
+            .placeholders(Map.of("cachePrefix", prefix))
+                .baselineOnMigrate(baselineOnMigrate)
+            .baselineVersion("0")
+            .load();
+            flyway.migrate();
         }
     }
 
-    private String stripLineComments(String content) {
-        StringBuilder filtered = new StringBuilder(content.length());
-        String[] lines = content.split("\\r?\\n");
-        for (String line : lines) {
-            if (!line.trim().startsWith("--")) {
-                filtered.append(line).append('\n');
+    private boolean shouldBaselineHistory(Connection connection, String prefix) {
+        String historyTable = "FLYWAY_SCHEMA_HISTORY_" + prefix;
+        try {
+            if (objectExists(connection, "USER_TABLES", "TABLE_NAME", historyTable)) {
+                return false;
+            }
+            return objectExists(connection, "USER_OBJECTS", "OBJECT_NAME", "%");
+        } catch (SQLException e) {
+            throw new IllegalStateException("Failed to determine Flyway baseline state for Oracle cache", e);
+        }
+    }
+
+    private boolean objectExists(Connection connection, String table, String column, String pattern) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM " + table + " WHERE " + column + " LIKE ? ESCAPE '\\'";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, pattern);
+            try (ResultSet rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getInt(1) > 0;
             }
         }
-        return filtered.toString();
     }
 
-    private List<String> parseStatements(String content) {
-        String[] lines = content.split("\\r?\\n");
-        List<String> statements = new ArrayList<>();
-        StringBuilder current = new StringBuilder(content.length());
-        boolean plsqlBlock = false;
-
-        for (String line : lines) {
-            String trimmed = line.trim();
-            if (trimmed.isEmpty()) {
-                continue;
-            }
-
-            if (!plsqlBlock && (startsWithIgnoreCase(trimmed, "CREATE OR REPLACE PROCEDURE") || startsWithIgnoreCase(trimmed, "BEGIN"))) {
-                plsqlBlock = true;
-            }
-
-            if (plsqlBlock && "/".equals(trimmed)) {
-                String sql = current.toString().trim();
-                if (!sql.isEmpty()) {
-                    statements.add(sql.replace("MN", dataSourceConfiguration.getPrefix()));
-                }
-                current.setLength(0);
-                plsqlBlock = false;
-                continue;
-            }
-
-            if (current.length() > 0) {
-                current.append('\n');
-            }
-            current.append(line);
-
-            if (!plsqlBlock && trimmed.endsWith(";")) {
-                String sql = current.toString().trim();
-                if (!sql.isEmpty()) {
-                    statements.add(trimTrailingSemicolon(sql.replace("MN", dataSourceConfiguration.getPrefix())));
-                }
-                current.setLength(0);
-            }
-        }
-
-        String trailing = current.toString().trim();
-        if (!trailing.isEmpty()) {
-            statements.add(trimTrailingSemicolon(trailing.replace("MN", dataSourceConfiguration.getPrefix())));
-        }
-        return statements;
-    }
-
-    private String trimTrailingSemicolon(String sql) {
-        if (sql.endsWith(";")) {
-            return sql.substring(0, sql.length() - 1).trim();
-        }
-        return sql;
-    }
-
-    private boolean startsWithIgnoreCase(String value, String prefix) {
-        return value.regionMatches(true, 0, prefix, 0, prefix.length());
-    }
-
-    private boolean isIgnorableExistsError(SQLException e) {
-        return e.getErrorCode() == 955;
-    }
-
-    private Connection openConnection() throws SQLException {
+    private JdbcConnectionSettings resolveConnectionSettings() {
         Collection<String> availableDataSourceNames = beanContext.getBeanDefinitions(DataSource.class)
             .stream()
             .map(this::resolveDataSourceName)
@@ -264,7 +215,84 @@ public final class OracleCacheSchemaExecutor {
                 throw new IllegalStateException("Configured datasource driver class not found for '" + dataSourceName + "': " + driverClassName, e);
             }
         }
-        return DriverManager.getConnection(url, username, password);
+        return new JdbcConnectionSettings(url, username, password, driverClassName);
+    }
+
+    private record JdbcConnectionSettings(String url,
+                                          String username,
+                                          String password,
+                                          String driverClassName) {
+        private Connection openConnection() throws SQLException {
+            return java.sql.DriverManager.getConnection(url, username, password);
+        }
+    }
+
+    private static final class OracleFlywayDataSource implements DataSource, AutoCloseable {
+        private final JdbcConnectionSettings settings;
+
+        private OracleFlywayDataSource(JdbcConnectionSettings settings) {
+            this.settings = settings;
+        }
+
+        @Override
+        public Connection getConnection() throws SQLException {
+            return settings.openConnection();
+        }
+
+        @Override
+        public Connection getConnection(String username, String password) throws SQLException {
+            return java.sql.DriverManager.getConnection(settings.url(), username, password);
+        }
+
+        @Override
+        public <T> T unwrap(Class<T> iface) throws SQLException {
+            if (iface.isInstance(this)) {
+                return iface.cast(this);
+            }
+            throw new SQLException("Not a wrapper for " + iface.getName());
+        }
+
+        @Override
+        public boolean isWrapperFor(Class<?> iface) {
+            return iface.isInstance(this);
+        }
+
+        @Override
+        public PrintWriter getLogWriter() {
+            return null;
+        }
+
+        @Override
+        public void setLogWriter(PrintWriter out) {
+        }
+
+        @Override
+        public void setLoginTimeout(int seconds) {
+        }
+
+        @Override
+        public int getLoginTimeout() {
+            return 0;
+        }
+
+        @Override
+        public java.util.logging.Logger getParentLogger() {
+            return java.util.logging.Logger.getGlobal();
+        }
+
+        @Override
+        public ConnectionBuilder createConnectionBuilder() throws SQLException {
+            throw new SQLException("ConnectionBuilder not supported");
+        }
+
+        @Override
+        public ShardingKeyBuilder createShardingKeyBuilder() throws SQLException {
+            throw new SQLException("ShardingKeyBuilder not supported");
+        }
+
+        @Override
+        public void close() {
+        }
     }
 
     private String describeDataSourceBean(BeanDefinition<DataSource> definition) {

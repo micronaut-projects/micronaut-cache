@@ -89,6 +89,18 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         secondContext.close()
     }
 
+    void flywayAppliesTestOnlyMigration() {
+        given:
+        ApplicationContext context = newContext()
+
+        expect:
+        tableRowCount('FLYWAY_SCHEMA_HISTORY_MN') == 2
+        columnLength('MN_CACHE_CONFIG', 'CACHE_NAME') == 150
+
+        cleanup:
+        context.close()
+    }
+
     void initializationCanRetryAfterDroppedSchemaOnRealDatabase() {
         given:
         ApplicationContext context = newContext()
@@ -309,6 +321,27 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         }
     }
 
+    private int tableRowCount(String tableName) {
+        try (Connection connection = openJdbcConnection();
+             def statement = connection.prepareStatement("SELECT COUNT(*) FROM ${tableName}");
+             def rs = statement.executeQuery()) {
+            rs.next()
+            return rs.getInt(1)
+        }
+    }
+
+    private int columnLength(String tableName, String columnName) {
+        try (Connection connection = openJdbcConnection();
+             def statement = connection.prepareStatement('SELECT CHAR_LENGTH FROM USER_TAB_COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?')) {
+            statement.setString(1, tableName)
+            statement.setString(2, columnName)
+            try (def rs = statement.executeQuery()) {
+                rs.next()
+                return rs.getInt(1)
+            }
+        }
+    }
+
     private boolean hasIndex(String objectName) {
         try (Connection connection = openJdbcConnection();
              def statement = connection.prepareStatement('SELECT COUNT(*) FROM USER_INDEXES WHERE INDEX_NAME = ?')) {
@@ -330,7 +363,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         }
     }
 
-    private void dropSchemaObjects() {
+    private void dropSchemaObjects(boolean dropHistoryTable = true) {
         try (Connection connection = openJdbcConnection();
              def statement = connection.createStatement()) {
             ['MN_CACHE_REGISTER_CLEANUP_JOB', 'MN_CACHE_UPDATE_STATS', 'MN_CACHE_CLEANUP_CACHE', 'MN_CACHE_PUT_BLOCKING', 'MN_CACHE_UPSERT_CONFIG'].each {
@@ -341,6 +374,9 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
             }
             ['MN_CACHE_ENTRY', 'MN_CACHE_CONFIG', 'MN_CACHE_STATS'].each {
                 dropIfExists(statement, "DROP TABLE ${it}")
+            }
+            if (dropHistoryTable) {
+                dropIfExists(statement, 'DROP TABLE FLYWAY_SCHEMA_HISTORY_MN')
             }
         }
     }

@@ -31,6 +31,8 @@ import io.micronaut.json.JsonMapper;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -50,6 +52,7 @@ import java.util.function.Supplier;
  * @since 6.0.0
  */
 public final class OracleSyncCache implements SyncCache<OracleCacheEntryRepository> {
+    private static final Logger LOG = LoggerFactory.getLogger(OracleSyncCache.class);
 
     private final OracleCacheConfiguration configuration;
     private final OracleCacheEntryRepository entryRepository;
@@ -70,6 +73,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         this.executorService = executorService;
         this.keySerializer = keySerializer;
         this.jsonMapper = jsonMapper;
+        LOG.debug("Oracle cache '{}' recordStats={}", configuration.getCacheName(), configuration.isRecordStats());
     }
 
     @NonNull
@@ -351,7 +355,8 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
                     invalidateDelta,
                     Instant.now()
                 );
-            } catch (RuntimeException ignored) {
+            } catch (RuntimeException e) {
+                LOG.debug("Failed to update Oracle cache stats for cache {}", configuration.getCacheName(), e);
             }
         });
     }

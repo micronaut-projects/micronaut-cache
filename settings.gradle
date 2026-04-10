@@ -38,6 +38,7 @@ micronautBuild {
     useStandardizedProjectNames = true
     importMicronautCatalog()
     importMicronautCatalog("micronaut-data")
+    importMicronautCatalog("micronaut-flyway")
     importMicronautCatalog("micronaut-micrometer")
     importMicronautCatalog("micronaut-serde")
     importMicronautCatalog("micronaut-sql")

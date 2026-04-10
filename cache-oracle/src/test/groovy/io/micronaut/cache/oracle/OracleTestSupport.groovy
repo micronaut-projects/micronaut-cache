@@ -20,7 +20,6 @@ import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguratio
 import io.micronaut.cache.oracle.schema.OracleCacheSchemaExecutor
 import io.micronaut.cache.oracle.schema.OracleCacheSchemaInitializer
 import io.micronaut.context.ApplicationContext
-import io.micronaut.core.io.ResourceResolver
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.OracleContainer
 import org.testcontainers.utility.DockerImageName
@@ -85,9 +84,7 @@ final class OracleTestSupport {
         ApplicationContext context = ApplicationContext.run(resolved)
         new OracleCacheSchemaExecutor(
             context,
-            context.getBean(ResourceResolver),
             context.getBean(OracleCacheDataSourceConfiguration),
-            'db/oracle-cache.sql',
             context.getBeansOfType(OracleCacheConfiguration).toList()
         ).initializeSchemaNow()
         return context

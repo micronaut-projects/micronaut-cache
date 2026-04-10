@@ -19,7 +19,6 @@ import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration;
 import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguration;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.event.ApplicationEventListener;
-import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.runtime.event.ApplicationStartupEvent;
 import jakarta.inject.Singleton;
 
@@ -34,19 +33,14 @@ import java.util.List;
 @Singleton
 public final class OracleCacheSchemaInitializer implements ApplicationEventListener<ApplicationStartupEvent> {
 
-    private static final String DEFAULT_RESOURCE_PATH = "db/oracle-cache.sql";
-
     private final OracleCacheSchemaExecutor schemaExecutor;
 
     public OracleCacheSchemaInitializer(BeanContext beanContext,
-                                        ResourceResolver resourceResolver,
                                         OracleCacheDataSourceConfiguration dataSourceConfiguration,
                                         List<OracleCacheConfiguration> cacheConfigurations) {
         this.schemaExecutor = new OracleCacheSchemaExecutor(
             beanContext,
-            resourceResolver,
             dataSourceConfiguration,
-            DEFAULT_RESOURCE_PATH,
             cacheConfigurations
         );
     }

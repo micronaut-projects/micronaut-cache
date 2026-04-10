@@ -1,4 +1,4 @@
-CREATE TABLE MN_CACHE_ENTRY (
+CREATE TABLE ${cachePrefix}_CACHE_ENTRY (
     CACHE_NAME VARCHAR2(255) NOT NULL,
     KEY_HASH RAW(32) NOT NULL,
     KEY_PAYLOAD BLOB NOT NULL,
@@ -7,10 +7,10 @@ CREATE TABLE MN_CACHE_ENTRY (
     CREATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
     LAST_ACCESS_AT TIMESTAMP(6) WITH TIME ZONE,
     EXPIRES_AT TIMESTAMP(6) WITH TIME ZONE,
-    CONSTRAINT MN_CACHE_ENTRY_PK PRIMARY KEY (CACHE_NAME, KEY_HASH)
+    CONSTRAINT ${cachePrefix}_CACHE_ENTRY_PK PRIMARY KEY (CACHE_NAME, KEY_HASH)
 );
 
-CREATE TABLE MN_CACHE_CONFIG (
+CREATE TABLE ${cachePrefix}_CACHE_CONFIG (
     CACHE_NAME VARCHAR2(255) NOT NULL,
     BLOCKING NUMBER(1, 0) DEFAULT 0 NOT NULL,
     LOCK_WAIT_TIMEOUT_MS NUMBER(19, 0) DEFAULT 5000 NOT NULL,
@@ -20,24 +20,24 @@ CREATE TABLE MN_CACHE_CONFIG (
     MAXIMUM_WEIGHT NUMBER(19, 0),
     CREATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
     UPDATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
-    CONSTRAINT MN_CACHE_CONFIG_PK PRIMARY KEY (CACHE_NAME)
+    CONSTRAINT ${cachePrefix}_CACHE_CONFIG_PK PRIMARY KEY (CACHE_NAME)
 );
 
-CREATE TABLE MN_CACHE_STATS (
+CREATE TABLE ${cachePrefix}_CACHE_STATS (
     CACHE_NAME VARCHAR2(255) NOT NULL,
     HIT_COUNT NUMBER(19, 0) DEFAULT 0 NOT NULL,
     MISS_COUNT NUMBER(19, 0) DEFAULT 0 NOT NULL,
     PUT_COUNT NUMBER(19, 0) DEFAULT 0 NOT NULL,
     INVALIDATE_COUNT NUMBER(19, 0) DEFAULT 0 NOT NULL,
     UPDATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
-    CONSTRAINT MN_CACHE_STATS_PK PRIMARY KEY (CACHE_NAME)
+    CONSTRAINT ${cachePrefix}_CACHE_STATS_PK PRIMARY KEY (CACHE_NAME)
 );
 
-CREATE INDEX MN_CACHE_ENTRY_EXPIRES_IDX ON MN_CACHE_ENTRY (CACHE_NAME, EXPIRES_AT);
+CREATE INDEX ${cachePrefix}_CACHE_ENTRY_EXPIRES_IDX ON ${cachePrefix}_CACHE_ENTRY (CACHE_NAME, EXPIRES_AT);
 
-CREATE INDEX MN_CACHE_ENTRY_ACCESS_IDX ON MN_CACHE_ENTRY (CACHE_NAME, LAST_ACCESS_AT, CREATED_AT);
+CREATE INDEX ${cachePrefix}_CACHE_ENTRY_ACCESS_IDX ON ${cachePrefix}_CACHE_ENTRY (CACHE_NAME, LAST_ACCESS_AT, CREATED_AT);
 
-CREATE OR REPLACE PROCEDURE MN_CACHE_UPSERT_CONFIG(
+CREATE OR REPLACE PROCEDURE ${cachePrefix}_CACHE_UPSERT_CONFIG(
     P_CACHE_NAME IN VARCHAR2,
     P_BLOCKING IN NUMBER,
     P_LOCK_WAIT_TIMEOUT_MS IN NUMBER,
@@ -48,7 +48,7 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_UPSERT_CONFIG(
     P_CURRENT_TIME IN TIMESTAMP WITH TIME ZONE
 ) AS
 BEGIN
-    MERGE INTO MN_CACHE_CONFIG cfg
+    MERGE INTO ${cachePrefix}_CACHE_CONFIG cfg
     USING (SELECT P_CACHE_NAME AS CACHE_NAME FROM DUAL) incoming
     ON (cfg.CACHE_NAME = incoming.CACHE_NAME)
     WHEN MATCHED THEN UPDATE SET
@@ -65,7 +65,7 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE MN_CACHE_UPDATE_STATS(
+CREATE OR REPLACE PROCEDURE ${cachePrefix}_CACHE_UPDATE_STATS(
     P_CACHE_NAME IN VARCHAR2,
     P_HIT_DELTA IN NUMBER,
     P_MISS_DELTA IN NUMBER,
@@ -76,7 +76,7 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_UPDATE_STATS(
 BEGIN
     -- Stats rows are updated opportunistically from cache operations, so we upsert and
     -- increment counters in one statement instead of requiring the row to exist first.
-    MERGE INTO MN_CACHE_STATS stats
+    MERGE INTO ${cachePrefix}_CACHE_STATS stats
     USING (SELECT P_CACHE_NAME AS CACHE_NAME FROM DUAL) incoming
     ON (stats.CACHE_NAME = incoming.CACHE_NAME)
     WHEN MATCHED THEN UPDATE SET
@@ -98,7 +98,7 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE MN_CACHE_CLEANUP_CACHE(
+CREATE OR REPLACE PROCEDURE ${cachePrefix}_CACHE_CLEANUP_CACHE(
     P_CACHE_NAME IN VARCHAR2,
     P_BATCH_SIZE IN NUMBER
 ) AS
@@ -115,7 +115,7 @@ BEGIN
     BEGIN
         SELECT MAXIMUM_SIZE, MAXIMUM_WEIGHT, CLEANUP_BATCH_SIZE
         INTO V_MAX_SIZE, V_MAX_WEIGHT, V_CONFIG_BATCH_SIZE
-        FROM MN_CACHE_CONFIG
+        FROM ${cachePrefix}_CACHE_CONFIG
         WHERE CACHE_NAME = P_CACHE_NAME;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -129,12 +129,12 @@ BEGIN
     LOOP
         -- Expiry checks are done in UTC so cleanup behaves the same regardless of the
         -- Oracle session timezone used by the caller or scheduler job.
-        DELETE FROM MN_CACHE_ENTRY
+        DELETE FROM ${cachePrefix}_CACHE_ENTRY
         WHERE ROWID IN (
             SELECT ROWID
             FROM (
                 SELECT ROWID
-                FROM MN_CACHE_ENTRY
+                FROM ${cachePrefix}_CACHE_ENTRY
                 WHERE CACHE_NAME = P_CACHE_NAME
                   AND EXPIRES_AT IS NOT NULL
                   AND SYS_EXTRACT_UTC(EXPIRES_AT) < SYS_EXTRACT_UTC(SYSTIMESTAMP)
@@ -149,7 +149,7 @@ BEGIN
         LOOP
             SELECT COUNT(*)
             INTO V_CURRENT_SIZE
-            FROM MN_CACHE_ENTRY
+            FROM ${cachePrefix}_CACHE_ENTRY
             WHERE CACHE_NAME = P_CACHE_NAME;
             EXIT WHEN V_CURRENT_SIZE <= V_MAX_SIZE;
 
@@ -158,12 +158,12 @@ BEGIN
 
             -- Size enforcement evicts the least-recently-used rows in bounded batches so
             -- large backlogs can be drained incrementally without one massive delete.
-            DELETE FROM MN_CACHE_ENTRY
+            DELETE FROM ${cachePrefix}_CACHE_ENTRY
             WHERE ROWID IN (
                 SELECT ROWID
                 FROM (
                     SELECT ROWID
-                    FROM MN_CACHE_ENTRY
+                    FROM ${cachePrefix}_CACHE_ENTRY
                     WHERE CACHE_NAME = P_CACHE_NAME
                     ORDER BY NVL(LAST_ACCESS_AT, CREATED_AT), CREATED_AT, KEY_HASH
                 )
@@ -177,7 +177,7 @@ BEGIN
         LOOP
             SELECT NVL(SUM(NVL(VALUE_WEIGHT, 1)), 0)
             INTO V_CURRENT_WEIGHT
-            FROM MN_CACHE_ENTRY
+            FROM ${cachePrefix}_CACHE_ENTRY
             WHERE CACHE_NAME = P_CACHE_NAME;
             EXIT WHEN V_CURRENT_WEIGHT <= V_MAX_WEIGHT;
 
@@ -185,7 +185,7 @@ BEGIN
 
             -- Weight enforcement approximates LRU eviction while deleting enough rows to
             -- cover the weight overage, again capped by the configured batch size.
-            DELETE FROM MN_CACHE_ENTRY
+            DELETE FROM ${cachePrefix}_CACHE_ENTRY
             WHERE ROWID IN (
                 SELECT RID
                 FROM (
@@ -196,7 +196,7 @@ BEGIN
                                SUM(NVL(VALUE_WEIGHT, 1)) OVER (
                                    ORDER BY NVL(LAST_ACCESS_AT, CREATED_AT), CREATED_AT, KEY_HASH
                                ) AS RUNNING_WEIGHT
-                        FROM MN_CACHE_ENTRY
+                        FROM ${cachePrefix}_CACHE_ENTRY
                         WHERE CACHE_NAME = P_CACHE_NAME
                     )
                     WHERE RUNNING_WEIGHT <= V_EXCESS_WEIGHT
@@ -211,7 +211,7 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE MN_CACHE_REGISTER_CLEANUP_JOB(
+CREATE OR REPLACE PROCEDURE ${cachePrefix}_CACHE_REGISTER_CLEANUP_JOB(
     P_CACHE_NAME IN VARCHAR2,
     P_INTERVAL_SECONDS IN NUMBER
 ) AS
@@ -228,8 +228,8 @@ BEGIN
     IF V_NORMALIZED_CACHE_NAME IS NULL OR LENGTH(V_NORMALIZED_CACHE_NAME) = 0 THEN
         V_NORMALIZED_CACHE_NAME := 'CACHE';
     END IF;
-    V_JOB_NAME := 'MN_CACHE_CLEANUP_' || SUBSTR(V_NORMALIZED_CACHE_NAME, 1, 111);
-    V_ACTION := 'BEGIN MN_CACHE_CLEANUP_CACHE(''' || REPLACE(P_CACHE_NAME, '''', '''''') || ''', NULL); END;';
+    V_JOB_NAME := '${cachePrefix}_CACHE_CLEANUP_' || SUBSTR(V_NORMALIZED_CACHE_NAME, 1, 111);
+    V_ACTION := 'BEGIN ${cachePrefix}_CACHE_CLEANUP_CACHE(''' || REPLACE(P_CACHE_NAME, '''', '''''') || ''', NULL); END;';
 
     SELECT COUNT(1)
     INTO V_EXISTS
@@ -269,7 +269,7 @@ EXCEPTION
 END;
 /
 
-CREATE OR REPLACE PROCEDURE MN_CACHE_PUT_BLOCKING(
+CREATE OR REPLACE PROCEDURE ${cachePrefix}_CACHE_PUT_BLOCKING(
     P_CACHE_NAME IN VARCHAR2,
     P_KEY_HASH IN RAW,
     P_KEY_PAYLOAD IN BLOB,
@@ -283,11 +283,11 @@ CREATE OR REPLACE PROCEDURE MN_CACHE_PUT_BLOCKING(
 BEGIN
     P_STATUS := 'ERROR';
 
-    SAVEPOINT MN_CACHE_PUT_BLOCKING_SP;
+    SAVEPOINT ${cachePrefix}_CACHE_PUT_BLOCKING_SP;
 
     -- Insert a placeholder row first so competing blocking writers serialize on the
     -- unique key. The payload is filled in by the follow-up update below.
-    INSERT INTO MN_CACHE_ENTRY (
+    INSERT INTO ${cachePrefix}_CACHE_ENTRY (
         CACHE_NAME,
         KEY_HASH,
         KEY_PAYLOAD,
@@ -308,7 +308,7 @@ BEGIN
     );
 
     -- Once the row exists, the actual value payload is written in the same procedure call.
-    UPDATE MN_CACHE_ENTRY
+    UPDATE ${cachePrefix}_CACHE_ENTRY
        SET VALUE_PAYLOAD = P_VALUE_PAYLOAD,
            VALUE_WEIGHT = NVL(P_VALUE_WEIGHT, 1),
            LAST_ACCESS_AT = V_NOW,
@@ -321,7 +321,7 @@ EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
         IF NVL(P_INSERT_ONLY, 0) = 1 THEN
             -- putIfAbsent path -> only update timestamps and keep same payload
-            UPDATE MN_CACHE_ENTRY
+            UPDATE ${cachePrefix}_CACHE_ENTRY
                SET LAST_ACCESS_AT = V_NOW,
                    EXPIRES_AT = P_EXPIRES_AT
              WHERE CACHE_NAME = P_CACHE_NAME
@@ -330,7 +330,7 @@ EXCEPTION
             P_STATUS := 'UPDATED_TIMESTAMP';
         ELSE
             -- put path -> update payload as well
-            UPDATE MN_CACHE_ENTRY
+            UPDATE ${cachePrefix}_CACHE_ENTRY
                SET VALUE_PAYLOAD = P_VALUE_PAYLOAD,
                    VALUE_WEIGHT = NVL(P_VALUE_WEIGHT, 1),
                    LAST_ACCESS_AT = V_NOW,
@@ -341,7 +341,7 @@ EXCEPTION
             P_STATUS := 'UPDATED_PAYLOAD';
         END IF;
     WHEN OTHERS THEN
-        ROLLBACK TO MN_CACHE_PUT_BLOCKING_SP;
+        ROLLBACK TO ${cachePrefix}_CACHE_PUT_BLOCKING_SP;
         RAISE;
 END;
 /
