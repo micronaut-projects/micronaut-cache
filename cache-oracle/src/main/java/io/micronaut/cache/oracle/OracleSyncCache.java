@@ -27,7 +27,7 @@ import io.micronaut.cache.oracle.serialization.OracleKeySerializer;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArgumentUtils;
-import io.micronaut.json.JsonMapper;
+import io.micronaut.serde.oracle.jdbc.json.OracleJdbcJsonBinaryObjectMapper;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.reactivestreams.Publisher;
@@ -59,21 +59,20 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
     private final OracleCacheStatsRepository statsRepository;
     private final ExecutorService executorService;
     private final OracleKeySerializer keySerializer;
-    private final JsonMapper jsonMapper;
+    private final OracleJdbcJsonBinaryObjectMapper jsonMapper;
 
     public OracleSyncCache(OracleCacheConfiguration configuration,
                            OracleCacheEntryRepository entryRepository,
                            OracleCacheStatsRepository statsRepository,
                            ExecutorService executorService,
                            OracleKeySerializer keySerializer,
-                           JsonMapper jsonMapper) {
+                           OracleJdbcJsonBinaryObjectMapper jsonMapper) {
         this.configuration = configuration;
         this.entryRepository = entryRepository;
         this.statsRepository = statsRepository;
         this.executorService = executorService;
         this.keySerializer = keySerializer;
         this.jsonMapper = jsonMapper;
-        LOG.debug("Oracle cache '{}' recordStats={}", configuration.getCacheName(), configuration.isRecordStats());
     }
 
     @NonNull
@@ -383,7 +382,7 @@ public final class OracleSyncCache implements SyncCache<OracleCacheEntryReposito
         }
         try {
             return Optional.ofNullable(jsonMapper.readValue(payload, requiredType));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IllegalStateException(
                 "Failed to decode cache value as JSON for type " + requiredType.getType().getName(),
                 e

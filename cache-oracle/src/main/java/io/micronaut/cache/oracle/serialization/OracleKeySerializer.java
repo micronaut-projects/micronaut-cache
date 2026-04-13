@@ -18,7 +18,7 @@ package io.micronaut.cache.oracle.serialization;
 import io.micronaut.cache.interceptor.ParametersKey;
 import io.micronaut.core.beans.BeanMap;
 import io.micronaut.core.convert.ConversionService;
-import io.micronaut.json.JsonMapper;
+import io.micronaut.serde.oracle.jdbc.json.OracleJdbcJsonBinaryObjectMapper;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -41,10 +41,10 @@ import java.util.Optional;
  */
 public final class OracleKeySerializer {
 
-    private final JsonMapper jsonMapper;
+    private final OracleJdbcJsonBinaryObjectMapper jsonMapper;
     private final ConversionService conversionService;
 
-    public OracleKeySerializer(JsonMapper jsonMapper, ConversionService conversionService) {
+    public OracleKeySerializer(OracleJdbcJsonBinaryObjectMapper jsonMapper, ConversionService conversionService) {
         this.jsonMapper = jsonMapper;
         this.conversionService = conversionService;
     }

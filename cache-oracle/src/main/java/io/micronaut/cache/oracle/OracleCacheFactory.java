@@ -24,7 +24,7 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.scheduling.TaskExecutors;
-import io.micronaut.json.JsonMapper;
+import io.micronaut.serde.oracle.jdbc.json.OracleJdbcJsonBinaryObjectMapper;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
@@ -40,17 +40,17 @@ import java.util.concurrent.ExecutorService;
 public final class OracleCacheFactory {
 
     @Singleton
-    static OracleKeySerializer oracleKeySerializer(JsonMapper jsonMapper, ConversionService conversionService) {
+    static OracleKeySerializer oracleKeySerializer(OracleJdbcJsonBinaryObjectMapper jsonMapper, ConversionService conversionService) {
         return new OracleKeySerializer(jsonMapper, conversionService);
     }
 
     @EachBean(OracleCacheConfiguration.class)
     static OracleSyncCache oracleSyncCache(@Parameter OracleCacheConfiguration configuration,
                                            OracleCacheEntryRepository entryRepository,
-                                           OracleCacheStatsRepository statsRepository,
-                                           @Named(TaskExecutors.IO) ExecutorService ioExecutor,
-                                           OracleKeySerializer keySerializer,
-                                           JsonMapper jsonMapper) {
+                                            OracleCacheStatsRepository statsRepository,
+                                            @Named(TaskExecutors.IO) ExecutorService ioExecutor,
+                                            OracleKeySerializer keySerializer,
+                                            OracleJdbcJsonBinaryObjectMapper jsonMapper) {
         return new OracleSyncCache(configuration, entryRepository, statsRepository, ioExecutor, keySerializer, jsonMapper);
     }
 }

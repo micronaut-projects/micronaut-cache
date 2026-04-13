@@ -17,15 +17,15 @@ package io.micronaut.cache.oracle
 
 import io.micronaut.cache.interceptor.ParametersKey
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer
+import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.DefaultMutableConversionService
-import io.micronaut.json.JsonMapper
+import io.micronaut.core.type.Argument
+import io.micronaut.serde.oracle.jdbc.json.OracleJdbcJsonBinaryObjectMapper
 import spock.lang.Specification
-
-import java.nio.charset.StandardCharsets
 
 class OracleKeySerializerTest extends Specification {
 
-    private final OracleKeySerializer serializer = new OracleKeySerializer(JsonMapper.createDefault(), new DefaultMutableConversionService())
+    private final OracleKeySerializer serializer = new OracleKeySerializer(jsonMapper(), new DefaultMutableConversionService())
 
     void canonicalizesNestedArguments() {
         given:
@@ -43,7 +43,7 @@ class OracleKeySerializerTest extends Specification {
         then:
         // Deterministic payload is required so semantically equal keys hash to exactly the same byte sequence.
         first == second
-        new String(first.keyPayload, StandardCharsets.UTF_8) == '["user-1",{"a":{"x":1,"y":[2,3]},"b":[3,2,1],"message":"hello"},["z","y"]]'
+        jsonMapper().readValue(first.keyPayload, Argument.listOf(Object)) == ['user-1', [a: [x: 1, y: [2, 3]], b: [3, 2, 1], message: 'hello'], ['z', 'y']]
         first.keyHash.length == 32
     }
 
@@ -64,5 +64,14 @@ class OracleKeySerializerTest extends Specification {
         then:
         // Map ordering differences must not change cache key identity.
         first == second
+    }
+
+    private static OracleJdbcJsonBinaryObjectMapper jsonMapper() {
+        ApplicationContext context = ApplicationContext.run()
+        try {
+            return context.getBean(OracleJdbcJsonBinaryObjectMapper)
+        } finally {
+            context.close()
+        }
     }
 }

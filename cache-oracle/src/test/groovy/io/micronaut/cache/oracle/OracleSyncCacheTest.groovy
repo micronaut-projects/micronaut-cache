@@ -25,11 +25,11 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.DefaultMutableConversionService
 import io.micronaut.core.type.Argument
 import io.micronaut.inject.qualifiers.Qualifiers
-import io.micronaut.json.JsonMapper
 import io.micronaut.serde.annotation.Serdeable
+import io.micronaut.serde.oracle.jdbc.json.OracleJdbcJsonBinaryObjectMapper
 import spock.lang.Specification
 
-import java.nio.charset.StandardCharsets
+import java.io.IOException
 import java.time.Instant
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
@@ -210,7 +210,7 @@ class OracleSyncCacheTest extends Specification {
         CacheEntryEntity existing = new CacheEntryEntity(
             new CacheEntryId('orders', [1] as byte[]),
             [2] as byte[],
-            '44'.bytes,
+            jsonBytes(44),
             null,
             Instant.now().minusSeconds(5),
             Instant.now().minusSeconds(5),
@@ -239,10 +239,10 @@ class OracleSyncCacheTest extends Specification {
         cache.put('json-key', new TestCar(model: 'Hello', year: 2026))
 
         then:
-        // We store JSON bytes (not toString text) so object payloads can be deserialized later.
+        // We store Oracle binary JSON bytes so object payloads can be deserialized later.
         1 * repository.save({ CacheEntryEntity entity ->
-            String payload = new String(entity.valuePayload, StandardCharsets.UTF_8)
-            payload.contains('"model":"Hello"') && payload.contains('"year":2026')
+            TestCar car = jsonMapper().readValue(entity.valuePayload, TestCar)
+            car.model == 'Hello' && car.year == 2026
         })
     }
 
@@ -258,7 +258,7 @@ class OracleSyncCacheTest extends Specification {
         1 * repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('ORA-00001: unique constraint') }
         1 * repository.delete(_ as CacheEntryId)
         1 * repository.save({ CacheEntryEntity entity ->
-            new String(entity.valuePayload, StandardCharsets.UTF_8) == '4'
+            jsonMapper().readValue(entity.valuePayload, Integer) == 4
         })
     }
 
@@ -270,7 +270,7 @@ class OracleSyncCacheTest extends Specification {
         CacheEntryEntity existing = new CacheEntryEntity(
             new CacheEntryId('orders', [7] as byte[]),
             [8] as byte[],
-            'Car[model=Hello,year=2026]'.bytes,
+            [1, 2] as byte[],
             null,
             Instant.now().minusSeconds(5),
             Instant.now().minusSeconds(5),
@@ -360,15 +360,28 @@ class OracleSyncCacheTest extends Specification {
     }
 
     private static OracleKeySerializer serializer() {
-        return new OracleKeySerializer(JsonMapper.createDefault(), conversionService())
+        return new OracleKeySerializer(jsonMapper(), conversionService())
     }
 
     private static DefaultMutableConversionService conversionService() {
         return new DefaultMutableConversionService()
     }
 
-    private static JsonMapper jsonMapper() {
-        return JsonMapper.createDefault()
+    private static OracleJdbcJsonBinaryObjectMapper jsonMapper() {
+        ApplicationContext context = ApplicationContext.run()
+        try {
+            return context.getBean(OracleJdbcJsonBinaryObjectMapper)
+        } finally {
+            context.close()
+        }
+    }
+
+    private static byte[] jsonBytes(Object value) {
+        try {
+            return jsonMapper().writeValueAsBytes(value)
+        } catch (IOException e) {
+            throw new IllegalStateException(e)
+        }
     }
 
     private OracleCacheStatsRepository statsRepository() {

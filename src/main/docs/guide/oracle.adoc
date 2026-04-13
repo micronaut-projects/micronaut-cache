@@ -76,3 +76,9 @@ oracle-cache:
 ====
 The Oracle cache uses JDBC plus Micronaut Data to create the cache schema on startup.
 ====
+
+[NOTE]
+.Schema migration
+====
+The Oracle cache uses Flyway to manage schema migrations. You might run into issues after manually deleting tables used by the cache: if that's the case, make sure to wipe all the tables, including the `FLYWAY_SCHEMA_HISTORY_<your_chosen_prefix>`.
+====

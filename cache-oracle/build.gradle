@@ -18,6 +18,7 @@ dependencies {
     implementation(mnData.micronaut.data.jdbc)
     implementation(mnFlyway.flyway.oracle)
     implementation(mnFlyway.micronaut.flyway)
+    implementation(libs.micronaut.serde.oracle.jdbc.json)
     implementation(mnSerde.micronaut.serde.jackson)
     implementation(mnSql.micronaut.jdbc.hikari)
     implementation(mnSql.ojdbc11)
