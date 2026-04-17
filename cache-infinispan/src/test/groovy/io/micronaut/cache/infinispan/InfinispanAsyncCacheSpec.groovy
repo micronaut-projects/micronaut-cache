@@ -44,7 +44,7 @@ class InfinispanAsyncCacheSpec extends AbstractAsyncCacheSpec {
                 "infinispan.client.hotrod.security.authentication.password": "pass",
                 "infinispan.client.hotrod.security.authentication.realm": "default",
                 "infinispan.client.hotrod.security.authentication.server-name": "infinispan",
-                "infinispan.client.hotrod.security.authentication.sasl-mechanism": "DIGEST-MD5"
+                "infinispan.client.hotrod.security.authentication.sasl-mechanism": "DIGEST-SHA-256"
         ])
     }
 
