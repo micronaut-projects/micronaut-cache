@@ -13,7 +13,6 @@ io.micronaut.cache.hazelcast
 io.micronaut.cache.hazelcast.condition
 io.micronaut.cache.hazelcast.converters
 io.micronaut.cache.infinispan
-io.micronaut.cache.info
 io.micronaut.cache.interceptor
 io.micronaut.cache.jcache
 io.micronaut.cache.jcache.metrics
