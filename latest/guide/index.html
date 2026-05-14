@@ -15,7 +15,7 @@
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" href="../css/multi-language-sample.css"/>
     <script src="../js/docs.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script type="text/javascript">
         function addJsClass(el) {
             var classes = document.body.className.split(" ");
@@ -23,7 +23,9 @@
             document.body.className = classes.join(" ");
         }
     </script>
-
+    <style type="text/css">
+        .lang-java { display: block }; .lang-python { display: block }; .lang-kotlin { display: block }; .lang-groovy { display: block }; 
+    </style>
 </head>
 
 <body class="body" id="docs" onload="addJsClass();" onhashchange="highlightMenu()">
@@ -70,9 +72,11 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#endpoint"><strong>13</strong><span>Endpoint</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#cacheGuides"><strong>14</strong><span>Guides</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#control-panel"><strong>14</strong><span>Control Panel</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>15</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#cacheGuides"><strong>15</strong><span>Guides</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>16</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -131,9 +135,11 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-endpoint"><a href="#endpoint"><strong>13</strong><span>Endpoint</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-cacheGuides"><a href="#cacheGuides"><strong>14</strong><span>Guides</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-control-panel"><a href="#control-panel"><strong>14</strong><span>Control Panel</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>15</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-cacheGuides"><a href="#cacheGuides"><strong>15</strong><span>Guides</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>16</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -143,13 +149,13 @@
         <h1>Micronaut Cache</h1>
         <p></p>
         <p>Cache support for Micronaut</p>
-        <p><strong>Version:</strong> 5.3.0 </p>
+        <p><strong>Version:</strong> 6.0.0 </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -175,7 +181,8 @@
     &lt;artifactId&gt;micronaut-cache-core&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -197,7 +204,7 @@ The configuration implementations in this module require at least Micronaut vers
 <h1 id="releaseHistory"><a class="anchor" href="#releaseHistory"></a>2 Release History</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/releaseHistory.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/releaseHistory.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -213,7 +220,7 @@ The configuration implementations in this module require at least Micronaut vers
 <h1 id="cache-abstraction"><a class="anchor" href="#cache-abstraction"></a>3 Cache Abstraction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/cache-abstraction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/cache-abstraction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -232,7 +239,7 @@ The configuration implementations in this module require at least Micronaut vers
 <h1 id="annotations"><a class="anchor" href="#annotations"></a>4 Cache Annotations</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/annotations.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/annotations.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -267,7 +274,7 @@ The configuration implementations in this module require at least Micronaut vers
 <h2 id="conditional"><a class="anchor" href="#conditional"></a>4.1 Conditional Caching</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/annotations/conditional.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/annotations/conditional.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -292,6 +299,14 @@ public String get(Id id) {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">data class Id(val value: Int)
+
+@Cacheable(condition = "#{id.value &gt; 5}")
+open fun get(id: Id) = repository[id]</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Immutable
 static class Id {
     int value
@@ -303,19 +318,11 @@ String get(Id id) {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">data class Id(val value: Int)
-
-@Cacheable(condition = "#{id.value &gt; 5}")
-open fun get(id: Id) = repository[id]</code></pre>
-</div>
-</div>
 
 <h1 id="caffeine"><a class="anchor" href="#caffeine"></a>5 Caching with Caffeine</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/caffeine.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/caffeine.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -331,7 +338,7 @@ open fun get(id: Id) = repository[id]</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Caffeine 3.2.1
+This module is built and tested with Caffeine 3.2.4
 </td>
 </tr>
 </table>
@@ -350,7 +357,8 @@ This module is built and tested with Caffeine 3.2.1
     &lt;artifactId&gt;micronaut-cache-caffeine&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Then configure one or many caches. For example with <code>application.yml</code>:</p>
@@ -512,6 +520,17 @@ public class RemovalListenerImpl implements RemovalListener&lt;String, Integer&g
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Singleton
+class RemovalListenerImpl internal constructor(private val handler: MyRemovalHandler) : RemovalListener&lt;String, Int&gt; {
+
+    override fun onRemoval(key: String?, value: Int?, cause: RemovalCause) {
+        handler.handle(key!!, value!!, cause)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Singleton
 class RemovalListenerImpl implements RemovalListener&lt;String, Integer&gt; {
 
@@ -524,17 +543,6 @@ class RemovalListenerImpl implements RemovalListener&lt;String, Integer&gt; {
     @Override
     public void onRemoval(@Nullable String key, @Nullable Integer value, @NonNull RemovalCause cause) {
         handler.handle(key, value, cause)
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Singleton
-class RemovalListenerImpl internal constructor(private val handler: MyRemovalHandler) : RemovalListener&lt;String?, Int?&gt; {
-
-    override fun onRemoval(key: String?, value: Int?, cause: RemovalCause) {
-        handler.handle(key!!, value!!, cause)
     }
 }</code></pre>
 </div>
@@ -577,7 +585,7 @@ If you require additional caches, you will need to register them with Graal your
 <h1 id="jcache"><a class="anchor" href="#jcache"></a>6 JCache API support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/jcache.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/jcache.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -646,7 +654,7 @@ JCache needs to be disabled:</p>
 <h1 id="redis"><a class="anchor" href="#redis"></a>7 Redis Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/redis.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/redis.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -679,7 +687,7 @@ JCache needs to be disabled:</p>
 <h1 id="ehcache"><a class="anchor" href="#ehcache"></a>8 Ehcache Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/ehcache.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/ehcache.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -695,7 +703,7 @@ JCache needs to be disabled:</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Ehcache 3.10.8
+This module is built and tested with Ehcache 3.12.0
 </td>
 </tr>
 </table>
@@ -714,7 +722,8 @@ This module is built and tested with Ehcache 3.10.8
     &lt;artifactId&gt;micronaut-cache-ehcache&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>To have Micronaut create a cache, the minimum configuration is:</p>
@@ -1414,7 +1423,7 @@ ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
 <h1 id="hazelcast"><a class="anchor" href="#hazelcast"></a>9 Hazelcast Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/hazelcast.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/hazelcast.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1431,7 +1440,7 @@ an existing Hazelcast server cluster or create an standalone embedded Hazelcast 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Hazelcast 5.3.7
+This module is built and tested with Hazelcast 5.6.0
 </td>
 </tr>
 </table>
@@ -1453,7 +1462,8 @@ This module is built and tested with Hazelcast 5.3.7
     &lt;artifactId&gt;micronaut-cache-hazelcast&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>You can also add Hazelcast module to your project using cli feature as below:</p>
@@ -1547,15 +1557,17 @@ on the server.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html">HazelcastClientConfiguration</a></caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Property</th>
 <th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 </tr>
 </thead>
 <tbody>
@@ -1563,97 +1575,38 @@ on the server.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.properties</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Properties</p></td>
 <td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.smart-routing</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.connection-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.addresses</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.redo-operation</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.outbound-port-definitions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Collection</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.outbound-ports</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Collection</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.instance-name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.cluster-name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.labels</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.user-context</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ConcurrentMap</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.config</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the path to a Hazelcast XML or YAML configuration file.
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the path to a Hazelcast XML or YAML configuration file.
  &lt;p&gt;If non-null, the contents of the file will override this configuration.
  This path will be used to set system property {@code hazelcast.client.config}.&lt;/p&gt;</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.connection-retry.initial-backoff-millis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.connection-retry.max-backoff-millis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.socket.tcp-no-delay</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.socket.keep-alive</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.socket.reuse-address</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.socket.linger-seconds</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hazelcast.client.network.socket.buffer-size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -1680,6 +1633,18 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Singleton
+class HazelcastAdditionalSettings : BeanCreatedEventListener&lt;HazelcastClientConfiguration&gt; {
+
+    override fun onCreated(event: BeanCreatedEvent&lt;HazelcastClientConfiguration&gt;) = event.bean.apply {
+        // Set anything on the configuration
+        clusterName = "dev"
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Singleton
 class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;HazelcastClientConfiguration&gt; {
 
@@ -1689,18 +1654,6 @@ class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;Hazelca
             // Set anything on the configuration
             clusterName = "dev"
         }
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Singleton
-class HazelcastAdditionalSettings : BeanCreatedEventListener&lt;HazelcastClientConfiguration&gt; {
-
-    override fun onCreated(event: BeanCreatedEvent&lt;HazelcastClientConfiguration&gt;) = event.bean.apply {
-        // Set anything on the configuration
-        clusterName = "dev"
     }
 }</code></pre>
 </div>
@@ -1761,7 +1714,7 @@ class HazelcastAdditionalSettings : BeanCreatedEventListener&lt;HazelcastClientC
 <h1 id="infinispan"><a class="anchor" href="#infinispan"></a>10 Infinispan Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/infinispan.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/infinispan.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1778,7 +1731,7 @@ an existing Infinispan server using the HotRod protocol.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Infinispan 15.2.4.Final
+This module is built and tested with Infinispan 16.1.4
 </td>
 </tr>
 </table>
@@ -1800,7 +1753,8 @@ This module is built and tested with Infinispan 15.2.4.Final
     &lt;artifactId&gt;micronaut-cache-infinispan&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>By default, Micronaut will setup a
@@ -1996,196 +1950,24 @@ complement/override values from the former.
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/cache/infinispan/InfinispanHotRodClientConfiguration.html">InfinispanHotRodClientConfiguration</a></caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Property</th>
 <th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.server.host</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.server.port</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.statistics.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.statistics.jmx-enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.statistics.jmx-domain</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.statistics.jmx-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.async-executor-factory.factory-class</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Class</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.authentication.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.authentication.sasl-mechanism</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.authentication.server-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.authentication.username</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.authentication.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.authentication.realm</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.key-store-file-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.key-store-type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.key-store-password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">char</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.key-alias</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.trust-store-file-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.trust-store-type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.trust-store-password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">char</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.sni-host-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.security.ssl.protocol</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.config-file</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-cluster</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-servers</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.balancing-strategy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.connection-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.force-return-values</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.marshaller</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.add-context-initializer</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.socket-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.tcp-no-delay</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.tcp-keep-alive</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.max-retries</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.batch-size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the configuration file location</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -2243,7 +2025,7 @@ complement/override values from the former.
 <h1 id="microstream"><a class="anchor" href="#microstream"></a>11 MicroStream Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/microstream.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/microstream.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2256,7 +2038,7 @@ complement/override values from the former.
 <h1 id="noop"><a class="anchor" href="#noop"></a>12 No Operation Cache Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/noop.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/noop.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2283,7 +2065,8 @@ In such situations a no operation cache manager can be used that will simply acc
     &lt;artifactId&gt;micronaut-cache-noop&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>The no operation cache manager needs to be enabled explicitly:</p>
@@ -2330,7 +2113,7 @@ In such situations a no operation cache manager can be used that will simply acc
 <h1 id="endpoint"><a class="anchor" href="#endpoint"></a>13 Endpoint</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/endpoint.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/endpoint.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2357,7 +2140,8 @@ permits invalidating them.</p>
     &lt;artifactId&gt;micronaut-cache-management&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Also note it is disabled by default. To enable it:</p>
@@ -2580,10 +2364,45 @@ annotation to your class with the value being the default implementation.</p>
 </div>
 </div>
 
-<h1 id="cacheGuides"><a class="anchor" href="#cacheGuides"></a>14 Guides</h1>
+<h1 id="control-panel"><a class="anchor" href="#control-panel"></a>14 Control Panel</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/cacheGuides.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/control-panel.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The Micronaut Control Panel module has support for Micronaut Cache by adding the following dependency:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">developmentOnly(<span class="hljs-string">"io.micronaut.controlpanel:micronaut-control-panel-cache")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.controlpanel&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-control-panel-cache&lt;/artifactId&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Check
+<a href="https://micronaut-projects.github.io/micronaut-control-panel/latest/guide/#cache">the documentation</a> for more information</p>
+</div>
+
+<h1 id="cacheGuides"><a class="anchor" href="#cacheGuides"></a>15 Guides</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/cacheGuides.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2593,10 +2412,10 @@ annotation to your class with the value being the default implementation.</p>
 <p>See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cache.html">Micronaut Cache</a> to learn more.</p>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>15 Repository</h1>
+<h1 id="repository"><a class="anchor" href="#repository"></a>16 Repository</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/5.3.x/src/main/docs/guide/repository.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-cache/edit/6.0.x/src/main/docs/guide/repository.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
