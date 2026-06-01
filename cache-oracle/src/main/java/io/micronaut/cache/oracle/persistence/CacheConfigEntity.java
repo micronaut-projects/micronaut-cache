@@ -36,7 +36,7 @@ import java.time.Instant;
  * @author Davide Cocco
  * @since 6.0.0
  */
-@MappedEntity(value = "${micronaut.cache.oracle.prefix}_CACHE_CONFIG")
+@MappedEntity(value = "${micronaut.oracle.cache.prefix:MN}_CACHE_CONFIG")
 public record CacheConfigEntity(
     @Id @MappedProperty("CACHE_NAME") String cacheName,
     @MappedProperty("BLOCKING") boolean blocking,

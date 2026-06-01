@@ -72,8 +72,8 @@ final class OracleTestSupport {
                                          Map<String, Object> baseProperties,
                                          Map<String, Object> properties = [:]) {
         Map<String, Object> resolved = [
-            'micronaut.cache.oracle.datasource'   : 'default',
-            'micronaut.cache.oracle.prefix'       : 'MN',
+            'micronaut.oracle.cache.datasource'   : 'default',
+            'micronaut.oracle.cache.prefix'       : 'MN',
             'datasources.default.url'               : oracle.jdbcUrl,
             'datasources.default.username'          : oracle.username,
             'datasources.default.password'          : oracle.password,

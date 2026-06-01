@@ -193,7 +193,7 @@ public final class OracleCacheSchemaExecutor {
         if (!availableDataSourceNames.contains(dataSourceName)) {
             LOG.error("Configured Oracle cache datasource '{}' was not found. Available datasource beans: {}", dataSourceName, displayNames);
             throw new IllegalStateException(
-                "No DataSource bean found for micronaut.cache.oracle.datasource='" + dataSourceName + "'"
+                "No DataSource bean found for micronaut.oracle.cache.datasource='" + dataSourceName + "'"
             );
         }
         LOG.info("Using DataSource '{}' for Oracle cache initialization", dataSourceName);

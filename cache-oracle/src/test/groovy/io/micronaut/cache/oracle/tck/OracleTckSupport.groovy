@@ -31,8 +31,8 @@ final class OracleTckSupport {
     static synchronized ApplicationContext sharedContext(Map<String, Object> properties = [:]) {
         ensureStarted()
         Map<String, Object> resolved = [
-            'micronaut.cache.oracle.datasource'   : 'default',
-            'micronaut.cache.oracle.prefix'       : 'MN',
+            'micronaut.oracle.cache.datasource'   : 'default',
+            'micronaut.oracle.cache.prefix'       : 'MN',
             'datasources.default.url'               : ORACLE.jdbcUrl,
             'datasources.default.username'          : ORACLE.username,
             'datasources.default.password'          : ORACLE.password,

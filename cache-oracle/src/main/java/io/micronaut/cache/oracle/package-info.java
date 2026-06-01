@@ -20,7 +20,7 @@
  * @since 6.0.0
  */
 @Configuration
-@Requires(property = "oracle.enabled", notEquals = StringUtils.FALSE)
+@Requires(property = "cache.enabled", notEquals = StringUtils.FALSE)
 package io.micronaut.cache.oracle;
 
 import io.micronaut.context.annotation.Configuration;

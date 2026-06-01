@@ -34,7 +34,7 @@ import java.time.Instant;
  * @author Davide Cocco
  * @since 6.0.0
  */
-@MappedEntity(value = "${micronaut.cache.oracle.prefix}_CACHE_ENTRY")
+@MappedEntity(value = "${micronaut.oracle.cache.prefix:MN}_CACHE_ENTRY")
 public record CacheEntryEntity(
     @EmbeddedId CacheEntryId id,
     @MappedProperty("KEY_PAYLOAD") byte[] keyPayload,

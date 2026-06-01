@@ -23,15 +23,16 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  * @author Davide Cocco
  * @since 6.0.0
  */
-@ConfigurationProperties("micronaut.cache.oracle")
+@ConfigurationProperties("micronaut.oracle.cache")
 public final class OracleCacheDataSourceConfiguration {
+    public static final String DEFAULT_PREFIX = "MN";
 
     private String datasource;
-    private String prefix;
+    private String prefix = DEFAULT_PREFIX;
 
     public String getDatasource() {
         if (datasource == null || datasource.isBlank()) {
-            throw new IllegalStateException("micronaut.cache.oracle.datasource must be configured");
+            throw new IllegalStateException("micronaut.oracle.cache.datasource must be configured");
         }
         return datasource;
     }
@@ -45,13 +46,14 @@ public final class OracleCacheDataSourceConfiguration {
     }
 
     public String getPrefix() {
-        if (prefix == null || prefix.isBlank()) {
-            throw new IllegalStateException("micronaut.cache.oracle.prefix must be configured");
-        }
         return prefix;
     }
 
     public void setPrefix(String prefix) {
-        this.prefix = prefix;
+        if (prefix == null || prefix.isBlank()) {
+            this.prefix = DEFAULT_PREFIX;
+        } else {
+            this.prefix = prefix;
+        }
     }
 }

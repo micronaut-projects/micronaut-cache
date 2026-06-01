@@ -7,7 +7,7 @@ dependency:io.micronaut.cache:micronaut-cache-oracle[]
 ====
 This cache implementation does not provision Oracle for you. You must set up and manage your own Oracle database and configure Micronaut Data with a datasource that can connect to it.
 
-You must also configure `micronaut.cache.oracle.datasource` with the datasource name that will host the Oracle cache schema and runtime operations, and `micronaut.cache.oracle.prefix` with the prefix you want to assign to your SQL cache objects.
+You must also configure `micronaut.oracle.cache.datasource` with the datasource name that will host the Oracle cache schema and runtime operations. By default SQL cache objects use the `MN` prefix; set `micronaut.oracle.cache.prefix` only when you want to override it.
 
 The Oracle user used by the datasource must be able to create the cache tables, indexes, and stored procedures. If you want scheduler-driven cleanup jobs, that user must also have the Oracle scheduler privileges required to create and manage jobs.
 

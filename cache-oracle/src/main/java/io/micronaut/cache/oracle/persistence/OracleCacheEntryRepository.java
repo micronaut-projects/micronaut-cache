@@ -30,7 +30,7 @@ import java.time.Instant;
  * @author Davide Cocco
  * @since 6.0.0
  */
-@JdbcRepository(dialect = Dialect.ORACLE, dataSource = "${micronaut.cache.oracle.datasource}")
+@JdbcRepository(dialect = Dialect.ORACLE, dataSource = "${micronaut.oracle.cache.datasource}")
 public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEntity, CacheEntryId> {
     void update(@Id CacheEntryId id, Instant lastAccessAt, @Nullable Instant expiresAt);
 
@@ -40,7 +40,7 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
 
     long deleteByCacheName(String cacheName);
 
-    @Procedure("${micronaut.cache.oracle.prefix}_CACHE_PUT_BLOCKING")
+    @Procedure("${micronaut.oracle.cache.prefix:MN}_CACHE_PUT_BLOCKING")
     String blockingPut(String cacheName,
                        byte[] keyHash,
                        byte[] keyPayload,
@@ -49,10 +49,10 @@ public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEnt
                        long valueWeight,
                        long insertOnly);
 
-    @Procedure("${micronaut.cache.oracle.prefix}_CACHE_CLEANUP_CACHE")
+    @Procedure("${micronaut.oracle.cache.prefix:MN}_CACHE_CLEANUP_CACHE")
     void runCleanupProcedure(String cacheName, long batchSize);
 
-    @Query(value = "SELECT COALESCE(SUM(COALESCE(VALUE_WEIGHT, 1)), 0) FROM ${micronaut.cache.oracle.prefix}_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
+    @Query(value = "SELECT COALESCE(SUM(COALESCE(VALUE_WEIGHT, 1)), 0) FROM ${micronaut.oracle.cache.prefix:`MN`}_CACHE_ENTRY WHERE CACHE_NAME = :cacheName", nativeQuery = true)
     long totalWeight(String cacheName);
 
 }

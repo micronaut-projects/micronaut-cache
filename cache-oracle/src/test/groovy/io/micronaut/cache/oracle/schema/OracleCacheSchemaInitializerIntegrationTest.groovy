@@ -51,7 +51,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
     void schemaObjectsUseConfiguredPrefix() {
         given:
         ApplicationContext context = newContext([
-            'micronaut.cache.oracle.prefix': 'ALT'
+            'micronaut.oracle.cache.prefix': 'ALT'
         ])
 
         expect:
@@ -199,7 +199,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
 
         then:
         IllegalStateException ex = thrown()
-        ex.message == 'micronaut.cache.oracle.datasource must be configured'
+        ex.message == 'micronaut.oracle.cache.datasource must be configured'
 
         cleanup:
         context.close()
@@ -208,8 +208,8 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
     void explicitDefaultDatasourceIsRecognizedAsConfigured() {
         given:
         ApplicationContext context = ApplicationContext.run([
-            'micronaut.cache.oracle.datasource': 'default',
-            'micronaut.cache.oracle.prefix': 'MN'
+            'micronaut.oracle.cache.datasource': 'default',
+            'micronaut.oracle.cache.prefix': 'MN'
         ])
 
         when:
@@ -223,11 +223,31 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         context.close()
     }
 
+    void defaultPrefixIsUsedWhenPrefixIsNotConfigured() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+            'micronaut.oracle.cache.datasource': 'default',
+            'datasources.default.url'         : oracle.jdbcUrl,
+            'datasources.default.username'    : oracle.username,
+            'datasources.default.password'    : oracle.password,
+            'datasources.default.driverClassName': 'oracle.jdbc.OracleDriver',
+            'datasources.default.dialect'     : 'ORACLE',
+            'micronaut.caches.orders.expire-after-write': '30s'
+        ])
+
+        expect:
+        context.getBean(OracleCacheDataSourceConfiguration).prefix == 'MN'
+        countUserTables(['MN_CACHE_ENTRY', 'MN_CACHE_CONFIG', 'MN_CACHE_STATS']) == 3
+
+        cleanup:
+        context.close()
+    }
+
     void multipleDatasourcesAndWrongConfiguredDatasourceFails() {
         given:
         ApplicationContext context = ApplicationContext.run([
-            'micronaut.cache.oracle.datasource'   : 'missing',
-            'micronaut.cache.oracle.prefix'       : 'MN',
+            'micronaut.oracle.cache.datasource'   : 'missing',
+            'micronaut.oracle.cache.prefix'       : 'MN',
             'datasources.default.url'             : oracle.jdbcUrl,
             'datasources.default.username'        : oracle.username,
             'datasources.default.password'        : oracle.password,
@@ -243,7 +263,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
 
         then:
         IllegalStateException ex = thrown()
-        ex.message == "No DataSource bean found for micronaut.cache.oracle.datasource='missing'"
+        ex.message == "No DataSource bean found for micronaut.oracle.cache.datasource='missing'"
 
         cleanup:
         context.close()
@@ -252,8 +272,8 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
     void multipleDatasourcesAndCorrectConfiguredDatasourceUsesSpecifiedDatasource() {
         given:
         ApplicationContext context = ApplicationContext.run([
-            'micronaut.cache.oracle.datasource'      : 'secondary',
-            'micronaut.cache.oracle.prefix'          : 'MN',
+            'micronaut.oracle.cache.datasource'      : 'secondary',
+            'micronaut.oracle.cache.prefix'          : 'MN',
             'datasources.default.url'                : oracle.jdbcUrl,
             'datasources.default.username'           : oracle.username,
             'datasources.default.password'           : oracle.password,

@@ -58,7 +58,7 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
     void cacheOperationsUseConfiguredPrefixTables() {
         given:
         ApplicationContext context = newContext([
-            'micronaut.cache.oracle.prefix': 'ALT'
+            'micronaut.oracle.cache.prefix': 'ALT'
         ])
         OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
 

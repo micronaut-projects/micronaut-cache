@@ -33,7 +33,7 @@ import java.time.Instant;
  * @author Davide Cocco
  * @since 6.0.0
  */
-@MappedEntity(value = "${micronaut.cache.oracle.prefix}_CACHE_STATS")
+@MappedEntity(value = "${micronaut.oracle.cache.prefix:MN}_CACHE_STATS")
 public record CacheStatsEntity(
     @Id @MappedProperty("CACHE_NAME") String cacheName,
     @MappedProperty("HIT_COUNT") long hitCount,
