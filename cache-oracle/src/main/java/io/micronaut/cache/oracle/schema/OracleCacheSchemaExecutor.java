@@ -20,6 +20,7 @@ import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguratio
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationUtil;
 import io.micronaut.context.env.Environment;
+import io.micronaut.core.naming.NameResolver;
 import io.micronaut.inject.BeanDefinition;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -307,6 +308,12 @@ public final class OracleCacheSchemaExecutor {
     }
 
     private String resolveDataSourceName(BeanDefinition<DataSource> definition) {
+        if (definition instanceof NameResolver nameResolver) {
+            String resolvedName = nameResolver.resolveName().orElse(null);
+            if (resolvedName != null && !resolvedName.isBlank()) {
+                return resolvedName;
+            }
+        }
         String candidate = definition.stringValue(AnnotationUtil.NAMED).orElse(null);
         if (candidate != null && !candidate.isBlank()) {
             return candidate;

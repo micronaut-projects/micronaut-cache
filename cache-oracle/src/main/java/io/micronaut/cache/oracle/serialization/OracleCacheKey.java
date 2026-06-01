@@ -23,24 +23,7 @@ import java.util.Arrays;
  * @author Davide Cocco
  * @since 6.0.0
  */
-public final class OracleCacheKey {
-
-    private final byte[] keyHash;
-    private final byte[] keyPayload;
-
-    public OracleCacheKey(byte[] keyHash, byte[] keyPayload) {
-        this.keyHash = keyHash;
-        this.keyPayload = keyPayload;
-    }
-
-    public byte[] getKeyHash() {
-        return keyHash;
-    }
-
-    public byte[] getKeyPayload() {
-        return keyPayload;
-    }
-
+public record OracleCacheKey(byte[] keyHash, byte[] keyPayload) {
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -54,8 +37,8 @@ public final class OracleCacheKey {
 
     @Override
     public int hashCode() {
-        int result = Arrays.hashCode(keyHash);
-        result = 31 * result + Arrays.hashCode(keyPayload);
+        int result = Arrays.hashCode(keyHash());
+        result = 31 * result + Arrays.hashCode(keyPayload());
         return result;
     }
 }

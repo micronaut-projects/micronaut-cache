@@ -37,7 +37,7 @@ import java.util.concurrent.ExecutorService;
  * @since 6.0.0
  */
 @Factory
-public final class OracleCacheFactory {
+final class OracleCacheFactory {
 
     /**
      * Builds the Oracle cache key serializer.
@@ -55,7 +55,7 @@ public final class OracleCacheFactory {
     static OracleSyncCache oracleSyncCache(@Parameter OracleCacheConfiguration configuration,
                                            OracleCacheEntryRepository entryRepository,
                                            OracleCacheStatsRepository statsRepository,
-                                           @Named(TaskExecutors.IO) ExecutorService ioExecutor,
+                                           @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor,
                                            OracleKeySerializer keySerializer,
                                            OracleJdbcJsonBinaryObjectMapper jsonMapper) {
         return new OracleSyncCache(configuration, entryRepository, statsRepository, ioExecutor, keySerializer, jsonMapper);
