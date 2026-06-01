@@ -30,6 +30,16 @@ import java.time.Instant;
 @JdbcRepository(dialect = Dialect.ORACLE, dataSource = "${micronaut.oracle.cache.datasource}")
 public interface OracleCacheStatsRepository extends CrudRepository<CacheStatsEntity, String> {
 
+    /**
+     * Applies cache statistics deltas.
+     *
+     * @param cacheName The cache name
+     * @param hitDelta The cache hit count delta
+     * @param missDelta The cache miss count delta
+     * @param putDelta The cache put count delta
+     * @param invalidateDelta The cache invalidation count delta
+     * @param updatedAt The update timestamp
+     */
     @Procedure("${micronaut.oracle.cache.prefix:MN}_CACHE_UPDATE_STATS")
     void updateStats(String cacheName,
                      long hitDelta,

@@ -39,6 +39,13 @@ import java.util.concurrent.ExecutorService;
 @Factory
 public final class OracleCacheFactory {
 
+    /**
+     * Builds the Oracle cache key serializer.
+     *
+     * @param jsonMapper The Oracle JDBC JSON binary object mapper
+     * @param conversionService The conversion service
+     * @return The key serializer
+     */
     @Singleton
     static OracleKeySerializer oracleKeySerializer(OracleJdbcJsonBinaryObjectMapper jsonMapper, ConversionService conversionService) {
         return new OracleKeySerializer(jsonMapper, conversionService);
@@ -47,10 +54,10 @@ public final class OracleCacheFactory {
     @EachBean(OracleCacheConfiguration.class)
     static OracleSyncCache oracleSyncCache(@Parameter OracleCacheConfiguration configuration,
                                            OracleCacheEntryRepository entryRepository,
-                                            OracleCacheStatsRepository statsRepository,
-                                            @Named(TaskExecutors.IO) ExecutorService ioExecutor,
-                                            OracleKeySerializer keySerializer,
-                                            OracleJdbcJsonBinaryObjectMapper jsonMapper) {
+                                           OracleCacheStatsRepository statsRepository,
+                                           @Named(TaskExecutors.IO) ExecutorService ioExecutor,
+                                           OracleKeySerializer keySerializer,
+                                           OracleJdbcJsonBinaryObjectMapper jsonMapper) {
         return new OracleSyncCache(configuration, entryRepository, statsRepository, ioExecutor, keySerializer, jsonMapper);
     }
 }

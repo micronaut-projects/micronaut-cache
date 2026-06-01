@@ -25,11 +25,19 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  */
 @ConfigurationProperties("micronaut.oracle.cache")
 public final class OracleCacheDataSourceConfiguration {
+    /**
+     * Default SQL object prefix.
+     */
     public static final String DEFAULT_PREFIX = "MN";
 
     private String datasource;
     private String prefix = DEFAULT_PREFIX;
 
+    /**
+     * Gets the configured datasource name.
+     *
+     * @return The datasource name used by the Oracle cache
+     */
     public String getDatasource() {
         if (datasource == null || datasource.isBlank()) {
             throw new IllegalStateException("micronaut.oracle.cache.datasource must be configured");
@@ -37,18 +45,38 @@ public final class OracleCacheDataSourceConfiguration {
         return datasource;
     }
 
+    /**
+     * Checks whether the datasource name is configured.
+     *
+     * @return Whether the Oracle cache datasource name is configured
+     */
     public boolean isDatasourceConfigured() {
         return datasource != null && !datasource.isBlank();
     }
 
+    /**
+     * Sets the datasource name.
+     *
+     * @param datasource The datasource name used by the Oracle cache
+     */
     public void setDatasource(String datasource) {
         this.datasource = datasource;
     }
 
+    /**
+     * Gets the SQL object prefix.
+     *
+     * @return The SQL object prefix used by the Oracle cache
+     */
     public String getPrefix() {
         return prefix;
     }
 
+    /**
+     * Sets the SQL object prefix.
+     *
+     * @param prefix The SQL object prefix used by the Oracle cache
+     */
     public void setPrefix(String prefix) {
         if (prefix == null || prefix.isBlank()) {
             this.prefix = DEFAULT_PREFIX;
