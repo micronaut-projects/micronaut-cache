@@ -929,7 +929,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
         boolean handleInvalidateError = true;
         try {
             handleInvalidateError = ioExecutor.submit(handleInvalidateErrorSupplier::get).get();
-        } catch (Throwable e) {
+        } catch (Throwable _) {
             // Ignore
         }
         if (handleInvalidateError) {
@@ -1112,7 +1112,7 @@ public class CacheInterceptor implements MethodInterceptor<Object, Object> {
     /**
      * The value wrapper.
      */
-    private static class ValueWrapper {
+    private static final class ValueWrapper {
         Object value;
         boolean optional;
     }
