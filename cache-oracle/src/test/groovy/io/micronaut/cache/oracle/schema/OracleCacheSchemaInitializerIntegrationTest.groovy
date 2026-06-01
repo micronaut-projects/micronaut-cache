@@ -20,6 +20,8 @@ import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration
 import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguration
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
+import io.micronaut.inject.BeanDefinitionReference
+import io.micronaut.inject.QualifiedBeanType
 import io.micronaut.inject.qualifiers.Qualifiers
 
 import java.sql.Connection
@@ -43,6 +45,21 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
         hasProcedure('MN_CACHE_CLEANUP_CACHE')
         hasProcedure('MN_CACHE_REGISTER_CLEANUP_JOB')
         hasProcedure('MN_CACHE_PUT_BLOCKING')
+
+        cleanup:
+        context.close()
+    }
+
+    void schemaInitializerIsNotCreatedWhenFlywayMigratorIsUnavailable() {
+        given:
+        ApplicationContext context = newContextWithoutFlywayMigrator([
+            'micronaut.oracle.cache.prefix': 'NOFLY'
+        ])
+
+        expect:
+        context.findBean(OracleCacheSchemaMigrator).empty
+        context.findBean(OracleCacheSchemaInitializer).empty
+        countUserTables(['NOFLY_CACHE_ENTRY', 'NOFLY_CACHE_CONFIG', 'NOFLY_CACHE_STATS']) == 0
 
         cleanup:
         context.close()
@@ -303,6 +320,28 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
             rs.next()
             return rs.getInt(1)
         }
+    }
+
+    private ApplicationContext newContextWithoutFlywayMigrator(Map<String, Object> properties = [:]) {
+        Map<String, Object> resolved = [
+            'micronaut.oracle.cache.datasource'   : 'default',
+            'micronaut.oracle.cache.prefix'       : 'MN',
+            'datasources.default.url'             : oracle.jdbcUrl,
+            'datasources.default.username'        : oracle.username,
+            'datasources.default.password'        : oracle.password,
+            'datasources.default.driverClassName' : 'oracle.jdbc.OracleDriver',
+            'datasources.default.dialect'         : 'ORACLE',
+            'micronaut.caches.orders.expire-after-write': '30s'
+        ]
+        resolved.putAll(properties)
+        return ApplicationContext.builder()
+            .properties(resolved)
+            .beansPredicate({ QualifiedBeanType<?> beanType -> !isFlywayMigrator(beanType) })
+            .start()
+    }
+
+    private static boolean isFlywayMigrator(QualifiedBeanType<?> beanType) {
+        beanType instanceof BeanDefinitionReference<?> && beanType.beanDefinitionName.contains('OracleCacheFlywaySchemaMigrator')
     }
 
     private boolean hasConfigRow(String cacheName, int blocking, long cleanupIntervalSeconds, long cleanupBatchSize) {

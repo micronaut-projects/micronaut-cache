@@ -18,6 +18,7 @@ package io.micronaut.cache.oracle.schema;
 import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration;
 import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguration;
 import io.micronaut.context.BeanContext;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.runtime.event.ApplicationStartupEvent;
 import jakarta.inject.Singleton;
@@ -31,16 +32,19 @@ import java.util.List;
  * @since 6.0.0
  */
 @Singleton
+@Requires(beans = OracleCacheSchemaMigrator.class)
 public final class OracleCacheSchemaInitializer implements ApplicationEventListener<ApplicationStartupEvent> {
 
     private final OracleCacheSchemaExecutor schemaExecutor;
 
     public OracleCacheSchemaInitializer(BeanContext beanContext,
                                         OracleCacheDataSourceConfiguration dataSourceConfiguration,
+                                        OracleCacheSchemaMigrator schemaMigrator,
                                         List<OracleCacheConfiguration> cacheConfigurations) {
         this.schemaExecutor = new OracleCacheSchemaExecutor(
             beanContext,
             dataSourceConfiguration,
+            schemaMigrator,
             cacheConfigurations
         );
     }

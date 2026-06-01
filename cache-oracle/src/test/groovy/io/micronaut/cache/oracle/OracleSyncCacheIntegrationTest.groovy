@@ -18,6 +18,8 @@ package io.micronaut.cache.oracle
 import io.micronaut.cache.oracle.persistence.CacheStatsEntity
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.type.Argument
+import io.micronaut.inject.BeanDefinitionReference
+import io.micronaut.inject.QualifiedBeanType
 import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.serde.annotation.Serdeable
 
@@ -49,6 +51,30 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
         then:
         stored.present
         stored.get() == 101
+        afterInvalidate.empty
+
+        cleanup:
+        context.close()
+    }
+
+    void cacheOperationsWorkWhenFlywayMigratorIsUnavailableAndSchemaExists() {
+        given:
+        ApplicationContext schemaContext = newContext()
+        schemaContext.close()
+
+        ApplicationContext context = newContextWithoutFlywayMigrator()
+        OracleSyncCache cache = context.getBean(OracleSyncCache, Qualifiers.byName('orders'))
+
+        when:
+        cache.put('car:model:external-schema', 303)
+        Optional<Integer> stored = cache.get('car:model:external-schema', Argument.of(Integer))
+        cache.invalidate('car:model:external-schema')
+        Optional<Integer> afterInvalidate = cache.get('car:model:external-schema', Argument.of(Integer))
+
+        then:
+        context.findBean(io.micronaut.cache.oracle.schema.OracleCacheSchemaInitializer).empty
+        stored.present
+        stored.get() == 303
         afterInvalidate.empty
 
         cleanup:
@@ -214,5 +240,28 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
             rs.next()
             return rs.getLong(1)
         }
+    }
+
+    private ApplicationContext newContextWithoutFlywayMigrator(Map<String, Object> properties = [:]) {
+        Map<String, Object> resolved = [
+            'micronaut.oracle.cache.datasource'   : 'default',
+            'micronaut.oracle.cache.prefix'       : 'MN',
+            'datasources.default.url'             : oracle.jdbcUrl,
+            'datasources.default.username'        : oracle.username,
+            'datasources.default.password'        : oracle.password,
+            'datasources.default.driverClassName' : 'oracle.jdbc.OracleDriver',
+            'datasources.default.dialect'         : 'ORACLE',
+            'micronaut.caches.orders.expire-after-write': '30s',
+            'micronaut.caches.orders.record-stats': true
+        ]
+        resolved.putAll(properties)
+        return ApplicationContext.builder()
+            .properties(resolved)
+            .beansPredicate({ QualifiedBeanType<?> beanType -> !isFlywayMigrator(beanType) })
+            .start()
+    }
+
+    private static boolean isFlywayMigrator(QualifiedBeanType<?> beanType) {
+        beanType instanceof BeanDefinitionReference<?> && beanType.beanDefinitionName.contains('OracleCacheFlywaySchemaMigrator')
     }
 }

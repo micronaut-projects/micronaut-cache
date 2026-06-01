@@ -17,7 +17,7 @@ package io.micronaut.cache.oracle
 
 import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration
 import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguration
-import io.micronaut.cache.oracle.schema.OracleCacheSchemaExecutor
+import io.micronaut.cache.oracle.schema.OracleCacheSchemaInitializer
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.OracleContainer
 
@@ -46,11 +46,7 @@ final class OracleTckSupport {
         ]
         resolved.putAll(properties)
         ApplicationContext context = ApplicationContext.run(resolved)
-        new OracleCacheSchemaExecutor(
-            context,
-            context.getBean(OracleCacheDataSourceConfiguration),
-            context.getBeansOfType(OracleCacheConfiguration).toList()
-        ).initializeSchemaNow()
+        context.getBean(OracleCacheSchemaInitializer).initializeSchemaManually()
         assertSchemaReady()
         resetState()
         return context

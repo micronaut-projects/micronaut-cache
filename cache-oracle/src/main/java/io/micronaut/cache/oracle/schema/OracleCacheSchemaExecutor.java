@@ -22,25 +22,20 @@ import io.micronaut.core.annotation.AnnotationUtil;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.naming.NameResolver;
 import io.micronaut.inject.BeanDefinition;
-import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.PrintWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.ConnectionBuilder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.ShardingKeyBuilder;
 import java.sql.Types;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.sql.DataSource;
 
@@ -56,14 +51,17 @@ public final class OracleCacheSchemaExecutor {
 
     private final BeanContext beanContext;
     private final OracleCacheDataSourceConfiguration dataSourceConfiguration;
+    private final OracleCacheSchemaMigrator schemaMigrator;
     private final List<OracleCacheConfiguration> cacheConfigurations;
     private final AtomicBoolean initialized = new AtomicBoolean(false);
 
     public OracleCacheSchemaExecutor(BeanContext beanContext,
                                      OracleCacheDataSourceConfiguration dataSourceConfiguration,
+                                     OracleCacheSchemaMigrator schemaMigrator,
                                      List<OracleCacheConfiguration> cacheConfigurations) {
         this.beanContext = beanContext;
         this.dataSourceConfiguration = dataSourceConfiguration;
+        this.schemaMigrator = schemaMigrator;
         this.cacheConfigurations = List.copyOf(cacheConfigurations);
     }
 
@@ -137,21 +135,11 @@ public final class OracleCacheSchemaExecutor {
 
     private void migrateSchema(JdbcConnectionSettings settings) throws SQLException {
         String prefix = dataSourceConfiguration.getPrefix().toUpperCase(Locale.ROOT);
-        try (OracleFlywayDataSource dataSource = new OracleFlywayDataSource(settings)) {
-            boolean baselineOnMigrate;
-            try (Connection connection = settings.openConnection()) {
-                baselineOnMigrate = shouldBaselineHistory(connection, prefix);
-            }
-            Flyway flyway = Flyway.configure()
-                .dataSource(dataSource)
-            .locations("classpath:db/test-migration/oracle-cache", "classpath:db/migration/oracle-cache")
-            .table("FLYWAY_SCHEMA_HISTORY_" + prefix)
-            .placeholders(Map.of("cachePrefix", prefix))
-                .baselineOnMigrate(baselineOnMigrate)
-            .baselineVersion("0")
-            .load();
-            flyway.migrate();
+        boolean baselineOnMigrate;
+        try (Connection connection = settings.openConnection()) {
+            baselineOnMigrate = shouldBaselineHistory(connection, prefix);
         }
+        schemaMigrator.migrate(settings, prefix, baselineOnMigrate);
     }
 
     private boolean shouldBaselineHistory(Connection connection, String prefix) {
@@ -219,80 +207,12 @@ public final class OracleCacheSchemaExecutor {
         return new JdbcConnectionSettings(url, username, password, driverClassName);
     }
 
-    private record JdbcConnectionSettings(String url,
-                                          String username,
-                                          String password,
-                                          String driverClassName) {
-        private Connection openConnection() throws SQLException {
+    record JdbcConnectionSettings(String url,
+                                  String username,
+                                  String password,
+                                  String driverClassName) {
+        Connection openConnection() throws SQLException {
             return java.sql.DriverManager.getConnection(url, username, password);
-        }
-    }
-
-    private static final class OracleFlywayDataSource implements DataSource, AutoCloseable {
-        private final JdbcConnectionSettings settings;
-
-        private OracleFlywayDataSource(JdbcConnectionSettings settings) {
-            this.settings = settings;
-        }
-
-        @Override
-        public Connection getConnection() throws SQLException {
-            return settings.openConnection();
-        }
-
-        @Override
-        public Connection getConnection(String username, String password) throws SQLException {
-            return java.sql.DriverManager.getConnection(settings.url(), username, password);
-        }
-
-        @Override
-        public <T> T unwrap(Class<T> iface) throws SQLException {
-            if (iface.isInstance(this)) {
-                return iface.cast(this);
-            }
-            throw new SQLException("Not a wrapper for " + iface.getName());
-        }
-
-        @Override
-        public boolean isWrapperFor(Class<?> iface) {
-            return iface.isInstance(this);
-        }
-
-        @Override
-        public PrintWriter getLogWriter() {
-            return null;
-        }
-
-        @Override
-        public void setLogWriter(PrintWriter out) {
-        }
-
-        @Override
-        public void setLoginTimeout(int seconds) {
-        }
-
-        @Override
-        public int getLoginTimeout() {
-            return 0;
-        }
-
-        @Override
-        public java.util.logging.Logger getParentLogger() {
-            return java.util.logging.Logger.getGlobal();
-        }
-
-        @Override
-        public ConnectionBuilder createConnectionBuilder() throws SQLException {
-            throw new SQLException("ConnectionBuilder not supported");
-        }
-
-        @Override
-        public ShardingKeyBuilder createShardingKeyBuilder() throws SQLException {
-            throw new SQLException("ShardingKeyBuilder not supported");
-        }
-
-        @Override
-        public void close() {
         }
     }
 

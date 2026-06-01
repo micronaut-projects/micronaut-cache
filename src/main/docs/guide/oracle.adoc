@@ -19,8 +19,8 @@ this would be your configuration:
 [configuration]
 ----
 micronaut:
-    cache:
-        oracle:
+    oracle:
+        cache:
             datasource: mydatasource
             prefix: MY_APP
 ----
@@ -66,19 +66,47 @@ To disable the Oracle-backed cache:
 
 [configuration]
 ----
-oracle-cache:
-  enabled: false
+cache:
+    enabled: false
 ----
 
 
 [NOTE]
 .Schema initialization
 ====
-The Oracle cache uses JDBC plus Micronaut Data to create the cache schema on startup.
+The Oracle cache can run Flyway migrations on startup when Flyway is present on the application classpath.
+To enable automatic schema migration, add Flyway and the Oracle Flyway database support module to your application runtime dependencies.
+
+For Gradle:
+
+[source,groovy]
+----
+runtimeOnly("io.micronaut.flyway:micronaut-flyway")
+runtimeOnly("org.flywaydb:flyway-database-oracle")
+----
+
+For Maven:
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.micronaut.flyway</groupId>
+    <artifactId>micronaut-flyway</artifactId>
+    <scope>runtime</scope>
+</dependency>
+<dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-database-oracle</artifactId>
+    <scope>runtime</scope>
+</dependency>
+----
+
+If Flyway is not present, the Oracle cache does not run schema migrations. In that case, manage the cache schema externally using the bundled migrations or an equivalent DBA-managed process before the cache is used.
 ====
 
 [NOTE]
 .Schema migration
 ====
-The Oracle cache uses Flyway to manage schema migrations. You might run into issues after manually deleting tables used by the cache: if that's the case, make sure to wipe all the tables, including the `FLYWAY_SCHEMA_HISTORY_<your_chosen_prefix>`.
+Flyway history is tracked per SQL object prefix with a table named `FLYWAY_SCHEMA_HISTORY_<your_chosen_prefix>`, for example `FLYWAY_SCHEMA_HISTORY_MN`.
+If you manually delete cache schema objects, keep normal Flyway semantics in mind: deleting tables or procedures without also repairing/removing the matching Flyway history can leave the database in an inconsistent state.
 ====
