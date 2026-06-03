@@ -21,7 +21,7 @@ import java.util.Arrays;
  * Canonicalized cache key payload and hash.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 public record OracleCacheKey(byte[] keyHash, byte[] keyPayload) {
     @Override

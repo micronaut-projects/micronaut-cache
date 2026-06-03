@@ -21,7 +21,7 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  * Global datasource selection for the Oracle cache module.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @ConfigurationProperties("micronaut.oracle.cache")
 public final class OracleCacheDataSourceConfiguration {

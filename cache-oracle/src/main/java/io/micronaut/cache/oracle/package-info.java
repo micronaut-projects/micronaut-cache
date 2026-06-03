@@ -17,7 +17,7 @@
  * Contains an Oracle-backed cache implementation.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @Configuration
 @Requires(property = "cache.enabled", notEquals = StringUtils.FALSE)

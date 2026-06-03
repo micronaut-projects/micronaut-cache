@@ -32,7 +32,7 @@ import java.time.Instant;
  * @param lastAccessAt The last access time
  * @param expiresAt The expiry time
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @MappedEntity(value = "${micronaut.oracle.cache.prefix:MN}_CACHE_ENTRY")
 public record CacheEntryEntity(

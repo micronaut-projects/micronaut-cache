@@ -43,7 +43,7 @@ import javax.sql.DataSource;
  * JDBC Executor to initialize schema and select user-supplied datasource.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 public final class OracleCacheSchemaExecutor {
 

@@ -29,7 +29,7 @@ import java.util.List;
  * Startup listener delegating Oracle cache schema bootstrap to a manual JDBC executor.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @Singleton
 @Requires(beans = OracleCacheSchemaMigrator.class)

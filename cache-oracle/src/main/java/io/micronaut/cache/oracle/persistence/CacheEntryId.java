@@ -27,7 +27,7 @@ import java.util.Objects;
  * @param cacheName The cache name
  * @param keyHash The serialized key hash
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @Embeddable
 public record CacheEntryId(

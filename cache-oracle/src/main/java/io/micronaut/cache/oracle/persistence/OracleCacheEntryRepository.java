@@ -28,7 +28,7 @@ import java.time.Instant;
  * Repository for cache entry rows.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @JdbcRepository(dialect = Dialect.ORACLE, dataSource = "${micronaut.oracle.cache.datasource}")
 public interface OracleCacheEntryRepository extends CrudRepository<CacheEntryEntity, CacheEntryId> {

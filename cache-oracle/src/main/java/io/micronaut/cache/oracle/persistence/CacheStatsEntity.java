@@ -31,7 +31,7 @@ import java.time.Instant;
  * @param invalidateCount The cache invalidate count
  * @param updatedAt The last update time
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @MappedEntity(value = "${micronaut.oracle.cache.prefix:MN}_CACHE_STATS")
 public record CacheStatsEntity(

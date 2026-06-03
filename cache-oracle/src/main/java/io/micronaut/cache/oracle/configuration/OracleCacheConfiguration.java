@@ -27,7 +27,7 @@ import java.time.Duration;
  * Per-cache Oracle provider configuration under {@code micronaut.caches.*}.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @EachProperty(CacheConfiguration.PREFIX)
 public final class OracleCacheConfiguration extends CacheConfiguration {

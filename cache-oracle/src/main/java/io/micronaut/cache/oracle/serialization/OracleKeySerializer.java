@@ -37,7 +37,7 @@ import java.util.Optional;
  * Serializes generated cache keys into canonical JSON payload bytes and SHA-256 hash bytes.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 public final class OracleKeySerializer {
 

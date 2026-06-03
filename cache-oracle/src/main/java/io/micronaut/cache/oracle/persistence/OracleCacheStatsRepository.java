@@ -25,7 +25,7 @@ import java.time.Instant;
  * Repository for lightweight cache statistics rows.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @JdbcRepository(dialect = Dialect.ORACLE, dataSource = "${micronaut.oracle.cache.datasource}")
 public interface OracleCacheStatsRepository extends CrudRepository<CacheStatsEntity, String> {

@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutorService;
  * Creates Oracle cache beans for configured cache names.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @Factory
 final class OracleCacheFactory {

@@ -49,7 +49,7 @@ import java.util.function.Supplier;
  * Synchronous Oracle cache implementation.
  *
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 public final class OracleSyncCache implements SyncCache<OracleCacheEntryRepository> {
     private static final Logger LOG = LoggerFactory.getLogger(OracleSyncCache.class);

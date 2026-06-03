@@ -34,7 +34,7 @@ import java.time.Instant;
  * @param createdAt The row creation time
  * @param updatedAt The last update time
  * @author Davide Cocco
- * @since 6.0.0
+ * @since 6.1.0
  */
 @MappedEntity(value = "${micronaut.oracle.cache.prefix:MN}_CACHE_CONFIG")
 public record CacheConfigEntity(
