@@ -20,6 +20,8 @@ import java.util.Arrays;
 /**
  * Canonicalized cache key payload and hash.
  *
+ * @param keyHash The cache key hash
+ * @param keyPayload The cache key payload
  * @author Davide Cocco
  * @since 6.1.0
  */

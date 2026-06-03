@@ -207,15 +207,6 @@ public final class OracleCacheSchemaExecutor {
         return new JdbcConnectionSettings(url, username, password, driverClassName);
     }
 
-    record JdbcConnectionSettings(String url,
-                                  String username,
-                                  String password,
-                                  String driverClassName) {
-        Connection openConnection() throws SQLException {
-            return java.sql.DriverManager.getConnection(url, username, password);
-        }
-    }
-
     private String describeDataSourceBean(BeanDefinition<DataSource> definition) {
         String candidate = definition.stringValue(AnnotationUtil.NAMED).orElse(null);
         if (candidate != null && !candidate.isBlank()) {
@@ -245,5 +236,14 @@ public final class OracleCacheSchemaExecutor {
             }
         }
         return definition.getBeanType().getName();
+    }
+
+    record JdbcConnectionSettings(String url,
+                                  String username,
+                                  String password,
+                                  String driverClassName) {
+        Connection openConnection() throws SQLException {
+            return java.sql.DriverManager.getConnection(url, username, password);
+        }
     }
 }
