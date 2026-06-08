@@ -22,7 +22,6 @@ import io.micronaut.cache.oracle.persistence.OracleCacheEntryRepository
 import io.micronaut.cache.oracle.persistence.OracleCacheStatsRepository
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer
 import io.micronaut.context.ApplicationContext
-import io.micronaut.core.convert.DefaultMutableConversionService
 import io.micronaut.core.type.Argument
 import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.serde.annotation.Serdeable
@@ -360,11 +359,7 @@ class OracleSyncCacheTest extends Specification {
     }
 
     private static OracleKeySerializer serializer() {
-        return new OracleKeySerializer(jsonMapper(), conversionService())
-    }
-
-    private static DefaultMutableConversionService conversionService() {
-        return new DefaultMutableConversionService()
+        return new OracleKeySerializer(jsonMapper())
     }
 
     private static OracleJdbcJsonBinaryObjectMapper jsonMapper() {

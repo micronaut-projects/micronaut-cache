@@ -16,22 +16,13 @@
 package io.micronaut.cache.oracle.serialization;
 
 import io.micronaut.cache.interceptor.ParametersKey;
-import io.micronaut.core.beans.BeanMap;
-import io.micronaut.core.convert.ConversionService;
 import io.micronaut.serde.oracle.jdbc.json.OracleJdbcJsonBinaryObjectMapper;
 
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Serializes generated cache keys into canonical JSON payload bytes and SHA-256 hash bytes.
@@ -42,16 +33,13 @@ import java.util.Optional;
 public final class OracleKeySerializer {
 
     private final OracleJdbcJsonBinaryObjectMapper jsonMapper;
-    private final ConversionService conversionService;
 
-    public OracleKeySerializer(OracleJdbcJsonBinaryObjectMapper jsonMapper, ConversionService conversionService) {
+    public OracleKeySerializer(OracleJdbcJsonBinaryObjectMapper jsonMapper) {
         this.jsonMapper = jsonMapper;
-        this.conversionService = conversionService;
     }
 
     public OracleCacheKey serialize(Object cacheKey) {
-        List<Object> arguments = extractArguments(cacheKey);
-        byte[] payload = toJsonBytes(canonicalize(arguments));
+        byte[] payload = toJsonBytes(extractArguments(cacheKey));
         return new OracleCacheKey(sha256(payload), payload);
     }
 
@@ -60,82 +48,9 @@ public final class OracleKeySerializer {
             return List.of();
         }
         if (cacheKey instanceof ParametersKey parametersKey) {
-            return List.of(parametersKey.getParameters());
+            return Arrays.asList(parametersKey.getParameters());
         }
         return List.of(cacheKey);
-    }
-
-    private Object canonicalize(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof String || value instanceof Number || value instanceof Boolean) {
-            return value;
-        }
-        if (value instanceof Enum<?> enumValue) {
-            return enumValue.name();
-        }
-        if (value instanceof TemporalAccessor) {
-            return String.valueOf(value);
-        }
-        if (value instanceof byte[] bytes) {
-            return Base64.getEncoder().encodeToString(bytes);
-        }
-        if (value instanceof CharSequence sequence) {
-            return sequence.toString();
-        }
-        if (value.getClass().isArray()) {
-            int length = java.lang.reflect.Array.getLength(value);
-            List<Object> normalized = new ArrayList<>(length);
-            for (int i = 0; i < length; i++) {
-                normalized.add(canonicalize(java.lang.reflect.Array.get(value, i)));
-            }
-            return normalized;
-        }
-        if (value instanceof Collection<?> collection) {
-            List<Object> normalized = new ArrayList<>(collection.size());
-            for (Object entry : collection) {
-                normalized.add(canonicalize(entry));
-            }
-            return normalized;
-        }
-        if (value instanceof Map<?, ?> map) {
-            return canonicalizeMap(map);
-        }
-
-        Map<String, Object> beanMap = tryBeanMap(value);
-        if (beanMap != null) {
-            return beanMap;
-        }
-
-        Optional<String> converted = conversionService.convert(value, String.class);
-        return converted.orElseGet(() -> String.valueOf(value));
-    }
-
-    private Map<String, Object> canonicalizeMap(Map<?, ?> map) {
-        List<Map.Entry<?, ?>> entries = new ArrayList<>(map.entrySet());
-        entries.sort(Comparator.comparing(entry -> String.valueOf(entry.getKey())));
-
-        Map<String, Object> normalized = new LinkedHashMap<>(entries.size());
-        for (Map.Entry<?, ?> entry : entries) {
-            normalized.put(String.valueOf(entry.getKey()), canonicalize(entry.getValue()));
-        }
-        return normalized;
-    }
-
-    private Map<String, Object> tryBeanMap(Object value) {
-        try {
-            BeanMap<Object> beanMap = BeanMap.of(value);
-            List<String> keys = new ArrayList<>(beanMap.keySet());
-            keys.sort(String::compareTo);
-            Map<String, Object> normalized = new LinkedHashMap<>(keys.size());
-            for (String key : keys) {
-                normalized.put(key, canonicalize(beanMap.get(key)));
-            }
-            return normalized;
-        } catch (IllegalArgumentException ignored) {
-            return null;
-        }
     }
 
     private byte[] sha256(byte[] payload) {

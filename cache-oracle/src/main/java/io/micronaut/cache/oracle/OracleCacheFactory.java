@@ -22,8 +22,11 @@ import io.micronaut.cache.oracle.serialization.OracleKeySerializer;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Parameter;
-import io.micronaut.core.convert.ConversionService;
 import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.serde.SerdeRegistry;
+import io.micronaut.serde.config.SerdeConfiguration;
+import io.micronaut.serde.config.SerializationConfiguration;
+import io.micronaut.serde.config.annotation.SerdeConfig;
 import io.micronaut.serde.oracle.jdbc.json.OracleJdbcJsonBinaryObjectMapper;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -42,13 +45,25 @@ final class OracleCacheFactory {
     /**
      * Builds the Oracle cache key serializer.
      *
-     * @param jsonMapper The Oracle JDBC JSON binary object mapper
-     * @param conversionService The conversion service
+     * @param serdeRegistry The Serde registry
+     * @param serdeConfiguration The Serde configuration
+     * @param serializationConfiguration The Serde serialization configuration
      * @return The key serializer
      */
     @Singleton
-    static OracleKeySerializer oracleKeySerializer(OracleJdbcJsonBinaryObjectMapper jsonMapper, ConversionService conversionService) {
-        return new OracleKeySerializer(jsonMapper, conversionService);
+    static OracleKeySerializer oracleKeySerializer(SerdeRegistry serdeRegistry,
+                                                   SerdeConfiguration serdeConfiguration,
+                                                   SerializationConfiguration serializationConfiguration) {
+        SerdeRegistry keySerdeRegistry = serdeRegistry.cloneWithConfiguration(
+            null,
+            new OracleKeySerializationConfiguration(serializationConfiguration),
+            null
+        );
+        OracleJdbcJsonBinaryObjectMapper keyJsonMapper = new OracleJdbcJsonBinaryObjectMapper(
+            keySerdeRegistry,
+            serdeConfiguration
+        );
+        return new OracleKeySerializer(keyJsonMapper);
     }
 
     @EachBean(OracleCacheConfiguration.class)
@@ -59,5 +74,50 @@ final class OracleCacheFactory {
                                            OracleKeySerializer keySerializer,
                                            OracleJdbcJsonBinaryObjectMapper jsonMapper) {
         return new OracleSyncCache(configuration, entryRepository, statsRepository, ioExecutor, keySerializer, jsonMapper);
+    }
+
+    private record OracleKeySerializationConfiguration(
+        SerializationConfiguration delegate
+    ) implements SerializationConfiguration {
+
+        @Override
+        public SerdeConfig.SerInclude getInclusion() {
+            return delegate.getInclusion();
+        }
+
+        @Override
+        public boolean isAlwaysSerializeErrorsAsList() {
+            return delegate.isAlwaysSerializeErrorsAsList();
+        }
+
+        @Override
+        public boolean sortPropertiesAlphabetically() {
+            return true;
+        }
+
+        @Override
+        public boolean writeDateTimestampsAsNanoseconds() {
+            return delegate.writeDateTimestampsAsNanoseconds();
+        }
+
+        @Override
+        public boolean writeDatesWithZoneId() {
+            return delegate.writeDatesWithZoneId();
+        }
+
+        @Override
+        public boolean writeSingleElemArraysUnwrapped() {
+            return delegate.writeSingleElemArraysUnwrapped();
+        }
+
+        @Override
+        public boolean writeSortedMapEntries() {
+            return true;
+        }
+
+        @Override
+        public boolean disableGeneratedSerializer() {
+            return delegate.disableGeneratedSerializer();
+        }
     }
 }

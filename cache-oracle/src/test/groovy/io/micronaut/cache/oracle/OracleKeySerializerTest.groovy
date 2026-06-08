@@ -18,16 +18,24 @@ package io.micronaut.cache.oracle
 import io.micronaut.cache.interceptor.ParametersKey
 import io.micronaut.cache.oracle.serialization.OracleKeySerializer
 import io.micronaut.context.ApplicationContext
-import io.micronaut.core.convert.DefaultMutableConversionService
 import io.micronaut.core.type.Argument
 import io.micronaut.serde.oracle.jdbc.json.OracleJdbcJsonBinaryObjectMapper
+import spock.lang.AutoCleanup
 import spock.lang.Specification
 
 class OracleKeySerializerTest extends Specification {
 
-    private final OracleKeySerializer serializer = new OracleKeySerializer(jsonMapper(), new DefaultMutableConversionService())
+    @AutoCleanup
+    private final ApplicationContext context = ApplicationContext.run()
+    private OracleKeySerializer serializer
+    private OracleJdbcJsonBinaryObjectMapper jsonMapper
 
-    void canonicalizesNestedArguments() {
+    void setup() {
+        serializer = context.getBean(OracleKeySerializer)
+        jsonMapper = context.getBean(OracleJdbcJsonBinaryObjectMapper)
+    }
+
+    void serializesNestedArguments() {
         given:
         def nestedMap = [
                 b      : [3, 2, 1],
@@ -41,13 +49,16 @@ class OracleKeySerializerTest extends Specification {
         def second = serializer.serialize(key)
 
         then:
-        // Deterministic payload is required so semantically equal keys hash to exactly the same byte sequence.
         first == second
-        jsonMapper().readValue(first.keyPayload, Argument.listOf(Object)) == ['user-1', [a: [x: 1, y: [2, 3]], b: [3, 2, 1], message: 'hello'], ['z', 'y']]
+        jsonMapper.readValue(first.keyPayload, Argument.listOf(Object)) == [
+                'user-1',
+                [a: [x: 1, y: [2, 3]], b: [3, 2, 1], message: 'hello'],
+                ['z', 'y']
+        ]
         first.keyHash.length == 32
     }
 
-    void ignoresMapInsertionOrder() {
+    void mapPayloadsWithDifferentKeyOrdersResultInSameKey() {
         given:
         LinkedHashMap<String, Object> firstMap = new LinkedHashMap<>()
         firstMap.put('b', 2)
@@ -62,16 +73,32 @@ class OracleKeySerializerTest extends Specification {
         def second = serializer.serialize(new ParametersKey(secondMap))
 
         then:
-        // Map ordering differences must not change cache key identity.
         first == second
     }
 
-    private static OracleJdbcJsonBinaryObjectMapper jsonMapper() {
-        ApplicationContext context = ApplicationContext.run()
-        try {
-            return context.getBean(OracleJdbcJsonBinaryObjectMapper)
-        } finally {
-            context.close()
-        }
+    void singleMapPayloadsWithDifferentKeyOrdersResultInSameKey() {
+        given:
+        LinkedHashMap<String, Object> firstMap = new LinkedHashMap<>()
+        firstMap.put('b', 2)
+        firstMap.put('a', [k2: 'v2', k1: 'v1'])
+
+        LinkedHashMap<String, Object> secondMap = new LinkedHashMap<>()
+        secondMap.put('a', [k1: 'v1', k2: 'v2'])
+        secondMap.put('b', 2)
+
+        when:
+        def first = serializer.serialize(firstMap)
+        def second = serializer.serialize(secondMap)
+
+        then:
+        first == second
+    }
+
+    void parametersKeySupportsNullArguments() {
+        when:
+        def key = serializer.serialize(new ParametersKey(null, 'x'))
+
+        then:
+        jsonMapper.readValue(key.keyPayload, Argument.listOf(Object)) == [null, 'x']
     }
 }
