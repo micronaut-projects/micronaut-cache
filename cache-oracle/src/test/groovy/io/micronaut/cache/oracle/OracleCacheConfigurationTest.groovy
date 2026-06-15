@@ -30,6 +30,8 @@ class OracleCacheConfigurationTest extends Specification {
                 'micronaut.caches.orders.cleanup-interval' : '30s',
                 'micronaut.caches.orders.cleanup-batch-size': 50,
                 'micronaut.caches.orders.lock-wait-timeout': '2s',
+                'micronaut.caches.orders.fail-open'        : false,
+                'micronaut.caches.orders.fail-open-retry-interval': '10s',
                 'micronaut.caches.users.cleanup-interval'  : '45s',
                 'micronaut.caches.users.cleanup-batch-size' : 75,
                 'micronaut.caches.users.lock-wait-timeout' : '3s',
@@ -50,6 +52,10 @@ class OracleCacheConfigurationTest extends Specification {
         users.cleanupInterval.seconds == 45
         orders.lockWaitTimeout.seconds == 2
         users.lockWaitTimeout.seconds == 3
+        !orders.failOpen
+        users.failOpen
+        orders.failOpenRetryInterval.seconds == 10
+        users.failOpenRetryInterval.seconds == 30
         orders.cleanupBatchSize == 50L
         users.cleanupBatchSize == 75L
 
@@ -66,6 +72,8 @@ class OracleCacheConfigurationTest extends Specification {
                 'micronaut.caches.orders.lock-wait-timeout'       : '15s',
                 'micronaut.caches.orders.cleanup-interval'        : '30s',
                 'micronaut.caches.orders.cleanup-batch-size'      : 40,
+                'micronaut.caches.orders.fail-open'               : false,
+                'micronaut.caches.orders.fail-open-retry-interval': '12s',
                 'micronaut.caches.orders.expire-after-write'      : '5m',
                 'micronaut.caches.orders.expire-after-access'     : '2m',
                 'micronaut.caches.orders.maximum-size'            : 100,
@@ -88,6 +96,8 @@ class OracleCacheConfigurationTest extends Specification {
         configuration.lockWaitTimeout.seconds == 15
         configuration.cleanupInterval.seconds == 30
         configuration.cleanupBatchSize == 40L
+        !configuration.failOpen
+        configuration.failOpenRetryInterval.seconds == 12
         configuration.expireAfterWrite.get().toMinutes() == 5
         configuration.expireAfterAccess.get().toMinutes() == 2
         configuration.maximumSize.getAsLong() == 100
@@ -98,6 +108,8 @@ class OracleCacheConfigurationTest extends Specification {
         and:
         // Default cache still uses baseline values when properties are not explicitly provided.
         !defaultConfiguration.blocking
+        defaultConfiguration.failOpen
+        defaultConfiguration.failOpenRetryInterval.seconds == 30
         defaultConfiguration.cleanupInterval.seconds == 60
         defaultConfiguration.cleanupBatchSize == 100L
         defaultConfiguration.lockWaitTimeout.seconds == 5
@@ -113,6 +125,7 @@ class OracleCacheConfigurationTest extends Specification {
                 'micronaut.oracle.cache.prefix'          : 'MN',
                 'micronaut.caches.bad.cleanup-interval'      : '-1s',
                 'micronaut.caches.bad.cleanup-batch-size'    : 0,
+                'micronaut.caches.bad.fail-open-retry-interval': '-1s',
                 'micronaut.caches.bad.lock-wait-timeout'     : '-5s',
                 'micronaut.caches.bad.expire-after-write'    : '-1m',
                 'micronaut.caches.bad.maximum-size'          : -1,

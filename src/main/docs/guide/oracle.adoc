@@ -38,9 +38,37 @@ micronaut:
             expire-after-write: 2m
             cleanup-interval: 60s
             cleanup-batch-size: 100
+            fail-open: true
+            fail-open-retry-interval: 30s
 ----
 
 The Oracle implementation persists cache entries in Oracle tables and creates a scheduler job per configured cache to clean up expired entries.
+
+By default the Oracle cache fails open. If the cache cannot connect to Oracle, or Oracle becomes unavailable during a cache operation, repository failures are logged and the cache operation is skipped. For read-through operations such as ann:cache.annotation.Cacheable[], Micronaut calls the original method and returns its value instead of failing the request because the cache is unavailable. After a repository failure, the cache bypasses Oracle for `fail-open-retry-interval` before trying the database again.
+
+The first cache operation that discovers the outage still has to wait for the datasource or Oracle JDBC driver to fail. Subsequent cache operations during `fail-open-retry-interval` bypass Oracle immediately. To keep the first failure probe short, configure datasource and driver timeouts, for example:
+
+[configuration]
+----
+datasources:
+    default:
+        connection-timeout: 2s
+        data-source-properties:
+            oracle.net.CONNECT_TIMEOUT: 2000
+            oracle.jdbc.ReadTimeout: 2000
+----
+
+Fail-open only applies to Oracle repository failures. Cache key serialization and cached value deserialization errors still fail fast because they usually indicate invalid cache data or an application configuration problem.
+
+To make Oracle cache failures propagate to the caller, disable fail-open for the cache:
+
+[configuration]
+----
+micronaut:
+    caches:
+        orders:
+            fail-open: false
+----
 
 If you want cache writes for a given cache name to coordinate through the database, enable blocking mode:
 
@@ -59,6 +87,8 @@ Additional Oracle-specific options include:
 
 - `cleanup-interval` to control how often the Oracle scheduler job runs
 - `cleanup-batch-size` to bound each cleanup pass
+- `fail-open` to decide whether Oracle repository failures should be ignored. Defaults to `true`
+- `fail-open-retry-interval` to control how long Oracle is bypassed after a fail-open repository failure. Defaults to `30s`
 - `maximum-size` to enforce a row-count limit during cleanup
 - `maximum-weight` to enforce an approximate total-weight limit during cleanup
 

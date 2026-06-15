@@ -165,7 +165,38 @@ class OracleSyncCacheTest extends Specification {
         noExceptionThrown()
     }
 
-    void blockingPathRethrowsNonDuplicateFailure() {
+    void readThroughGetFallsBackToSupplierAndBacksOffAfterLookupFailure() {
+        given:
+        OracleCacheEntryRepository repository = Mock()
+        OracleSyncCache cache = new OracleSyncCache(configuration(), repository, statsRepository(), executorService(), serializer(), jsonMapper())
+
+        when:
+        Integer first = cache.get('failure-1', Argument.of(Integer), { 15 })
+        Integer second = cache.get('failure-2', Argument.of(Integer), { 16 })
+
+        then:
+        first == 15
+        second == 16
+        1 * repository.findById(_ as CacheEntryId) >> { throw new IllegalStateException('connection lost') }
+        0 * repository.save(_ as CacheEntryEntity)
+        0 * repository.blockingPut(_, _, _, _, _, _, _)
+    }
+
+    void readThroughGetReturnsSupplierWhenCacheWriteFails() {
+        given:
+        OracleCacheEntryRepository repository = Mock()
+        OracleSyncCache cache = new OracleSyncCache(configuration(false), repository, statsRepository(), executorService(), serializer(), jsonMapper())
+
+        when:
+        Integer result = cache.get('write-failure', Argument.of(Integer), { 15 })
+
+        then:
+        result == 15
+        1 * repository.findById(_ as CacheEntryId) >> Optional.empty()
+        1 * repository.save(_ as CacheEntryEntity) >> { throw new IllegalStateException('connection lost') }
+    }
+
+    void blockingPathReturnsSupplierWhenDatabaseWriteFails() {
         given:
         OracleCacheEntryRepository repository = Mock()
         OracleSyncCache cache = new OracleSyncCache(configuration(true), repository, statsRepository(), executorService(), serializer(), jsonMapper())
@@ -175,10 +206,22 @@ class OracleSyncCacheTest extends Specification {
         repository.blockingPut(_, _, _, _, _, _, 0L) >> { throw new IllegalStateException('connection lost') }
 
         when:
+        Integer result = cache.get('failure', Argument.of(Integer), { 15 })
+
+        then:
+        result == 15
+    }
+
+    void failFastConfigurationRethrowsRepositoryFailures() {
+        given:
+        OracleCacheEntryRepository repository = Mock()
+        OracleSyncCache cache = new OracleSyncCache(configuration(false, false), repository, statsRepository(), executorService(), serializer(), jsonMapper())
+
+        when:
         cache.get('failure', Argument.of(Integer), { 15 })
 
         then:
-        // Only duplicate-key conflicts are recoverable; operational failures must bubble up.
+        1 * repository.findById(_ as CacheEntryId) >> { throw new IllegalStateException('connection lost') }
         IllegalStateException ex = thrown()
         ex.message.contains('connection lost')
     }
@@ -325,12 +368,18 @@ class OracleSyncCacheTest extends Specification {
     }
 
     private static OracleCacheConfiguration configuration(boolean blocking) {
+        return configuration(blocking, true)
+    }
+
+    private static OracleCacheConfiguration configuration(boolean blocking, boolean failOpen) {
         ApplicationContext context = ApplicationContext.run([
                 'micronaut.oracle.cache.datasource'      : 'default',
                 'micronaut.oracle.cache.prefix'          : 'MN',
                 'micronaut.caches.orders.expire-after-access': '30s',
                 'micronaut.caches.orders.lock-wait-timeout' : '2s',
-                'micronaut.caches.orders.blocking'          : blocking
+                'micronaut.caches.orders.blocking'          : blocking,
+                'micronaut.caches.orders.fail-open'         : failOpen,
+                'micronaut.caches.orders.fail-open-retry-interval': '1m'
         ])
         try {
             return context.getBean(OracleCacheConfiguration, Qualifiers.byName('orders'))

@@ -47,10 +47,17 @@ public final class OracleCacheConfiguration extends CacheConfiguration {
      */
     public static final long DEFAULT_CLEANUP_BATCH_SIZE = 100L;
 
+    /**
+     * Default fail-open retry interval.
+     */
+    public static final Duration DEFAULT_FAIL_OPEN_RETRY_INTERVAL = Duration.ofSeconds(30);
+
     private boolean blocking;
+    private boolean failOpen = true;
     private Duration lockWaitTimeout = DEFAULT_LOCK_WAIT_TIMEOUT;
     private Duration cleanupInterval = DEFAULT_CLEANUP_INTERVAL;
     private long cleanupBatchSize = DEFAULT_CLEANUP_BATCH_SIZE;
+    private Duration failOpenRetryInterval = DEFAULT_FAIL_OPEN_RETRY_INTERVAL;
 
     /**
      * Creates a new Oracle cache configuration.
@@ -78,6 +85,46 @@ public final class OracleCacheConfiguration extends CacheConfiguration {
      */
     public void setBlocking(boolean blocking) {
         this.blocking = blocking;
+    }
+
+    /**
+     * Checks whether cache repository failures should be ignored.
+     *
+     * @return Whether cache failures should fall back to the underlying operation
+     */
+    public boolean isFailOpen() {
+        return failOpen;
+    }
+
+    /**
+     * Sets whether cache repository failures should be ignored.
+     *
+     * @param failOpen Whether cache failures should fall back to the underlying operation
+     */
+    public void setFailOpen(boolean failOpen) {
+        this.failOpen = failOpen;
+    }
+
+    /**
+     * Gets the interval before retrying Oracle after a fail-open repository failure.
+     *
+     * @return The fail-open retry interval
+     */
+    @NonNull
+    public Duration getFailOpenRetryInterval() {
+        return failOpenRetryInterval;
+    }
+
+    /**
+     * Sets the interval before retrying Oracle after a fail-open repository failure.
+     *
+     * @param failOpenRetryInterval The fail-open retry interval
+     */
+    public void setFailOpenRetryInterval(@NonNull Duration failOpenRetryInterval) {
+        if (failOpenRetryInterval.isNegative()) {
+            throw new IllegalArgumentException("failOpenRetryInterval cannot be negative");
+        }
+        this.failOpenRetryInterval = failOpenRetryInterval;
     }
 
     /**
