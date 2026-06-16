@@ -107,29 +107,8 @@ cache:
 The Oracle cache can run Flyway migrations on startup when Flyway is present on the application classpath.
 To enable automatic schema migration, add Flyway and the Oracle Flyway database support module to your application runtime dependencies.
 
-For Gradle:
-
-[source,groovy]
-----
-runtimeOnly("io.micronaut.flyway:micronaut-flyway")
-runtimeOnly("org.flywaydb:flyway-database-oracle")
-----
-
-For Maven:
-
-[source,xml]
-----
-<dependency>
-    <groupId>io.micronaut.flyway</groupId>
-    <artifactId>micronaut-flyway</artifactId>
-    <scope>runtime</scope>
-</dependency>
-<dependency>
-    <groupId>org.flywaydb</groupId>
-    <artifactId>flyway-database-oracle</artifactId>
-    <scope>runtime</scope>
-</dependency>
-----
+dependency:io.micronaut.flyway:micronaut-flyway[scope=runtimeOnly]
+dependency:org.flywaydb:flyway-database-oracle[scope=runtimeOnly]
 
 If Flyway is not present, the Oracle cache does not run schema migrations. In that case, manage the cache schema externally using the bundled migrations or an equivalent DBA-managed process before the cache is used.
 ====
