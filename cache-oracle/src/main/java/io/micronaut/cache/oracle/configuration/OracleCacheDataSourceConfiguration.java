@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2026 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  * Global datasource selection for the Oracle cache module.
  *
  * @author Davide Cocco
- * @since 6.1.0
+ * @since 6.2.0
  */
 @ConfigurationProperties("micronaut.oracle.cache")
 public final class OracleCacheDataSourceConfiguration {

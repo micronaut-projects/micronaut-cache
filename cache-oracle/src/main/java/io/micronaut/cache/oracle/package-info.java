@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2026 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * Contains an Oracle-backed cache implementation.
  *
  * @author Davide Cocco
- * @since 6.1.0
+ * @since 6.2.0
  */
 @Configuration
 @Requires(property = "cache.enabled", notEquals = StringUtils.FALSE)

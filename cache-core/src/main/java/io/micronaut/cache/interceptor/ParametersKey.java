@@ -50,7 +50,7 @@ public class ParametersKey implements Serializable {
 
     /**
      * @return A defensive copy of the parameters used to build this key
-     * @since 6.0.1
+     * @since 6.2.0
      */
     public Object[] getParameters() {
         return Arrays.copyOf(params, params.length);

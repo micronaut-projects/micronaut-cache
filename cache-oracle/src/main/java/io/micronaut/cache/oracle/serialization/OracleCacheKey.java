@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2026 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.Arrays;
  * @param keyHash The cache key hash
  * @param keyPayload The cache key payload
  * @author Davide Cocco
- * @since 6.1.0
+ * @since 6.2.0
  */
 public record OracleCacheKey(byte[] keyHash, byte[] keyPayload) {
     @Override
