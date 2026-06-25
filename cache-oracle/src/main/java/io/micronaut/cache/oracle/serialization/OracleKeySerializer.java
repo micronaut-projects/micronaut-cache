@@ -32,6 +32,14 @@ import java.util.List;
  */
 public final class OracleKeySerializer {
 
+    private static final ThreadLocal<MessageDigest> SHA256 = ThreadLocal.withInitial(() -> {
+        try {
+            return MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 is not available", e);
+        }
+    });
+
     private final OracleJdbcJsonBinaryObjectMapper jsonMapper;
 
     public OracleKeySerializer(OracleJdbcJsonBinaryObjectMapper jsonMapper) {
@@ -54,11 +62,9 @@ public final class OracleKeySerializer {
     }
 
     private byte[] sha256(byte[] payload) {
-        try {
-            return MessageDigest.getInstance("SHA-256").digest(payload);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-256 is not available", e);
-        }
+        MessageDigest digest = SHA256.get();
+        digest.reset();
+        return digest.digest(payload);
     }
 
     private byte[] toJsonBytes(Object value) {

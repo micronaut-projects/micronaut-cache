@@ -16,6 +16,9 @@
 package io.micronaut.cache.oracle.configuration;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.core.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Global datasource selection for the Oracle cache module.
@@ -25,6 +28,8 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  */
 @ConfigurationProperties("micronaut.oracle.cache")
 public final class OracleCacheDataSourceConfiguration {
+    private static final Logger LOG = LoggerFactory.getLogger(OracleCacheDataSourceConfiguration.class);
+
     /**
      * Default SQL object prefix.
      */
@@ -51,7 +56,7 @@ public final class OracleCacheDataSourceConfiguration {
      * @return Whether the Oracle cache datasource name is configured
      */
     public boolean isDatasourceConfigured() {
-        return datasource != null && !datasource.isBlank();
+        return StringUtils.hasText(datasource);
     }
 
     /**
@@ -79,6 +84,7 @@ public final class OracleCacheDataSourceConfiguration {
      */
     public void setPrefix(String prefix) {
         if (prefix == null || prefix.isBlank()) {
+            LOG.warn("Oracle cache prefix is blank; using default prefix '{}'", DEFAULT_PREFIX);
             this.prefix = DEFAULT_PREFIX;
         } else {
             this.prefix = prefix;
