@@ -18,7 +18,6 @@ package io.micronaut.cache.oracle
 import io.micronaut.cache.oracle.persistence.CacheStatsEntity
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.type.Argument
-import io.micronaut.inject.BeanDefinitionReference
 import io.micronaut.inject.QualifiedBeanType
 import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.serde.annotation.Serdeable
@@ -262,6 +261,6 @@ class OracleSyncCacheIntegrationTest extends OracleIntegrationSupport {
     }
 
     private static boolean isFlywayMigrator(QualifiedBeanType<?> beanType) {
-        beanType instanceof BeanDefinitionReference<?> && beanType.beanDefinitionName.contains('OracleCacheFlywaySchemaMigrator')
+        FlywayMigratorPredicate.isFlywayMigrator(beanType)
     }
 }

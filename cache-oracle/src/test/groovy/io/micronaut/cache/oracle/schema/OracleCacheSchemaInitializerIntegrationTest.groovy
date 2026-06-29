@@ -16,11 +16,11 @@
 package io.micronaut.cache.oracle.schema
 
 import io.micronaut.cache.oracle.OracleIntegrationSupport
+import io.micronaut.cache.oracle.FlywayMigratorPredicate
 import io.micronaut.cache.oracle.configuration.OracleCacheConfiguration
 import io.micronaut.cache.oracle.configuration.OracleCacheDataSourceConfiguration
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
-import io.micronaut.inject.BeanDefinitionReference
 import io.micronaut.inject.QualifiedBeanType
 import io.micronaut.inject.qualifiers.Qualifiers
 
@@ -341,7 +341,7 @@ class OracleCacheSchemaInitializerIntegrationTest extends OracleIntegrationSuppo
     }
 
     private static boolean isFlywayMigrator(QualifiedBeanType<?> beanType) {
-        beanType instanceof BeanDefinitionReference<?> && beanType.beanDefinitionName.contains('OracleCacheFlywaySchemaMigrator')
+        FlywayMigratorPredicate.isFlywayMigrator(beanType)
     }
 
     private boolean hasConfigRow(String cacheName, int blocking, long cleanupIntervalSeconds, long cleanupBatchSize) {
