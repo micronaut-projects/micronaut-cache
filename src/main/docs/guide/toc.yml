@@ -7,6 +7,7 @@ annotations:
 caffeine: Caching with Caffeine
 jcache: JCache API support
 redis: Redis Support
+oracle: Oracle Support
 ehcache: Ehcache Support
 hazelcast: Hazelcast Support
 infinispan: Infinispan Support

@@ -1,0 +1,121 @@
+To cache using Oracle Database add the following dependency to your application:
+
+dependency:io.micronaut.cache:micronaut-cache-oracle[]
+
+[IMPORTANT]
+.Bring your own Oracle database
+====
+This cache implementation does not provision Oracle for you. You must set up and manage your own Oracle database and configure Micronaut Data with a datasource that can connect to it.
+
+You must also configure `micronaut.oracle.cache.datasource` with the datasource name that will host the Oracle cache schema and runtime operations. By default SQL cache objects use the `MN` prefix; set `micronaut.oracle.cache.prefix` only when you want to override it.
+
+The Oracle user used by the datasource must be able to create the cache tables, indexes, and stored procedures. If you want scheduler-driven cleanup jobs, that user must also have the Oracle scheduler privileges required to create and manage jobs.
+
+For example, assuming:
+- you want the datasource called `mydatasource` with Micronaut Data to host your caches
+- you want the generated SQL objects to be prefixed 'MY_APP' (i.e. 'MY_APP_CACHE_ENTRY', 'MY_APP_CACHE_STATS' etc.)
+this would be your configuration:
+
+[configuration]
+----
+micronaut:
+    oracle:
+        cache:
+            datasource: mydatasource
+            prefix: MY_APP
+----
+====
+
+Then configure one or more caches. For example with `application.yml`:
+
+.Cache Configuration Example
+[configuration]
+----
+micronaut:
+    caches:
+        orders:
+            expire-after-access: 30s
+            expire-after-write: 2m
+            cleanup-interval: 60s
+            cleanup-batch-size: 100
+            fail-open: true
+            fail-open-retry-interval: 30s
+----
+
+The Oracle implementation persists cache entries in Oracle tables and creates a scheduler job per configured cache to clean up expired entries.
+
+By default the Oracle cache fails open. If the cache cannot connect to Oracle, or Oracle becomes unavailable during a cache operation, repository failures are logged and the cache operation is skipped. For read-through operations such as ann:cache.annotation.Cacheable[], Micronaut calls the original method and returns its value instead of failing the request because the cache is unavailable. After a repository failure, the cache bypasses Oracle for `fail-open-retry-interval` before trying the database again.
+
+The first cache operation that discovers the outage still has to wait for the datasource or Oracle JDBC driver to fail. Subsequent cache operations during `fail-open-retry-interval` bypass Oracle immediately. To keep the first failure probe short, configure datasource and driver timeouts, for example:
+
+[configuration]
+----
+datasources:
+    default:
+        connection-timeout: 2s
+        data-source-properties:
+            oracle.net.CONNECT_TIMEOUT: 2000
+            oracle.jdbc.ReadTimeout: 2000
+----
+
+Fail-open only applies to Oracle repository failures. Cache key serialization and cached value deserialization errors still fail fast because they usually indicate invalid cache data or an application configuration problem.
+
+To make Oracle cache failures propagate to the caller, disable fail-open for the cache:
+
+[configuration]
+----
+micronaut:
+    caches:
+        orders:
+            fail-open: false
+----
+
+If you want cache writes for a given cache name to coordinate through the database, enable blocking mode:
+
+[configuration]
+----
+micronaut:
+    caches:
+        orders:
+            blocking: true
+            lock-wait-timeout: 5s
+----
+
+This will allow concurrency control for concurrent writers to be managed by the database.
+
+Additional Oracle-specific options include:
+
+- `cleanup-interval` to control how often the Oracle scheduler job runs
+- `cleanup-batch-size` to bound each cleanup pass
+- `fail-open` to decide whether Oracle repository failures should be ignored. Defaults to `true`
+- `fail-open-retry-interval` to control how long Oracle is bypassed after a fail-open repository failure. Defaults to `30s`
+- `maximum-size` to enforce a row-count limit during cleanup
+- `maximum-weight` to enforce an approximate total-weight limit during cleanup
+
+To disable the Oracle-backed cache:
+
+[configuration]
+----
+cache:
+    enabled: false
+----
+
+
+[NOTE]
+.Schema initialization
+====
+The Oracle cache can run Flyway migrations on startup when Flyway is present on the application classpath.
+To enable automatic schema migration, add Flyway and the Oracle Flyway database support module to your application runtime dependencies.
+
+dependency:io.micronaut.flyway:micronaut-flyway[scope=runtimeOnly]
+dependency:org.flywaydb:flyway-database-oracle[scope=runtimeOnly]
+
+If Flyway is not present, the Oracle cache does not run schema migrations. In that case, manage the cache schema externally using the bundled migrations or an equivalent DBA-managed process before the cache is used.
+====
+
+[NOTE]
+.Schema migration
+====
+Flyway history is tracked per SQL object prefix with a table named `FLYWAY_SCHEMA_HISTORY_<your_chosen_prefix>`, for example `FLYWAY_SCHEMA_HISTORY_MN`.
+If you manually delete cache schema objects, keep normal Flyway semantics in mind: deleting tables or procedures without also repairing/removing the matching Flyway history can leave the database in an inconsistent state.
+====

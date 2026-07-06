@@ -1,0 +1,35 @@
+plugins {
+    id 'io.micronaut.build.internal.cache-module'
+}
+
+// Temporary for the first cache-oracle release: there is no previously published
+// version to compare against yet, so baseline/japicmp should be re-enabled once
+// the module has an actual prior release.
+tasks.matching { it.name in ['findBaseline', 'japicmp'] }.configureEach {
+    enabled = false
+}
+
+dependencies {
+    annotationProcessor(mnData.micronaut.data.processor)
+
+    api projects.micronautCacheCore
+
+    implementation(mn.micronaut.json.core)
+    implementation(mnData.micronaut.data.jdbc)
+    compileOnly(mnFlyway.flyway.oracle)
+    compileOnly(mnFlyway.micronaut.flyway)
+    implementation(libs.micronaut.serde.oracle.jdbc.json)
+    implementation(mnSerde.micronaut.serde.jackson)
+    implementation(mnSql.micronaut.jdbc.hikari)
+    implementation(mnSql.ojdbc11)
+
+    testImplementation projects.micronautCacheTck
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.inject.groovy)
+    testImplementation(mn.reactor)
+    testRuntimeOnly(mnFlyway.flyway.oracle)
+    testRuntimeOnly(mnFlyway.micronaut.flyway)
+    testImplementation(platform(mnTestResources.boms.testcontainers))
+    testImplementation(mnTestResources.testcontainers.oracle.xe)
+    testAnnotationProcessor(mnData.micronaut.data.processor)
+}

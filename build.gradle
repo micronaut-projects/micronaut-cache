@@ -1,9 +1,16 @@
 plugins {
     id 'io.micronaut.build.internal.parent'
+    id 'io.micronaut.build.internal.binary-compatibility-check'
 }
 
 repositories {
     mavenCentral()
+}
+
+micronautBuild {
+    extensions.configure("binaryCompatibility") {
+        it.enabledAfter("6.2.0")
+    }
 }
 
 publishGuide {
