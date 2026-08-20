@@ -8,6 +8,15 @@ dependencies {
     api(libs.managed.infinispan.core)
     api(libs.managed.infinispan.client.hotrod)
 
+    constraints {
+        implementation('com.fasterxml.jackson.core:jackson-core:2.21.4') {
+            version {
+                strictly('2.21.4')
+            }
+            because('2.21.3 is affected by GHSA-r7wm-3cxj-wff9')
+        }
+    }
+
     testImplementation projects.micronautCacheTck
     testImplementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.inject.groovy)
