@@ -149,7 +149,7 @@
         <h1>Micronaut Cache</h1>
         <p></p>
         <p>Cache support for Micronaut</p>
-        <p><strong>Version:</strong> 6.1.0 </p>
+        <p><strong>Version:</strong> 6.1.1 </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
@@ -1731,7 +1731,7 @@ an existing Infinispan server using the HotRod protocol.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Infinispan 16.2.1
+This module is built and tested with Infinispan 16.2.2
 </td>
 </tr>
 </table>
@@ -1968,6 +1968,24 @@ complement/override values from the former.
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.config-file</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the configuration file location</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.resource-resolver</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/core/io/ResourceResolver.html">ResourceResolver</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.executor-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.infinispan.commons.executors.ExecutorFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infinispan.client.hotrod.environment</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/context/env/Environment.html">Environment</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
