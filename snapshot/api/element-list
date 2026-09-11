@@ -19,9 +19,4 @@ io.micronaut.cache.jcache
 io.micronaut.cache.jcache.metrics
 io.micronaut.cache.management
 io.micronaut.cache.noop
-io.micronaut.cache.oracle
-io.micronaut.cache.oracle.configuration
-io.micronaut.cache.oracle.persistence
-io.micronaut.cache.oracle.schema
-io.micronaut.cache.oracle.serialization
 io.micronaut.cache.serialize
