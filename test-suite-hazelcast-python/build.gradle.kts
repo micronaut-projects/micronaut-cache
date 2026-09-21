@@ -32,6 +32,4 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     systemProperty("hazelcastVersion", libs.versions.managed.hazelcast.get())
     systemProperty("micronaut.python.pool.enabled", "false")
-    // Gradle enables assertions in test JVMs; an internal Truffle host-interop assertion trips on varargs overloads
-    enableAssertions = false
 }

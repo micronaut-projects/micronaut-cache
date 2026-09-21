@@ -1,7 +1,7 @@
 from typing import Annotated
 
-import java
 from jakarta.inject import Inject
+from java.lang import Integer
 from micronaut.context.annotation import Property
 from micronaut.http.client import HttpClient
 from micronaut.http.client.annotation import Client
@@ -10,9 +10,6 @@ from org.junit.jupiter.api import Test
 
 from .ConditionalService import ConditionalService, Id
 from .MyRemovalHandler import MyRemovalHandler
-
-Integer = java.type("java.lang.Integer")
-
 
 @MicronautTest
 @Property(name="micronaut.caches.counter.initial-capacity", value="10")
