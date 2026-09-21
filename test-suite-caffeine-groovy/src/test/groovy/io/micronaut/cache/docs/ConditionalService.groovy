@@ -1,4 +1,4 @@
-package io.micronaut.cache
+package io.micronaut.cache.docs
 
 import groovy.transform.Canonical
 import groovy.transform.Immutable

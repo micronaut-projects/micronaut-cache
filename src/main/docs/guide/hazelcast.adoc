@@ -39,7 +39,7 @@ include::{includedir}configurationProperties/io.micronaut.cache.hazelcast.Hazelc
 For settings not in the above list, a https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html[BeanCreatedEventListener] can be registered for
 link:{api}/io/micronaut/cache/hazelcast/HazelcastClientConfiguration.html[HazelcastClientConfiguration] or link:{api}/io/micronaut/cache/hazelcast/HazelcastMemberConfiguration.html[HazelcastMemberConfiguration]. The listener will allow all properties to be set directly on the configuration instance.
 
-snippet::io.micronaut.cache.HazelcastAdditionalSettings[project-base="test-suite-hazelcast",tags="clazz"]
+snippet::io.micronaut.cache.docs.HazelcastAdditionalSettings[project-base="test-suite-hazelcast",tags="clazz"]
 
 Alternatively, the `HazelcastClientConfiguration` or `HazelcastMemberConfiguration` bean may be replaced with your own implementation.
 
