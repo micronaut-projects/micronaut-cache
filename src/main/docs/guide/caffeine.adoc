@@ -29,7 +29,7 @@ micronaut:
 
 This example is a cache with the removal/eviction listeners. To be able to use them just implement the `com.github.benmanes.caffeine.cache.RemovalListener` interface as shown in the example.
 
-snippet::io.micronaut.cache.RemovalListenerImpl[project-base="test-suite-caffeine",tags="clazz"]
+snippet::io.micronaut.cache.docs.RemovalListenerImpl[project-base="test-suite-caffeine",tags="clazz"]
 
 [NOTE]
 .Naming Caches

@@ -1,4 +1,4 @@
-package io.micronaut.cache;
+package io.micronaut.cache.docs;
 
 import io.micronaut.cache.hazelcast.HazelcastClientConfiguration;
 import io.micronaut.context.event.BeanCreatedEvent;

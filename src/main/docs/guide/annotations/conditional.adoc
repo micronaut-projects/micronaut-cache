@@ -2,4 +2,4 @@ Since Micronaut Cache 4.2.0, the above annotations can be conditionally disabled
 
 For example, we can cache the result of a method invocation only if the `id` parameters value is greater than 5:
 
-snippet::io.micronaut.cache.ConditionalService[project-base="test-suite-caffeine",tags="conditional",indent=0]
+snippet::io.micronaut.cache.docs.ConditionalService[project-base="test-suite-caffeine",tags="conditional",indent=0]

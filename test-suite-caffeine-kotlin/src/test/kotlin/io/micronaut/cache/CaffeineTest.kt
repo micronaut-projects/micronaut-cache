@@ -1,5 +1,7 @@
 package io.micronaut.cache
 
+import io.micronaut.cache.docs.ConditionalService
+import io.micronaut.cache.docs.MyRemovalHandler
 import io.micronaut.context.BeanContext
 import io.micronaut.context.annotation.Property
 import io.micronaut.http.client.HttpClient

@@ -1,4 +1,4 @@
-package io.micronaut.cache
+package io.micronaut.cache.docs
 
 import io.micronaut.cache.annotation.CacheConfig
 import io.micronaut.cache.annotation.Cacheable
