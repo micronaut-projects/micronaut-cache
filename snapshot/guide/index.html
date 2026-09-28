@@ -186,6 +186,15 @@
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.cache:micronaut-cache-core"</span>,
+]</code></pre>
+</div>
+</div>
 </p>
 </div>
 <div class="admonitionblock note">
@@ -303,6 +312,18 @@ public String get(Id id) {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">@Introspected
+@dataclass
+class Id:
+    value: int
+
+    @Cacheable(condition="#{id.value &gt; 5}")
+    def get(self, id: Id) -&gt; str:
+        return self.repository.get(id)</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">data class Id(val value: Int)
 
 @Cacheable(condition = "#{id.value &gt; 5}")
@@ -360,6 +381,15 @@ This module is built and tested with Caffeine 3.2.4
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-caffeine&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.cache:micronaut-cache-caffeine"</span>,
+]</code></pre>
 </div>
 </div>
 </p>
@@ -513,6 +543,18 @@ public class RemovalListenerImpl implements RemovalListener&lt;String, Integer&g
         handler.handle(key, value, cause);
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">@Singleton
+class RemovalListenerImpl(RemovalListener[str, int]):
+
+    def __init__(self, handler: MyRemovalHandler):
+        self.handler = handler
+
+    def onRemoval(self, key: str | None, value: int | None, cause: RemovalCause) -&gt; None:
+        self.handler.handle(key, value, cause)</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -704,6 +746,15 @@ JCache needs to be disabled:</p>
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-oracle&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.cache:micronaut-cache-oracle"</span>,
+]</code></pre>
 </div>
 </div>
 </p>
@@ -1201,6 +1252,15 @@ To enable automatic schema migration, add Flyway and the Oracle Flyway database 
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.flyway:micronaut-flyway"</span>,
+]</code></pre>
+</div>
+</div>
 
         <div class="listingblock multi-language-sample">
 <div class="title"></div>
@@ -1215,6 +1275,15 @@ To enable automatic schema migration, add Flyway and the Oracle Flyway database 
     &lt;artifactId&gt;flyway-database-oracle&lt;/artifactId&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"org.flywaydb:flyway-database-oracle"</span>,
+]</code></pre>
 </div>
 </div>
 </p>
@@ -1280,6 +1349,15 @@ This module is built and tested with Ehcache 3.12.0
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-ehcache&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.cache:micronaut-cache-ehcache"</span>,
+]</code></pre>
 </div>
 </div>
 </p>
@@ -1973,6 +2051,15 @@ This module is built and tested with Hazelcast 5.7.0
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.cache:micronaut-cache-hazelcast"</span>,
+]</code></pre>
+</div>
+</div>
 </p>
 </div>
 <div class="paragraph">
@@ -2138,6 +2225,19 @@ public class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">@Singleton
+class HazelcastAdditionalSettings(BeanCreatedEventListener[HazelcastClientConfiguration]):
+
+    def onCreated(self, event: BeanCreatedEvent[HazelcastClientConfiguration]) -&gt; HazelcastClientConfiguration:
+        configuration = event.getBean()
+        # Set anything on the configuration
+        configuration.setClusterName("dev")
+
+        return configuration</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Singleton
 class HazelcastAdditionalSettings : BeanCreatedEventListener&lt;HazelcastClientConfiguration&gt; {
 
@@ -2256,6 +2356,15 @@ This module is built and tested with Infinispan 16.2.3
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-infinispan&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.cache:micronaut-cache-infinispan"</span>,
+]</code></pre>
 </div>
 </div>
 </p>
@@ -2579,6 +2688,15 @@ In such situations a no operation cache manager can be used that will simply acc
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.cache:micronaut-cache-noop"</span>,
+]</code></pre>
+</div>
+</div>
 </p>
 </div>
 <div class="paragraph">
@@ -2652,6 +2770,15 @@ permits invalidating them.</p>
     &lt;groupId&gt;io.micronaut.cache&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-cache-management&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.cache:micronaut-cache-management"</span>,
+]</code></pre>
 </div>
 </div>
 </p>
@@ -2898,6 +3025,15 @@ annotation to your class with the value being the default implementation.</p>
     &lt;artifactId&gt;micronaut-control-panel-cache&lt;/artifactId&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+build = [
+    <span class="hljs-string">"io.micronaut.controlpanel:micronaut-control-panel-cache"</span>,
+]</code></pre>
 </div>
 </div>
 </p>
