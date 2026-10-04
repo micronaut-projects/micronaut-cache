@@ -363,7 +363,7 @@ String get(Id id) {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module is built and tested with Caffeine 3.2.4
+This module is built and tested with Caffeine 3.3.0
 </td>
 </tr>
 </table>
@@ -415,7 +415,8 @@ runtime = [
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {caches = {my-cache = {maximum-size = 20}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.caches.my-cache]
+maximum-size = 20</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -479,7 +480,9 @@ micronaut.caches.my-cache.listen-to-evictions=true</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {caches = {my-cache = {listen-to-removals = true, listen-to-evictions = true}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.caches.my-cache]
+listen-to-removals = true
+listen-to-evictions = true</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -651,7 +654,8 @@ JCache needs to be disabled:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {jcache = {enabled = false}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.jcache]
+enabled = false</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -801,7 +805,9 @@ micronaut.oracle.cache.prefix=MY_APP</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {oracle = {cache = {datasource = "mydatasource", prefix = "MY_APP"}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.oracle.cache]
+datasource = "mydatasource"
+prefix = "MY_APP"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -881,7 +887,13 @@ micronaut.caches.orders.fail-open-retry-interval=30s</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {caches = {orders = {expire-after-access = "30s", expire-after-write = "2m", cleanup-interval = "60s", cleanup-batch-size = 100, fail-open = true, fail-open-retry-interval = "30s"}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.caches.orders]
+expire-after-access = "30s"
+expire-after-write = "2m"
+cleanup-interval = "60s"
+cleanup-batch-size = 100
+fail-open = true
+fail-open-retry-interval = "30s"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -968,7 +980,12 @@ datasources.default.data-source-properties.oracle.jdbc.ReadTimeout=2000</code></
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">datasources = {default = {connection-timeout = "2s", data-source-properties = {"oracle.net.CONNECT_TIMEOUT" = 2000, "oracle.jdbc.ReadTimeout" = 2000}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[datasources.default]
+connection-timeout = "2s"
+
+[datasources.default.data-source-properties]
+"oracle.net.CONNECT_TIMEOUT" = 2000
+"oracle.jdbc.ReadTimeout" = 2000</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1039,7 +1056,8 @@ datasources.default.data-source-properties.oracle.jdbc.ReadTimeout=2000</code></
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {caches = {orders = {fail-open = false}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.caches.orders]
+fail-open = false</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1103,7 +1121,9 @@ micronaut.caches.orders.lock-wait-timeout=5s</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {caches = {orders = {blocking = true, lock-wait-timeout = "5s"}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.caches.orders]
+blocking = true
+lock-wait-timeout = "5s"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1194,7 +1214,8 @@ micronaut.caches.orders.lock-wait-timeout=5s</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">cache = {enabled = false}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[cache]
+enabled = false</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1382,7 +1403,8 @@ runtime = [
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">ehcache = {caches = {my-cache = {enabled = true}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache.caches.my-cache]
+enabled = true</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1463,7 +1485,8 @@ allows you to configure tiering caching options on a per-cache basis.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">ehcache = {caches = {my-cache = {heap = {max-entries = 5000}}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache.caches.my-cache.heap]
+max-entries = 5000</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1532,7 +1555,8 @@ allows you to configure tiering caching options on a per-cache basis.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">ehcache = {caches = {my-cache = {heap = {max-size = "200Mb"}}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache.caches.my-cache.heap]
+max-size = "200Mb"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1601,7 +1625,8 @@ allows you to configure tiering caching options on a per-cache basis.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">ehcache = {caches = {my-cache = {offheap = {max-size = "1Gb"}}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache.caches.my-cache.offheap]
+max-size = "1Gb"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1676,7 +1701,11 @@ ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">ehcache = {storage-path = "/var/caches", caches = {my-cache = {disk = {max-size = "10Gb"}}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
+storage-path = "/var/caches"
+
+[ehcache.caches.my-cache.disk]
+max-size = "10Gb"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1778,7 +1807,26 @@ ehcache.caches.shared-cache-3.clustered-shared.server-resource=resource-pool-b</
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">ehcache = {cluster = {uri = "terracotta://localhost/my-application", default-server-resource = "offheap-1", resource-pools = {resource-pool-a = {max-size = "8Mb", server-resource = "offheap-2"}, resource-pool-b = {max-size = "10Mb"}}}, caches = {clustered-cache = {clustered-dedicated = {server-resource = "offheap-1", max-size = "8Mb"}}, shared-cache-1 = {clustered-shared = {server-resource = "resource-pool-a"}}, shared-cache-3 = {clustered-shared = {server-resource = "resource-pool-b"}}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache.cluster]
+uri = "terracotta://localhost/my-application"
+default-server-resource = "offheap-1"
+
+[ehcache.cluster.resource-pools.resource-pool-a]
+max-size = "8Mb"
+server-resource = "offheap-2"
+
+[ehcache.cluster.resource-pools.resource-pool-b]
+max-size = "10Mb"
+
+[ehcache.caches.clustered-cache.clustered-dedicated]
+server-resource = "offheap-1"
+max-size = "8Mb"
+
+[ehcache.caches.shared-cache-1.clustered-shared]
+server-resource = "resource-pool-a"
+
+[ehcache.caches.shared-cache-3.clustered-shared]
+server-resource = "resource-pool-b"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1935,7 +1983,17 @@ ehcache.caches.my-cache.disk.max-size=10Gb</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">ehcache = {storage-path = "/var/caches", caches = {my-cache = {heap = {max-size = "200Mb"}, offheap = {max-size = "1Gb"}, disk = {max-size = "10Gb"}}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[ehcache]
+storage-path = "/var/caches"
+
+[ehcache.caches.my-cache.heap]
+max-size = "200Mb"
+
+[ehcache.caches.my-cache.offheap]
+max-size = "1Gb"
+
+[ehcache.caches.my-cache.disk]
+max-size = "10Gb"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2092,7 +2150,8 @@ Hazelcast cluster (example below).</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">hazelcast = {client = {network = {addresses = ["121.0.0.1:5701"]}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[hazelcast.client.network]
+addresses = ["121.0.0.1:5701"]</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2284,7 +2343,8 @@ class HazelcastAdditionalSettings implements BeanCreatedEventListener&lt;Hazelca
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">hazelcast = {enabled = false}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[hazelcast]
+enabled = false</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2394,7 +2454,9 @@ infinispan.client.hotrod.server.port=10222</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">infinispan = {client = {hotrod = {server = {host = "infinispan.example.com", port = 10222}}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[infinispan.client.hotrod.server]
+host = "infinispan.example.com"
+port = 10222</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2493,7 +2555,8 @@ minIdle = 1</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">infinispan = {client = {hotrod = {config-file = "classpath:my-infinispan.properties"}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[infinispan.client.hotrod]
+config-file = "classpath:my-infinispan.properties"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2613,7 +2676,8 @@ complement/override values from the former.
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">infinispan = {enabled = false}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[infinispan]
+enabled = false</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2802,7 +2866,8 @@ runtime = [
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">endpoints = {caches = {enabled = true}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[endpoints.caches]
+enabled = true</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2925,7 +2990,9 @@ endpoints.caches.sensitive=Boolean</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">endpoints = {caches = {enabled = "Boolean", sensitive = "Boolean"}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[endpoints.caches]
+enabled = "Boolean"
+sensitive = "Boolean"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
