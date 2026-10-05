@@ -1,5 +1,7 @@
 package io.micronaut.cache.reload
 
+import io.micronaut.cache.AbstractMapBasedSyncCache
+import io.micronaut.cache.AsyncCache
 import io.micronaut.cache.CacheManager
 import io.micronaut.cache.CounterService
 import io.micronaut.cache.SyncCache
@@ -9,6 +11,8 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.context.reload.ClassChange
 import io.micronaut.context.reload.ClassChangeEvent
 import io.micronaut.context.reload.ReloadStrategy
+import io.micronaut.core.convert.ConversionService
+import io.micronaut.inject.qualifiers.Qualifiers
 import spock.lang.Specification
 
 class CacheReloadSpec extends Specification {
@@ -22,6 +26,9 @@ class CacheReloadSpec extends Specification {
         CacheInterceptor interceptor = context.getBean(CacheInterceptor)
         SyncCache<?> dynamic = context.getBean(CacheManager).getCache('dynamic')
         dynamic.put('key', 'value')
+        MapCache asyncBacking = new MapCache()
+        context.registerSingleton(AsyncCache, asyncBacking.async(), Qualifiers.byName('async'))
+        asyncBacking.put('key', 'value')
 
         expect: 'the reloader exists only in development mode'
         context.containsBean(reloader())
@@ -40,6 +47,7 @@ class CacheReloadSpec extends Specification {
         then:
         service.getValue('one') == 1
         dynamic.get('key', String).present
+        asyncBacking.nativeCache.size() == 1
         context.getBean(CacheInterceptor).is(interceptor)
 
         when: 'a class without cache operations is redefined in place'
@@ -55,6 +63,7 @@ class CacheReloadSpec extends Specification {
         then: 'every cache is emptied, the dynamic ones included, and the next invocation computes the value again'
         size(context, 'counter') == 0
         !dynamic.get('key', String).present
+        asyncBacking.nativeCache.isEmpty()
         service.getValue('one') == 2
 
         and: 'the interceptor, whose maps are keyed by methods that did not change, is kept'
@@ -169,3 +178,14 @@ class CacheReloadSpec extends Specification {
     }
 }
 
+
+class MapCache extends AbstractMapBasedSyncCache<Map<Object, Object>> {
+    MapCache() {
+        super(ConversionService.SHARED, new java.util.concurrent.ConcurrentHashMap<Object, Object>())
+    }
+
+    @Override
+    String getName() {
+        return 'async'
+    }
+}

@@ -37,8 +37,12 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Keeps the caches and the cache interceptor in step with the code in development mode. It exists only in
@@ -71,6 +75,11 @@ import java.util.List;
 final class DevelopmentCacheReloader {
 
     private static final Logger LOG = LoggerFactory.getLogger(DevelopmentCacheReloader.class);
+
+    /**
+     * How long a reload waits for an asynchronous cache to be invalidated.
+     */
+    private static final Duration INVALIDATION_TIMEOUT = Duration.ofSeconds(30);
 
     private final BeanContext beanContext;
 
@@ -218,13 +227,13 @@ final class DevelopmentCacheReloader {
                 if (cache instanceof SyncCache<?> sync) {
                     sync.invalidateAll();
                 } else if (cache instanceof AsyncCache<?> async) {
-                    async.invalidateAll().whenComplete((ignored, error) -> {
-                        if (error != null) {
-                            LOG.warn("Cache {} could not be invalidated: {}", async.getName(), error.getMessage(), error);
-                        }
-                    });
+                    // waited for: the reload completes only once nothing of the retired code can be served from the cache
+                    async.invalidateAll().get(INVALIDATION_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
                 }
-            } catch (RuntimeException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            } catch (RuntimeException | ExecutionException | TimeoutException e) {
                 LOG.warn("Cache {} could not be invalidated: {}", ((Cache<?>) cache).getName(), e.getMessage(), e);
             }
         }
