@@ -22,8 +22,7 @@ import io.micronaut.context.BeanContext;
 import io.micronaut.context.BeanRegistration;
 import io.micronaut.context.WatchableBeanContext;
 import io.micronaut.context.annotation.Context;
-import io.micronaut.context.annotation.Requires;
-import io.micronaut.context.env.DevelopmentMode;
+import io.micronaut.context.env.DevelopmentActive;
 import io.micronaut.context.reload.ClassChange;
 import io.micronaut.context.reload.ClassChangeEvent;
 import io.micronaut.context.reload.ReloadStrategy;
@@ -71,7 +70,7 @@ import java.util.concurrent.TimeoutException;
  */
 @Internal
 @Context
-@Requires(condition = DevelopmentMode.Active.class)
+@DevelopmentActive
 final class DevelopmentCacheReloader {
 
     private static final Logger LOG = LoggerFactory.getLogger(DevelopmentCacheReloader.class);

@@ -156,7 +156,7 @@ class CacheReloadSpec extends Specification {
     private static ApplicationContext devContext(boolean track) {
         return ApplicationContext.builder()
             .properties(cacheProperties() + ['micronaut.dev.enabled': true])
-            .trackBeanDependencies(track)
+            .beanDependencyTrackingEnabled(track)
             .start()
     }
 
@@ -174,7 +174,7 @@ class CacheReloadSpec extends Specification {
     }
 
     private static ClassChangeEvent classChange(Set<ClassLoader> retired, List<ClassChange> changes, ReloadStrategy strategy) {
-        return new ClassChangeEvent(CacheReloadSpec, 1, retired, CacheReloadSpec.classLoader, changes, strategy)
+        return new ClassChangeEvent(CacheReloadSpec, retired, CacheReloadSpec.classLoader, changes, strategy)
     }
 }
 
