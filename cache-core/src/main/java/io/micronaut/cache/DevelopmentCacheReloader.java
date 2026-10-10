@@ -88,7 +88,7 @@ final class DevelopmentCacheReloader {
     DevelopmentCacheReloader(BeanContext beanContext) {
         this.beanContext = beanContext;
         if (beanContext instanceof WatchableBeanContext watchable) {
-            watchable.watchClassChanges(this::onClassChange);
+            watchable.classChanges().watch(this::onClassChange);
         }
     }
 
