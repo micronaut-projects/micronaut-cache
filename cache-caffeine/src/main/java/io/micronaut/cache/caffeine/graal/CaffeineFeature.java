@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 original authors
+ * Copyright 2017-2026 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,13 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 /**
- * A native image feature that configures common Caffeine cache implementations for reflection.
- * It is not a complete list, and users using less common implementations will need to provide their own configuration.
+ * A native image feature that configures Caffeine for reflection.
+ * <p>
+ * Caffeine generates a class for each kind of cache and cache entry, such as {@code SSLA} or {@code PSW}, and
+ * picks one of them by name from the configuration of the cache. It then reads the static {@code FACTORY} field
+ * of the class with a {@code VarHandle} or looks up its constructor, and the class looks up its own fields with
+ * {@code VarHandle}s. Since the configuration is only known at runtime, every generated class of Caffeine is
+ * registered.
  *
  * @author Tim Yates
  * @since 4.0.0
@@ -32,25 +37,10 @@ import java.util.Arrays;
 @Internal
 public class CaffeineFeature implements Feature {
 
-    private static final CacheType[] COMMON_CACHE_TYPES = new CacheType[]{
-        new CacheType("com.github.benmanes.caffeine.cache.PDMS"),
-        new CacheType("com.github.benmanes.caffeine.cache.PSA"),
-        new CacheType("com.github.benmanes.caffeine.cache.PSAW"),
-        new CacheType("com.github.benmanes.caffeine.cache.PS", "key", "value"),
-        new CacheType("com.github.benmanes.caffeine.cache.PSW", "writeTime"),
-        new CacheType("com.github.benmanes.caffeine.cache.PSMS"),
-        new CacheType("com.github.benmanes.caffeine.cache.PSWMS"),
-        new CacheType("com.github.benmanes.caffeine.cache.PSWMW"),
-        new CacheType("com.github.benmanes.caffeine.cache.SILMS"),
-        new CacheType("com.github.benmanes.caffeine.cache.SSA"),
-        new CacheType("com.github.benmanes.caffeine.cache.SSAW"),
-        new CacheType("com.github.benmanes.caffeine.cache.SSLA"),
-        new CacheType("com.github.benmanes.caffeine.cache.SSLMS"),
-        new CacheType("com.github.benmanes.caffeine.cache.SSMS"),
-        new CacheType("com.github.benmanes.caffeine.cache.SSMSA"),
-        new CacheType("com.github.benmanes.caffeine.cache.SSMSW"),
-        new CacheType("com.github.benmanes.caffeine.cache.SSW"),
-    };
+    @Override
+    public String getDescription() {
+        return "Registers the classes that Caffeine generates for each kind of cache and cache entry";
+    }
 
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
@@ -60,29 +50,32 @@ public class CaffeineFeature implements Feature {
         registerFields(access, "com.github.benmanes.caffeine.cache.StripedBuffer", "tableBusy");
         registerFields(access, "java.lang.Thread", "threadLocalRandomProbe");
 
-        for (CacheType commonCacheType : COMMON_CACHE_TYPES) {
-            registerFieldsAndDeclaredConstructors(access, commonCacheType.className, commonCacheType.fields);
-        }
-    }
-
-    private void registerFieldsAndDeclaredConstructors(BeforeAnalysisAccess access, String clz, String... fields) {
-        RuntimeReflection.register(access.findClassByName(clz));
-        RuntimeReflection.register(access.findClassByName(clz).getDeclaredConstructors());
-        registerFields(access, clz, fields);
-    }
-
-    private void registerFields(BeforeAnalysisAccess access, String clz, String... fields) {
-        for (Field field : access.findClassByName(clz).getDeclaredFields()) {
-            if (Arrays.asList(fields).contains(field.getName())) {
-                RuntimeReflection.register(field);
+        Class<?> localCacheFactory = access.findClassByName(CaffeineGeneratedClasses.LOCAL_CACHE_FACTORY);
+        if (localCacheFactory != null) {
+            for (String className : CaffeineGeneratedClasses.classNames(localCacheFactory)) {
+                Class<?> type = access.findClassByName(className);
+                if (type != null) {
+                    registerGeneratedClass(type);
+                }
             }
         }
     }
 
-    @SuppressWarnings({
-        "java:S6218",           // We don't do comparison on this holder type
-        "checkstyle:MethodName" // Checkstyle thinks this is a method...
-    })
-    private record CacheType(String className, String... fields) {
+    private void registerGeneratedClass(Class<?> type) {
+        RuntimeReflection.register(type);
+        RuntimeReflection.register(type.getDeclaredConstructors());
+        RuntimeReflection.register(type.getDeclaredFields());
+    }
+
+    private void registerFields(BeforeAnalysisAccess access, String clz, String... fields) {
+        Class<?> type = access.findClassByName(clz);
+        if (type == null) {
+            return;
+        }
+        for (Field field : type.getDeclaredFields()) {
+            if (Arrays.asList(fields).contains(field.getName())) {
+                RuntimeReflection.register(field);
+            }
+        }
     }
 }
