@@ -1,15 +1,15 @@
 [versions]
-micronaut = "5.2.13"
+micronaut = "5.2.15"
 
 cache-ri-impl = "1.1.1"
 managed-caffeine = "3.3.0"
 managed-ehcache = "3.12.0"
 managed-hazelcast = "5.7.0"
-managed-infinispan = "16.2.3"
+managed-infinispan = "16.3.0"
 managed-jcache = "1.1.1"
 
 micronaut-micrometer = "6.1.0"
-micronaut-data = "5.2.0"
+micronaut-data = "5.2.2"
 micronaut-flyway = "8.1.1"
 micronaut-serde = "3.2.4"
 micronaut-sql = "7.2.0"
