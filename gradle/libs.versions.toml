@@ -1,5 +1,5 @@
 [versions]
-micronaut = "5.2.13"
+micronaut = "5.3.0-SNAPSHOT"
 
 cache-ri-impl = "1.1.1"
 managed-caffeine = "3.3.0"
