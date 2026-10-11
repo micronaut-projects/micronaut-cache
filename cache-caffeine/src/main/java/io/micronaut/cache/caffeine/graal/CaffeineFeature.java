@@ -19,9 +19,6 @@ import io.micronaut.core.annotation.Internal;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
 /**
  * A native image feature that configures Caffeine for reflection.
  * <p>
@@ -44,38 +41,7 @@ public class CaffeineFeature implements Feature {
 
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
-        registerFields(access, "com.github.benmanes.caffeine.cache.BLCHeader$DrainStatusRef", "drainStatus");
-        registerFields(access, "com.github.benmanes.caffeine.cache.BBHeader$ReadCounterRef", "readCounter");
-        registerFields(access, "com.github.benmanes.caffeine.cache.BBHeader$ReadAndWriteCounterRef", "writeCounter");
-        registerFields(access, "com.github.benmanes.caffeine.cache.StripedBuffer", "tableBusy");
-        registerFields(access, "java.lang.Thread", "threadLocalRandomProbe");
-
-        Class<?> localCacheFactory = access.findClassByName(CaffeineGeneratedClasses.LOCAL_CACHE_FACTORY);
-        if (localCacheFactory != null) {
-            for (String className : CaffeineGeneratedClasses.classNames(localCacheFactory)) {
-                Class<?> type = access.findClassByName(className);
-                if (type != null) {
-                    registerGeneratedClass(type);
-                }
-            }
-        }
-    }
-
-    private void registerGeneratedClass(Class<?> type) {
-        RuntimeReflection.register(type);
-        RuntimeReflection.register(type.getDeclaredConstructors());
-        RuntimeReflection.register(type.getDeclaredFields());
-    }
-
-    private void registerFields(BeforeAnalysisAccess access, String clz, String... fields) {
-        Class<?> type = access.findClassByName(clz);
-        if (type == null) {
-            return;
-        }
-        for (Field field : type.getDeclaredFields()) {
-            if (Arrays.asList(fields).contains(field.getName())) {
-                RuntimeReflection.register(field);
-            }
-        }
+        CaffeineReflection.register(access::findClassByName,
+            RuntimeReflection::register, RuntimeReflection::register, RuntimeReflection::register);
     }
 }

@@ -16,36 +16,113 @@
 package io.micronaut.cache.caffeine.graal;
 
 import io.micronaut.core.annotation.Internal;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.CodeSource;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
 /**
- * Lists the classes that Caffeine generates for each kind of cache and cache entry, such as {@code SSLA} or
- * {@code PSW}. Caffeine picks one of them by name from the configuration of the cache, then reads its static
- * {@code FACTORY} field with a {@code VarHandle} or looks up its constructor.
+ * Finds what Caffeine accesses reflectively.
+ * <p>
+ * Caffeine generates a class for each kind of cache and cache entry, such as {@code SSLA} or {@code PSW}, and
+ * picks one of them by name from the configuration of the cache. It then reads the static {@code FACTORY} field
+ * of the class with a {@code VarHandle} or looks up its constructor, and the class looks up its own fields with
+ * {@code VarHandle}s.
  *
  * @author Graeme Rocher
  * @since 6.1.2
  */
 @Internal
-final class CaffeineGeneratedClasses {
+final class CaffeineReflection {
 
     static final String CACHE_PACKAGE = "com.github.benmanes.caffeine.cache";
     static final String LOCAL_CACHE_FACTORY = CACHE_PACKAGE + ".LocalCacheFactory";
 
+    /**
+     * The fields that Caffeine looks up with {@code VarHandle}s outside the generated classes.
+     */
+    private static final Map<String, Set<String>> FIELDS = Map.of(
+        CACHE_PACKAGE + ".BLCHeader$DrainStatusRef", Set.of("drainStatus"),
+        CACHE_PACKAGE + ".BBHeader$ReadCounterRef", Set.of("readCounter"),
+        CACHE_PACKAGE + ".BBHeader$ReadAndWriteCounterRef", Set.of("writeCounter"),
+        CACHE_PACKAGE + ".StripedBuffer", Set.of("tableBusy"),
+        "java.lang.Thread", Set.of("threadLocalRandomProbe")
+    );
+
     private static final String CLASS_SUFFIX = ".class";
     private static final String PACKAGE_PATH = CACHE_PACKAGE.replace('.', '/') + '/';
 
-    private CaffeineGeneratedClasses() {
+    private CaffeineReflection() {
+    }
+
+    /**
+     * Registers what Caffeine accesses reflectively: the fields it looks up with {@code VarHandle}s, and the
+     * generated classes with their constructors and fields.
+     *
+     * @param findClass Finds a class by name, or returns {@code null} when it is missing
+     * @param classes Registers classes
+     * @param constructors Registers constructors
+     * @param fields Registers fields
+     */
+    static void register(Function<String, @Nullable Class<?>> findClass,
+                         Consumer<Class<?>[]> classes,
+                         Consumer<Executable[]> constructors,
+                         Consumer<Field[]> fields) {
+        fields.accept(fields(findClass).toArray(Field[]::new));
+        for (Class<?> type : generatedClasses(findClass)) {
+            classes.accept(new Class<?>[]{type});
+            constructors.accept(type.getDeclaredConstructors());
+            fields.accept(type.getDeclaredFields());
+        }
+    }
+
+    /**
+     * Finds the fields that Caffeine looks up with {@code VarHandle}s outside the generated classes.
+     *
+     * @param findClass Finds a class by name, or returns {@code null} when it is missing
+     * @return The fields
+     */
+    static List<Field> fields(Function<String, @Nullable Class<?>> findClass) {
+        return FIELDS.entrySet().stream()
+            .flatMap(entry -> {
+                Class<?> type = findClass.apply(entry.getKey());
+                return type == null ? Stream.empty() : Arrays.stream(type.getDeclaredFields())
+                    .filter(field -> entry.getValue().contains(field.getName()));
+            })
+            .toList();
+    }
+
+    /**
+     * Finds the classes that Caffeine generates, next to its {@code LocalCacheFactory}.
+     *
+     * @param findClass Finds a class by name, or returns {@code null} when it is missing
+     * @return The generated classes
+     */
+    static List<Class<?>> generatedClasses(Function<String, @Nullable Class<?>> findClass) {
+        Class<?> localCacheFactory = findClass.apply(LOCAL_CACHE_FACTORY);
+        if (localCacheFactory == null) {
+            return List.of();
+        }
+        return classNames(localCacheFactory).stream()
+            .<Class<?>>map(findClass)
+            .filter(Objects::nonNull)
+            .toList();
     }
 
     /**
@@ -116,7 +193,7 @@ final class CaffeineGeneratedClasses {
         return entryNames
             .filter(name -> name.startsWith(PACKAGE_PATH) && name.endsWith(CLASS_SUFFIX))
             .map(name -> name.substring(0, name.length() - CLASS_SUFFIX.length()).replace('/', '.'))
-            .filter(CaffeineGeneratedClasses::isGeneratedClass)
+            .filter(CaffeineReflection::isGeneratedClass)
             .sorted()
             .toList();
     }
