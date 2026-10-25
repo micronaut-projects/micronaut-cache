@@ -15,7 +15,7 @@ dependencies {
     }
 
     constraints {
-        implementation('com.fasterxml.jackson.core:jackson-core:2.21.4') {
+        implementation('com.fasterxml.jackson.core:jackson-core:2.22.4') {
             because('2.21.3 is affected by GHSA-r7wm-3cxj-wff9')
         }
     }
