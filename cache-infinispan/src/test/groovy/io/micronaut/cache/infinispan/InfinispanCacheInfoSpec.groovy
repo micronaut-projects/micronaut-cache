@@ -43,7 +43,7 @@ class InfinispanCacheInfoSpec extends Specification {
         ApplicationContext applicationContext = ApplicationContext.run([
                 "infinispan.client.hotrod.statistics.enabled": true,
                 "infinispan.client.hotrod.force-return-values": true,
-                "infinispan.client.hotrod.server.host": "localhost",
+                "infinispan.client.hotrod.server.host": "127.0.0.1",
                 "infinispan.client.hotrod.server.port": infinispan.firstMappedPort,
                 "infinispan.client.hotrod.security.authentication.username": "user",
                 "infinispan.client.hotrod.security.authentication.password": "pass",
