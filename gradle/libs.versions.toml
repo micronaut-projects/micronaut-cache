@@ -2,22 +2,22 @@
 micronaut = "5.2.22"
 
 cache-ri-impl = "1.1.1"
-managed-caffeine = "3.3.0"
+managed-caffeine = "3.3.1"
 managed-ehcache = "3.12.0"
 managed-hazelcast = "5.7.0"
-managed-infinispan = "16.3.0"
+managed-infinispan = "16.3.1"
 managed-jcache = "1.1.1"
 
 micronaut-micrometer = "6.1.2"
-micronaut-data = "5.2.4"
+micronaut-data = "5.2.5"
 micronaut-flyway = "8.1.1"
 micronaut-serde = "3.2.6"
 micronaut-sql = "7.2.1"
 micronaut-test-resources = "4.3.1"
 micronaut-validation = "5.2.1"
-graal-svm = "25.0.4.1.1"
-graal-plugin = "1.1.14"
-jackson-core = "2.22.3"
+graal-svm = "25.0.5"
+graal-plugin = "1.1.18"
+jackson-core = "2.23.0"
 
 [libraries]
 # Core
@@ -47,5 +47,5 @@ jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref
 testcontainers-junit = { module = "org.testcontainers:testcontainers-junit-jupiter" }
 testcontainers-oracle = { module = "org.testcontainers:oracle-xe" }
 testcontainers-spock = { module = "org.testcontainers:testcontainers-spock" }
-graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
+graal-svm = "25.0.5"
 gradle-graal = { module = "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin", version.ref = "graal-plugin" }
