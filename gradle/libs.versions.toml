@@ -47,5 +47,5 @@ jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref
 testcontainers-junit = { module = "org.testcontainers:testcontainers-junit-jupiter" }
 testcontainers-oracle = { module = "org.testcontainers:oracle-xe" }
 testcontainers-spock = { module = "org.testcontainers:testcontainers-spock" }
-graal-svm = "25.0.5"
+graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
 gradle-graal = { module = "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin", version.ref = "graal-plugin" }
