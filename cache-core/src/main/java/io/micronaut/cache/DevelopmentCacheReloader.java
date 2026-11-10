@@ -29,7 +29,6 @@ import io.micronaut.context.reload.ReloadStrategy;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.inject.BeanDefinition;
-import io.micronaut.inject.BeanDefinitionReference;
 import io.micronaut.inject.ExecutableMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,8 +102,16 @@ final class DevelopmentCacheReloader {
         }
         for (ClassChange classChange : change.changes()) {
             String className = classChange.className();
-            if (isCached(className, change.newLoader()) || wasCached(className)) {
+            if (isCached(className, change.newLoader())) {
                 invalidateAll(className + " changed");
+                return;
+            }
+        }
+        // what the beans were as the context was compiled: a change applied in place leaves the definitions as they
+        // were, and the event tells those built from a changed class
+        for (BeanDefinition<?> definition : beanContext.getAllBeanDefinitions()) {
+            if (change.affectsDefinition(definition) && hasCacheOperations(definition)) {
+                invalidateAll(definition.getBeanType().getName() + " changed");
                 return;
             }
         }
@@ -145,34 +152,13 @@ final class DevelopmentCacheReloader {
     }
 
     /**
-     * Whether the class a change replaces had cache operations, as the context was compiled: a bean definition of
-     * it, or of its proxy, carries a cache annotation on the class or an executable method. The references are
-     * matched by name, so that only the definitions of that class are loaded, and nothing of a previous class is kept.
+     * Whether a bean has cache operations, on the class or an executable method.
      *
-     * @param className The changed class
-     * @return Whether the interceptor cached results of the class it replaces
+     * @param definition The definition of the bean
+     * @return Whether the interceptor caches results of it
      */
-    private boolean wasCached(String className) {
-        int lastDot = className.lastIndexOf('.');
-        String definition = className.substring(0, lastDot + 1) + '$' + className.substring(lastDot + 1) + "$Definition";
-        for (BeanDefinitionReference<?> reference : beanContext.getBeanDefinitionReferences()) {
-            String name = reference.getBeanDefinitionName();
-            if ((name.equals(definition) || name.startsWith(definition + '$')) && hasCacheOperations(reference)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean hasCacheOperations(BeanDefinitionReference<?> reference) {
+    private static boolean hasCacheOperations(BeanDefinition<?> definition) {
         try {
-            if (hasCacheAnnotation(reference.getAnnotationMetadata())) {
-                return true;
-            }
-            BeanDefinition<?> definition = reference.load();
-            if (definition == null) {
-                return false;
-            }
             if (hasCacheAnnotation(definition.getAnnotationMetadata())) {
                 return true;
             }
@@ -183,7 +169,7 @@ final class DevelopmentCacheReloader {
             }
             return false;
         } catch (RuntimeException | LinkageError e) {
-            // a definition of that name that no longer loads: what it was is unknown, so it counts
+            // a method that no longer resolves: what it was is unknown, so it counts
             return true;
         }
     }
