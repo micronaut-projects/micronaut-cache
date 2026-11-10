@@ -51,6 +51,11 @@ hazelcast:
   network:
     port:
       port: $port
+    join:
+      auto-detection:
+        enabled: false
+      multicast:
+        enabled: false
 """
         ApplicationContext ctx = ApplicationContext.run(ApplicationContext, [
                 "hazelcast.config": file.absolutePath

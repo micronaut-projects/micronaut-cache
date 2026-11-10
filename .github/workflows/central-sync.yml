@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: v${{ github.event.inputs.release_version }}
-      - uses: gradle/actions/wrapper-validation@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
+      - uses: gradle/actions/wrapper-validation@7ca78c16c887dc6c5f36fd6d0cb0f5c23d940e69 # v6
       - name: Set up JDK
         uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         with:
